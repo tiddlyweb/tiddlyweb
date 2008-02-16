@@ -1,0 +1,26 @@
+
+See also: http://tiddlywiki.org/wiki/Dev:TiddlyWeb
+          http://tiddlywiki.org/wiki/Dev_talk:TiddlyWeb
+
+TiddlyWeb, aka mo'ass, is a reference implementation of an ideal
+server side implementation for TiddlyWiki. It provides a tested,
+documented, and clear implementation of several facets that make
+up a good server side:
+
+* transparent system and code suitable for porting to other
+  languages (where optimzations will hopefully occur)
+* an abstract model for authenitication and authorization
+* an implementation of workspaces, recipes and bags as described
+  elsewhere
+* clean REST-style web-based and -friendly API
+* test driven description and development
+
+This system is not designed to be highly performant nor scalable
+in its first several iterations.
+
+REQUIREMENTS:
+
+* Python 2.5
+* Other python dependencies to be determined
+
+See also: NOTES

@@ -1,0 +1,23 @@
+
+A list of possible tests.
+
+At the URL level:
+
+* GET, HEAD PUT, DELETE a tiddler by bag name + tiddler name
+** as JSON, HTML, plain text
+* GET a list of tiddlers in a bag (unauthenticated and authenticated)
+** filtered and unfiltered
+* GET a list of bags (unauthenticated and authenticated)
+** filtered and unfiltered
+* PUT a recipe, creating a workspace
+* GET an operational tiddlywiki/workspace from a recipe
+* GET static HTML from a recipe
+* confirm safety of protected tiddler (can't write or delete tiddler)
+* confirm safety of protected bag (can't create tiddler)
+
+At the controller level:
+
+* create, destroy and update tiddlers, bags, recipes
+* throw proper exceptions when access credentials are insufficient
+
+[more]
