@@ -19,5 +19,7 @@ At the controller level:
 
 * create, destroy and update tiddlers, bags, recipes
 * throw proper exceptions when access credentials are insufficient
+* get filtered list of tiddlers from bag
+* find a tiddler (by name) via recipe reversal
 
 [more]
