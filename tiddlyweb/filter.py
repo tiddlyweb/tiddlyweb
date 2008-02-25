@@ -22,7 +22,7 @@ def compose_from_string(filter_string):
     """
     filters = []
     filter_matcher = re.compile(
-            r'([^ \[\]]+)|(?:\[(-?[ \w]+)\[([^\]]+)\]\])|(?:\[\[([^\]]+)\]\])',
+            r'([^ \[\]]+)|(?:\[([!-]?[ \w]+)\[([^\]]+)\]\])|(?:\[\[([^\]]+)\]\])',
             re.MULTILINE)
     for match in filter_matcher.finditer(filter_string):
         if match.group(1) or match.group(4):
@@ -30,14 +30,21 @@ def compose_from_string(filter_string):
                 title = match.group(1)
             else:
                 title = match.group(4)
-            filters.append([by_name, title])
+            if title.startswith('!'):
+                filters.append([negate(by_name), title.lstrip('!')])
+            elif title.startswith('-'):
+                filters.append([remove(by_name), title.lstrip('-')])
+            else:
+                filters.append([by_name, title])
         elif match.group(2):
             flag = match.group(2)
             argument = match.group(3)
             if flag == 'tag':
                 filters.append([by_tag, argument])
-            elif flag == '-tag':
+            elif flag == '!tag':
                 filters.append([negate(by_tag), argument])
+            elif flag == '-tag':
+                filters.append([remove(by_tag), argument])
     return filters
 
 def by_name(name, tiddlers):
@@ -62,10 +69,30 @@ def by_composition(filters, tiddlers):
 
     found_tiddlers = {}
     for filter in filters:
-        for tiddler in filter[0](filter[1], tiddlers):
-            found_tiddlers[tiddler['name']] = tiddler
+        if filter[0].__dict__.has_key('removal'):
+            for tiddler in filter[0](filter[1], found_tiddlers.values()):
+                if tiddler['name'] in found_tiddlers:
+                    del found_tiddlers[tiddler['name']]
+        else:
+            for tiddler in filter[0](filter[1], tiddlers):
+                found_tiddlers[tiddler['name']] = tiddler
 
     return found_tiddlers.values()
+
+def remove(filter):
+    """
+    Return a function which returns filter.
+
+    Removal only operates during composition. That is
+    there must already be a built up list of tiddlers
+    from which removal will be done.
+    """
+    def remove_filter(argument, tiddlers):
+        return filter(argument, tiddlers)
+
+    remove_filter.removal = 1
+
+    return remove_filter
 
 def negate(filter):
     """
