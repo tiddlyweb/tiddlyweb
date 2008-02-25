@@ -1,0 +1,16 @@
+
+These tests may be run with py.test[1]. From the TiddlyWeb base
+directory simply type py.test and the tests will be found and
+run.
+
+Tests which test the web serving sides of the application 
+require httplib2[2] and wsgi_intercept[3] (so no web server 
+is required). These tests run alongside the other tests 
+without any special setup required.
+
+[1] py.test is part of py lib and can be found at
+http://codespeak.net/py/dist/test.html
+
+[2] http://code.google.com/p/httplib2/
+
+[3] http://code.google.com/p/wsgi-intercept/
