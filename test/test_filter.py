@@ -81,6 +81,14 @@ def test_compose_with_negate_filters():
     found_tiddlers = filter.by_composition(ordered_filters, tiddlers)
     assert len(found_tiddlers) == 2, 'three tiddlers should be found, got %s' % len(found_tiddlers)
 
+def test_empty_composed_filters():
+
+    filter_string = ''
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+
+    assert found_tiddlers == tiddlers, 'empty filter returns all tiddlers'
+
 def test_string_to_composed_filter_positive_tag():
 
     filter_string = 'TiddlerOne [tag[tagone]]'

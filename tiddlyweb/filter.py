@@ -67,6 +67,10 @@ def by_composition(filters, tiddlers):
     We are adding to a list, not winnowing a list.
     """
 
+# special case no filters to return all tiddlers
+    if len(filters) == 0 or filters == None:
+        return tiddlers
+
     found_tiddlers = {}
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
