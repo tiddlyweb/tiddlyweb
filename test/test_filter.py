@@ -9,23 +9,7 @@ import sys
 sys.path.append('.')
 from tiddlyweb import filter
 
-tiddlers = [
-        {
-            'name': 'TiddlerOne',
-            'content': 'tiddler one content',
-            'tags': ['tagone', 'tagtwo']
-        },
-        {
-            'name': 'TiddlerTwo',
-            'content': 'tiddler two content',
-            'tags': []
-        },
-        {
-            'name': 'TiddlerThree',
-            'content': 'tiddler three content',
-            'tags': ['tagone', 'tagthree']
-        }
-]
+from fixtures import tiddlers
 
 def setup_module(module):
     pass
