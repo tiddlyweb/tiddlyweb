@@ -110,3 +110,16 @@ def negate(filter):
 
     return negated_filter
 
+def filter_bag(bag, filter, filterargs=None):
+    """
+    Return the list of tiddlers resulting from filtering
+    bag by filter. filter may be a filter function, in 
+    which case filterags may need to be set, or may be
+    a filter string.
+    """
+    if callable(filter):
+        return filter(filterargs, bag.list_tiddlers())
+    else:
+        filters = compose_from_string(filter)
+        return by_composition(filters, bag.list_tiddlers())
+

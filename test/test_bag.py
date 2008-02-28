@@ -74,44 +74,14 @@ def test_store_by_copy():
 
     assert tiddlers[0]['content'] != bag[tiddlers[0]]['content'], 'tiddlers in bag are copies not reference'
 
-def test_filter_bag_by_filter():
-    """
-    Confirm a bag will properly filter.
-    """
-    return
-
-    from tiddlyweb import filter
-
-    filtered_tiddlers = bag.filter_tiddlers(filter.by_name, 'TiddlerOne')
-
-    assert len(filtered_tiddlers) == 1, 'filtering by name should result in one tiddler, got %s tiddlers' % len(filtered_tiddlers)
-    assert filtered_tiddlers[0]['name'] == 'TiddlerOne', 'resulting tiddler should be TiddlerOne, is %s' % filtered_tiddlers[0]['name']
-
-def test_filter_bag_by_filter_string():
-    """
-    Confirm a bag will properly filter by string.
-    """
-    return
-
-    filtered_tiddlers = bag.filter_tiddlers('[tag[tagone]]')
-
-    assert len(filtered_tiddlers) == 1, 'filtering by name should result in one tiddler, got %s tiddlers' % len(filtered_tiddlers)
-    assert filtered_tiddlers[0]['name'] == 'TiddlerOne', 'resulting tiddler should be TiddlerOne, is %s' % filtered_tiddlers[0]['name']
-
-    bag.add_tiddler(tiddlers[2])
-    filtered_tiddlers = bag.filter_tiddlers('[tag[tagone]]')
-
-    assert len(filtered_tiddlers) == 2, 'filtering by name should result in one tiddler, got %s tiddlers' % len(filtered_tiddlers)
-
 def test_bag_remove():
     """
     Confirm the bag shrinks when you remove a tiddler.
     """
-    return
 
-    assert len(bag) == 3, 'before removing a tiddler bag is len 3, bag size now %s' % len(bag)
-    bag.remove_tiddler(tiddlers[2])
-    assert len(bag) == 2, 'removing a tiddler shrinks the bag to 2, bag size now %s' % len(bag)
+    assert len(bag) == 2, 'before removing a tiddler bag is len 3, bag size now %s' % len(bag)
+    bag.remove_tiddler(tiddlers[1])
+    assert len(bag) == 1, 'removing a tiddler shrinks the bag to 2, bag size now %s' % len(bag)
 
 # trying to remove a tiddler that's not there gives a KeyError
     py.test.raises(KeyError, "bag.remove_tiddler(tiddlers[2])")

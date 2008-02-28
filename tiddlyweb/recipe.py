@@ -11,6 +11,7 @@ The resulting list of tiddlers can be used to
 create a Tiddlywiki.
 """
 
+import filter
 from bag import Bag
 
 class Recipe(list):
@@ -45,11 +46,9 @@ class Recipe(list):
         """
         store_bag = Bag(name='tmpstore')
         for bag, filter_string in self:
-            if not hasattr(bag, 'filter_tiddlers'): 
-# we should eventually use something other than Bag to manage
-# persistence of Bags
+            if type(bag) == '':
                 bag = Bag(name=bag)
-            for tiddler in bag.filter_tiddlers(filter_string):
+            for tiddler in filter.filter_bag(bag, filter_string):
                 store_bag.add_tiddler(tiddler)
         return store_bag.list_tiddlers()
 
@@ -66,9 +65,9 @@ class Recipe(list):
 # duplication here with get_tiddlers, so can probalby do something
 # meta somewhere
         for bag, filter_string in reversed(self):
-            if not hasattr(bag, 'filter_tiddlers'):
+            if type(bag) == '':
                 bag = Bag(name=bag)
-            tiddlers = bag.filter_tiddlers(filter_string)
+            tiddlers = filter.filter_bag(bag, filter_string)
             if tiddler in tiddlers:
                 return bag
 

@@ -2,7 +2,7 @@
 """
 A Bag is a collection of tiddlers, unique by the name
 of the tiddler. A bag can have tiddlers added, removed,
-listed and filtered.
+and listed.
 
 At some point the bag will have a security policy and
 add and remove will throw permissions exceptions. TBD.
@@ -34,12 +34,4 @@ class Bag(dict):
 
     def list_tiddlers(self):
         return self.values()
-
-    def filter_tiddlers(self, filter=None, filterargs=None):
-        if callable(filter):
-            return filter(filterargs, self.list_tiddlers())
-        else:
-            from filter import compose_from_string, by_composition
-            filters = compose_from_string(filter)
-            return by_composition(filters, self.list_tiddlers())
 
