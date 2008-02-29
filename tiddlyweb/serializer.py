@@ -23,7 +23,7 @@ class Serializer():
     def _figure_function(self, format):
         module = 'tiddlyweb.serializers.%s' % format
         try:
-            imported_module = __import__(module, fromlist=['format'])
+            imported_module = __import__(module, fromlist=[format])
             return getattr(imported_module, function_map[self.object.__class__])
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
