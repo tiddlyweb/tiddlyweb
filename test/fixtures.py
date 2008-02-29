@@ -5,23 +5,23 @@ Data structures required for our testing.
 import sys
 sys.path.append('.')
 from tiddlyweb.bag import Bag
+from tiddlyweb.tiddler import Tiddler
 
 tiddlers = [
-        {
-            'name': 'TiddlerOne',
-            'content': 'tiddler one content',
-            'tags': ['tagone', 'tagtwo']
-        },
-        {
-            'name': 'TiddlerTwo',
-            'content': 'tiddler two content',
-            'tags': []
-        },
-        {
-            'name': 'TiddlerThree',
-            'content': 'tiddler three content',
-            'tags': ['tagone', 'tagthree']
-        }
+        Tiddler(
+            name='TiddlerOne',
+            content='tiddler one content',
+            tags=['tagone', 'tagtwo']
+        ),
+        Tiddler(
+            name='TiddlerTwo',
+            content='tiddler two content',
+        ),
+        Tiddler(
+            name='TiddlerThree',
+            content='tiddler three content',
+            tags=['tagone', 'tagthree']
+        )
 ]
 
 bagone = Bag(name='bagone')
@@ -34,3 +34,10 @@ bagfour = Bag(name='bagfour')
 bagfour.add_tiddler(tiddlers[0])
 bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
+
+recipe_list = [
+         [bagone, 'TiddlerOne'],
+         [bagtwo, 'TiddlerTwo'],
+         [bagthree, '[tag[tagone]] [tag[tagthree]]']
+         ]
+

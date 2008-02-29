@@ -52,14 +52,14 @@ def by_name(name, tiddlers):
     Return those tiddlers that match name.
     """
 
-    return [tiddler for tiddler in tiddlers if tiddler['name'] == name]
+    return [tiddler for tiddler in tiddlers if tiddler.name == name]
 
 def by_tag(tag, tiddlers):
     """
     Return those tiddlers that have tag tag.
     """
 
-    return [tiddler for tiddler in tiddlers if tag in tiddler['tags']]
+    return [tiddler for tiddler in tiddlers if tag in tiddler.tags]
 
 def by_composition(filters, tiddlers):
     """
@@ -75,11 +75,11 @@ def by_composition(filters, tiddlers):
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
-                if tiddler['name'] in found_tiddlers:
-                    del found_tiddlers[tiddler['name']]
+                if tiddler.name in found_tiddlers:
+                    del found_tiddlers[tiddler.name]
         else:
             for tiddler in filter[0](filter[1], tiddlers):
-                found_tiddlers[tiddler['name']] = tiddler
+                found_tiddlers[tiddler.name] = tiddler
 
     return found_tiddlers.values()
 

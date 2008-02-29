@@ -14,9 +14,9 @@ def test_filter_bag_by_filter():
     assert len(filtered_tiddlers) == 1, \
             'filtering by name should result in one tiddler, got %s tiddlers' \
             % len(filtered_tiddlers)
-    assert filtered_tiddlers[0]['name'] == 'TiddlerOne', \
+    assert filtered_tiddlers[0].name == 'TiddlerOne', \
             'resulting tiddler should be TiddlerOne, is %s' \
-            % filtered_tiddlers[0]['name']
+            % filtered_tiddlers[0].name
 
 def test_filter_bag_by_filter_string():
     """

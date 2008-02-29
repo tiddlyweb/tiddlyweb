@@ -10,6 +10,8 @@ add and remove will throw permissions exceptions. TBD.
 
 default_security_policy = "all the world's a stage"
 
+import copy
+
 class Bag(dict):
 
     def __init__(self, name, policy=default_security_policy):
@@ -18,13 +20,13 @@ class Bag(dict):
         self.policy = policy
 
     def __getitem__(self, tiddler):
-        return dict.__getitem__(self, tiddler['name'])
+        return dict.__getitem__(self, tiddler.name)
 
     def __setitem__(self, tiddler):
-        dict.__setitem__(self, tiddler['name'], tiddler.copy())
+        dict.__setitem__(self, tiddler.name, copy.deepcopy(tiddler))
 
     def __delitem__(self, tiddler):
-        dict.__delitem__(self, tiddler['name'])
+        dict.__delitem__(self, tiddler.name)
 
     def add_tiddler(self, tiddler):
         self.__setitem__(tiddler)

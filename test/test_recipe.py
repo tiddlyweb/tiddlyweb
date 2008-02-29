@@ -8,13 +8,7 @@ import sys
 sys.path.append('.')
 from tiddlyweb.recipe import Recipe
 
-from fixtures import tiddlers, bagone, bagtwo, bagthree, bagfour
-
-recipe_list = [
-         [bagone, 'TiddlerOne'],
-         [bagtwo, 'TiddlerTwo'],
-         [bagthree, '[tag[tagone]]']
-         ]
+from fixtures import tiddlers, bagone, bagtwo, bagthree, bagfour, recipe_list
 
 def setup_module(module):
     module.recipe = Recipe(name='foorecipe')

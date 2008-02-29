@@ -9,6 +9,11 @@ we have a list of lists.
 
 The resulting list of tiddlers can be used to 
 create a Tiddlywiki.
+
+In common usage a recipe contains only strings
+representing bags and filters, but for the 
+sake of easy testing, the bag argument can
+be a Bag.
 """
 
 import filter
@@ -67,9 +72,9 @@ class Recipe(list):
         for bag, filter_string in reversed(self):
             if type(bag) == '':
                 bag = Bag(name=bag)
-            tiddlers = filter.filter_bag(bag, filter_string)
-            if tiddler in tiddlers:
-                return bag
+            for candidate_tiddler in filter.filter_bag(bag, filter_string):
+                if tiddler.name == candidate_tiddler.name:
+                    return bag
 
         return None
 

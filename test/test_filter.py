@@ -42,7 +42,7 @@ def test_filter_by_tag():
     found_tiddlers = filter.by_tag('tagthree', tiddlers)
     assert len(found_tiddlers) == 1, 'one tiddlers in returned list'
 
-    assert found_tiddlers[0]['name'] == tiddlers[2]['name'], 'the found tiddler is the right one'
+    assert found_tiddlers[0].name == tiddlers[2].name, 'the found tiddler is the right one'
 
 def test_negate_fitler_by_name():
     """
@@ -96,8 +96,8 @@ def test_string_to_composed_filter_positive_tag():
 
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
-    assert 'TiddlerOne' in [tiddler['name'] for tiddler in found_tiddlers], 'should get first tiddler'
-    assert 'TiddlerThree' in [tiddler['name'] for tiddler in found_tiddlers], 'should get third tiddler'
+    assert 'TiddlerOne' in [tiddler.name for tiddler in found_tiddlers], 'should get first tiddler'
+    assert 'TiddlerThree' in [tiddler.name for tiddler in found_tiddlers], 'should get third tiddler'
 
 def test_string_to_composed_filter_negative_name():
     filter_string = '[tag[tagthree]] !TiddlerOne'
@@ -105,8 +105,8 @@ def test_string_to_composed_filter_negative_name():
 
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
-    assert 'TiddlerThree' in [tiddler['name'] for tiddler in found_tiddlers], 'should get third tiddler'
-    assert 'TiddlerTwo' in [tiddler['name'] for tiddler in found_tiddlers], 'should get second tiddler'
+    assert 'TiddlerThree' in [tiddler.name for tiddler in found_tiddlers], 'should get third tiddler'
+    assert 'TiddlerTwo' in [tiddler.name for tiddler in found_tiddlers], 'should get second tiddler'
 
 def test_string_to_composed_filter_negative_tag():
 
@@ -115,8 +115,8 @@ def test_string_to_composed_filter_negative_tag():
 
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
-    assert 'TiddlerOne' in [tiddler['name'] for tiddler in found_tiddlers], 'should get first tiddler'
-    assert 'TiddlerTwo' in [tiddler['name'] for tiddler in found_tiddlers], 'should get third tiddler'
+    assert 'TiddlerOne' in [tiddler.name for tiddler in found_tiddlers], 'should get first tiddler'
+    assert 'TiddlerTwo' in [tiddler.name for tiddler in found_tiddlers], 'should get third tiddler'
 
 def test_string_composed_filter_with_remove_by_name():
     """
@@ -128,7 +128,7 @@ def test_string_composed_filter_with_remove_by_name():
     filters = filter.compose_from_string(filter_string)
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
-    assert found_tiddlers[0]['name'] == 'TiddlerOne', 'the found tiddler should be TiddlerOne, got %s' % found_tiddlers[0]['name']
+    assert found_tiddlers[0].name == 'TiddlerOne', 'the found tiddler should be TiddlerOne, got %s' % found_tiddlers[0].name
 
 def test_string_composed_filter_with_remove_by_tag():
     """
@@ -140,6 +140,6 @@ def test_string_composed_filter_with_remove_by_tag():
     filters = filter.compose_from_string(filter_string)
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
-    assert found_tiddlers[0]['name'] == 'TiddlerTwo', 'the found tiddler should be TiddlerTwo, got %s' % found_tiddlers[0]['name']
+    assert found_tiddlers[0].name == 'TiddlerTwo', 'the found tiddler should be TiddlerTwo, got %s' % found_tiddlers[0].name
 
 
