@@ -17,6 +17,20 @@ def recipe_as(recipe):
         lines.append(line)
     return "\n".join(lines)
 
+def bag_as(bag):
+    """
+    List the tiddlers in a bag as text.
+
+    It might be that there should be some sense of sorting
+    here? For now we'll sort by name, but that buggers us for
+    later.
+    """
+    lines = []
+    for tiddler in sorted(bag.list_tiddlers(), key=lambda x: x.name):
+        line = 'tiddlers/%s' % urllib.quote(tiddler.name)
+        lines.append(line)
+    return "\n".join(lines)
+
 def tiddler_as(tiddler):
     return 'name: %s\nauthor: %s\ntags: %s\n\n%s\n' \
             % (tiddler.name, tiddler.author, tags_as(tiddler.tags), tiddler.content)
