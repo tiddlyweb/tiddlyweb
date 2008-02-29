@@ -2,20 +2,13 @@
 Serialize TiddlyWeb things for the sake of storage and the like.
 """
 
-# this should come from some kind of config file
-
-from serializers.text import recipe_as, tiddler_as
 
 from recipe import Recipe
 from tiddler import Tiddler
 
-map = {
-        Recipe: {
-            'text': recipe_as
-            },
-        Tiddler: {
-            'text': tiddler_as
-            }
+function_map = {
+        Recipe: 'recipe_as',
+        Tiddler: 'tiddler_as'
         }
 
 class Serializer():
@@ -28,7 +21,12 @@ class Serializer():
         return self.function(self.object)
 
     def _figure_function(self, format):
-        return map[self.object.__class__][format]
+        module = 'tiddlyweb.serializers.%s' % format
+        try:
+            imported_module = __import__(module, fromlist=['format'])
+            return getattr(imported_module, function_map[self.object.__class__])
+        except ImportError, err:
+            raise ImportError("couldn't load %s: %s" % (module, err))
 
     def to_string(self):
         return self.__str__()
