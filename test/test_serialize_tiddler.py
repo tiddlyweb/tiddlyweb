@@ -10,7 +10,7 @@ from tiddlyweb.serializer import Serializer
 
 expected_string = """name: test tiddler
 author: test@example.com
-tags: foobar [[foo bar]]
+tags: [[foo bar]] foobar
 
 Hello, I'm the content.
 """

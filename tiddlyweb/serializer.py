@@ -8,25 +8,31 @@ from tiddler import Tiddler
 from bag import Bag
 
 function_map = {
-        Recipe: 'recipe_as',
-        Tiddler: 'tiddler_as',
-        Bag: 'bag_as'
+        Recipe: ['recipe_as', None],
+        Tiddler: ['tiddler_as', lambda x: x.strip('[]')],
+        Bag: ['bag_as', lambda x: x.name]
         }
 
 class Serializer():
 
-    def __init__(self, object, format):
+    def __init__(self, object, format, sortkey=None):
         self.object = object
-        self.function = self._figure_function(format)
+        list_func, sort_func = self._figure_function(format)
+        if sortkey:
+            sort_func = sortkey
+        self.function = list_func
+        self.sortkey = sort_func
 
     def __str__(self):
-        return self.function(self.object)
+        return self.function(self.object, sortkey=self.sortkey)
 
     def _figure_function(self, format):
         module = 'tiddlyweb.serializers.%s' % format
         try:
             imported_module = __import__(module, fromlist=[format])
-            return getattr(imported_module, function_map[self.object.__class__])
+            list_func = getattr(imported_module, function_map[self.object.__class__][0])
+            sort_func = function_map[self.object.__class__][1]
+            return list_func, sort_func
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
 

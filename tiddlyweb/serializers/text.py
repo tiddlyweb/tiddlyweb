@@ -4,7 +4,11 @@ Text based serializers.
 
 import urllib
 
-def recipe_as(recipe):
+def recipe_as(recipe, sortkey):
+    """
+    Never sort a recipe, so ignore sortkey, but
+    keep it there for sake of the interface.
+    """
     lines = []
     for bag, filter in recipe:
         line = ''
@@ -17,7 +21,7 @@ def recipe_as(recipe):
         lines.append(line)
     return "\n".join(lines)
 
-def bag_as(bag):
+def bag_as(bag, sortkey):
     """
     List the tiddlers in a bag as text.
 
@@ -26,18 +30,18 @@ def bag_as(bag):
     later.
     """
     lines = []
-    for tiddler in sorted(bag.list_tiddlers(), key=lambda x: x.name):
+    for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
         line = 'tiddlers/%s' % urllib.quote(tiddler.name)
         lines.append(line)
     return "\n".join(lines)
 
-def tiddler_as(tiddler):
+def tiddler_as(tiddler, sortkey):
     return 'name: %s\nauthor: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.name, tiddler.author, tags_as(tiddler.tags), tiddler.content)
+            % (tiddler.name, tiddler.author, tags_as(tiddler.tags, sortkey), tiddler.content)
 
-def tags_as(tags):
+def tags_as(tags, sortkey):
     tag_string_list = []
-    for tag in tags:
+    for tag in sorted(tags, key=sortkey):
         if ' ' in tag:
             tag = '[[%s]]' % tag
         tag_string_list.append(tag)
