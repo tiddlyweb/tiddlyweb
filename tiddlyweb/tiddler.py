@@ -2,6 +2,8 @@
 A class and other thingies for a Tiddler.
 """
 
+from datetime import datetime
+
 class Tiddler(object):
     """
     A proper tiddler has the follow attributes:
@@ -14,11 +16,19 @@ class Tiddler(object):
     XXX: therefore the model below is wrong and needs a tuneup
     """
 
-    def __init__(self, name=None, author=None, content=None, tags=[]):
-        self.name = name
-        self.author = author
-        self.content = content
+    def __init__(self,
+            title=None,
+            modifier=None,
+            modified=datetime.utcnow(),
+            created=datetime.utcnow(),
+            tags=[],
+            content=None):
+        self.title = title
+        self.modifier = modifier
+        self.modified = modified
+        self.create = created
         self.tags = tags
+        self.content = content
 
     def __repr__(self):
         """

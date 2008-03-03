@@ -31,11 +31,11 @@ def compose_from_string(filter_string):
             else:
                 title = match.group(4)
             if title.startswith('!'):
-                filters.append([negate(by_name), title.lstrip('!')])
+                filters.append([negate(by_title), title.lstrip('!')])
             elif title.startswith('-'):
-                filters.append([remove(by_name), title.lstrip('-')])
+                filters.append([remove(by_title), title.lstrip('-')])
             else:
-                filters.append([by_name, title])
+                filters.append([by_title, title])
         elif match.group(2):
             flag = match.group(2)
             argument = match.group(3)
@@ -47,12 +47,12 @@ def compose_from_string(filter_string):
                 filters.append([remove(by_tag), argument])
     return filters
 
-def by_name(name, tiddlers):
+def by_title(title, tiddlers):
     """
-    Return those tiddlers that match name.
+    Return those tiddlers that match title.
     """
 
-    return [tiddler for tiddler in tiddlers if tiddler.name == name]
+    return [tiddler for tiddler in tiddlers if tiddler.title == title]
 
 def by_tag(tag, tiddlers):
     """
@@ -75,11 +75,11 @@ def by_composition(filters, tiddlers):
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
-                if tiddler.name in found_tiddlers:
-                    del found_tiddlers[tiddler.name]
+                if tiddler.title in found_tiddlers:
+                    del found_tiddlers[tiddler.title]
         else:
             for tiddler in filter[0](filter[1], tiddlers):
-                found_tiddlers[tiddler.name] = tiddler
+                found_tiddlers[tiddler.title] = tiddler
 
     return found_tiddlers.values()
 

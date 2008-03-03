@@ -1,6 +1,6 @@
 
 """
-A Bag is a collection of tiddlers, unique by the name
+A Bag is a collection of tiddlers, unique by the title
 of the tiddler. A bag can have tiddlers added, removed,
 and listed.
 
@@ -20,13 +20,13 @@ class Bag(dict):
         self.policy = policy
 
     def __getitem__(self, tiddler):
-        return dict.__getitem__(self, tiddler.name)
+        return dict.__getitem__(self, tiddler.title)
 
     def __setitem__(self, tiddler):
-        dict.__setitem__(self, tiddler.name, copy.deepcopy(tiddler))
+        dict.__setitem__(self, tiddler.title, copy.deepcopy(tiddler))
 
     def __delitem__(self, tiddler):
-        dict.__delitem__(self, tiddler.name)
+        dict.__delitem__(self, tiddler.title)
 
     def add_tiddler(self, tiddler):
         self.__setitem__(tiddler)

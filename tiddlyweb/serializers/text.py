@@ -25,19 +25,17 @@ def bag_as(bag, sortkey):
     """
     List the tiddlers in a bag as text.
 
-    It might be that there should be some sense of sorting
-    here? For now we'll sort by name, but that buggers us for
-    later.
+    Is the bag an ordered list, so we shouldn't be sorting.
     """
     lines = []
     for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
-        line = 'tiddlers/%s' % urllib.quote(tiddler.name)
+        line = 'tiddlers/%s' % urllib.quote(tiddler.title)
         lines.append(line)
     return "\n".join(lines)
 
 def tiddler_as(tiddler, sortkey):
-    return 'name: %s\nauthor: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.name, tiddler.author, tags_as(tiddler.tags, sortkey), tiddler.content)
+    return 'title: %s\nmodifier: %s\ntags: %s\n\n%s\n' \
+            % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
 
 def tags_as(tags, sortkey):
     tag_string_list = []

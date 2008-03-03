@@ -10,7 +10,7 @@ from bag import Bag
 function_map = {
         Recipe: ['recipe_as', None],
         Tiddler: ['tiddler_as', lambda x: x.strip('[]')],
-        Bag: ['bag_as', lambda x: x.name]
+        Bag: ['bag_as', lambda x: x.title]
         }
 
 class Serializer():

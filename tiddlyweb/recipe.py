@@ -42,7 +42,7 @@ class Recipe(list):
         Return the list of tiddlers that result
         from processing the recipe.
 
-        This list of tiddlers is unique by name with 
+        This list of tiddlers is unique by title with 
         tiddlers later in the recipe taking precedence
         over those earlier in the recipe.
 
@@ -73,7 +73,7 @@ class Recipe(list):
             if type(bag) == '':
                 bag = Bag(name=bag)
             for candidate_tiddler in filter.filter_bag(bag, filter_string):
-                if tiddler.name == candidate_tiddler.name:
+                if tiddler.title == candidate_tiddler.title:
                     return bag
 
         return None

@@ -23,20 +23,20 @@ def test_tiddler_full_create():
     """
 
     tiddler = Tiddler(
-            name = 'test tiddler',
-            author = 'test@example.com',
+            title = 'test tiddler',
+            modifier = 'test@example.com',
             content = test_tiddler_content,
             tags = ['foo', 'bar']
             )
 
     assert type(tiddler) == Tiddler, \
             'Tiddler returns a Tiddler'
-    assert tiddler.name == 'test tiddler', \
-            'tiddler name should be test tiddler, got %s' \
-            % tiddler.name
-    assert tiddler.author == 'test@example.com', \
-            'tiddler author should test@example.com, got %s' \
-            % tiddler.author
+    assert tiddler.title == 'test tiddler', \
+            'tiddler title should be test tiddler, got %s' \
+            % tiddler.title
+    assert tiddler.modifier == 'test@example.com', \
+            'tiddler modifier should test@example.com, got %s' \
+            % tiddler.modifier
     assert tiddler.content == test_tiddler_content, \
             'tiddler content is correct'
     assert tiddler.tags == ['foo', 'bar'], \

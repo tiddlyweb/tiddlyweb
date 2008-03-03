@@ -43,7 +43,7 @@ def test_bag_list_tiddlers():
     listed_tiddlers = bag.list_tiddlers()
     assert len(bag) == 1, 'the bag should be the length of the tiddlers, 1, is %s' % len(bag)
     assert len(listed_tiddlers) == 1, 'there should be 1 tiddler in the bag, is %s' % len(listed_tiddlers)
-    assert listed_tiddlers[0].name == tiddlers[0].name, 'tiddler in bag is tiddler put in bag'
+    assert listed_tiddlers[0].title == tiddlers[0].title, 'tiddler in bag is tiddler put in bag'
 
 def test_bag_add_tiddler():
     """

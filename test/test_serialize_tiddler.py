@@ -8,8 +8,8 @@ sys.path.append('.')
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
-expected_string = """name: test tiddler
-author: test@example.com
+expected_string = """title: test tiddler
+modifier: test@example.com
 tags: [[foo bar]] foobar
 
 Hello, I'm the content.
@@ -21,8 +21,8 @@ def setup_module(module):
 def test_generated_string():
 
     tiddler = Tiddler(
-            name = 'test tiddler',
-            author = 'test@example.com',
+            title = 'test tiddler',
+            modifier = 'test@example.com',
             tags = ['foobar', 'foo bar'],
             content = "Hello, I'm the content."
             )

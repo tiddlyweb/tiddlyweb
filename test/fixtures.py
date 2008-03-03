@@ -9,16 +9,16 @@ from tiddlyweb.tiddler import Tiddler
 
 tiddlers = [
         Tiddler(
-            name='TiddlerOne',
+            title='TiddlerOne',
             content='c tiddler one content',
             tags=['tagone', 'tagtwo']
         ),
         Tiddler(
-            name='TiddlerTwo',
+            title='TiddlerTwo',
             content='b tiddler two content',
         ),
         Tiddler(
-            name='TiddlerThree',
+            title='TiddlerThree',
             content='a tiddler three content',
             tags=['tagone', 'tagthree']
         )
