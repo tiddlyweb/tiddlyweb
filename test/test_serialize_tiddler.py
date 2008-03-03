@@ -1,6 +1,11 @@
 
 """
 Test turning a recipe into other forms.
+
+Currently this test and the code in general does not
+pay attention to modified and created fields in the
+tiddler. This will be added later. For now it is
+just in the way.
 """
 
 import sys
