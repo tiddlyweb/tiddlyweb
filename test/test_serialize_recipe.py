@@ -15,13 +15,10 @@ expected_string = """/bags/bagone?TiddlerOne
 /bags/bagthree?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
 
 def setup_module(module):
-    pass
+    module.recipe = Recipe(name='testrecipe')
+    module.recipe.set_recipe(recipe_list)
 
-def test_generated_string():
-
-    recipe = Recipe(name='testrecipe')
-    recipe.set_recipe(recipe_list)
-
+def test_generated_text():
     serializer = Serializer(recipe, 'text')
     string = serializer.to_string()
 
@@ -31,3 +28,11 @@ def test_generated_string():
 
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
+
+def test_generated_wiki():
+    serializer = Serializer(recipe, 'wiki')
+    string = serializer.to_string()
+
+    assert string.startswith('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'), 'looks like we got an empty.html doc'
+    assert 'c tiddler one' in string
+    assert '<div title="TiddlerOne" modifier="AuthorOne"' in string

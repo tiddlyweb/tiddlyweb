@@ -10,15 +10,18 @@ from tiddlyweb.tiddler import Tiddler
 tiddlers = [
         Tiddler(
             title='TiddlerOne',
+            modifier='AuthorOne',
             content='c tiddler one content',
             tags=['tagone', 'tagtwo']
         ),
         Tiddler(
             title='TiddlerTwo',
+            modifier='AuthorTwo',
             content='b tiddler two content',
         ),
         Tiddler(
             title='TiddlerThree',
+            modifier='AuthorThree',
             content='a tiddler three content',
             tags=['tagone', 'tagthree']
         )
