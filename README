@@ -8,8 +8,8 @@ documented, and clear implementation of several facets that make
 up a good server side:
 
 * transparent system and code suitable for porting to other
-  languages (where optimzations will hopefully occur)
-* an abstract model for authenitication and authorization
+  languages (where use specific optimzations will hopefully occur)
+* an abstract model for authentication and authorization
 * an implementation of workspaces, recipes and bags as described
   elsewhere
 * clean REST-style web-based and -friendly API
