@@ -26,11 +26,13 @@ class Store():
         if bag_or_recipe and tiddlers:
             return self._save_tiddlers(bag_or_recipe, *tiddlers)
         if bag_or_recipe:
-            return self._save_recipe(recipe)
+            return self._save_recipe(bag_or_recipe)
         raise TypeError, "save did not recieve good arguments *put more here*"
 
     def _save_recipe(self, recipe):
-        pass
+        recipe_put_func, recipe_get_func = self._figure_function(self.format, recipe)
+
+        recipe_put_func(recipe)
 
     def _save_tiddlers(self, bag, *tiddlers):
         if len(tiddlers) == 1 and type(tiddlers[0]) == list:

@@ -10,8 +10,24 @@ import os
 
 from tiddlyweb.serializer import Serializer
 
-def bag_put(bag):
+def recipe_put(recipe):
+    recipe_path = _recipe_path(recipe)
 
+    recipe_file = file(recipe_path, 'w')
+
+    serializer = Serializer(recipe, 'text')
+
+    recipe_file.write(serializer.to_string())
+
+    recipe_file.close()
+
+def recipe_get(recipe):
+    pass
+
+def _recipe_path(recipe):
+    return os.path.join(store_root, 'recipes', recipe.name)
+
+def bag_put(bag):
     bag_path = _bag_path(bag)
     tiddlers_dir = _tiddlers_dir(bag)
 

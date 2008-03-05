@@ -52,8 +52,10 @@ class textstore:
 
     store_dirname = 'store'
     bag_store = os.path.join(store_dirname, 'bags')
+    recipe_store = os.path.join(store_dirname, 'recipes')
 
 def reset_textstore():
     shutil.rmtree(textstore.store_dirname)
     os.makedirs(textstore.bag_store)
+    os.makedirs(textstore.recipe_store)
 

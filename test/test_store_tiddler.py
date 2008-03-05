@@ -48,7 +48,7 @@ def test_simple_save():
 
     assert content == expected_stored_content, \
             'stored content should be %s, got %s' \
-            % (content, expected_stored_content)
+            % (expected_stored_content, content)
 
 def test_multiple_save():
     """

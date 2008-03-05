@@ -51,7 +51,7 @@ class Recipe(list):
         """
         store_bag = Bag(name='tmpstore')
         for bag, filter_string in self:
-            if type(bag) == '':
+            if type(bag) == str:
                 bag = Bag(name=bag)
             for tiddler in filter.filter_bag(bag, filter_string):
                 store_bag.add_tiddler(tiddler)
@@ -70,7 +70,7 @@ class Recipe(list):
 # duplication here with get_tiddlers, so can probalby do something
 # meta somewhere
         for bag, filter_string in reversed(self):
-            if type(bag) == '':
+            if type(bag) == str:
                 bag = Bag(name=bag)
             for candidate_tiddler in filter.filter_bag(bag, filter_string):
                 if tiddler.title == candidate_tiddler.title:
