@@ -18,17 +18,23 @@ class Store():
     def __init__(self, format):
         self.format = format
 
-    def save(self, bag=None, tiddlers=None, recipe=None):
-        if recipe:
+    def save(self, bag_or_recipe, *tiddlers):
+        """
+        Save a thing. If we have one argument, save a recipe,
+        otherwise, save one more tiddlers into a bag.
+        """
+        if bag_or_recipe and tiddlers:
+            return self._save_tiddlers(bag_or_recipe, *tiddlers)
+        if bag_or_recipe:
             return self._save_recipe(recipe)
-        if bag and tiddlers:
-            return self._save_tiddlers(bag, tiddlers)
-        # throw something
+        raise TypeError, "save did not recieve good arguments *put more here*"
 
     def _save_recipe(self, recipe):
         pass
 
-    def _save_tiddlers(self, bag, tiddlers):
+    def _save_tiddlers(self, bag, *tiddlers):
+        if len(tiddlers) == 1 and type(tiddlers[0]) == list:
+            tiddlers = tiddlers[0]
         bag_put_func, bag_get_func = self._figure_function(self.format, bag)
         tiddler_put_func, tiddler_get_func = self._figure_function(self.format, tiddlers[0])
 

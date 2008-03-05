@@ -13,7 +13,7 @@ import sys
 import shutil
 sys.path.append('.')
 
-from fixtures import bagone, textstore, reset_textstore
+from fixtures import bagone, bagfour, textstore, reset_textstore
 from tiddlyweb.store import Store
 
 expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
@@ -33,17 +33,15 @@ def setup_module(module):
 
 def test_simple_save():
     """
-    Non-working api investigation code.
-
-    Make the assertion messages better!
+    Save a tiddler to disk and make sure it is there.
     """
 
     store = Store('text')
-    store.save(bag=bagone, tiddlers=[bagone.list_tiddlers()[0]])
+    store.save(bagone, bagone.list_tiddlers()[0])
 
     assert os.path.exists(expected_stored_filename), \
             'path %s should be created' \
-            % expected_store_filename
+            % expected_stored_filename
 
     f = file(expected_stored_filename)
     content = f.read()
@@ -51,4 +49,17 @@ def test_simple_save():
     assert content == expected_stored_content, \
             'stored content should be %s, got %s' \
             % (content, expected_stored_content)
+
+def test_multiple_save():
+    """
+    Save all the tiddlers in a bag and make sure they are there.
+    """
+
+    reset_textstore()
+    store = Store('text')
+    store.save(bagfour, bagfour.list_tiddlers())
+
+    stored_dir = os.path.join(textstore.bag_store, 'bagfour', 'tiddlers')
+    assert len(os.listdir(stored_dir)) == 3, 'there should be 3 files in the tiddlers directory'
+
 
