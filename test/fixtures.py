@@ -4,6 +4,10 @@ Data structures required for our testing.
 
 import sys
 sys.path.append('.')
+
+import os
+import shutil
+
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 
@@ -43,4 +47,13 @@ recipe_list = [
          [bagtwo, 'TiddlerTwo'],
          [bagthree, '[tag[tagone]] [tag[tagthree]]']
          ]
+
+class textstore:
+
+    store_dirname = 'store'
+    bag_store = os.path.join(store_dirname, 'bags')
+
+def reset_textstore():
+    shutil.rmtree(textstore.store_dirname)
+    os.makedirs(textstore.bag_store)
 

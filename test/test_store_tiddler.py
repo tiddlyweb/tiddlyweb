@@ -13,12 +13,10 @@ import sys
 import shutil
 sys.path.append('.')
 
+from fixtures import bagone, textstore, reset_textstore
 from tiddlyweb.store import Store
-from fixtures import bagone
 
-store_dirname = 'store'
-bag_store = os.path.join(store_dirname, 'bags')
-expected_stored_filename = os.path.join(bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
+expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
 
 expected_stored_content = """title: TiddlerOne
 modifier: AuthorOne
@@ -31,8 +29,7 @@ def setup_module(module):
     """
     Need to clean up the store here.
     """
-    shutil.rmtree(store_dirname)
-    os.makedirs(bag_store)
+    reset_textstore()
 
 def test_simple_save():
     """
