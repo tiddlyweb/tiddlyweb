@@ -10,23 +10,29 @@ Prequisites:
 
 import os
 import sys
+import shutil
 sys.path.append('.')
 
 from tiddlyweb.store import Store
 from fixtures import bagone
 
-expected_stored_filename = 'store/bags/bagone/tiddlers/TiddlerOne'
-expected_stored_content = """some
-stuff
-that
+store_dirname = 'store'
+bag_store = os.path.join(store_dirname, 'bags')
+expected_stored_filename = os.path.join(bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
+
+expected_stored_content = """title: TiddlerOne
+modifier: AuthorOne
+tags: tagone tagtwo
+
+c tiddler one content
 """
 
 def setup_module(module):
     """
     Need to clean up the store here.
     """
-    #os.unlink(expected_stored_filename)
-    #os.rmdir
+    shutil.rmtree(store_dirname)
+    os.makedirs(bag_store)
 
 def test_simple_save():
     """
@@ -38,10 +44,14 @@ def test_simple_save():
     store = Store('text')
     store.save(bag=bagone, tiddlers=[bagone.list_tiddlers()[0]])
 
-    assert os.path.exists(expected_stored_filename), 'path is created'
+    assert os.path.exists(expected_stored_filename), \
+            'path %s should be created' \
+            % expected_store_filename
 
     f = file(expected_stored_filename)
     content = f.read()
 
-    assert content == expected_stored_content, 'stored content is as expected'
+    assert content == expected_stored_content, \
+            'stored content should be %s, got %s' \
+            % (content, expected_stored_content)
 
