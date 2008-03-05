@@ -1,6 +1,6 @@
 
 """
-Test turning a recipe into other forms.
+Test turning a tiddler into other forms.
 
 Currently this test and the code in general does not
 pay attention to modified and created fields in the
