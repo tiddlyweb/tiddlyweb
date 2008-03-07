@@ -31,6 +31,8 @@ def recipe_get(recipe):
 
     recipe_string = recipe_file.read()
 
+    recipe_file.close()
+
     return serializer.from_string(recipe_string)
 
 def _recipe_path(recipe):
@@ -85,6 +87,23 @@ def tiddler_put(tiddler):
 
     tiddler_file.close()
 
-def tiddler_get(bag, tiddler):
-    pass
+def tiddler_get(tiddler):
+    """
+    Get a tiddler as string from a bag and deserialize it into 
+    text.
+    """
 
+    bag_name = tiddler.bag
+
+    store_dir = _tiddlers_dir(bag_name)
+
+    tiddler_filename = os.path.join(store_dir, tiddler.title)
+    tiddler_file = file(tiddler_filename, 'r')
+
+    serializer = Serializer(tiddler, 'text')
+
+    tiddler_string = tiddler_file.read()
+
+    tiddler_file.close()
+
+    return serializer.from_string(tiddler_string)

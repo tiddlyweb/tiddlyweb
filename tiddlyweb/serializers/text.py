@@ -2,6 +2,7 @@
 Text based serializers.
 """
 
+import re
 import urllib
 
 def recipe_as(recipe, sortkey):
@@ -55,7 +56,28 @@ def tiddler_as(tiddler, sortkey):
             % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
 
 def as_tiddler(tiddler, input):
-    pass
+    header, content = input.split('\n\n')
+    tiddler.content = content
+    headers = header.split('\n')
+
+    for field, value in [x.split(': ') for x in headers]:
+        setattr(tiddler, field, value)
+
+    tag_string = tiddler.tags
+    tiddler.tags = as_tags(tag_string)
+
+    return tiddler
+
+def as_tags(string):
+    tags = []
+    tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
+    for match in tag_matcher.finditer(string):
+        if match.group(2):
+            tags.append(match.group(2))
+        elif match.group(1):
+            tags.append(match.group(1))
+
+    return tags
 
 def tags_as(tags, sortkey):
     tag_string_list = []
