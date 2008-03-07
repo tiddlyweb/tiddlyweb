@@ -31,14 +31,14 @@ def setup_module(module):
     """
     reset_textstore()
 
-def test_simple_save():
+def test_simple_put():
     """
-    Save a tiddler to disk and make sure it is there.
+    put a tiddler to disk and make sure it is there.
     """
 
     store = Store('text')
-    store.save(bagone)
-    store.save(bagone.list_tiddlers()[0])
+    store.put(bagone)
+    store.put(bagone.list_tiddlers()[0])
 
     assert os.path.exists(expected_stored_filename), \
             'path %s should be created' \
@@ -51,15 +51,15 @@ def test_simple_save():
             'stored content should be %s, got %s' \
             % (expected_stored_content, content)
 
-def test_multiple_save():
+def test_multiple_put():
     """
-    Save all the tiddlers in a bag and make sure they are there.
+    put all the tiddlers in a bag and make sure they are there.
     """
 
     reset_textstore()
     store = Store('text')
-    store.save(bagfour)
-    store.save(bagfour.list_tiddlers())
+    store.put(bagfour)
+    store.put(bagfour.list_tiddlers())
 
     stored_dir = os.path.join(textstore.bag_store, 'bagfour', 'tiddlers')
     assert len(os.listdir(stored_dir)) == 3, 'there should be 3 files in the tiddlers directory'

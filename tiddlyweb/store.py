@@ -1,5 +1,5 @@
 """
-Save and retrieve TiddlyWeb things to and from some store.
+Put and Get TiddlyWeb things to and from some store.
 """
 
 
@@ -18,30 +18,30 @@ class Store():
     def __init__(self, format):
         self.format = format
 
-    def save(self, *things):
+    def put(self, *things):
         """
-        Save a thing, recipe or one or more tiddlers.
+        put a thing, recipe or one or more tiddlers.
 
         Should there be handling here for things of
         wrong type?
         """
         if type(things) == Recipe:
-            return self._save_recipe(things)
+            return self._put_recipe(things)
         if type(things) == Bag:
-            return self._save_bag(things)
-        return self._save_tiddlers(*things)
+            return self._put_bag(things)
+        return self._put_tiddlers(*things)
 
-    def _save_recipe(self, recipe):
+    def _put_recipe(self, recipe):
         recipe_put_func, recipe_get_func = self._figure_function(self.format, recipe)
 
         recipe_put_func(recipe)
 
-    def _save_bag(self, bag):
+    def _put_bag(self, bag):
         bag_put_func, bag_get_func = self._figure_function(self.format, bag)
 
         bag_put_func(bag)
 
-    def _save_tiddlers(self, *tiddlers):
+    def _put_tiddlers(self, *tiddlers):
         if len(tiddlers) == 1 and type(tiddlers[0]) == list:
             tiddlers = tiddlers[0]
         tiddler_put_func, tiddler_get_func = self._figure_function(self.format, tiddlers[0])
