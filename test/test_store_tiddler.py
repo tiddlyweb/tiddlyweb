@@ -10,7 +10,6 @@ Prequisites:
 
 import os
 import sys
-import shutil
 sys.path.append('.')
 
 from fixtures import bagone, bagfour, textstore, reset_textstore

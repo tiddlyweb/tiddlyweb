@@ -8,6 +8,7 @@ store_root = 'store'
 
 import os
 
+from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
 def recipe_put(recipe):
@@ -49,10 +50,19 @@ def bag_put(bag):
     if not os.path.exists(tiddlers_dir):
         os.mkdir(tiddlers_dir)
 
-    _write_security_policy(bag, bag_path)
+    _write_security_policy(bag.policy, bag_path)
 
 def bag_get(bag):
-    pass
+    bag_path = _bag_path(bag.name)
+    tiddlers_dir = _tiddlers_dir(bag.name)
+
+    tiddlers = os.listdir(tiddlers_dir)
+    for tiddler in tiddlers:
+        bag.add_tiddler(Tiddler(title=tiddler))
+
+    bag.policy = _read_security_policy(bag_path)
+
+    return bag
 
 def _bag_path(bag_name):
     return os.path.join(store_root, 'bags', bag_name)
@@ -60,11 +70,18 @@ def _bag_path(bag_name):
 def _tiddlers_dir(bag_name):
     return os.path.join(_bag_path(bag_name), 'tiddlers')
 
-def _write_security_policy(bag, bag_path):
+def _write_security_policy(policy, bag_path):
     security_filename = os.path.join(bag_path, 'security_policy')
     security_file = file(security_filename, 'w')
-    security_file.write(bag.policy)
+    security_file.write(policy)
     security_file.close()
+
+def _read_security_policy(bag_path):
+    security_filename = os.path.join(bag_path, 'security_policy')
+    security_file = file(security_filename, 'r')
+    policy = security_file.read()
+    security_file.close()
+    return policy
 
 def tiddler_put(tiddler):
     """
