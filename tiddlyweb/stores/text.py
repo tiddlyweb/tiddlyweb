@@ -10,6 +10,7 @@ import os
 
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
+from tiddlyweb.store import NoBagError
 
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)
@@ -25,7 +26,6 @@ def recipe_put(recipe):
 def recipe_get(recipe):
     recipe_path = _recipe_path(recipe)
 
-    print recipe_path
     recipe_file = file(recipe_path, 'r')
 
     serializer = Serializer(recipe, 'text')
@@ -94,6 +94,9 @@ def tiddler_put(tiddler):
     bag_name = tiddler.bag
 
     store_dir = _tiddlers_dir(bag_name)
+
+    if not os.path.exists(store_dir):
+        raise NoBagError, "%s does not exist" % store_dir
 
     tiddler_filename = os.path.join(store_dir, tiddler.title)
     tiddler_file = file(tiddler_filename, 'w')

@@ -8,7 +8,7 @@ import os
 import sys
 sys.path.append('.')
 
-from fixtures import tiddlers, bagone, textstore, reset_textstore
+from fixtures import tiddlers, bagone, reset_textstore
 from tiddlyweb.store import Store
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler

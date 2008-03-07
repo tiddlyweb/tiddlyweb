@@ -58,9 +58,11 @@ def test_determine_bag_simple():
     Given a tiddler, work out which bag in the recipe it should
     drop into. Usually this won't be used: the client will use
     the default bag.
+
+    This means, which bag does the filter match for.
     """
     bag = recipe.determine_bag(tiddlers[0])
-    assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
+    assert bag.name == bagthree.name, 'bag name should be bagthree, is %s' % bag.name
 
 def test_determine_bag_filtered():
     """

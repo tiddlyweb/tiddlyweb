@@ -72,6 +72,9 @@ class Recipe(list):
         for bag, filter_string in reversed(self):
             if type(bag) == str:
                 bag = Bag(name=bag)
+            # add our tiddler to the bag to see if it survives
+            # the filter
+            bag.add_tiddler(tiddler)
             for candidate_tiddler in filter.filter_bag(bag, filter_string):
                 if tiddler.title == candidate_tiddler.title:
                     return bag

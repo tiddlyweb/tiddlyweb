@@ -13,6 +13,9 @@ function_map = {
         Bag: ['bag_put', 'bag_get']
         }
 
+class NoBagError(Exception):
+    pass
+
 class Store():
 
     def __init__(self, format):

@@ -1,0 +1,126 @@
+"""
+Flow through the entire process we might have.
+
+* someone sends in a tiddler to be saved in a
+  bag, thinking the bag exists
+  * the bag is not there, throw something
+* create a bag and store it
+* store that tiddler
+* get it back
+* diddle it
+* store it again, different bag
+
+* someone has a tiddler, but doesn't
+  know where it goes
+  * find the proper bag via recipe
+* save to the bag
+* retrieve it again
+"""
+
+import os
+import sys
+sys.path.append('.')
+
+from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.bag import Bag
+from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.recipe import Recipe
+
+from fixtures import reset_textstore, recipe_list
+
+import py.test
+
+def setup_module(module):
+    reset_textstore()
+    module.store = Store('text')
+
+def test_no_bag_for_tiddler():
+    tiddler = Tiddler(title='testnobag')
+    tiddler.content = 'no bag here'
+    tiddler.bag = 'no bag of this name'
+
+    py.test.raises(NoBagError, "store.put(tiddler)")
+
+def test_put_and_get_tiddler():
+    tiddler = Tiddler(title='testbag')
+    tiddler.content = 'bag1 here'
+    bag = Bag(name = 'bag1')
+    tiddler.bag = 'bag1'
+
+    store.put(bag)
+    store.put(tiddler)
+
+    new_tiddler = Tiddler(title='testbag')
+    new_tiddler.bag = 'bag1'
+    new_tiddler = store.get(new_tiddler)
+
+    assert new_tiddler.content == 'bag1 here\n'
+
+def test_get_diddle_put_tiddler():
+    new_tiddler = Tiddler(title='testbag')
+    new_tiddler.bag = 'bag1'
+    new_tiddler = store.get(new_tiddler)
+
+    new_tiddler.bag = 'bag2'
+    new_tiddler.content = 'bag2 here'
+
+    py.test.raises(NoBagError, "store.put(new_tiddler)")
+
+    bag = Bag('bag2')
+    store.put(bag)
+
+    store.put(new_tiddler)
+
+    assert os.path.exists('store/bags/bag2/tiddlers/testbag')
+    assert os.path.exists('store/bags/bag1/tiddlers/testbag')
+
+def test_tiddler_unique_by_bags():
+    tiddler_one = Tiddler('testbag')
+    tiddler_one.bag = 'bag1'
+    tiddler_two = Tiddler('testbag')
+    tiddler_two.bag = 'bag2'
+
+    assert tiddler_one.content == tiddler_two.content == None, \
+            'empty tiddlers have equally empty content'
+
+    store.get(tiddler_one)
+    store.get(tiddler_two)
+
+    assert tiddler_one.content != tiddler_two.content, \
+            'empty tiddlers have different content'
+
+def test_put_recipe():
+    recipe = Recipe('cookies')
+    recipe.set_recipe(recipe_list)
+
+    store.put(recipe)
+
+    assert os.path.exists('store/recipes/cookies')
+
+def test_where_this_tiddler():
+    """
+    recipe bag determination presumes there is a tiddler of the same name
+    already in the bag. Is this right or not? Seems like maybe we want to 
+    put the bag in the collection if it matches the filter stream.
+    """
+    tiddler_lonely = Tiddler('TiddlerOne')
+    tiddler_lonely.content = 'tiddlerincookiesyay'
+
+    recipe = Recipe('cookies')
+    store.get(recipe)
+
+    print "recipe: %s" % recipe
+    bag = recipe.determine_bag(tiddler_lonely)
+    print "bag: %s" % bag
+
+    assert bag.name == 'bagone'
+
+    tiddler_lonely.bag = bag.name
+    try:
+        store.put(tiddler_lonely)
+    except NoBagError:
+        store.put(bag)
+        store.put(tiddler_lonely)
+
+    assert os.path.exists('store/bags/bagone/tiddlers/TiddlerOne')
+
