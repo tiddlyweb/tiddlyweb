@@ -22,12 +22,14 @@ class Tiddler(object):
             modified=datetime.utcnow(),
             created=datetime.utcnow(),
             tags=[],
+            bag=None,
             content=None):
         self.title = title
         self.modifier = modifier
         self.modified = modified
         self.create = created
         self.tags = tags
+        self.bag = bag
         self.content = content
 
     def __repr__(self):

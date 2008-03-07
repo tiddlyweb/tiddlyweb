@@ -28,8 +28,9 @@ def _recipe_path(recipe):
     return os.path.join(store_root, 'recipes', recipe.name)
 
 def bag_put(bag):
-    bag_path = _bag_path(bag)
-    tiddlers_dir = _tiddlers_dir(bag)
+
+    bag_path = _bag_path(bag.name)
+    tiddlers_dir = _tiddlers_dir(bag.name)
 
     if not os.path.exists(bag_path):
         os.mkdir(bag_path)
@@ -42,23 +43,29 @@ def bag_put(bag):
 def bag_get(bag):
     pass
 
-def _bag_path(bag):
-    return os.path.join(store_root, 'bags', bag.name)
+def _bag_path(bag_name):
+    return os.path.join(store_root, 'bags', bag_name)
 
-def _tiddlers_dir(bag):
-    return os.path.join(_bag_path(bag), 'tiddlers')
+def _tiddlers_dir(bag_name):
+    return os.path.join(_bag_path(bag_name), 'tiddlers')
 
 def _write_security_policy(bag, bag_path):
     security_filename = os.path.join(bag_path, 'security_policy')
     security_file = file(security_filename, 'w')
-
     security_file.write(bag.policy)
-
     security_file.close()
 
-def tiddler_put(bag, tiddler):
+def tiddler_put(tiddler):
+    """
+    Write a tiddler into the store. We only write if
+    the bag already exists. Bag creation is a 
+    separate action from writing to a bag.
+    """
 
-    store_dir = _tiddlers_dir(bag)
+    # should be get a Bag or a name here?
+    bag_name = tiddler.bag
+
+    store_dir = _tiddlers_dir(bag_name)
 
     tiddler_filename = os.path.join(store_dir, tiddler.title)
     tiddler_file = file(tiddler_filename, 'w')

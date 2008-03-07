@@ -37,7 +37,8 @@ def test_simple_save():
     """
 
     store = Store('text')
-    store.save(bagone, bagone.list_tiddlers()[0])
+    store.save(bagone)
+    store.save(bagone.list_tiddlers()[0])
 
     assert os.path.exists(expected_stored_filename), \
             'path %s should be created' \
@@ -57,7 +58,8 @@ def test_multiple_save():
 
     reset_textstore()
     store = Store('text')
-    store.save(bagfour, bagfour.list_tiddlers())
+    store.save(bagfour)
+    store.save(bagfour.list_tiddlers())
 
     stored_dir = os.path.join(textstore.bag_store, 'bagfour', 'tiddlers')
     assert len(os.listdir(stored_dir)) == 3, 'there should be 3 files in the tiddlers directory'

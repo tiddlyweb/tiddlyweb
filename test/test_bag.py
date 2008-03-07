@@ -35,6 +35,13 @@ def test_bag_name():
 
     assert bag.name == 'foobag', 'the bag should be named foobag'
 
+def test_bag_adjusts_tiddler():
+    """
+    Confirm adding a tiddler to a bag updates the tiddler object
+    notion of its bag.
+    """
+    assert bag.list_tiddlers()[0].bag == 'foobag', 'first tiddler in bag has bag with name foobag'
+
 def test_bag_list_tiddlers():
     """
     Confirm the bag is able to list its tiddlers.

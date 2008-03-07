@@ -26,7 +26,8 @@ def test_tiddler_full_create():
             title = 'test tiddler',
             modifier = 'test@example.com',
             content = test_tiddler_content,
-            tags = ['foo', 'bar']
+            tags = ['foo', 'bar'],
+            bag = 'bagone'
             )
 
     assert type(tiddler) == Tiddler, \
@@ -41,4 +42,6 @@ def test_tiddler_full_create():
             'tiddler content is correct'
     assert tiddler.tags == ['foo', 'bar'], \
             'tiddler tags are correct'
+    assert tiddler.bag == 'bagone', \
+            'tiddler has a bag of bagone'
 

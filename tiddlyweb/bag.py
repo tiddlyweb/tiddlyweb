@@ -23,7 +23,9 @@ class Bag(dict):
         return dict.__getitem__(self, tiddler.title)
 
     def __setitem__(self, tiddler):
-        dict.__setitem__(self, tiddler.title, copy.deepcopy(tiddler))
+        bags_tiddler = copy.deepcopy(tiddler)
+        bags_tiddler.bag = self.name
+        dict.__setitem__(self, tiddler.title, bags_tiddler)
 
     def __delitem__(self, tiddler):
         dict.__delitem__(self, tiddler.title)

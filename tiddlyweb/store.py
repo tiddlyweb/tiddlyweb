@@ -18,32 +18,36 @@ class Store():
     def __init__(self, format):
         self.format = format
 
-    def save(self, bag_or_recipe, *tiddlers):
+    def save(self, *things):
         """
-        Save a thing. If we have one argument, save a recipe,
-        otherwise, save one more tiddlers into a bag.
+        Save a thing, recipe or one or more tiddlers.
+
+        Should there be handling here for things of
+        wrong type?
         """
-        if bag_or_recipe and tiddlers:
-            return self._save_tiddlers(bag_or_recipe, *tiddlers)
-        if bag_or_recipe:
-            return self._save_recipe(bag_or_recipe)
-        raise TypeError, "save did not recieve good arguments *put more here*"
+        if type(things) == Recipe:
+            return self._save_recipe(things)
+        if type(things) == Bag:
+            return self._save_bag(things)
+        return self._save_tiddlers(*things)
 
     def _save_recipe(self, recipe):
         recipe_put_func, recipe_get_func = self._figure_function(self.format, recipe)
 
         recipe_put_func(recipe)
 
-    def _save_tiddlers(self, bag, *tiddlers):
+    def _save_bag(self, bag):
+        bag_put_func, bag_get_func = self._figure_function(self.format, bag)
+
+        bag_put_func(bag)
+
+    def _save_tiddlers(self, *tiddlers):
         if len(tiddlers) == 1 and type(tiddlers[0]) == list:
             tiddlers = tiddlers[0]
-        bag_put_func, bag_get_func = self._figure_function(self.format, bag)
         tiddler_put_func, tiddler_get_func = self._figure_function(self.format, tiddlers[0])
 
-        # get the bag in place or rewrite it
-        bag_put_func(bag)
         for tiddler in tiddlers:
-            tiddler_put_func(bag, tiddler)
+            tiddler_put_func(tiddler)
 
     def _figure_function(self, format, object):
         module = 'tiddlyweb.stores.%s' % format
