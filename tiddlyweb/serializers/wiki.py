@@ -26,6 +26,9 @@ def recipe_as(recipe, sortkey):
 
     return tiddlystart + lines + splitter + tiddlyfinish
 
+def as_recipe(recipe, input):
+    pass
+
 def _split_empty_html():
 # this could throw, which is just fine, 
 # that's what we want

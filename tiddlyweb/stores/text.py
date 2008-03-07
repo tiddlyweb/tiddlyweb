@@ -22,7 +22,16 @@ def recipe_put(recipe):
     recipe_file.close()
 
 def recipe_get(recipe):
-    pass
+    recipe_path = _recipe_path(recipe)
+
+    print recipe_path
+    recipe_file = file(recipe_path, 'r')
+
+    serializer = Serializer(recipe, 'text')
+
+    recipe_string = recipe_file.read()
+
+    return serializer.from_string(recipe_string)
 
 def _recipe_path(recipe):
     return os.path.join(store_root, 'recipes', recipe.name)

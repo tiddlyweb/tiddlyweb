@@ -48,6 +48,12 @@ recipe_list = [
          [bagthree, '[tag[tagone]] [tag[tagthree]]']
          ]
 
+recipe_list_string = [
+         ['bagone', 'TiddlerOne'],
+         ['bagtwo', 'TiddlerTwo'],
+         ['bagthree', '[tag[tagone]] [tag[tagthree]]']
+         ]
+
 class textstore:
 
     store_dirname = 'store'

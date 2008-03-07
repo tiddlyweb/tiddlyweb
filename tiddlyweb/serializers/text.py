@@ -21,6 +21,20 @@ def recipe_as(recipe, sortkey):
         lines.append(line)
     return "\n".join(lines)
 
+def as_recipe(recipe, input):
+    """
+    Turn a string back into a recipe.
+    """
+    lines = input.split('\n')
+    recipe_lines = []
+    for line in lines:
+        bag, filter = line.split('?')
+        bagname = urllib.unquote(bag.split('/')[2])
+        filter = urllib.unquote(filter)
+        recipe_lines.append([bagname, filter])
+    recipe.set_recipe(recipe_lines)
+    return recipe
+
 def bag_as(bag, sortkey):
     """
     List the tiddlers in a bag as text.
@@ -33,9 +47,15 @@ def bag_as(bag, sortkey):
         lines.append(line)
     return "\n".join(lines)
 
+def as_bag(bag, input):
+    pass
+
 def tiddler_as(tiddler, sortkey):
     return 'title: %s\nmodifier: %s\ntags: %s\n\n%s\n' \
             % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
+
+def as_tiddler(tiddler, input):
+    pass
 
 def tags_as(tags, sortkey):
     tag_string_list = []

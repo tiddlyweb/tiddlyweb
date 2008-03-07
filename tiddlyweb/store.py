@@ -20,16 +20,28 @@ class Store():
 
     def put(self, *things):
         """
-        put a thing, recipe or one or more tiddlers.
+        put a thing, recipe, bag or one or more tiddlers.
 
         Should there be handling here for things of
         wrong type?
+
+        Look at how simple get() is, can we be more like that?
         """
         if type(things) == Recipe:
             return self._put_recipe(things)
         if type(things) == Bag:
             return self._put_bag(things)
         return self._put_tiddlers(*things)
+
+    def get(self, thing):
+        """
+        get a thing, recipe, bag or tiddler
+
+        Should there be handling here for things of
+        wrong type?
+        """
+        put_function , get_func = self._figure_function(self.format, thing)
+        return get_func(thing)
 
     def _put_recipe(self, recipe):
         recipe_put_func, recipe_get_func = self._figure_function(self.format, recipe)
