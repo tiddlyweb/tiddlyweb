@@ -7,6 +7,7 @@ This is initially for the sake of testing the bits.
 from text import tags_as
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
+from tiddlyweb import control
 
 # this should come from config or even
 # from a url
@@ -21,7 +22,7 @@ def recipe_as(recipe, sortkey):
     tiddlystart, tiddlyfinish = _split_empty_html()
 
     lines = ''
-    for tiddler in recipe.get_tiddlers():
+    for tiddler in control.get_tiddlers_from_recipe(recipe):
         lines += tiddler_as(tiddler, sortkey=None)
 
     return tiddlystart + lines + splitter + tiddlyfinish

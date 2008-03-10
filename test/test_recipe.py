@@ -7,6 +7,7 @@ things.
 import sys
 sys.path.append('.')
 from tiddlyweb.recipe import Recipe
+from tiddlyweb import control
 
 from fixtures import tiddlers, bagone, bagtwo, bagthree, bagfour, recipe_list
 
@@ -37,7 +38,7 @@ def test_get_tiddlers():
     Get all the tiddlers produced by this recipe.
     """
 
-    tiddlers = recipe.get_tiddlers()
+    tiddlers = control.get_tiddlers_from_recipe(recipe)
     assert len(tiddlers) == 3, 'tiddler list should be length 3, is %s' % len(tiddlers)
 
 def test_get_tiddlers_limited():
@@ -50,7 +51,7 @@ def test_get_tiddlers_limited():
         [bagone, ''],
         [bagfour, '[tag[tagone]]']
         ])
-    tiddlers = short_recipe.get_tiddlers()
+    tiddlers = control.get_tiddlers_from_recipe(short_recipe)
     assert len(tiddlers) == 2, 'tiddler list should be length 2, is %s' % len(tiddlers)
 
 def test_determine_bag_simple():
