@@ -44,6 +44,7 @@ class Store():
         wrong type?
         """
         put_function , get_func = self._figure_function(self.format, thing)
+        thing.store = self
         return get_func(thing)
 
     def _put_recipe(self, recipe):

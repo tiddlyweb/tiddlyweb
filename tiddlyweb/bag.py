@@ -18,6 +18,9 @@ class Bag(dict):
         dict.__init__(self)
         self.name = name
         self.policy = policy
+        # reference to the store which 'got' us
+        # this is can be used in serialization
+        self.store = None
 
     def __getitem__(self, tiddler):
         return dict.__getitem__(self, tiddler.title)

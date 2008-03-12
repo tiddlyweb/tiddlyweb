@@ -31,6 +31,9 @@ class Tiddler(object):
         self.tags = tags
         self.bag = bag
         self.content = content
+        # reference to the store which 'got' us
+        # this is can be used in serialization
+        self.store = None
 
     def __repr__(self):
         """

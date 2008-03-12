@@ -8,6 +8,7 @@ import sys
 sys.path.append('.')
 
 from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.serializer import Serializer
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
@@ -20,6 +21,9 @@ def setup_module(module):
     module.store = Store('text')
 
 def test_many_bags_and_tiddlers():
+    """
+    Create a bunch of bags and tiddlers.
+    """
 
     for bag_numeral in range(30):
         bag = create_bag(bag_numeral)
@@ -30,6 +34,9 @@ def test_many_bags_and_tiddlers():
     assert len(os.listdir('store/bags/bag0/tiddlers')) == 10, '10 tiddlers created in a bag'
 
 def test_long_recipe():
+    """
+    Store a long recipe.
+    """
 
     recipe = Recipe('long')
 
@@ -46,9 +53,19 @@ def test_long_recipe():
 
     assert os.path.exists('store/recipes/long'), 'long recipe put to disk'
 
-    tiddlers = control.get_tiddlers_from_recipe(recipe, store)
-    for tiddler in tiddlers:
-        print '%s in %s with content %s' % (tiddler.title, tiddler.bag, tiddler.content)
+def test_construct_from_recipe():
+    """
+    Make sure the tiddlywiki that results from
+    a recipe has the right stuff in it.
+    """
+
+    recipe = Recipe('long')
+    store.get(recipe)
+
+    serializer = Serializer(recipe, 'wiki')
+    wiki_text = serializer.to_string()
+
+    assert 'i am tiddler 8' in wiki_text, 'wiki contains tiddler 8'
 
 def create_tiddler(bag, numeral):
     tiddler = Tiddler('tiddler%s' % numeral)

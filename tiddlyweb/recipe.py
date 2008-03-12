@@ -21,6 +21,9 @@ class Recipe(list):
     def __init__(self, name):
         list.__init__(self)
         self.name = name
+        # reference to the store which 'got' us
+        # this is can be used in serialization
+        self.store = None
 
     def set_recipe(self, recipe_list):
         """

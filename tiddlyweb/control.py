@@ -8,7 +8,7 @@ from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 
 
-def get_tiddlers_from_recipe(recipe, store=None):
+def get_tiddlers_from_recipe(recipe):
     """
     Return the list of tiddlers that result
     from processing the recipe.
@@ -17,6 +17,7 @@ def get_tiddlers_from_recipe(recipe, store=None):
     tiddlers later in the recipe taking precedence
     over those earlier in the recipe.
     """
+    store = recipe.store
     uniquifier = {}
     for bag, filter_string in recipe:
         if type(bag) == str:
