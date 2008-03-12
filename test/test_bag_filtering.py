@@ -1,6 +1,7 @@
 import sys
 sys.path.append('.')
 from tiddlyweb import filter
+from tiddlyweb import control
 
 from fixtures import tiddlers, bagfour
 
@@ -9,7 +10,7 @@ def test_filter_bag_by_filter():
     Confirm a bag will properly filter.
     """
 
-    filtered_tiddlers = filter.filter_bag(bagfour, filter.by_title, 'TiddlerOne')
+    filtered_tiddlers = control.filter_tiddlers_from_bag(bagfour, filter.by_title, 'TiddlerOne')
 
     assert len(filtered_tiddlers) == 1, \
             'filtering by title should result in one tiddler, got %s tiddlers' \
@@ -23,13 +24,13 @@ def test_filter_bag_by_filter_string():
     Confirm a bag will properly filter by string.
     """
 
-    filtered_tiddlers = filter.filter_bag(bagfour, '[tag[tagone]]')
+    filtered_tiddlers = control.filter_tiddlers_from_bag(bagfour, '[tag[tagone]]')
 
     assert len(filtered_tiddlers) == 2, \
             'filtering by title should result in one tiddler, got %s tiddlers' \
             % len(filtered_tiddlers)
 
-    filtered_tiddlers = filter.filter_bag(bagfour, '[tag[tagone]] TiddlerTwo')
+    filtered_tiddlers = control.filter_tiddlers_from_bag(bagfour, '[tag[tagone]] TiddlerTwo')
 
     assert len(filtered_tiddlers) == 3, \
             'filtering by title should result in one tiddler, got %s tiddlers' \

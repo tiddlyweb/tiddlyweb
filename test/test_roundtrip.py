@@ -25,6 +25,7 @@ from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
+from tiddlyweb import control
 
 from fixtures import reset_textstore, recipe_list
 
@@ -109,9 +110,7 @@ def test_where_this_tiddler():
     recipe = Recipe('cookies')
     store.get(recipe)
 
-    print "recipe: %s" % recipe
-    bag = recipe.determine_bag(tiddler_lonely)
-    print "bag: %s" % bag
+    bag = control.determine_bag_for_tiddler(recipe, tiddler_lonely)
 
     assert bag.name == 'bagone'
 

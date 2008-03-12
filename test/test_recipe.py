@@ -62,7 +62,7 @@ def test_determine_bag_simple():
 
     This means, which bag does the filter match for.
     """
-    bag = recipe.determine_bag(tiddlers[0])
+    bag = control.determine_bag_for_tiddler(recipe, tiddlers[0])
     assert bag.name == bagthree.name, 'bag name should be bagthree, is %s' % bag.name
 
 def test_determine_bag_filtered():
@@ -74,12 +74,12 @@ def test_determine_bag_filtered():
         [bagone, ''],
         [bagfour, '[tag[tagone]]']
         ])
-    bag = short_recipe.determine_bag(tiddlers[0])
+    bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
 
     short_recipe.set_recipe([
         [bagone, ''],
         [bagfour, '[tag[tagthree]]']
         ])
-    bag = short_recipe.determine_bag(tiddlers[0])
+    bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name

@@ -13,6 +13,7 @@ from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb import control
+from tiddlyweb import filter
 
 from fixtures import reset_textstore
 
@@ -66,6 +67,31 @@ def test_construct_from_recipe():
     wiki_text = serializer.to_string()
 
     assert 'i am tiddler 8' in wiki_text, 'wiki contains tiddler 8'
+
+def test_get_tiddlers_from_bag():
+    """
+    Make sure a bag comes to life as expected.
+    """
+    bag = Bag('bag0')
+    store.get(bag)
+
+    tiddlers = control.get_tiddlers_from_bag(bag)
+
+    assert len(tiddlers) ==  10, 'there are 10 tiddlers in bag0'
+    content = ''
+    for tiddler in tiddlers:
+        content += tiddler.content
+    assert 'i am tiddler 4' in content, 'we got some of the right content'
+
+def test_filter_tiddlers_from_bag():
+    """
+    Make sure a bag comes to life and filters as expect.
+    """
+    bag = Bag('bag0')
+    store.get(bag)
+
+    tiddlers = control.filter_tiddlers_from_bag(bag, '[tag[tagfour]]')
+    assert len(tiddlers) == 3, 'there are 3 tiddlers when filters on tagfour'
 
 def create_tiddler(bag, numeral):
     tiddler = Tiddler('tiddler%s' % numeral)
