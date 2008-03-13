@@ -10,7 +10,7 @@ import os
 
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError
+from tiddlyweb.store import NoBagError, NoRecipeError
 
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)
@@ -26,13 +26,13 @@ def recipe_put(recipe):
 def recipe_get(recipe):
     recipe_path = _recipe_path(recipe)
 
-    recipe_file = file(recipe_path, 'r')
-
-    serializer = Serializer(recipe, 'text')
-
-    recipe_string = recipe_file.read()
-
-    recipe_file.close()
+    try:
+        recipe_file = file(recipe_path, 'r')
+        serializer = Serializer(recipe, 'text')
+        recipe_string = recipe_file.read()
+        recipe_file.close()
+    except IOError, e:
+        raise NoRecipeError, 'unable to get recipe %s: %s' % (recipe.name, e)
 
     return serializer.from_string(recipe_string)
 

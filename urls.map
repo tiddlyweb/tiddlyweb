@@ -1,0 +1,31 @@
+# URL map for tiddlyweb, to be loaded by Selector
+# everything after the : is a wsgi_app callable
+# functions in this case
+
+# list of recipes
+#/recipes[/]
+#    GET tiddlyweb.web.recipe:list
+
+# the recipe in various forms
+/recipes/{recipe_name:segment}[/]
+    GET tiddlyweb.web.recipe:get
+
+# the tiddlers produced by this recipe
+/recipes/{recipe_name:segment}/tiddlers
+    GET tiddlyweb.web.recipe:get_tiddlers
+
+# list of bags
+#/bags[/]
+#    GET tiddlyweb.web.bag:list
+
+# bag in various forms (rare)
+#/bags/{bag_name:segment}[/]
+
+# tiddlers in a bag
+/bags/{bag_name:segment}/tiddlers[/]
+    GET tiddlyweb.web.bag:get_tiddlers
+
+# a tiddler
+/bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}[/]
+    GET tiddlyweb.web.tiddler:get
+
