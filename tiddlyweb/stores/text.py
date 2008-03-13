@@ -10,7 +10,7 @@ import os
 
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError, NoRecipeError
+from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError
 
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)
@@ -110,20 +110,19 @@ def tiddler_put(tiddler):
 def tiddler_get(tiddler):
     """
     Get a tiddler as string from a bag and deserialize it into 
-    text.
+    object.
     """
 
     bag_name = tiddler.bag
 
     store_dir = _tiddlers_dir(bag_name)
 
-    tiddler_filename = os.path.join(store_dir, tiddler.title)
-    tiddler_file = file(tiddler_filename, 'r')
-
-    serializer = Serializer(tiddler, 'text')
-
-    tiddler_string = tiddler_file.read()
-
-    tiddler_file.close()
-
-    return serializer.from_string(tiddler_string)
+    try:
+        tiddler_filename = os.path.join(store_dir, tiddler.title)
+        tiddler_file = file(tiddler_filename, 'r')
+        serializer = Serializer(tiddler, 'text')
+        tiddler_string = tiddler_file.read()
+        tiddler_file.close()
+        return serializer.from_string(tiddler_string)
+    except IOError, e:
+        raise NoTiddlerError, 'no tiddler for %s: %s' % (tiddler.title, e)
