@@ -1,5 +1,5 @@
 """
-Test that GETting a recipe in wiki form, gets a tiddlywiki.
+Test that GETting a bag can list the tiddlers.
 """
 
 import sys
