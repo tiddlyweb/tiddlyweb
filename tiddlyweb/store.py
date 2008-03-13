@@ -19,7 +19,6 @@ class NoBagError(Exception):
 class NoRecipeError(Exception):
     pass
 
-
 class Store():
 
     def __init__(self, format):
