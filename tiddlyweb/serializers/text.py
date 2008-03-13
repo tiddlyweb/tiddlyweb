@@ -26,7 +26,7 @@ def as_recipe(recipe, input):
     """
     Turn a string back into a recipe.
     """
-    lines = input.split('\n')
+    lines = input.rstrip().split('\n')
     recipe_lines = []
     for line in lines:
         if '?' in line:
