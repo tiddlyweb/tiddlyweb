@@ -8,9 +8,16 @@ store_root = 'store'
 
 import os
 
+from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError
+
+def list_recipes():
+    path = os.path.join(store_root, 'recipes')
+    recipes = os.listdir(path)
+
+    return [Recipe(recipe) for recipe in recipes]
 
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)

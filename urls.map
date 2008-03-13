@@ -3,8 +3,8 @@
 # functions in this case
 
 # list of recipes
-#/recipes[/]
-#    GET tiddlyweb.web.recipe:list
+/recipes[/]
+    GET tiddlyweb.web.recipe:list
 
 # the recipe in various forms
 /recipes/{recipe_name:segment}[/]

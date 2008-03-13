@@ -81,3 +81,10 @@ class Store():
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
 
+    def list_recipes(self):
+        module = 'tiddlyweb.stores.%s' % self.format
+        imported_module = __import__(module, fromlist=[self.format])
+        list_func = getattr(imported_module, 'list_recipes')
+
+        return list_func()
+

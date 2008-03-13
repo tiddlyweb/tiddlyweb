@@ -4,6 +4,18 @@ from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 
+def list(environ, start_response):
+
+    store = Store('text')
+
+    recipes = store.list_recipes()
+
+    start_response("200 OK",
+            [('Content-Type', 'text/plain')])
+
+    return [ '%s\n' % recipe.name for recipe in recipes]
+
+
 # put content negotiation/serializer in the environ via wrapper app
 # put store in the environ via wrapper app
 # consider decorating or wrapping with a thing that does exception handling
