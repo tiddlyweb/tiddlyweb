@@ -8,6 +8,7 @@ store_root = 'store'
 
 import os
 
+from tiddlyweb.bag import Bag
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
@@ -18,6 +19,12 @@ def list_recipes():
     recipes = os.listdir(path)
 
     return [Recipe(recipe) for recipe in recipes]
+
+def list_bags():
+    path = os.path.join(store_root, 'bags')
+    bags = os.listdir(path)
+
+    return [Bag(bag) for bag in bags]
 
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)

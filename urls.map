@@ -15,8 +15,8 @@
     GET tiddlyweb.web.recipe:get_tiddlers
 
 # list of bags
-#/bags[/]
-#    GET tiddlyweb.web.bag:list
+/bags[/]
+    GET tiddlyweb.web.bag:list
 
 # bag in various forms (rare)
 #/bags/{bag_name:segment}[/]

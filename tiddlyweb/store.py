@@ -88,3 +88,13 @@ class Store():
 
         return list_func()
 
+    def list_bags(self):
+        """
+        Dupe with the above, please FIXME.
+        """
+        module = 'tiddlyweb.stores.%s' % self.format
+        imported_module = __import__(module, fromlist=[self.format])
+        list_func = getattr(imported_module, 'list_bags')
+
+        return list_func()
+

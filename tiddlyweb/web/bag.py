@@ -7,6 +7,15 @@ from tiddlyweb import control
 
 # XXX the store should be in the environ!
 
+def list(environ, start_response):
+    store = Store('text')
+    bags = store.list_bags()
+
+    start_response("200 OK",
+            [('Content-Type', 'text/plain')])
+
+    return [ '%s\n' % bag.name for bag in bags]
+
 def get_tiddlers(environ, start_response):
     filter_string = urllib.unquote(environ['QUERY_STRING'])
 
