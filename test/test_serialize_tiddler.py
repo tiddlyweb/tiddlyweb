@@ -13,8 +13,7 @@ sys.path.append('.')
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
-expected_string = """title: test tiddler
-modifier: test@example.com
+expected_string = """modifier: test@example.com
 tags: [[foo bar]] foobar
 
 Hello, I'm the content.

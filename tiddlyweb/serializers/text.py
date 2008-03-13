@@ -56,8 +56,8 @@ def as_bag(bag, input):
     pass
 
 def tiddler_as(tiddler, sortkey):
-    return 'title: %s\nmodifier: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
+    return 'modifier: %s\ntags: %s\n\n%s\n' \
+            % (tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
 
 def as_tiddler(tiddler, input):
     header, content = input.split('\n\n')
