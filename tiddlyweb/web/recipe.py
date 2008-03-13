@@ -20,7 +20,9 @@ def get(environ, start_response):
         return [output]
 
     serializer = Serializer(recipe, 'wiki')
-    start_response("200 OK", [('Content-Type', 'text/html')])
+    start_response("200 OK",
+            [('Content-Type', 'text/html'),
+             ('Set-Cookie', 'chkHttpReadOnly=false')])
     return [serializer.to_string()]
 
 def get_tiddlers(environs, start_repsonse):
