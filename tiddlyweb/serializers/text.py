@@ -29,7 +29,11 @@ def as_recipe(recipe, input):
     lines = input.split('\n')
     recipe_lines = []
     for line in lines:
-        bag, filter = line.split('?')
+        if '?' in line:
+            bag, filter = line.split('?')
+        else:
+            bag = line
+            filter = ''
         bagname = urllib.unquote(bag.split('/')[2])
         filter = urllib.unquote(filter)
         recipe_lines.append([bagname, filter])

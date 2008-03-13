@@ -36,3 +36,17 @@ def test_generated_wiki():
     assert string.startswith('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'), 'looks like we got an empty.html doc'
     assert 'c tiddler one' in string
     assert '<div title="TiddlerOne" modifier="AuthorOne"' in string
+
+def test_simple_recipe():
+    recipe = Recipe('other')
+    recipe.set_recipe([['bagbuzz', '']])
+    serializer = Serializer(recipe, 'text')
+    string = serializer.to_string()
+
+    new_recipe = Recipe('other')
+    serializer = Serializer(new_recipe, 'text')
+    serializer.from_string(string)
+
+    print serializer
+
+
