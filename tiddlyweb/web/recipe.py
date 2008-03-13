@@ -5,9 +5,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 
 def list(environ, start_response):
-
     store = Store('text')
-
     recipes = store.list_recipes()
 
     start_response("200 OK",
