@@ -13,6 +13,8 @@ class Tiddler(object):
     created: the time it was created
     tags: the list of tags this tiddler has.
 
+    XXX content is not content is text in the tiddlywiki, fix that.
+
     XXX: therefore the model below is wrong and needs a tuneup
     """
 
