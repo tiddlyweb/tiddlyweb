@@ -19,7 +19,7 @@ def get_tiddlers(environ, start_response):
         store.get(bag)
     except NoBagError, e:
         start_response("404 Not Found", [('Content-Type', 'text/plain')])
-        output = '%s not found' % recipe.name
+        output = '%s not found' % bag.name
         return [output]
 
     start_response("200 OK",
