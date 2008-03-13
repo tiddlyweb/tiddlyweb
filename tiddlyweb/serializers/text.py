@@ -5,6 +5,8 @@ Text based serializers.
 import re
 import urllib
 
+from tiddlyweb.serializer import TiddlerFormatError
+
 def recipe_as(recipe, sortkey):
     """
     Never sort a recipe, so ignore sortkey, but
@@ -60,12 +62,15 @@ def tiddler_as(tiddler, sortkey):
             % (tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
 
 def as_tiddler(tiddler, input):
-    header, content = input.split('\n\n')
-    tiddler.content = content
-    headers = header.split('\n')
+    try:
+        header, content = input.split('\n\n', 1)
+        tiddler.content = content
+        headers = header.split('\n')
 
-    for field, value in [x.split(': ') for x in headers]:
-        setattr(tiddler, field, value)
+        for field, value in [x.split(': ') for x in headers]:
+            setattr(tiddler, field, value)
+    except ValueError, e:
+        raise TiddlerFormatError, 'malformed tiddler string: %s' % e
 
     tag_string = tiddler.tags
     tiddler.tags = as_tags(tag_string)

@@ -7,6 +7,9 @@ from recipe import Recipe
 from tiddler import Tiddler
 from bag import Bag
 
+class TiddlerFormatError(Exception):
+    pass
+
 function_map = {
         Recipe: ['recipe_as', 'as_recipe', None],
         Tiddler: ['tiddler_as', 'as_tiddler', lambda x: x.strip('[]')],

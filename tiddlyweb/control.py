@@ -11,6 +11,7 @@ like.
 
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter as fl
+from tiddlyweb.serializer import TiddlerFormatError
 
 
 def get_tiddlers_from_recipe(recipe):
@@ -67,7 +68,11 @@ def get_tiddlers_from_bag(bag):
     tiddlers = bag.list_tiddlers()
     if bag.store:
         for tiddler in tiddlers:
-            bag.store.get(tiddler)
+            try:
+                bag.store.get(tiddler)
+            except TiddlerFormatError:
+                # XXX do more here
+                pass
 
     return tiddlers
 
