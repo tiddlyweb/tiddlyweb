@@ -47,3 +47,11 @@ def test_get_missing_recipe():
             method='GET')
 
     assert response['status'] == '404', 'response status should be 404'
+
+def test_get_recipe_tiddler_list():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert len(content.rstrip().split('\n')) == 5, 'len tiddlers should be 5 is %s' % len(content.split('\n'))
