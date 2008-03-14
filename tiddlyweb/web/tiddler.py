@@ -9,7 +9,7 @@ def get(environ, start_response):
     tiddler = Tiddler(tiddler_name)
     tiddler.bag = bag_name
 
-    store = Store('text')
+    store = environ['tiddlyweb.store']
     serializer = Serializer(tiddler, 'text')
 
     try:

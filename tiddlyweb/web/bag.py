@@ -8,7 +8,7 @@ from tiddlyweb import control
 # XXX the store should be in the environ!
 
 def list(environ, start_response):
-    store = Store('text')
+    store = environ['tiddlyweb.store']
     bags = store.list_bags()
 
     start_response("200 OK",
@@ -22,7 +22,7 @@ def get_tiddlers(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag = Bag(bag_name)
 
-    store = Store('text')
+    store = environ['tiddlyweb.store']
 
     try:
         store.get(bag)

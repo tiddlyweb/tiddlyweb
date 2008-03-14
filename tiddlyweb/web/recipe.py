@@ -10,14 +10,13 @@ serializers = {
         }
 
 def list(environ, start_response):
-    store = Store('text')
+    store = environ['tiddlyweb.store']
     recipes = store.list_recipes()
 
     start_response("200 OK",
             [('Content-Type', 'text/plain')])
 
     return [ '%s\n' % recipe.name for recipe in recipes]
-
 
 # put content negotiation/serializer in the environ via wrapper app
 # put store in the environ via wrapper app
@@ -31,7 +30,7 @@ def get(environ, start_response):
 
     recipe = Recipe(recipe_name)
 
-    store = Store('text')
+    store = environ['tiddlyweb.store']
 
     try:
         store.get(recipe)
@@ -66,7 +65,7 @@ def get_tiddlers(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     recipe = Recipe(recipe_name)
 
-    store = Store('text')
+    store = environ['tiddlyweb.store']
 
     try:
         store.get(recipe)
