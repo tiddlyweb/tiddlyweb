@@ -26,7 +26,6 @@ def get(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     accept = environ.get('tiddlyweb.accept')
     extension = environ.get('tiddlyweb.extension')
-    print 'a: %s, e: %s' % (accept, extension)
     if extension:
         recipe_name = recipe_name[0 : recipe_name.rfind('.' + extension)]
 
