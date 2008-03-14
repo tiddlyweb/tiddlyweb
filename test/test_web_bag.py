@@ -18,7 +18,7 @@ def setup_module(module):
     # we have to have a function that returns the callable,
     # Selector just _is_ the callable
     def app_fn():
-        return serve.load_app('urls.map')
+        return serve.default_app('urls.map')
     #wsgi_intercept.debuglevel = 1
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
@@ -26,12 +26,33 @@ def setup_module(module):
     module.store = Store('text')
     muchdata(module.store)
 
-def test_get_bag_tiddler_list():
+def test_get_bag_tiddler_list_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
+    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
+
+def test_get_bag_tiddler_list_text():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt',
+            method='GET')
+
+    print content
+    assert response['status'] == '200', 'response status should be 200'
+    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
+
+def test_get_bag_tiddler_list_html():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.html',
+            method='GET')
+
+    print content
+    assert response['status'] == '200', 'response status should be 200'
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_filtered():
