@@ -4,6 +4,11 @@ from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 
+serializers = {
+        'text/x-tiddlywiki': ['wiki', 'text/html'],
+        'text/plain': ['text', 'text/plain'],
+        }
+
 def list(environ, start_response):
     store = Store('text')
     recipes = store.list_recipes()
@@ -19,6 +24,12 @@ def list(environ, start_response):
 # consider decorating or wrapping with a thing that does exception handling
 def get(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    accept = environ.get('tiddlyweb.accept')
+    extension = environ.get('tiddlyweb.extension')
+    print 'a: %s, e: %s' % (accept, extension)
+    if extension:
+        recipe_name = recipe_name[0 : recipe_name.rfind('.' + extension)]
+
     recipe = Recipe(recipe_name)
 
     store = Store('text')
@@ -30,11 +41,22 @@ def get(environ, start_response):
         output = '%s not found' % recipe.name
         return [output]
 
-    serializer = Serializer(recipe, 'wiki')
+    try:
+        serialization, mime_type = _recipe_serializer(accept)
+        serializer = Serializer(recipe, serialization)
+    except KeyError:
+        start_response("415 Unsupported", [('Content-Type', 'text/plain')])
+        output = '%s type unsupported' % accept
+        return [output]
+
+    # setting the cookie for text/plain is harmless
     start_response("200 OK",
-            [('Content-Type', 'text/html'),
+            [('Content-Type', mime_type),
              ('Set-Cookie', 'chkHttpReadOnly=false')])
     return [serializer.to_string()]
+
+def _recipe_serializer(accept):
+    return serializers[accept]
 
 def get_tiddlers(environ, start_response):
     """

@@ -13,13 +13,14 @@ import httplib2
 from fixtures import muchdata
 
 from tiddlyweb.store import Store
+from tiddlyweb.web import negotiate
 
 def setup_module(module):
     from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
     # Selector just _is_ the callable
     def app_fn():
-        return serve.load_app('urls.map')
+        return serve.load_app('urls.map', [negotiate.type])
     #wsgi_intercept.debuglevel = 1
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
@@ -27,16 +28,27 @@ def setup_module(module):
     module.store = Store('text')
     muchdata(module.store)
 
-def test_get_recipe():
+def test_get_recipe_wiki():
     """
     Return a wiki for a recipe we can access.
     """
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long',
+    response, content = http.request('http://our_test_domain:8001/recipes/long.wiki',
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
     assert 'i am tiddler 8' in content, 'wiki contains tiddler 8'
+
+def test_get_recipe_txt():
+    """
+    Return a wiki for a recipe we can access.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert '/bags/bag8?tiddler8' in content, 'recipe contains tiddler 8 from bag 8'
 
 def test_get_missing_recipe():
     """

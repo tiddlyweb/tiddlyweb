@@ -20,7 +20,8 @@ def type(environ, start_response):
     if path_info:
         extension = path_info.rsplit('.', 1)
         if len(extension) == 2:
-            our_type = _calculate_type_from_extension(extension[-1])
+            our_type, ext = _calculate_type_from_extension(extension[-1])
+            environ['tiddlyweb.extension'] = ext
     elif accept_header:
         our_type = _parse_accept_header(accept_header)
 
@@ -28,9 +29,9 @@ def type(environ, start_response):
 
 def _calculate_type_from_extension(extension):
     try:
-        return extension_types[extension]
+        return extension_types[extension], extension
     except KeyError:
-        return extension_types['default']
+        return extension_types['default'], None
 
 def _parse_accept_header(header):
 # copied from REST::Application
