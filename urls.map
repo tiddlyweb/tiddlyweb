@@ -3,7 +3,7 @@
 # functions in this case
 
 # list of recipes
-/recipes[/]
+/recipes[.{format}][/]
     GET tiddlyweb.web.recipe:list
 
 # the recipe in various forms
@@ -11,7 +11,7 @@
     GET tiddlyweb.web.recipe:get
 
 # the tiddlers produced by this recipe
-/recipes/{recipe_name:segment}/tiddlers
+/recipes/{recipe_name:segment}/tiddlers[.{format}][/]
     GET tiddlyweb.web.recipe:get_tiddlers
 
 # list of bags
@@ -22,7 +22,7 @@
 #/bags/{bag_name:segment}[/]
 
 # tiddlers in a bag
-/bags/{bag_name:segment}/tiddlers[/]
+/bags/{bag_name:segment}/tiddlers[.{format}][/]
     GET tiddlyweb.web.bag:get_tiddlers
 
 # a tiddler
