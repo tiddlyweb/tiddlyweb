@@ -22,10 +22,15 @@ def type(environ, start_response):
         if len(extension) == 2:
             our_type, ext = _calculate_type_from_extension(extension[-1])
             environ['tiddlyweb.extension'] = ext
-    elif accept_header:
+            environ['tiddlyweb.accept'] = our_type
+            return
+
+    if accept_header:
         our_type = _parse_accept_header(accept_header)
 
     environ['tiddlyweb.accept'] = our_type
+
+    return 
 
 def _calculate_type_from_extension(extension):
     try:

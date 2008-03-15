@@ -3,9 +3,15 @@ import urllib
 
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store
+from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 
 # XXX the store should be in the environ!
+
+serializers = {
+        'text/html': ['html', 'text/html'],
+        'text/plain': ['text', 'text/plain'],
+        }
 
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
@@ -22,6 +28,7 @@ def get_tiddlers(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag = Bag(bag_name)
 
+    accept = environ.get('tiddlyweb.accept')
     store = environ['tiddlyweb.store']
 
     try:
@@ -31,7 +38,18 @@ def get_tiddlers(environ, start_response):
         output = '%s not found' % bag.name
         return [output]
 
-    start_response("200 OK",
-            [('Content-Type', 'text/plain')])
+    tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
+    tmp_bag = Bag('tmp_bag')
+    for tiddler in tiddlers:
+        tmp_bag.add_tiddler(tiddler)
 
-    return [ '%s\n' % tiddler.title for tiddler in control.filter_tiddlers_from_bag(bag, filter_string)]
+    try:
+        serialization, mime_type = serializers[accept]
+        serializer = Serializer(tmp_bag, serialization)
+    except KeyError:
+        start_response("415 Unsupported", [('Content-Type', 'text/plain')])
+        output = '%s type unsupported' % accept
+        return [output]
+
+    start_response("200 OK", [('Content-Type', mime_type)])
+    return [serializer.to_string()]

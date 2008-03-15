@@ -74,4 +74,3 @@ def test_get_recipes():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
-    print content

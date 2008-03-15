@@ -17,6 +17,12 @@ expected_sort_string = """tiddlers/TiddlerThree
 tiddlers/TiddlerTwo
 tiddlers/TiddlerOne"""
 
+expected_html_string = """<ul>
+<li><a href="tiddlers/TiddlerThree">TiddlerThree</a></li>
+<li><a href="tiddlers/TiddlerTwo">TiddlerTwo</a></li>
+<li><a href="tiddlers/TiddlerOne">TiddlerOne</a></li>
+</ul>"""
+
 def setup_module(module):
     pass
 
@@ -44,3 +50,13 @@ def test_serialized_sort():
     assert '%s' % serializer == expected_sort_string, \
             'serializer goes to string as expected_sort_string'
 
+def test_generated_html():
+    serializer = Serializer(bagfour, 'html', sortkey=lambda x: x.content)
+    string = serializer.to_string()
+
+    assert string == expected_html_string, \
+            'serialized bag looks like we expect. should be %s, got %s' \
+            % (expected_html_string, string)
+
+    assert '%s' % serializer == expected_html_string, \
+            'serializer goes to string as expected_string'
