@@ -1,17 +1,15 @@
 
 import os
 import selector
-from tiddlyweb.web import negotiate
+from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
 
 def load_app(map, wrappers=[]):
     app = selector.Selector(mapfile=map)
     if wrappers:
-        def new_func(environ, start_response):
-            for wrapper in wrappers:
-                wrapper(environ, start_response)
-            return app(environ, start_response)
-        return new_func
+        for wrapper in wrappers:
+            app = wrapper(app)
     return app
 
 def start_simple(filename, port):
@@ -23,15 +21,16 @@ def start_simple(filename, port):
     httpd.serve_forever()
 
 def default_app(filename):
-    return load_app(filename, [negotiate.type, store])
+    return load_app(filename, [StoreSet, Negotiate, HTTPExceptor])
+    #return load_app(filename, [StoreSet, Negotiate])
 
-def store(environ, start_response):
-    """
-    Stick a refernce to the canonical store
-    in the environment. This allows us to
-    maintain some config right here. Later
-    this will be -actual- config.
-    """
-    db = Store('text')
-    environ['tiddlyweb.store'] = db
+class StoreSet(object):
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        db = Store('text')
+        environ['tiddlyweb.store'] = db
+        return self.application(environ, start_response)
 

@@ -13,7 +13,6 @@ import httplib2
 from fixtures import muchdata
 
 from tiddlyweb.store import Store
-from tiddlyweb.web import negotiate
 
 def setup_module(module):
     from tiddlyweb.web import serve

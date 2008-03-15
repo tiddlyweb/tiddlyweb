@@ -10,10 +10,10 @@ what kind of store and serializer to use.
 import sys
 sys.path.append('.')
 
-from tiddlyweb.web import negotiate
+from tiddlyweb.web.negotiate import Negotiate
 
 def setup_module(module):
-    pass
+    module.neg = Negotiate(lambda x: x)
 
 def test_accept_header():
     """
@@ -23,7 +23,7 @@ def test_accept_header():
     environ = {}
     environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
 
-    negotiate.type(environ, lambda x: x)
+    neg.figure_accept(environ)
 
     assert environ['tiddlyweb.accept'] == 'text/plain', \
             'tiddlyweb.accept should be text/plain, found %s' % environ['tiddlyweb.accept']
@@ -37,7 +37,7 @@ def test_file_extension():
     environ = {}
     environ['PATH_INFO'] = '/bags/bag0/tiddlers/bigbox.html'
     
-    negotiate.type(environ, lambda x: x)
+    neg.figure_accept(environ)
 
     assert environ['tiddlyweb.accept'] == 'text/html', \
             'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept']
@@ -58,10 +58,8 @@ def test_file_wins_over_header():
     environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
     environ['PATH_INFO'] = '/bags/bag0/tiddlers/bigbox.html'
 
-    negotiate.type(environ, lambda x: x)
+    neg.figure_accept(environ)
 
     assert environ['tiddlyweb.accept'] == 'text/html', \
             'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept']
-
-
 

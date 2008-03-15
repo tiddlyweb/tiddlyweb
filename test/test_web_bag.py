@@ -32,8 +32,8 @@ def test_get_bag_tiddler_list_default():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_text():
     http = httplib2.Http()
@@ -53,7 +53,14 @@ def test_get_bag_tiddler_list_html():
     assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
-def test_get_bag_tiddler_list_html():
+def test_get_bag_tiddler_list_415():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.gif',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
+def test_get_bag_tiddler_list_html_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET', headers={'Accept': 'text/html'})
@@ -64,7 +71,7 @@ def test_get_bag_tiddler_list_html():
 
 def test_get_bag_tiddler_list_filtered():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers?tiddler8',
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt?tiddler8',
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
