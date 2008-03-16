@@ -25,8 +25,8 @@ def test_accept_header():
 
     neg.figure_accept(environ)
 
-    assert environ['tiddlyweb.accept'] == 'text/plain', \
-            'tiddlyweb.accept should be text/plain, found %s' % environ['tiddlyweb.accept']
+    assert environ['tiddlyweb.accept'][0] == 'text/plain', \
+            'tiddlyweb.accept should be text/plain, found %s' % environ['tiddlyweb.accept'][0]
 
 
 def test_file_extension():
@@ -39,8 +39,8 @@ def test_file_extension():
     
     neg.figure_accept(environ)
 
-    assert environ['tiddlyweb.accept'] == 'text/html', \
-            'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept']
+    assert environ['tiddlyweb.accept'][0] == 'text/html', \
+            'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept'][0]
 
 def test_accept_query():
     """
@@ -60,6 +60,6 @@ def test_file_wins_over_header():
 
     neg.figure_accept(environ)
 
-    assert environ['tiddlyweb.accept'] == 'text/html', \
-            'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept']
+    assert environ['tiddlyweb.accept'][0] == 'text/html', \
+            'tiddlyweb.accept should be text/html, found %s' % environ['tiddlyweb.accept'][0]
 

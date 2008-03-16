@@ -8,13 +8,18 @@ def get_serialize_type(environ, serializers):
     # It would be better if the info in tiddlyweb.accept was a 
     # list which we traverse until a hit. Will FIXME to do that
     # soonish.
-    accept = environ.get('tiddlyweb.accept')
+    accept = environ.get('tiddlyweb.accept')[:]
     ext = environ.get('tiddlyweb.extension')
+    serialize_type, mime_type = None, None
 
-    try:
-        serialize_type, mime_type = serializers[accept]
-    except KeyError:
-        if ext and ext != accept:
+    while len(accept) and serialize_type == None:
+        type = accept.pop()
+        try:
+            serialize_type, mime_type = serializers[type]
+        except KeyError:
+            pass
+    if not serialize_type:
+        if ext:
             raise HTTP415, '%s type unsupported' % ext
         serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type

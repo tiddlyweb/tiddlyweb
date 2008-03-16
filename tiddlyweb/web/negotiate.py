@@ -23,7 +23,7 @@ class Negotiate(object):
         accept_header = environ.get('HTTP_ACCEPT')
         path_info = environ.get('PATH_INFO')
 
-        our_type = None
+        our_types = []
 
         if path_info:
             extension = path_info.rsplit('.', 1)
@@ -32,15 +32,15 @@ class Negotiate(object):
                     environ['tiddlyweb.extension'] = ext
                     try:
                         our_type = extension_types[ext]
-                        environ['tiddlyweb.accept'] = our_type
+                        environ['tiddlyweb.accept'] = [our_type]
                         return
                     except KeyError:
                         pass
 
         if accept_header:
-            our_type = self._parse_accept_header(accept_header)
+            our_types = self._parse_accept_header(accept_header)
 
-        environ['tiddlyweb.accept'] = our_type
+        environ['tiddlyweb.accept'] = our_types
 
         return 
 
@@ -82,4 +82,4 @@ class Negotiate(object):
         prefs.sort(cmp=sorter)
         prefs = [pref['name'] for pref in prefs]
         prefs.append('*/*')
-        return prefs[0]
+        return prefs
