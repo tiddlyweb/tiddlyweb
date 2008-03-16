@@ -31,7 +31,6 @@ def get_tiddlers(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag = Bag(bag_name)
 
-    accept = environ.get('tiddlyweb.accept')
     store = environ['tiddlyweb.store']
 
     try:

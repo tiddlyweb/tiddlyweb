@@ -4,10 +4,13 @@ from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.http import HTTP415, HTTP404
 from tiddlyweb import control
+from tiddlyweb import web
 
 serializers = {
         'text/x-tiddlywiki': ['wiki', 'text/html'],
         'text/plain': ['text', 'text/plain'],
+        #'default': ['html', 'text/html'],
+        'default': ['text', 'text/plain'],
         }
 
 def list(environ, start_response):
@@ -38,11 +41,8 @@ def get(environ, start_response):
     except NoRecipeError, e:
         raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
-    try:
-        serialization, mime_type = _recipe_serializer(accept)
-        serializer = Serializer(recipe, serialization)
-    except KeyError:
-        raise HTTP415, '%s type unsupported' % accept
+    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serializer = Serializer(recipe, serialize_type)
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",

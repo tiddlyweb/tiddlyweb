@@ -9,11 +9,12 @@ def get_serialize_type(environ, serializers):
     # list which we traverse until a hit. Will FIXME to do that
     # soonish.
     accept = environ.get('tiddlyweb.accept')
-    format = environ.get('wsgiorg.routing_args')[1]['format']
+    ext = environ.get('tiddlyweb.extension')
+
     try:
         serialize_type, mime_type = serializers[accept]
     except KeyError:
-        if format:
-            raise HTTP415, '%s type unsupported' % format
+        if ext and ext != accept:
+            raise HTTP415, '%s type unsupported' % ext
         serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type
