@@ -2,6 +2,7 @@
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.store import Store, NoTiddlerError
 from tiddlyweb.serializer import Serializer
+from tiddlyweb.web.http import HTTP404
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -15,9 +16,7 @@ def get(environ, start_response):
     try:
         store.get(tiddler)
     except NoTiddlerError, e:
-        start_response("404 Not Found", [('Content-Type', 'text/plain')])
-        output = '%s not found' % tiddler.title
-        return [output]
+        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
     
     start_response("200 OK",
             [('Content-Type', 'text/plain')])

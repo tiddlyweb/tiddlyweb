@@ -2,7 +2,7 @@
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.web.http import HTTP415
+from tiddlyweb.web.http import HTTP415, HTTP404
 from tiddlyweb import control
 
 serializers = {
@@ -36,9 +36,7 @@ def get(environ, start_response):
     try:
         store.get(recipe)
     except NoRecipeError, e:
-        start_response("404 Not Found", [('Content-Type', 'text/plain')])
-        output = '%s not found' % recipe.name
-        return [output]
+        raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
     try:
         serialization, mime_type = _recipe_serializer(accept)
@@ -69,9 +67,7 @@ def get_tiddlers(environ, start_response):
     try:
         store.get(recipe)
     except NoRecipeError, e:
-        start_response("404 Not Found", [('Content-Type', 'text/plain')])
-        output = '%s not found' % recipe.name
-        return [output]
+        raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
     start_response("200 OK",
             [('Content-Type', 'text/plain')])

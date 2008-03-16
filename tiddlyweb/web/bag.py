@@ -5,7 +5,7 @@ from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
-from tiddlyweb.web.http import HTTP415
+from tiddlyweb.web.http import HTTP415, HTTP404
 
 # XXX the store should be in the environ!
 
@@ -36,9 +36,7 @@ def get_tiddlers(environ, start_response):
     try:
         store.get(bag)
     except NoBagError, e:
-        start_response("404 Not Found", [('Content-Type', 'text/plain')])
-        output = '%s not found' % bag.name
-        return [output]
+        raise HTTP404, '%s not found, %s' % (bag.name, e)
 
     tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
     tmp_bag = Bag('tmp_bag')
