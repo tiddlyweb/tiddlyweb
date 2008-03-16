@@ -5,6 +5,10 @@ def get_serialize_type(environ, serializers):
     ext = environ.get('tiddlyweb.extension')
     serialize_type, mime_type = None, None
 
+    # we are going to pop the list to deflate it
+    # but the first thing on the list is the most
+    # important, so reverse to get the right order
+    accept.reverse()
     while len(accept) and serialize_type == None:
         type = accept.pop()
         try:
