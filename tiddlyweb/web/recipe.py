@@ -2,6 +2,7 @@
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
+from tiddlyweb.web.http import HTTP415
 from tiddlyweb import control
 
 serializers = {
@@ -43,9 +44,7 @@ def get(environ, start_response):
         serialization, mime_type = _recipe_serializer(accept)
         serializer = Serializer(recipe, serialization)
     except KeyError:
-        start_response("415 Unsupported", [('Content-Type', 'text/plain')])
-        output = '%s type unsupported' % accept
-        return [output]
+        raise HTTP415, '%s type unsupported' % accept
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",

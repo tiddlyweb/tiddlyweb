@@ -49,6 +49,16 @@ def test_get_recipe_txt():
     assert response['status'] == '200', 'response status should be 200'
     assert '/bags/bag8?tiddler8' in content, 'recipe contains tiddler 8 from bag 8'
 
+def test_get_recipe_not():
+    """
+    Return a wiki for a recipe we can access.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415'
+
 def test_get_missing_recipe():
     """
     Return 404 for a recipe that is not there.
