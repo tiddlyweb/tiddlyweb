@@ -59,7 +59,6 @@ def _get_serialize_type(environ):
     # soonish.
     accept = environ.get('tiddlyweb.accept')
     format = environ.get('wsgiorg.routing_args')[1]['format']
-    print "a: %s, f: %s" % (accept, format)
     try:
         serialize_type, mime_type = serializers[accept]
     except KeyError:
