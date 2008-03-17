@@ -10,9 +10,9 @@ from tiddlyweb.serializer import Serializer
 
 from fixtures import recipe_list
 
-expected_string = """/bags/bagone?TiddlerOne
-/bags/bagtwo?TiddlerTwo
-/bags/bagthree?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
+expected_string = """/bags/bagone/tiddlers?TiddlerOne
+/bags/bagtwo/tiddlers?TiddlerTwo
+/bags/bagthree/tiddlers?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
 
 def setup_module(module):
     module.recipe = Recipe(name='testrecipe')

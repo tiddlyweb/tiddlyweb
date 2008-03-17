@@ -14,13 +14,29 @@ def list_recipes(recipes):
     lines = []
     output = '<ul>\n'
     for recipe in recipes:
-        line = '<li><a href="%s">%s</a></li>' % (urllib.quote(recipe.name), recipe.name)
+        line = '<li><a href="recipes/%s">%s</a></li>' % (urllib.quote(recipe.name), recipe.name)
         lines.append(line)
     output += "\n".join(lines)
     return output + '\n</ul>'
 
 def recipe_as(recipe, sortkey):
-    pass
+    """
+    Never sort a recipe, so ignore sortkey, but
+    keep it there for sake of the interface.
+    """
+    lines = []
+    output = '<ul>\n'
+    for bag, filter in recipe:
+        line = '<li><a href="'
+        if type(bag) != str:
+            bag = bag.name
+        line += '/bags/%s/tiddlers' % urllib.quote(bag)
+        if filter:
+            line += '?%s' % urllib.quote(filter)
+        line += '">bag: %s filter:%s</a></li>' % (bag, filter)
+        lines.append(line)
+    output += "\n".join(lines)
+    return output + '\n</ul>'
 
 def as_recipe(recipe, input):
     pass

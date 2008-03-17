@@ -14,9 +14,9 @@ from tiddlyweb.store import Store
 
 expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 
-expected_stored_content = """/bags/bagone?TiddlerOne
-/bags/bagtwo?TiddlerTwo
-/bags/bagthree?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
+expected_stored_content = """/bags/bagone/tiddlers?TiddlerOne
+/bags/bagtwo/tiddlers?TiddlerTwo
+/bags/bagthree/tiddlers?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
 
 def setup_module(module):
     """

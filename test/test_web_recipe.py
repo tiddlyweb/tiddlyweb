@@ -47,7 +47,7 @@ def test_get_recipe_txt():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
-    assert '/bags/bag8?tiddler8' in content, 'recipe contains tiddler 8 from bag 8'
+    assert '/bags/bag8/tiddlers?tiddler8' in content, 'recipe contains tiddler 8 from bag 8'
 
 def test_get_recipe_not():
     """

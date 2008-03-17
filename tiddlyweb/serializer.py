@@ -34,7 +34,6 @@ class Serializer():
             string_func = getattr(imported_module, function_map[self.object.__class__][0])
             sort_func = function_map[self.object.__class__][2]
             object_func = getattr(imported_module, function_map[self.object.__class__][1])
-            print 's: %s, s: %s, o: %s' % (string_func, sort_func, object_func)
             return string_func, sort_func, object_func
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
