@@ -20,10 +20,13 @@ def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
 
-    start_response("200 OK",
-            [('Content-Type', 'text/plain')])
+    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serializer = Serializer(serialize_type)
 
-    return [ '%s\n' % bag.name for bag in bags]
+    start_response("200 OK",
+            [('Content-Type', mime_type)])
+
+    return [ serializer.list_bags(bags) ]
 
 def get_tiddlers(environ, start_response):
     filter_string = urllib.unquote(environ['QUERY_STRING'])

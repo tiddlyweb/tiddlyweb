@@ -51,13 +51,24 @@ def test_get_recipe_txt():
 
 def test_get_recipe_not():
     """
-    Return a wiki for a recipe we can access.
+    Return a 415 when content type no good.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
             method='GET')
 
     assert response['status'] == '415', 'response status should be 415'
+
+def test_get_recipe_not_with_accept():
+    """
+    Return a default content type when the extension and
+    content type conflict.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
+            method='GET', headers={'Accept': 'text/plain'})
+
+    assert response['status'] == '200', 'response status should be 200'
 
 def test_get_missing_recipe():
     """
@@ -108,3 +119,22 @@ def test_get_recipes_unsupported_recipe_format():
             method='GET')
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
+def test_get_recipes_unsupported_recipe_format_with_accept():
+    """
+    Fail over to accept header when extension not supported.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.json',
+            method='GET', headers={'Accept': 'text/html'})
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+
+def test_get_recipes_unsupported_neg_format_with_accept():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.gif',
+            method='GET', headers={'Accept': 'text/html'})
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']

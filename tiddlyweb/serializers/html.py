@@ -19,6 +19,18 @@ def list_recipes(recipes):
     output += "\n".join(lines)
     return output + '\n</ul>'
 
+def list_bags(bags):
+    """
+    List the bags on the system as html.
+    """
+    lines = []
+    output = '<ul>\n'
+    for bag in bags:
+        line = '<li><a href="bags/%s/tiddlers">%s</a></li>' % (urllib.quote(bag.name), bag.name)
+        lines.append(line)
+    output += "\n".join(lines)
+    return output + '\n</ul>'
+
 def recipe_as(recipe, sortkey):
     """
     Never sort a recipe, so ignore sortkey, but

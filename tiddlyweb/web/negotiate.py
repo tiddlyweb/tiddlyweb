@@ -32,13 +32,12 @@ class Negotiate(object):
                     environ['tiddlyweb.extension'] = ext
                     try:
                         our_type = extension_types[ext]
-                        environ['tiddlyweb.accept'] = [our_type]
-                        return
+                        our_types.append(our_type)
                     except KeyError:
                         pass
 
         if accept_header:
-            our_types = self._parse_accept_header(accept_header)
+            our_types.extend(self._parse_accept_header(accept_header))
 
         environ['tiddlyweb.accept'] = our_types
 

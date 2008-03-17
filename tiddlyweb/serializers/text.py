@@ -10,6 +10,9 @@ from tiddlyweb.serializer import TiddlerFormatError
 def list_recipes(recipes):
     return "\n".join([recipe.name for recipe in recipes])
 
+def list_bags(bags):
+    return "\n".join([bag.name for bag in bags])
+
 def recipe_as(recipe, sortkey):
     """
     Never sort a recipe, so ignore sortkey, but

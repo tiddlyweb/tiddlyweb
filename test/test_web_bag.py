@@ -77,11 +77,62 @@ def test_get_bag_tiddler_list_filtered():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert len(content.rstrip().split('\n')) == 1, 'len tiddlers should be 1 is %s' % len(content.rstrip().split('\n'))
 
-def test_get_bags():
+def test_get_bags_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
+
+def test_get_bags_txt():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.txt',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 31, 'len tiddlers should be 32 is %s' % len(content.rstrip().split('\n'))
 
+def test_get_bags_html():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.html',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
+
+def test_get_bags_unsupported_neg_format():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.gif',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
+def test_get_bags_unsupported_recipe_format():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.json',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
+def test_get_bags_unsupported_recipe_format_with_accept():
+    """
+    Fails over to accept header.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.json',
+            method='GET', headers={'Accept': 'text/html'})
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+
+def test_get_bags_unsupported_neg_format_with_accept():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.gif',
+            method='GET', headers={'Accept': 'text/html'})
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
