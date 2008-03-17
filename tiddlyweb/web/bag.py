@@ -43,7 +43,7 @@ def get_tiddlers(environ, start_response):
         raise HTTP404, '%s not found, %s' % (bag.name, e)
 
     tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
-    tmp_bag = Bag('tmp_bag')
+    tmp_bag = Bag('tmp_bag', tmpbag=True)
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
 

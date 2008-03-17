@@ -14,10 +14,11 @@ import copy
 
 class Bag(dict):
 
-    def __init__(self, name, policy=default_security_policy):
+    def __init__(self, name, policy=default_security_policy, tmpbag=False):
         dict.__init__(self)
         self.name = name
         self.policy = policy
+        self.tmpbag = tmpbag
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None
@@ -31,8 +32,10 @@ class Bag(dict):
     def __delitem__(self, tiddler):
         dict.__delitem__(self, tiddler.title)
 
-    def add_tiddler(self, tiddler, tmpbag=False):
-        if not tmpbag:
+    def add_tiddler(self, tiddler):
+        if self.tmpbag:
+            pass
+        else:
             bags_tiddler = copy.deepcopy(tiddler)
             bags_tiddler.bag = self.name
             tiddler = bags_tiddler

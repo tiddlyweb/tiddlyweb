@@ -59,6 +59,7 @@ def bag_as(bag, sortkey):
     """
     lines = []
     output = '<ul>\n'
+# XXX we are encoding an absolute url here, which is not such a good thing
     for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
         line = '<li><a href="/bags/%s/tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.title)
         lines.append(line)
@@ -69,7 +70,10 @@ def as_bag(bag, input):
     pass
 
 def tiddler_as(tiddler, sortkey):
-    raise TiddlerFormatError, 'HTML not supported for tiddler'
+    return """<div title="%s" modifier="%s" tags="%s">
+<pre>%s</pre>
+</div>
+""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, None), tiddler.content)
 
 def as_tiddler(tiddler, input):
     pass

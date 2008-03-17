@@ -69,9 +69,9 @@ def get_tiddlers(environ, start_response):
         raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
     tiddlers = control.get_tiddlers_from_recipe(recipe)
-    tmp_bag = Bag('tmp_bag')
+    tmp_bag = Bag('tmp_bag', tmpbag=True)
     for tiddler in tiddlers:
-        tmp_bag.add_tiddler(tiddler, tmpbag=True)
+        tmp_bag.add_tiddler(tiddler)
 
     serialize_type, mime_type = web.get_serialize_type(environ, serializers)
     serializer = Serializer(serialize_type)
