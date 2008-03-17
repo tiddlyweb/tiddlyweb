@@ -26,14 +26,16 @@ class Bag(dict):
         return dict.__getitem__(self, tiddler.title)
 
     def __setitem__(self, tiddler):
-        bags_tiddler = copy.deepcopy(tiddler)
-        bags_tiddler.bag = self.name
-        dict.__setitem__(self, tiddler.title, bags_tiddler)
+        dict.__setitem__(self, tiddler.title, tiddler)
 
     def __delitem__(self, tiddler):
         dict.__delitem__(self, tiddler.title)
 
-    def add_tiddler(self, tiddler):
+    def add_tiddler(self, tiddler, tmpbag=False):
+        if not tmpbag:
+            bags_tiddler = copy.deepcopy(tiddler)
+            bags_tiddler.bag = self.name
+            tiddler = bags_tiddler
         self.__setitem__(tiddler)
 
     def remove_tiddler(self, tiddler):

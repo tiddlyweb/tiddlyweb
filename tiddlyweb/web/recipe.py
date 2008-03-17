@@ -1,5 +1,6 @@
 
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.http import HTTP415, HTTP404
@@ -67,8 +68,15 @@ def get_tiddlers(environ, start_response):
     except NoRecipeError, e:
         raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
-    start_response("200 OK",
-            [('Content-Type', 'text/plain')])
+    tiddlers = control.get_tiddlers_from_recipe(recipe)
+    tmp_bag = Bag('tmp_bag')
+    for tiddler in tiddlers:
+        tmp_bag.add_tiddler(tiddler, tmpbag=True)
 
-    return [ '%s\n' % tiddler.title for tiddler in control.get_tiddlers_from_recipe(recipe)]
+    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serializer = Serializer(serialize_type)
+    serializer.object = tmp_bag
+
+    start_response("200 OK", [('Content-Type', mime_type)])
+    return [serializer.to_string()]
 

@@ -41,7 +41,14 @@ def _split_empty_html():
     return wiki.split(splitter)
 
 def bag_as(bag, sortkey):
-    return ''
+    lines = ''
+    for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
+        lines += _tiddler_as_div(tiddler)
+
+    return _put_string_in_tiddlywiki(lines)
+
+def as_bag(bag, sortkey):
+    pass
 
 def tiddler_as(tiddler, sortkey):
     tiddler_div = _tiddler_as_div(tiddler)

@@ -18,9 +18,9 @@ tiddlers/TiddlerTwo
 tiddlers/TiddlerOne"""
 
 expected_html_string = """<ul>
-<li><a href="tiddlers/TiddlerThree">TiddlerThree</a></li>
-<li><a href="tiddlers/TiddlerTwo">TiddlerTwo</a></li>
-<li><a href="tiddlers/TiddlerOne">TiddlerOne</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerThree">TiddlerThree</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerTwo">TiddlerTwo</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
 </ul>"""
 
 def setup_module(module):

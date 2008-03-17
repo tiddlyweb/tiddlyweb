@@ -60,7 +60,7 @@ def bag_as(bag, sortkey):
     lines = []
     output = '<ul>\n'
     for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
-        line = '<li><a href="tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.title), tiddler.title)
+        line = '<li><a href="/bags/%s/tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.title)
         lines.append(line)
     output += "\n".join(lines)
     return output + '\n</ul>'

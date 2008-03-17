@@ -86,7 +86,7 @@ def test_get_recipe_tiddler_list():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
-    assert len(content.rstrip().split('\n')) == 5, 'len tiddlers should be 5 is %s' % len(content.split('\n'))
+    assert len(content.rstrip().split('\n')) == 7, 'len tiddlers should be 7 is %s' % len(content.split('\n'))
 
 def test_get_recipes_default():
     http = httplib2.Http()

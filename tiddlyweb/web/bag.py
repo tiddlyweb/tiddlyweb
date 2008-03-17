@@ -11,6 +11,7 @@ from tiddlyweb.web.http import HTTP404
 # XXX the store should be in the environ!
 
 serializers = {
+        'text/x-tiddlywiki': ['wiki', 'text/html'],
         'text/html': ['html', 'text/html'],
         'text/plain': ['text', 'text/plain'],
         'default': ['html', 'text/html'],
