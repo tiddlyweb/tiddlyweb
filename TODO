@@ -4,6 +4,8 @@ This is not complete, and likely not up to date.
 
 = Release 1 =
 
+* flesh out tiddler object, e.g. fields and date handling
+
 * unicode/UTF-8 testing and handling etc
 
 * add sorting to filtering
@@ -19,6 +21,8 @@ This is not complete, and likely not up to date.
 * HTTP cache headers prodution
 
 = After Release 1 =
+
+* Tiddler revisions
 
 * HTTP cache headers handling
 
