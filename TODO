@@ -2,6 +2,10 @@
 A place to note tasks that need to be done. 
 This is not complete, and likely not up to date.
 
+= Release 1 =
+
+* unicode/UTF-8 testing and handling etc
+
 * add sorting to filtering
 
 * add name fragments to arguments in filters
@@ -11,4 +15,21 @@ This is not complete, and likely not up to date.
 * GET JSON reps of things
 
 * PUT JSON reps of things
+
+* HTTP cache headers prodution
+
+= After Release 1 =
+
+* HTTP cache headers handling
+
+* Authentication (basic and OpenID)
+** credentials extraction for getting/validating the user
+** challenging for getting a user into the system
+
+* Authoriziation (bag security policy handling and authoring)
+
+* S3 store
+
+* sqlite store
+
 
