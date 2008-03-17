@@ -8,11 +8,9 @@ This is not complete, and likely not up to date.
 
 * unicode/UTF-8 testing and handling etc
 
-* add sorting to filtering
-
-* add name fragments to arguments in filters
-
-* PUT text reps of things
+* PUT text reps of things, with robustness
+** Deal with non-existent bags or no bag in URL
+** Handle updating existing tiddler appropriately
 
 * GET JSON reps of things
 
@@ -21,6 +19,12 @@ This is not complete, and likely not up to date.
 * HTTP cache headers prodution
 
 = After Release 1 =
+
+* add sorting to filtering
+
+* add name fragments to arguments in filters
+
+* something akin to recent changes in filters
 
 * Tiddler revisions
 
@@ -36,4 +40,4 @@ This is not complete, and likely not up to date.
 
 * sqlite store
 
-
+* Atom and/or RSS representation of lists of tiddlers
