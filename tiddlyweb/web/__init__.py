@@ -24,3 +24,21 @@ def handle_extension(environ, resource_name):
 
     return resource_name
 
+def root(environ, start_response):
+    """
+    Convenience method to provide an entry point at root.
+    """
+
+    start_response("200 OK", [('Content-Type', 'text/html')])
+    return ["""<html>
+<head>
+<title>TiddlyWeb</title>
+</head>
+<body>
+<ul>
+<li><a href="recipes">recipes</a></li>
+<li><a href="bags">bags</a></li>
+</ul>
+<body>
+</html>"""]
+

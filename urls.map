@@ -2,6 +2,10 @@
 # everything after the : is a wsgi_app callable
 # functions in this case
 
+# a psuedo-root
+/
+    GET tiddlyweb.web:root
+
 # list of recipes
 /recipes[.{format}]
     GET tiddlyweb.web.recipe:list
