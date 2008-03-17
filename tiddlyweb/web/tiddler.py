@@ -12,13 +12,18 @@ serializers = {
         'default': ['text', 'text/plain'],
         }
 
-def get(environ, start_response):
+def _tiddler_from_path(environ):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
     tiddler_name = web.handle_extension(environ, tiddler_name)
 
     tiddler = Tiddler(tiddler_name)
     tiddler.bag = bag_name
+
+    return tiddler
+
+def get(environ, start_response):
+    tiddler = _tiddler_from_path(environ)
 
     store = environ['tiddlyweb.store']
 
@@ -40,4 +45,25 @@ def get(environ, start_response):
             [('Content-Type', mime_type)])
 
     return [content]
+
+def put(environ, start_response):
+    tiddler = _tiddler_from_path(environ)
+    store = environ['tiddlyweb.store']
+
+    content_type = environ['tiddlyweb.type']
+
+    if content_type != 'text/plain':
+        raise HTTP415, '%s not supported yet' % content_type
+
+    content = environ['wsgi.input'].read()
+    serializer = Serializer(serializers[content_type][0])
+    serializer.object = tiddler
+    serializer.from_string(content)
+
+    store.put(tiddler)
+
+    start_response("204 No Content",
+            [('Location', web.tiddler_url(environ, tiddler))])
+
+    return []
 

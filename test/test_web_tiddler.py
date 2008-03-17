@@ -13,6 +13,12 @@ from fixtures import muchdata
 
 from tiddlyweb.store import Store
 
+text_put_body="""modifier: JohnSmith
+tags: tagone
+
+Hello, I'm John Smith and I have something to sell.
+"""
+
 def setup_module(module):
     from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
@@ -50,3 +56,17 @@ def test_get_tiddler_wiki():
     assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
+def test_put_tiddler_txt():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=text_put_body)
+
+    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
+    tiddler_url = response['location']
+    assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne', \
+            'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestOne is %s' \
+            % tiddler_url
+
+    response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
+    assert content.strip().rstrip() == text_put_body.strip().rstrip(), \
+            'content should be #%s#, is #%s#' % (content.strip().rstrip(), text_put_body.strip().rstrip())

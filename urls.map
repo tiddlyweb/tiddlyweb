@@ -32,4 +32,5 @@
 # a tiddler
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.tiddler:get
+    PUT tiddlyweb.web.tiddler:put
 

@@ -1,6 +1,6 @@
 """
 WSGI Middleware to do pseudo-content negotiation
-and put the type in tiddlyweb.accept.
+and put the type in tiddlyweb.type.
 """
 
 extension_types = {
@@ -16,10 +16,24 @@ class Negotiate(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        self.figure_accept(environ)
+        self.figure_type(environ)
         return self.application(environ,start_response)
 
-    def figure_accept(self, environ):
+    def figure_type(self, environ):
+        """
+        Determine either the content-type (for POST, PUT, DELETE)
+        or accept header (for GET) and put that information
+        in tiddlyweb.type in the environment.
+        """
+        if environ['REQUEST_METHOD'].upper() == 'GET':
+            self._figure_type_for_get(environ)
+        else:
+            self._figure_type_for_other(environ)
+
+    def _figure_type_for_other(self, environ):
+        environ['tiddlyweb.type'] = environ.get('CONTENT_TYPE')
+
+    def _figure_type_for_get(self, environ):
         accept_header = environ.get('HTTP_ACCEPT')
         path_info = environ.get('PATH_INFO')
 
@@ -39,7 +53,7 @@ class Negotiate(object):
         if accept_header:
             our_types.extend(self._parse_accept_header(accept_header))
 
-        environ['tiddlyweb.accept'] = our_types
+        environ['tiddlyweb.type'] = our_types
 
         return 
 

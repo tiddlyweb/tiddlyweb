@@ -1,7 +1,9 @@
+import urllib
+
 from tiddlyweb.web.http import HTTP415
 
 def get_serialize_type(environ, serializers):
-    accept = environ.get('tiddlyweb.accept')[:]
+    accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
     serialize_type, mime_type = None, None
 
@@ -41,4 +43,13 @@ def root(environ, start_response):
 </ul>
 <body>
 </html>"""]
+
+def tiddler_url(environ, tiddler):
+    """
+    Construct a URL for a tiddler.
+    This relies on HTTP_HOST, which may not be reliable. REVIEW
+    """
+    scheme = environ['wsgi.url_scheme']
+    host = environ.get('HTTP_HOST', '')
+    return '%s://%s/bags/%s/tiddlers/%s' % (scheme, host, urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
