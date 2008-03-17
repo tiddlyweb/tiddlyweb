@@ -6,12 +6,6 @@ This is not complete, and likely not up to date.
 
 * add name fragments to arguments in filters
 
-* display a single tiddler in a wiki form
-
-* display a bag in a wiki form
-
-* display a filtered bag in a wiki form
-
 * PUT text reps of things
 
 * GET JSON reps of things
