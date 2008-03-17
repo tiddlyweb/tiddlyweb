@@ -20,3 +20,11 @@ def get_serialize_type(environ, serializers):
             raise HTTP415, '%s type unsupported' % ext
         serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type
+
+def handle_extension(environ, resource_name):
+    extension = environ.get('tiddlyweb.extension')
+    if extension:
+        resource_name = resource_name[0 : resource_name.rfind('.' + extension)]
+
+    return resource_name
+

@@ -24,11 +24,11 @@ expected_html_string = """<ul>
 </ul>"""
 
 def setup_module(module):
-    pass
+    module.serializer = Serializer('text')
 
 def test_generated_string():
 
-    serializer = Serializer(bagfour, 'text')
+    serializer.object = bagfour
     string = serializer.to_string()
 
     assert string == expected_string, \
@@ -40,7 +40,8 @@ def test_generated_string():
 
 def test_serialized_sort():
 
-    serializer = Serializer(bagfour, 'text', sortkey=lambda x: x.content)
+    serializer.object = bagfour
+    serializer.sortkey = lambda x: x.content
     string = serializer.to_string()
 
     assert string == expected_sort_string, \
@@ -51,12 +52,14 @@ def test_serialized_sort():
             'serializer goes to string as expected_sort_string'
 
 def test_generated_html():
-    serializer = Serializer(bagfour, 'html', sortkey=lambda x: x.content)
-    string = serializer.to_string()
+    html_serializer = Serializer('html')
+    html_serializer.object = bagfour
+    html_serializer.sortkey = lambda x: x.content
+    string = html_serializer.to_string()
 
     assert string == expected_html_string, \
             'serialized bag looks like we expect. should be %s, got %s' \
             % (expected_html_string, string)
 
-    assert '%s' % serializer == expected_html_string, \
-            'serializer goes to string as expected_string'
+    assert '%s' % html_serializer == expected_html_string, \
+            'serializer goes to string as expected_string, got %s' % html_serializer

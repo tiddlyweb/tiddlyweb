@@ -44,7 +44,8 @@ def get_tiddlers(environ, start_response):
         tmp_bag.add_tiddler(tiddler)
 
     serialize_type, mime_type = web.get_serialize_type(environ, serializers)
-    serializer = Serializer(tmp_bag, serialize_type)
+    serializer = Serializer(serialize_type)
+    serializer.object = tmp_bag
 
     start_response("200 OK", [('Content-Type', mime_type)])
     return [serializer.to_string()]

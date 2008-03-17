@@ -11,7 +11,8 @@ def get(environ, start_response):
     tiddler.bag = bag_name
 
     store = environ['tiddlyweb.store']
-    serializer = Serializer(tiddler, 'text')
+    serializer = Serializer('text')
+    serializer.object = tiddler
 
     try:
         store.get(tiddler)

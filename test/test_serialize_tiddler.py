@@ -31,7 +31,8 @@ def test_generated_string():
             content = "Hello, I'm the content."
             )
 
-    serializer = Serializer(tiddler, 'text')
+    serializer = Serializer('text')
+    serializer.object = tiddler
     string = serializer.to_string()
 
     assert string == expected_string, \

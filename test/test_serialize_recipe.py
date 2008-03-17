@@ -19,7 +19,8 @@ def setup_module(module):
     module.recipe.set_recipe(recipe_list)
 
 def test_generated_text():
-    serializer = Serializer(recipe, 'text')
+    serializer = Serializer('text')
+    serializer.object = recipe
     string = serializer.to_string()
 
     assert string == expected_string, \
@@ -30,7 +31,8 @@ def test_generated_text():
             'serializer goes to string as expected_string'
 
 def test_generated_wiki():
-    serializer = Serializer(recipe, 'wiki')
+    serializer = Serializer('wiki')
+    serializer.object = recipe
     string = serializer.to_string()
 
     assert string.startswith('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'), 'looks like we got an empty.html doc'
@@ -40,11 +42,12 @@ def test_generated_wiki():
 def test_simple_recipe():
     recipe = Recipe('other')
     recipe.set_recipe([['bagbuzz', '']])
-    serializer = Serializer(recipe, 'text')
+    serializer = Serializer('text')
+    serializer.object = recipe
     string = serializer.to_string()
 
     new_recipe = Recipe('other')
-    serializer = Serializer(new_recipe, 'text')
+    serializer.object = new_recipe
     serializer.from_string(string)
 
     assert recipe == new_recipe, 'recipe and new_recipe have equality'

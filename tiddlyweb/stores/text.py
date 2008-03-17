@@ -31,7 +31,8 @@ def recipe_put(recipe):
 
     recipe_file = file(recipe_path, 'w')
 
-    serializer = Serializer(recipe, 'text')
+    serializer = Serializer('text')
+    serializer.object = recipe
 
     recipe_file.write(serializer.to_string())
 
@@ -42,7 +43,8 @@ def recipe_get(recipe):
 
     try:
         recipe_file = file(recipe_path, 'r')
-        serializer = Serializer(recipe, 'text')
+        serializer = Serializer('text')
+        serializer.object = recipe
         recipe_string = recipe_file.read()
         recipe_file.close()
     except IOError, e:
@@ -115,7 +117,8 @@ def tiddler_put(tiddler):
     tiddler_filename = os.path.join(store_dir, tiddler.title)
     tiddler_file = file(tiddler_filename, 'w')
 
-    serializer = Serializer(tiddler, 'text')
+    serializer = Serializer('text')
+    serializer.object = tiddler
 
     tiddler_file.write(serializer.to_string())
 
@@ -134,7 +137,8 @@ def tiddler_get(tiddler):
     try:
         tiddler_filename = os.path.join(store_dir, tiddler.title)
         tiddler_file = file(tiddler_filename, 'r')
-        serializer = Serializer(tiddler, 'text')
+        serializer = Serializer('text')
+        serializer.object = tiddler
         tiddler_string = tiddler_file.read()
         tiddler_file.close()
         return serializer.from_string(tiddler_string)

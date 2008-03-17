@@ -77,9 +77,34 @@ def test_get_recipe_tiddler_list():
     assert response['status'] == '200', 'response status should be 200'
     assert len(content.rstrip().split('\n')) == 5, 'len tiddlers should be 5 is %s' % len(content.split('\n'))
 
-def test_get_recipes():
+def test_get_recipes_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes',
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 3, 'len recipe should be 3 is %s' % len(content.rstrip().split('\n'))
+
+def test_get_recipes_txt():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.txt',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
+
+def test_get_recipes_unsupported_neg_format():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.gif',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
+def test_get_recipes_unsupported_recipe_format():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.json',
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']

@@ -46,7 +46,8 @@ def test_construct_from_recipe():
     recipe = Recipe('long')
     store.get(recipe)
 
-    serializer = Serializer(recipe, 'wiki')
+    serializer = Serializer('wiki')
+    serializer.object = recipe
     wiki_text = serializer.to_string()
 
     assert 'i am tiddler 8' in wiki_text, 'wiki contains tiddler 8'

@@ -37,7 +37,8 @@ def import_wiki(filename='wiki'):
         tiddler_string = "modifier: importer\ntags: %s\n\n%s" % (tag_string, contents)
         new_tiddler = Tiddler(title)
         new_tiddler.bag = 'wiki'
-        serializer = Serializer(new_tiddler, 'text')
+        serializer = Serializer('text')
+        serializer.object = new_tiddler
         serializer.from_string(tiddler_string)
         try:
             store.put(new_tiddler)

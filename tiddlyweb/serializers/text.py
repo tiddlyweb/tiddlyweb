@@ -7,6 +7,9 @@ import urllib
 
 from tiddlyweb.serializer import TiddlerFormatError
 
+def list_recipes(recipes):
+    return "\n".join([recipe.name for recipe in recipes])
+
 def recipe_as(recipe, sortkey):
     """
     Never sort a recipe, so ignore sortkey, but

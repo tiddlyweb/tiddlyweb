@@ -7,6 +7,18 @@ import urllib
 
 from tiddlyweb.serializer import TiddlerFormatError
 
+def list_recipes(recipes):
+    """
+    List the recipes on the system as html.
+    """
+    lines = []
+    output = '<ul>\n'
+    for recipe in recipes:
+        line = '<li><a href="%s">%s</a></li>' % (urllib.quote(recipe.name), recipe.name)
+        lines.append(line)
+    output += "\n".join(lines)
+    return output + '\n</ul>'
+
 def recipe_as(recipe, sortkey):
     pass
 

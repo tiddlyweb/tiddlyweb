@@ -17,32 +17,45 @@ function_map = {
         }
 
 class Serializer():
+    """
+    You must set object after initialization.
+    You may set sortkey after initialization.
+    """
 
-    def __init__(self, object, format, sortkey=None):
-        self.object = object
-        list_func, object_func, sort_func = self._figure_function(format)
-        if sortkey:
-            sort_func = sortkey
-        self.serial_function = list_func
-        self.object_function = object_func
-        self.sortkey = sort_func
+    def __init__(self, format):
+        self.format = format
+        self.sortkey = None
+        self.object = None
 
-    def __str__(self):
-        return self.serial_function(self.object, sortkey=self.sortkey)
-
-    def _figure_function(self, format):
-        module = 'tiddlyweb.serializers.%s' % format
+    def _figure_function(self):
+        module = 'tiddlyweb.serializers.%s' % self.format
         try:
-            imported_module = __import__(module, fromlist=[format])
-            list_func = getattr(imported_module, function_map[self.object.__class__][0])
-            object_func = getattr(imported_module, function_map[self.object.__class__][1])
+            imported_module = __import__(module, fromlist=[self.format])
+            string_func = getattr(imported_module, function_map[self.object.__class__][0])
             sort_func = function_map[self.object.__class__][2]
-            return list_func, object_func, sort_func
+            object_func = getattr(imported_module, function_map[self.object.__class__][1])
+            print 's: %s, s: %s, o: %s' % (string_func, sort_func, object_func)
+            return string_func, sort_func, object_func
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
+
+    def __str__(self):
+        string_func, sort_func, object_func = self._figure_function()
+        if not self.sortkey:
+            self.sortkey = sort_func
+        return string_func(self.object, sortkey=self.sortkey)
 
     def to_string(self):
         return self.__str__()
 
     def from_string(self, input_string):
-        return self.object_function(self.object, input_string)
+        string_func, sort_func, object_func = self._figure_function()
+        return object_func(self.object, input_string)
+
+    def list_recipes(self, recipes):
+        module = 'tiddlyweb.serializers.%s' % self.format
+        imported_module = __import__(module, fromlist=[self.format])
+        list_func = getattr(imported_module, 'list_recipes')
+
+        return list_func(recipes)
+
