@@ -69,7 +69,7 @@ def as_bag(bag, input):
     pass
 
 def tiddler_as(tiddler, sortkey):
-    pass
+    raise TiddlerFormatError, 'HTML not supported for tiddler'
 
 def as_tiddler(tiddler, input):
     pass

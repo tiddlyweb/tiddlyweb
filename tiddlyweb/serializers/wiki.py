@@ -19,12 +19,15 @@ def recipe_as(recipe, sortkey):
     Never sort a recipe, so ignore sortkey, but
     keep it there for sake of the interface.
     """
-    tiddlystart, tiddlyfinish = _split_empty_html()
 
     lines = ''
     for tiddler in control.get_tiddlers_from_recipe(recipe):
-        lines += tiddler_as(tiddler, sortkey=None)
+        lines += _tiddler_as_div(tiddler)
 
+    return _put_string_in_tiddlywiki(lines)
+
+def _put_string_in_tiddlywiki(lines):
+    tiddlystart, tiddlyfinish = _split_empty_html()
     return tiddlystart + lines + splitter + tiddlyfinish
 
 def as_recipe(recipe, input):
@@ -41,6 +44,11 @@ def bag_as(bag, sortkey):
     return ''
 
 def tiddler_as(tiddler, sortkey):
+    tiddler_div = _tiddler_as_div(tiddler)
+
+    return _put_string_in_tiddlywiki(tiddler_div)
+
+def _tiddler_as_div(tiddler):
     """
     sortkey is not used, but we've got the interface to concern
     ourselves with. This seems awkward.
@@ -50,3 +58,6 @@ def tiddler_as(tiddler, sortkey):
 <pre>%s</pre>
 </div>
 """ % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, None), tiddler.content)
+
+def as_tiddler(tiddler, sortkey):
+    pass

@@ -41,3 +41,12 @@ def test_get_missing_tiddler():
 
     assert response['status'] == '404', 'response status should be 404'
 
+def test_get_tiddler_wiki():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8.wiki',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+
