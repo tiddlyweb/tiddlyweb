@@ -22,7 +22,7 @@ def recipe_as(recipe, sortkey):
     for bag, filter in recipe:
         line = ''
 # enable BagS in recipes
-        if type(bag) != str:
+        if not isinstance(bag, basestring):
             bag = bag.name
         line += '/bags/%s/tiddlers' % urllib.quote(bag)
         if filter:

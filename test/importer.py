@@ -4,6 +4,8 @@ from BeautifulSoup import BeautifulSoup
 import sys
 sys.path.append('.')
 
+import codecs
+
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.tiddler import Tiddler
@@ -11,7 +13,7 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 
 def import_wiki(filename='wiki'):
-    f = open(filename)
+    f = codecs.open(filename, encoding='utf-8')
     wikitext = f.read()
 
     store = Store('text')
@@ -30,6 +32,8 @@ def import_wiki(filename='wiki'):
     for tiddler in divs:
         title = tiddler['title']
         contents = tiddler.find('pre').contents[0]
+        if title == 'Basque':
+            print 'c: %s' % contents
         try:
             tag_string = tiddler['tags']
         except KeyError:
@@ -42,8 +46,8 @@ def import_wiki(filename='wiki'):
         serializer.from_string(tiddler_string)
         try:
             store.put(new_tiddler)
-        except UnicodeEncodeError:
-            pass
+        except UnicodeEncodeError, e:
+            raise Exception, 'tiddler %s caused unicode encode error: %s' % (new_tiddler.title, e)
         if title == 'faq':
             print new_tiddler.title
             print new_tiddler.content

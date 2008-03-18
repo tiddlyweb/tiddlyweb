@@ -7,6 +7,7 @@ on the filesystem.
 store_root = 'store'
 
 import os
+import codecs
 
 from tiddlyweb.bag import Bag
 from tiddlyweb.recipe import Recipe
@@ -29,7 +30,7 @@ def list_bags():
 def recipe_put(recipe):
     recipe_path = _recipe_path(recipe)
 
-    recipe_file = file(recipe_path, 'w')
+    recipe_file = codecs.open(recipe_path, 'w', encoding='utf-8')
 
     serializer = Serializer('text')
     serializer.object = recipe
@@ -42,7 +43,7 @@ def recipe_get(recipe):
     recipe_path = _recipe_path(recipe)
 
     try:
-        recipe_file = file(recipe_path, 'r')
+        recipe_file = codecs.open(recipe_path, encoding='utf-8')
         serializer = Serializer('text')
         serializer.object = recipe
         recipe_string = recipe_file.read()
@@ -88,13 +89,13 @@ def _tiddlers_dir(bag_name):
 
 def _write_security_policy(policy, bag_path):
     security_filename = os.path.join(bag_path, 'security_policy')
-    security_file = file(security_filename, 'w')
+    security_file = codecs.open(security_filename, 'w', encoding='utf-8')
     security_file.write(policy)
     security_file.close()
 
 def _read_security_policy(bag_path):
     security_filename = os.path.join(bag_path, 'security_policy')
-    security_file = file(security_filename, 'r')
+    security_file = codecs.open(security_filename, encoding='utf-8')
     policy = security_file.read()
     security_file.close()
     return policy
@@ -115,7 +116,7 @@ def tiddler_put(tiddler):
         raise NoBagError, "%s does not exist" % store_dir
 
     tiddler_filename = os.path.join(store_dir, tiddler.title)
-    tiddler_file = file(tiddler_filename, 'w')
+    tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
 
     serializer = Serializer('text')
     serializer.object = tiddler
@@ -136,7 +137,7 @@ def tiddler_get(tiddler):
 
     try:
         tiddler_filename = os.path.join(store_dir, tiddler.title)
-        tiddler_file = file(tiddler_filename, 'r')
+        tiddler_file = codecs.open(tiddler_filename, encoding='utf-8')
         serializer = Serializer('text')
         serializer.object = tiddler
         tiddler_string = tiddler_file.read()

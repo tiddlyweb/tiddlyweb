@@ -40,7 +40,7 @@ def recipe_as(recipe, sortkey):
     output = '<ul>\n'
     for bag, filter in recipe:
         line = '<li><a href="'
-        if type(bag) != str:
+        if not isinstance(bag, basestring):
             bag = bag.name
         line += '/bags/%s/tiddlers' % urllib.quote(bag)
         if filter:

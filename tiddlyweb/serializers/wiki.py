@@ -4,6 +4,8 @@ Serialize into a fullblow tiddlywiki wiki.
 This is initially for the sake of testing the bits.
 """
 
+import codecs
+
 from text import tags_as
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
@@ -36,7 +38,7 @@ def as_recipe(recipe, input):
 def _split_empty_html():
 # this could throw, which is just fine, 
 # that's what we want
-    f = open(empty_html)
+    f = codecs.open(empty_html, encoding='utf-8')
     wiki = f.read()
     return wiki.split(splitter)
 

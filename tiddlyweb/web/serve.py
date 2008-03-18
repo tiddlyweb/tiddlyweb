@@ -21,7 +21,7 @@ def start_simple(filename, port):
     httpd.serve_forever()
 
 def default_app(filename):
-    return load_app(filename, [StoreSet, Negotiate, HTTPExceptor])
+    return load_app(filename, [StoreSet, Negotiate, HTTPExceptor, EncodeUTF8])
     #return load_app(filename, [StoreSet, Negotiate])
 
 class StoreSet(object):
@@ -34,3 +34,9 @@ class StoreSet(object):
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
 
+class EncodeUTF8(object):
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        return [x.encode('utf-8') for x in self.application(environ, start_response)]

@@ -26,7 +26,7 @@ def get_tiddlers_from_recipe(recipe):
     store = recipe.store
     uniquifier = {}
     for bag, filter_string in recipe:
-        if type(bag) == str:
+        if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
             store.get(bag)
@@ -46,7 +46,7 @@ def determine_bag_for_tiddler(recipe, tiddler):
     """
     store = recipe.store
     for bag, filter_string in reversed(recipe):
-        if type(bag) == str:
+        if isinstance(bag, basestring):
             bag = Bag(name=bag)
         # set store to None so we _don't_ load all the tiddlers
         # up off disk, we care only about our current tiddler

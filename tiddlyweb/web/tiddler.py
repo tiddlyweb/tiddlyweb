@@ -6,10 +6,10 @@ from tiddlyweb.web.http import HTTP404, HTTP415
 from tiddlyweb import web
 
 serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html'],
-        'text/plain': ['text', 'text/plain'],
-        'text/html': ['html', 'text/html'],
-        'default': ['text', 'text/plain'],
+        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
+        'text/plain': ['text', 'text/plain; charset=UTF-8'],
+        'text/html': ['html', 'text/html; charset=UTF-8'],
+        'default': ['text', 'text/plain; charset=UTF-8'],
         }
 
 def _tiddler_from_path(environ):

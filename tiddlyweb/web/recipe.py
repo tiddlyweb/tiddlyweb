@@ -8,10 +8,10 @@ from tiddlyweb import control
 from tiddlyweb import web
 
 serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html'],
-        'text/plain': ['text', 'text/plain'],
-        'text/html': ['html', 'text/html'],
-        'default': ['html', 'text/html'],
+        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
+        'text/plain': ['text', 'text/plain; charset=UTF-8'],
+        'text/html': ['html', 'text/html; charset=UTF-8'],
+        'default': ['html', 'text/html; charset=UTF-8'],
         }
 
 def list(environ, start_response):
