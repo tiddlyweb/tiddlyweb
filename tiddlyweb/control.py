@@ -46,16 +46,13 @@ def determine_bag_for_tiddler(recipe, tiddler):
     """
     store = recipe.store
     for bag, filter_string in reversed(recipe):
-        if isinstance(bag, basestring):
-            bag = Bag(name=bag)
-        # set store to None so we _don't_ load all the tiddlers
-        # up off disk, we care only about our current tiddler
-        bag.store = None
-        # add our tiddler to the bag to see if it survives
-        # the filter
-        bag.add_tiddler(tiddler)
-        for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
+        # ignore the bag and make a new bag
+        tmpbag = Bag(filter_string, tmpbag=True)
+        tmpbag.add_tiddler(tiddler)
+        for candidate_tiddler in filter_tiddlers_from_bag(tmpbag, filter_string):
             if tiddler.title == candidate_tiddler.title:
+                if isinstance(bag, basestring):
+                    bag = Bag(name=bag)
                 return bag
 
     return None

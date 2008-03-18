@@ -19,7 +19,7 @@ from tiddlyweb.tiddler import Tiddler
 expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
 
 expected_stored_content = """modifier: AuthorOne
-tags: [[tag five]] tagone tagtwo
+tags: tagone tagtwo [[tag five]]
 
 c tiddler one content
 """

@@ -14,7 +14,7 @@ from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
 expected_string = """modifier: test@example.com
-tags: [[foo bar]] foobar
+tags: foobar [[foo bar]]
 
 Hello, I'm the content.
 """

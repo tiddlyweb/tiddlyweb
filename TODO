@@ -6,7 +6,7 @@ This is not complete, and likely not up to date.
 
 * flesh out tiddler object, e.g. fields and date handling
 
-* unicode/UTF-8 testing and handling etc
+* confirm unicode/UTF-8 testing and handling etc
 
 * PUT text reps of things, with robustness
 ** Deal with non-existent bags or no bag in URL

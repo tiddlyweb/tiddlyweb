@@ -31,10 +31,9 @@ def list_bags(bags):
     output += "\n".join(lines)
     return output + '\n</ul>'
 
-def recipe_as(recipe, sortkey):
+def recipe_as(recipe):
     """
-    Never sort a recipe, so ignore sortkey, but
-    keep it there for sake of the interface.
+    Recipe as html.
     """
     lines = []
     output = '<ul>\n'
@@ -53,14 +52,14 @@ def recipe_as(recipe, sortkey):
 def as_recipe(recipe, input):
     pass
 
-def bag_as(bag, sortkey):
+def bag_as(bag):
     """
     List the tiddlers in a bag as html.
     """
     lines = []
     output = '<ul>\n'
 # XXX we are encoding an absolute url here, which is not such a good thing
-    for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
+    for tiddler in bag.list_tiddlers():
         line = '<li><a href="/bags/%s/tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.title)
         lines.append(line)
     output += "\n".join(lines)
@@ -69,11 +68,11 @@ def bag_as(bag, sortkey):
 def as_bag(bag, input):
     pass
 
-def tiddler_as(tiddler, sortkey):
+def tiddler_as(tiddler):
     return """<div title="%s" modifier="%s" tags="%s">
 <pre>%s</pre>
 </div>
-""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, None), tiddler.content)
+""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags), tiddler.content)
 
 def as_tiddler(tiddler, input):
     pass
@@ -81,5 +80,5 @@ def as_tiddler(tiddler, input):
 def as_tags(string):
     pass
 
-def tags_as(tags, sortkey):
+def tags_as(tags):
     pass

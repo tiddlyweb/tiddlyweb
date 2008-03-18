@@ -53,6 +53,14 @@ def test_negate_fitler_by_title():
     found_tiddlers = filter_function('TiddlerOne', tiddlers)
     assert len(found_tiddlers) == 2, 'two tiddlers in returned list, got %s' % len(found_tiddlers)
 
+def test_sort_filter_by_title():
+    """
+    Get some tiddlers by a filter, and then sort them.
+    """
+    filter_function = filter.make_sort()
+    found_tiddlers = filter_function('+title', tiddlers)
+    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerThree', 'TiddlerTwo']
+
 def test_compose_filters():
     """
     Compose a list of filters and see that they do the right thing.
@@ -142,4 +150,14 @@ def test_string_composed_filter_with_remove_by_tag():
     assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
     assert found_tiddlers[0].title == 'TiddlerTwo', 'the found tiddler should be TiddlerTwo, got %s' % found_tiddlers[0].title
 
+def test_string_composed_filter_with_sort():
+    """
+    Test sort composed string filter.
+    """
 
+    filter_string = '[sort[-title]]'
+
+    filters = filter.compose_from_string(filter_string)
+    print filters
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerTwo', 'TiddlerThree', 'TiddlerOne']

@@ -45,6 +45,8 @@ def compose_from_string(filter_string):
                 filters.append([negate(by_tag), argument])
             elif flag == '-tag':
                 filters.append([remove(by_tag), argument])
+            elif flag == 'sort':
+                filters.append([make_sort(), argument])
     return filters
 
 def by_title(title, tiddlers):
@@ -71,17 +73,33 @@ def by_composition(filters, tiddlers):
     if len(filters) == 0 or filters == None:
         return tiddlers
 
+# keep the collection unique
     found_tiddlers = {}
+# keep the collection ordered
+    found_tiddlers_list = []
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
                 if tiddler.title in found_tiddlers:
                     del found_tiddlers[tiddler.title]
+                    found_tiddlers_list.remove(tiddler.title)
+        elif filter[0].__dict__.has_key('sorter'):
+            print filter[0]
+            print filter[1]
+            if len(found_tiddlers) == 0:
+                for tiddler in tiddlers:
+                    found_tiddlers[tiddler.title]=tiddler
+            found_tiddlers_list = \
+                [tiddler.title for tiddler in filter[0](filter[1], found_tiddlers.values())]
+            print found_tiddlers_list
         else:
             for tiddler in filter[0](filter[1], tiddlers):
                 found_tiddlers[tiddler.title] = tiddler
+                if tiddler.title in found_tiddlers_list:
+                    found_tiddlers_list.remove(tiddler.title)
+                found_tiddlers_list.append(tiddler.title)
 
-    return found_tiddlers.values()
+    return [found_tiddlers[title] for title in found_tiddlers_list]
 
 def remove(filter):
     """
@@ -109,4 +127,29 @@ def negate(filter):
         return [tiddler for tiddler in tiddlers if tiddler not in filtered_tiddlers]
 
     return negated_filter
+
+def make_sort():
+    """
+    Sort the tiddlers we have so far
+    """
+
+    def sort_filter(field, tiddlers):
+        reverse = False
+        if field.find('-') == 0:
+            reverse = True
+            field = field[1:]
+        elif field.find('+') == 0:
+            field = field[1:]
+        
+        print 'r: %s, f: %s' % (reverse, field)
+
+        print tiddlers
+        new_tiddlers = sorted(tiddlers, key=lambda x: getattr(x, field), reverse=reverse)
+        print new_tiddlers
+        return new_tiddlers
+
+    sort_filter.sorter = 1
+
+    return sort_filter
+
 

@@ -19,6 +19,7 @@ class Bag(dict):
         self.name = name
         self.policy = policy
         self.tmpbag = tmpbag
+        self.order = []
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None
@@ -39,11 +40,15 @@ class Bag(dict):
             bags_tiddler = copy.deepcopy(tiddler)
             bags_tiddler.bag = self.name
             tiddler = bags_tiddler
+        if tiddler.title in self.order:
+            self.order.remove(tiddler.title)
+        self.order.append(tiddler.title)
         self.__setitem__(tiddler)
 
     def remove_tiddler(self, tiddler):
+        if tiddler.title in self.order:
+            self.order.remove(tiddler.title)
         self.__delitem__(tiddler)
 
     def list_tiddlers(self):
-        return self.values()
-
+        return [self.get(title, None) for title in self.order]

@@ -16,10 +16,9 @@ from tiddlyweb import control
 empty_html = 'lib/empty.html'
 splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
-def recipe_as(recipe, sortkey):
+def recipe_as(recipe):
     """
-    Never sort a recipe, so ignore sortkey, but
-    keep it there for sake of the interface.
+    Recipe as a wiki.
     """
 
     lines = ''
@@ -42,31 +41,30 @@ def _split_empty_html():
     wiki = f.read()
     return wiki.split(splitter)
 
-def bag_as(bag, sortkey):
+def bag_as(bag):
     lines = ''
-    for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
+    for tiddler in bag.list_tiddlers():
         lines += _tiddler_as_div(tiddler)
 
     return _put_string_in_tiddlywiki(lines)
 
-def as_bag(bag, sortkey):
+def as_bag(bag):
     pass
 
-def tiddler_as(tiddler, sortkey):
+def tiddler_as(tiddler):
     tiddler_div = _tiddler_as_div(tiddler)
 
     return _put_string_in_tiddlywiki(tiddler_div)
 
 def _tiddler_as_div(tiddler):
     """
-    sortkey is not used, but we've got the interface to concern
-    ourselves with. This seems awkward.
+    Read in the tiddler from a div.
     """
 
     return """<div title="%s" modifier="%s" tags="%s">
 <pre>%s</pre>
 </div>
-""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags, None), tiddler.content)
+""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags), tiddler.content)
 
-def as_tiddler(tiddler, sortkey):
+def as_tiddler(tiddler):
     pass

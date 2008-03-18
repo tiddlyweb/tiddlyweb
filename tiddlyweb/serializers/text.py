@@ -13,10 +13,9 @@ def list_recipes(recipes):
 def list_bags(bags):
     return "\n".join([bag.name for bag in bags])
 
-def recipe_as(recipe, sortkey):
+def recipe_as(recipe):
     """
-    Never sort a recipe, so ignore sortkey, but
-    keep it there for sake of the interface.
+    Recipe as text.
     """
     lines = []
     for bag, filter in recipe:
@@ -48,14 +47,12 @@ def as_recipe(recipe, input):
     recipe.set_recipe(recipe_lines)
     return recipe
 
-def bag_as(bag, sortkey):
+def bag_as(bag):
     """
     List the tiddlers in a bag as text.
-
-    Is the bag an ordered list, so we shouldn't be sorting.
     """
     lines = []
-    for tiddler in sorted(bag.list_tiddlers(), key=sortkey):
+    for tiddler in bag.list_tiddlers():
         line = 'tiddlers/%s' % urllib.quote(tiddler.title)
         lines.append(line)
     return "\n".join(lines)
@@ -63,9 +60,9 @@ def bag_as(bag, sortkey):
 def as_bag(bag, input):
     pass
 
-def tiddler_as(tiddler, sortkey):
+def tiddler_as(tiddler):
     return 'modifier: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.modifier, tags_as(tiddler.tags, sortkey), tiddler.content)
+            % (tiddler.modifier, tags_as(tiddler.tags), tiddler.content)
 
 def as_tiddler(tiddler, input):
     try:
@@ -94,9 +91,9 @@ def as_tags(string):
 
     return tags
 
-def tags_as(tags, sortkey):
+def tags_as(tags):
     tag_string_list = []
-    for tag in sorted(tags, key=sortkey):
+    for tag in tags:
         if ' ' in tag:
             tag = '[[%s]]' % tag
         tag_string_list.append(tag)
