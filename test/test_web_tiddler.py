@@ -13,10 +13,10 @@ from fixtures import muchdata
 
 from tiddlyweb.store import Store
 
-text_put_body="""modifier: JohnSmith
+text_put_body=u"""modifier: JohnSmith
 tags: tagone
 
-Hello, I'm John Smith and I have something to sell.
+Hello, I'm John Smith \xbb and I have something to sell.
 """
 
 def setup_module(module):
@@ -53,13 +53,14 @@ def test_get_tiddler_wiki():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
 def test_put_tiddler_txt():
     http = httplib2.Http()
+    encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=text_put_body)
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
 
     assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
     tiddler_url = response['location']
@@ -68,5 +69,6 @@ def test_put_tiddler_txt():
             % tiddler_url
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
+    content = content.decode('UTF-8')
     assert content.strip().rstrip() == text_put_body.strip().rstrip(), \
             'content should be #%s#, is #%s#' % (content.strip().rstrip(), text_put_body.strip().rstrip())

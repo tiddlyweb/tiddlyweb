@@ -32,7 +32,7 @@ def test_get_bag_tiddler_list_default():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_text():
@@ -41,7 +41,7 @@ def test_get_bag_tiddler_list_text():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_html():
@@ -50,7 +50,7 @@ def test_get_bag_tiddler_list_html():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_415():
@@ -66,7 +66,7 @@ def test_get_bag_tiddler_list_html_default():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_filtered():
@@ -83,7 +83,7 @@ def test_get_bags_default():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_txt():
@@ -92,7 +92,7 @@ def test_get_bags_txt():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 31, 'len tiddlers should be 32 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_html():
@@ -101,7 +101,7 @@ def test_get_bags_html():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_unsupported_neg_format():
@@ -127,7 +127,7 @@ def test_get_bags_unsupported_recipe_format_with_accept():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
 
 def test_get_bags_unsupported_neg_format_with_accept():
     http = httplib2.Http()
@@ -135,4 +135,4 @@ def test_get_bags_unsupported_neg_format_with_accept():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']

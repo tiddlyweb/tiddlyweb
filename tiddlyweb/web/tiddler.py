@@ -58,7 +58,7 @@ def put(environ, start_response):
     content = environ['wsgi.input'].read()
     serializer = Serializer(serializers[content_type][0])
     serializer.object = tiddler
-    serializer.from_string(content)
+    serializer.from_string(content.decode('UTF-8'))
 
     store.put(tiddler)
 

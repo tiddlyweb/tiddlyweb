@@ -94,7 +94,7 @@ def test_get_recipes_default():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 3, 'len recipe should be 3 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_recipes_txt():
@@ -103,7 +103,7 @@ def test_get_recipes_txt():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200'
-    assert response['content-type'] == 'text/plain', 'response content-type should be text/plain is %s' % response['content-type']
+    assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_recipes_unsupported_neg_format():
@@ -129,7 +129,7 @@ def test_get_recipes_unsupported_recipe_format_with_accept():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
 
 def test_get_recipes_unsupported_neg_format_with_accept():
     http = httplib2.Http()
@@ -137,4 +137,4 @@ def test_get_recipes_unsupported_neg_format_with_accept():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html', 'response content-type should be text/html is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
