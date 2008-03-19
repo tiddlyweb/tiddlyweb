@@ -61,6 +61,14 @@ def test_sort_filter_by_title():
     found_tiddlers = filter_function('+title', tiddlers)
     assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerThree', 'TiddlerTwo']
 
+def test_count_filter():
+    """
+    Get some tiddlers by a filter, and then sort them.
+    """
+    filter_function = filter.make_count()
+    found_tiddlers = filter_function('2', tiddlers)
+    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerTwo']
+
 def test_compose_filters():
     """
     Compose a list of filters and see that they do the right thing.
@@ -158,6 +166,16 @@ def test_string_composed_filter_with_sort():
     filter_string = '[sort[-title]]'
 
     filters = filter.compose_from_string(filter_string)
-    print filters
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerTwo', 'TiddlerThree', 'TiddlerOne']
+
+def test_string_composed_filter_with_count():
+    """
+    Test count composed string filter.
+    """
+
+    filter_string = '[sort[-title]] [count[2]]'
+
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerTwo', 'TiddlerThree']

@@ -47,6 +47,8 @@ def compose_from_string(filter_string):
                 filters.append([remove(by_tag), argument])
             elif flag == 'sort':
                 filters.append([make_sort(), argument])
+            elif flag == 'count':
+                filters.append([make_count(), argument])
     return filters
 
 def by_title(title, tiddlers):
@@ -79,19 +81,39 @@ def by_composition(filters, tiddlers):
     found_tiddlers_list = []
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
+            """
+            If the filter has been tagged as a removal filter,
+            remove the tiddlers which match the filter.
+            """
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
                 if tiddler.title in found_tiddlers:
                     del found_tiddlers[tiddler.title]
                     found_tiddlers_list.remove(tiddler.title)
-        elif filter[0].__dict__.has_key('sorter'):
-            print filter[0]
-            print filter[1]
+        elif filter[0].__dict__.has_key('totaller'):
+            """
+            A totaller doesn't change the items in the
+            list of tiddlers. It either sorts them or
+            limits them to a certain number.
+
+            This turns out to be quite complicated, so we
+            do some pretty hairy manipulations on the
+            found_tiddlers and found_tiddlers_lists data.
+            I'm sure there is a better way.
+
+            A sorter must recreate the entire found_tiddlers_list
+            while a counter does nothing with the list.
+            """
             if len(found_tiddlers) == 0:
                 for tiddler in tiddlers:
                     found_tiddlers[tiddler.title]=tiddler
-            found_tiddlers_list = \
-                [tiddler.title for tiddler in filter[0](filter[1], found_tiddlers.values())]
-            print found_tiddlers_list
+                    found_tiddlers_list.append(tiddler.title)
+            the_tiddlers = {}
+            for tiddler in filter[0](filter[1], [found_tiddlers[title] for title in found_tiddlers_list]):
+                if filter[0].__dict__.has_key('sorter'):
+                    found_tiddlers_list.remove(tiddler.title)
+                    found_tiddlers_list.append(tiddler.title)
+                the_tiddlers[tiddler.title] = tiddler
+            found_tiddlers = the_tiddlers
         else:
             for tiddler in filter[0](filter[1], tiddlers):
                 found_tiddlers[tiddler.title] = tiddler
@@ -99,7 +121,8 @@ def by_composition(filters, tiddlers):
                     found_tiddlers_list.remove(tiddler.title)
                 found_tiddlers_list.append(tiddler.title)
 
-    return [found_tiddlers[title] for title in found_tiddlers_list]
+    return [found_tiddlers[title] for title in found_tiddlers_list \
+            if title in found_tiddlers]
 
 def remove(filter):
     """
@@ -128,6 +151,17 @@ def negate(filter):
 
     return negated_filter
 
+def make_count():
+    """
+    Limit the number of tiddlers by the argument.
+    """
+
+    def count_filter(count, tiddlers):
+        return tiddlers[0:int(count)]
+
+    count_filter.totaller = 1
+    return count_filter
+
 def make_sort():
     """
     Sort the tiddlers we have so far
@@ -141,13 +175,10 @@ def make_sort():
         elif field.find('+') == 0:
             field = field[1:]
         
-        print 'r: %s, f: %s' % (reverse, field)
-
-        print tiddlers
         new_tiddlers = sorted(tiddlers, key=lambda x: getattr(x, field), reverse=reverse)
-        print new_tiddlers
         return new_tiddlers
 
+    sort_filter.totaller = 1
     sort_filter.sorter = 1
 
     return sort_filter
