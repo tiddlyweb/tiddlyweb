@@ -4,7 +4,7 @@ This is not complete, and likely not up to date.
 
 = Release 1 =
 
-* flesh out tiddler object, e.g. fields and date handling
+* Flesh out tiddler object's handling of created field
 
 * confirm unicode/UTF-8 testing and handling etc
 
@@ -16,7 +16,9 @@ This is not complete, and likely not up to date.
 
 * PUT JSON reps of things
 
-* HTTP cache headers prodution
+* HTTP cache headers production
+** expiration stuff
+** last modified time (based on grazing all the tiddlers?)
 
 = After Release 1 =
 
@@ -24,13 +26,13 @@ This is not complete, and likely not up to date.
 
 * Tiddler revisions
 
-* HTTP cache headers handling
+* Incoming HTTP cache headers handling
 
 * Authentication (basic and OpenID)
 ** credentials extraction for getting/validating the user
 ** challenging for getting a user into the system
 
-* Authoriziation (bag security policy handling and authoring)
+* Authori[zs]ation (bag security policy handling and authoring)
 
 * S3 store
 
