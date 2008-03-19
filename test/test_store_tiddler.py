@@ -18,7 +18,7 @@ from tiddlyweb.tiddler import Tiddler
 
 expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
 
-expected_stored_content = """modifier: AuthorOne
+expected_stored_text = """modifier: AuthorOne
 tags: tagone tagtwo [[tag five]]
 
 c tiddler one content
@@ -46,11 +46,11 @@ def test_simple_put():
             % expected_stored_filename
 
     f = file(expected_stored_filename)
-    content = f.read()
+    text = f.read()
 
-    assert content == expected_stored_content, \
-            'stored content should be %s, got %s' \
-            % (expected_stored_content, content)
+    assert text == expected_stored_text, \
+            'stored text should be %s, got %s' \
+            % (expected_stored_text, text)
 
 def test_simple_get():
     """
@@ -64,7 +64,7 @@ def test_simple_get():
 
     assert stored_tiddler.title == 'TiddlerOne', 'retrieved tiddler has correct title'
     assert stored_tiddler.bag == 'bagone', 'retrieve tiddler has correct bag'
-    assert stored_tiddler.content == 'c tiddler one content\n', 'content is %s should b %s' % (stored_tiddler.content, 'c tiddler one content\n')
+    assert stored_tiddler.text == 'c tiddler one content\n', 'text is %s should b %s' % (stored_tiddler.text, 'c tiddler one content\n')
 
     assert sorted(stored_tiddler.tags) == ['tag five', 'tagone', 'tagtwo']
 

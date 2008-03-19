@@ -7,7 +7,7 @@ import sys
 sys.path.append('.')
 from tiddlyweb.tiddler import Tiddler
 
-test_tiddler_content = "Race car drivers\ngo really very fast."
+test_tiddler_text = "Race car drivers\ngo really very fast."
 
 def setup_module(module):
     pass
@@ -25,7 +25,7 @@ def test_tiddler_full_create():
     tiddler = Tiddler(
             title = 'test tiddler',
             modifier = 'test@example.com',
-            content = test_tiddler_content,
+            text = test_tiddler_text,
             tags = ['foo', 'bar'],
             bag = 'bagone'
             )
@@ -38,7 +38,7 @@ def test_tiddler_full_create():
     assert tiddler.modifier == 'test@example.com', \
             'tiddler modifier should test@example.com, got %s' \
             % tiddler.modifier
-    assert tiddler.content == test_tiddler_content, \
+    assert tiddler.text == test_tiddler_text, \
             'tiddler content is correct'
     assert tiddler.tags == ['foo', 'bar'], \
             'tiddler tags are correct'

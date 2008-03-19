@@ -46,7 +46,7 @@ def test_simple_get():
     store.get(bag)
 
     assert bag.list_tiddlers()[0].title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
-    assert bag.list_tiddlers()[0].content == None
+    assert bag.list_tiddlers()[0].text == None
     assert bag.list_tiddlers()[0].tags == []
     assert bag.policy == bagone.policy
     

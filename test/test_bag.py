@@ -77,9 +77,9 @@ def test_store_by_copy():
     Confirm tiddlers in bag are copies, not references.
     """
 
-    tiddlers[0].content = 'changed it'
+    tiddlers[0].text = 'changed it'
 
-    assert tiddlers[0].content != bag[tiddlers[0]].content, 'tiddlers in bag are copies not reference'
+    assert tiddlers[0].text != bag[tiddlers[0]].text, 'tiddlers in bag are copies not reference'
 
 def test_bag_remove():
     """

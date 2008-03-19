@@ -62,10 +62,10 @@ def test_get_tiddlers_from_bag():
     tiddlers = control.get_tiddlers_from_bag(bag)
 
     assert len(tiddlers) ==  10, 'there are 10 tiddlers in bag0'
-    content = ''
+    text = ''
     for tiddler in tiddlers:
-        content += tiddler.content
-    assert 'i am tiddler 4' in content, 'we got some of the right content'
+        text += tiddler.text
+    assert 'i am tiddler 4' in text, 'we got some of the right text'
 
 def test_filter_tiddlers_from_bag():
     """

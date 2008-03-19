@@ -28,7 +28,7 @@ def test_generated_string():
             title = 'test tiddler',
             modifier = 'test@example.com',
             tags = ['foobar', 'foo bar'],
-            content = "Hello, I'm the content."
+            text = "Hello, I'm the content."
             )
 
     serializer = Serializer('text')

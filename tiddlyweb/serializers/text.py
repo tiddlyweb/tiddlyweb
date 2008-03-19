@@ -62,12 +62,12 @@ def as_bag(bag, input):
 
 def tiddler_as(tiddler):
     return 'modifier: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.modifier, tags_as(tiddler.tags), tiddler.content)
+            % (tiddler.modifier, tags_as(tiddler.tags), tiddler.text)
 
 def as_tiddler(tiddler, input):
     try:
-        header, content = input.split('\n\n', 1)
-        tiddler.content = content
+        header, text = input.split('\n\n', 1)
+        tiddler.text = text
         headers = header.split('\n')
 
         for field, value in [x.split(': ') for x in headers]:

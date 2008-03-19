@@ -37,14 +37,14 @@ def setup_module(module):
 
 def test_no_bag_for_tiddler():
     tiddler = Tiddler(title='testnobag')
-    tiddler.content = 'no bag here'
+    tiddler.text = 'no bag here'
     tiddler.bag = 'no bag of this name'
 
     py.test.raises(NoBagError, "store.put(tiddler)")
 
 def test_put_and_get_tiddler():
     tiddler = Tiddler(title='testbag')
-    tiddler.content = 'bag1 here'
+    tiddler.text = 'bag1 here'
     bag = Bag(name = 'bag1')
     tiddler.bag = 'bag1'
 
@@ -55,7 +55,7 @@ def test_put_and_get_tiddler():
     new_tiddler.bag = 'bag1'
     new_tiddler = store.get(new_tiddler)
 
-    assert new_tiddler.content == 'bag1 here\n'
+    assert new_tiddler.text == 'bag1 here\n'
 
 def test_get_diddle_put_tiddler():
     new_tiddler = Tiddler(title='testbag')
@@ -63,7 +63,7 @@ def test_get_diddle_put_tiddler():
     new_tiddler = store.get(new_tiddler)
 
     new_tiddler.bag = 'bag2'
-    new_tiddler.content = 'bag2 here'
+    new_tiddler.text = 'bag2 here'
 
     py.test.raises(NoBagError, "store.put(new_tiddler)")
 
@@ -81,13 +81,13 @@ def test_tiddler_unique_by_bags():
     tiddler_two = Tiddler('testbag')
     tiddler_two.bag = 'bag2'
 
-    assert tiddler_one.content == tiddler_two.content == None, \
+    assert tiddler_one.text == tiddler_two.text == None, \
             'empty tiddlers have equally empty content'
 
     store.get(tiddler_one)
     store.get(tiddler_two)
 
-    assert tiddler_one.content != tiddler_two.content, \
+    assert tiddler_one.text != tiddler_two.text, \
             'empty tiddlers have different content'
 
 def test_put_recipe():
@@ -105,7 +105,7 @@ def test_where_this_tiddler():
     put the bag in the collection if it matches the filter stream.
     """
     tiddler_lonely = Tiddler('TiddlerOne')
-    tiddler_lonely.content = 'tiddlerincookiesyay'
+    tiddler_lonely.text = 'tiddlerincookiesyay'
 
     recipe = Recipe('cookies')
     store.get(recipe)

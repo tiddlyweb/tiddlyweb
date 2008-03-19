@@ -4,6 +4,10 @@ A class and other thingies for a Tiddler.
 
 from datetime import datetime
 
+def current_timestring():
+    dt = datetime.utcnow()
+    return dt.strftime('%Y%m%d%H%M')
+
 class Tiddler(object):
     """
     A proper tiddler has the follow attributes:
@@ -13,26 +17,24 @@ class Tiddler(object):
     created: the time it was created
     tags: the list of tags this tiddler has.
 
-    XXX content is not content is text in the tiddlywiki, fix that.
-
-    XXX: therefore the model below is wrong and needs a tuneup
     """
+
 
     def __init__(self,
             title=None,
+            modified=current_timestring(),
+            created=current_timestring(),
             modifier=None,
-            modified=datetime.utcnow(),
-            created=datetime.utcnow(),
             tags=[],
             bag=None,
-            content=None):
+            text=None):
         self.title = title
         self.modifier = modifier
         self.modified = modified
-        self.create = created
+        self.created = created
         self.tags = tags
         self.bag = bag
-        self.content = content
+        self.text = text
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None

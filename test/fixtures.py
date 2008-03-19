@@ -16,18 +16,18 @@ tiddlers = [
         Tiddler(
             title='TiddlerOne',
             modifier='AuthorOne',
-            content='c tiddler one content',
+            text='c tiddler one content',
             tags=['tagone', 'tagtwo']
         ),
         Tiddler(
             title='TiddlerTwo',
             modifier='AuthorTwo',
-            content='b tiddler two content',
+            text='b tiddler two content',
         ),
         Tiddler(
             title='TiddlerThree',
             modifier='AuthorThree',
-            content='a tiddler three content',
+            text='a tiddler three content',
             tags=['tagone', 'tagthree']
         )
 ]
@@ -90,7 +90,7 @@ def muchdata(store):
 def create_tiddler(store, bag, numeral):
     tiddler = Tiddler('tiddler%s' % numeral)
     tiddler.bag = bag.name
-    tiddler.content = 'i am tiddler %s' % numeral
+    tiddler.text = 'i am tiddler %s' % numeral
     tags = ['basic tag']
     if not numeral % 2:
         tags.append('tagtwo')

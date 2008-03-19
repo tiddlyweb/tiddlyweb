@@ -64,7 +64,7 @@ def _tiddler_as_div(tiddler):
     return """<div title="%s" modifier="%s" tags="%s">
 <pre>%s</pre>
 </div>
-""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags), tiddler.content)
+""" % (tiddler.title, tiddler.modifier, tags_as(tiddler.tags), tiddler.text)
 
 def as_tiddler(tiddler):
     pass
