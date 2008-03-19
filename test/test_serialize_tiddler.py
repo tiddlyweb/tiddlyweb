@@ -14,6 +14,8 @@ from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
 expected_string = """modifier: test@example.com
+created: 
+modified: 200803030303
 tags: foobar [[foo bar]]
 
 Hello, I'm the content.
@@ -28,7 +30,8 @@ def test_generated_string():
             title = 'test tiddler',
             modifier = 'test@example.com',
             tags = ['foobar', 'foo bar'],
-            text = "Hello, I'm the content."
+            text = "Hello, I'm the content.",
+            modified = '200803030303'
             )
 
     serializer = Serializer('text')

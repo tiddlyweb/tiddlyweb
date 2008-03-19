@@ -32,13 +32,9 @@ def import_wiki(filename='wiki'):
     for tiddler in divs:
         title = tiddler['title']
         contents = tiddler.find('pre').contents[0]
-        if title == 'Basque':
-            print 'c: %s' % contents
-        try:
-            tag_string = tiddler['tags']
-        except KeyError:
-            tag_string = ''
-        tiddler_string = "modifier: importer\ntags: %s\n\n%s" % (tag_string, contents)
+        tiddler_string = "modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s" % \
+                (tiddler.get('modifier', ''), tiddler.get('created', ''), \
+                tiddler.get('modified', ''), tiddler.get('tags', ''), contents)
         new_tiddler = Tiddler(title)
         new_tiddler.bag = 'wiki'
         serializer = Serializer('text')

@@ -6,7 +6,7 @@ from datetime import datetime
 
 def current_timestring():
     dt = datetime.utcnow()
-    return dt.strftime('%Y%m%d%H%M')
+    return unicode(dt.strftime('%Y%m%d%H%M'))
 
 class Tiddler(object):
     """
@@ -17,13 +17,16 @@ class Tiddler(object):
     created: the time it was created
     tags: the list of tags this tiddler has.
 
+    created is going to take some diddling to get 
+    right. So we ignore it for now.
+
     """
 
 
     def __init__(self,
             title=None,
             modified=current_timestring(),
-            created=current_timestring(),
+            created='',
             modifier=None,
             tags=[],
             bag=None,

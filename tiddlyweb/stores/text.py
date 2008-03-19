@@ -73,7 +73,10 @@ def bag_get(bag):
     bag_path = _bag_path(bag.name)
     tiddlers_dir = _tiddlers_dir(bag.name)
 
-    tiddlers = os.listdir(tiddlers_dir)
+    try:
+        tiddlers = os.listdir(tiddlers_dir)
+    except OSError, e:
+        raise NoBagError, 'unable to list tiddlers in bag: %s' % e
     for tiddler in tiddlers:
         bag.add_tiddler(Tiddler(title=tiddler))
 

@@ -175,7 +175,7 @@ def make_sort():
         elif field.find('+') == 0:
             field = field[1:]
         
-        new_tiddlers = sorted(tiddlers, key=lambda x: getattr(x, field), reverse=reverse)
+        new_tiddlers = sorted(tiddlers, key=lambda x: str(getattr(x, field)).lower(), reverse=reverse)
         return new_tiddlers
 
     sort_filter.totaller = 1

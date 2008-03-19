@@ -19,6 +19,8 @@ from tiddlyweb.tiddler import Tiddler
 expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
 
 expected_stored_text = """modifier: AuthorOne
+created: 
+modified: 200803030303
 tags: tagone tagtwo [[tag five]]
 
 c tiddler one content
@@ -39,6 +41,7 @@ def test_simple_put():
     store.put(bagone)
     tiddler = bagone.list_tiddlers()[0]
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
+    tiddler.modified = '200803030303'
     store.put(tiddler)
 
     assert os.path.exists(expected_stored_filename), \
@@ -59,6 +62,7 @@ def test_simple_get():
 
     stored_tiddler = Tiddler(title='TiddlerOne')
     stored_tiddler.bag = 'bagone'
+    stored_tiddler.modified = '200803030303'
     store = Store('text')
     store.get(stored_tiddler)
 

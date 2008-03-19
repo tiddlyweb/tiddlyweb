@@ -2,7 +2,7 @@
 import urllib
 
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store
+from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 from tiddlyweb import web
@@ -51,5 +51,6 @@ def get_tiddlers(environ, start_response):
     serializer = Serializer(serialize_type)
     serializer.object = tmp_bag
 
-    start_response("200 OK", [('Content-Type', mime_type)])
+    start_response("200 OK", [('Content-Type', mime_type),
+             ('Set-Cookie', 'chkHttpReadOnly=false')])
     return [serializer.to_string()]

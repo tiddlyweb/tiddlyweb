@@ -61,8 +61,9 @@ def as_bag(bag, input):
     pass
 
 def tiddler_as(tiddler):
-    return 'modifier: %s\ntags: %s\n\n%s\n' \
-            % (tiddler.modifier, tags_as(tiddler.tags), tiddler.text)
+    return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s\n' \
+            % (tiddler.modifier, tiddler.created, tiddler.modified, \
+            tags_as(tiddler.tags), tiddler.text)
 
 def as_tiddler(tiddler, input):
     try:
@@ -76,7 +77,8 @@ def as_tiddler(tiddler, input):
         raise TiddlerFormatError, 'malformed tiddler string: %s' % e
 
     tag_string = tiddler.tags
-    tiddler.tags = as_tags(tag_string)
+    if tag_string:
+        tiddler.tags = as_tags(tag_string)
 
     return tiddler
 

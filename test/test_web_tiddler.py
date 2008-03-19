@@ -14,6 +14,8 @@ from fixtures import muchdata
 from tiddlyweb.store import Store
 
 text_put_body=u"""modifier: JohnSmith
+created: 
+modified: 200803030303
 tags: tagone
 
 Hello, I'm John Smith \xbb and I have something to sell.
@@ -70,5 +72,24 @@ def test_put_tiddler_txt():
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
     content = content.decode('UTF-8')
-    assert content.strip().rstrip() == text_put_body.strip().rstrip(), \
-            'content should be #%s#, is #%s#' % (content.strip().rstrip(), text_put_body.strip().rstrip())
+    assert content.strip().rstrip() == text_put_body.strip().rstrip()#, \
+           # 'content should be #%s#, is #%s#' % (content.strip().rstrip(), text_put_body.strip().rstrip())
+
+def test_put_tiddler_txt_no_modified():
+    """
+    Putting a tiddler with no modifier should make a default.
+    """
+    http = httplib2.Http()
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body='modifier: ArthurDent\n\nTowels')
+
+    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
+    tiddler_url = response['location']
+    assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne', \
+            'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestOne is %s' \
+            % tiddler_url
+
+    response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
+    content = content.decode('UTF-8')
+    assert 'modified: 2' in content
