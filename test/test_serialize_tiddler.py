@@ -10,6 +10,9 @@ just in the way.
 
 import sys
 sys.path.append('.')
+
+import simplejson
+
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 
@@ -21,7 +24,7 @@ tags: foobar [[foo bar]]
 Hello, I'm the content.
 """
 
-expected_json_string = '{"text": "Hello, I\'m the content.", "modifier": "test@example.com", "modified": "200803030303", "tags": ["foobar", "foo bar"], "created": ""}'
+expected_json_string = '{"created": "", "text": "Hello, I\'m the content.", "modifier": "test@example.com", "modified": "200803030303", "tags": ["foobar", "foo bar"]}'
 
 tiddler = Tiddler(
         title = 'test tiddler',
@@ -52,8 +55,10 @@ def test_generated_json_string():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    assert string == expected_json_string
-    assert '%s' % serializer == expected_json_string
+    info = simplejson.loads(string)
+
+    assert info['title'] == 'test tiddler'
+    assert info['text'] == "Hello, I'm the content."
 
 def test_tiddler_from_json():
     serializer = Serializer('json')

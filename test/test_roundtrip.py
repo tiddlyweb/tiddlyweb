@@ -55,7 +55,7 @@ def test_put_and_get_tiddler():
     new_tiddler.bag = 'bag1'
     new_tiddler = store.get(new_tiddler)
 
-    assert new_tiddler.text == 'bag1 here\n'
+    assert new_tiddler.text == 'bag1 here'
 
 def test_get_diddle_put_tiddler():
     new_tiddler = Tiddler(title='testbag')

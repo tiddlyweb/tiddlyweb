@@ -68,7 +68,7 @@ def tiddler_as(tiddler):
 def as_tiddler(tiddler, input):
     try:
         header, text = input.split('\n\n', 1)
-        tiddler.text = text
+        tiddler.text = text.rstrip()
         headers = header.split('\n')
 
         for field, value in [x.split(': ') for x in headers]:

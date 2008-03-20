@@ -68,7 +68,7 @@ def test_simple_get():
 
     assert stored_tiddler.title == 'TiddlerOne', 'retrieved tiddler has correct title'
     assert stored_tiddler.bag == 'bagone', 'retrieve tiddler has correct bag'
-    assert stored_tiddler.text == 'c tiddler one content\n', 'text is %s should b %s' % (stored_tiddler.text, 'c tiddler one content\n')
+    assert stored_tiddler.text == 'c tiddler one content', 'text is %s should b %s' % (stored_tiddler.text, 'c tiddler one content\n')
 
     assert sorted(stored_tiddler.tags) == ['tag five', 'tagone', 'tagtwo']
 

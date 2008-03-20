@@ -145,6 +145,7 @@ def tiddler_get(tiddler):
         serializer.object = tiddler
         tiddler_string = tiddler_file.read()
         tiddler_file.close()
-        return serializer.from_string(tiddler_string)
+        tiddler = serializer.from_string(tiddler_string)
+        return tiddler
     except IOError, e:
         raise NoTiddlerError, 'no tiddler for %s: %s' % (tiddler.title, e)

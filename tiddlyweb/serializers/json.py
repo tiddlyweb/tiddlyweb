@@ -37,7 +37,7 @@ def as_bag(bag, input):
 
 def tiddler_as(tiddler):
     tiddler_dict = {}
-    for key in ['modifier', 'created', 'modified', 'tags', 'text']:
+    for key in ['title', 'modifier', 'created', 'modified', 'tags', 'text']:
         tiddler_dict[key] = getattr(tiddler, key, None)
 
     return simplejson.dumps(tiddler_dict)

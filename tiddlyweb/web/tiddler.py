@@ -45,7 +45,7 @@ def put(environ, start_response):
 
     content_type = environ['tiddlyweb.type']
 
-    if content_type != 'text/plain':
+    if content_type != 'text/plain' and content_type != 'application/json':
         raise HTTP415, '%s not supported yet' % content_type
 
     content = environ['wsgi.input'].read()

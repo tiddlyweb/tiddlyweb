@@ -8,6 +8,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import simplejson
 
 from fixtures import muchdata
 
@@ -93,3 +94,24 @@ def test_put_tiddler_txt_no_modified():
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
     content = content.decode('UTF-8')
     assert 'modified: 2' in content
+
+def test_put_tiddler_json():
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
+    tiddler_url = response['location']
+    assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo', \
+            'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo is %s' \
+            % tiddler_url
+
+    response, content = http.request(tiddler_url, headers={'Accept': 'application/json'})
+    info = simplejson.loads(content)
+    assert info['title'] == 'TestTwo'
+    assert info['text'] == 'i fight for the users'
+
+

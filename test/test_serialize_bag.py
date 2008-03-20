@@ -39,8 +39,6 @@ def test_generated_html():
     html_serializer.object = bagfour
     string = html_serializer.to_string()
 
-    print bagfour
-
     assert string == expected_html_string, \
             'serialized bag looks like we expect. should be %s, got %s' \
             % (expected_html_string, string)
