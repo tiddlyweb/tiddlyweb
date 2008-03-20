@@ -8,6 +8,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import simplejson
 
 from fixtures import muchdata
 
@@ -102,7 +103,7 @@ def test_get_bags_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.rstrip().split('\n')) == 33, 'len bags should be 33 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_unsupported_neg_format():
     http = httplib2.Http()
@@ -113,21 +114,25 @@ def test_get_bags_unsupported_neg_format():
 
 def test_get_bags_unsupported_recipe_format():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags.json',
+    response, content = http.request('http://our_test_domain:8001/bags.jpeg',
             method='GET')
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
 
-def test_get_bags_unsupported_recipe_format_with_accept():
+def test_get_bags_json():
     """
     Fails over to accept header.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags.json',
-            method='GET', headers={'Accept': 'text/html'})
+            method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+    assert response['content-type'] == 'application/json; charset=UTF-8', \
+            'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
+    info = simplejson.loads(content)
+    assert type(info) == list
+    assert len(info) == 31
 
 def test_get_bags_unsupported_neg_format_with_accept():
     http = httplib2.Http()

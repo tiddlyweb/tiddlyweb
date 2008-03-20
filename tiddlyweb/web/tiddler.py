@@ -9,6 +9,7 @@ serializers = {
         'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
         'text/plain': ['text', 'text/plain; charset=UTF-8'],
         'text/html': ['html', 'text/html; charset=UTF-8'],
+        'application/json': ['json', 'application/json; charset=UTF-8'],
         'default': ['text', 'text/plain; charset=UTF-8'],
         }
 

@@ -21,7 +21,7 @@ in its first several iterations.
 REQUIREMENTS:
 
 * Python 2.5
-* Other python dependencies to be determined
+* simplejson
 
 See also: NOTES
 

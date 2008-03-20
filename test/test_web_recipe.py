@@ -9,6 +9,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import simplejson
 
 from fixtures import muchdata
 
@@ -106,30 +107,25 @@ def test_get_recipes_txt():
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
 
+def test_get_recipes_json():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes.json',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'application/json; charset=UTF-8', \
+            'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
+    info = simplejson.loads(content)
+    assert type(info) == list
+    assert len(info) == 1
+    assert info[0] == 'long'
+
 def test_get_recipes_unsupported_neg_format():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes.gif',
             method='GET')
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
-
-def test_get_recipes_unsupported_recipe_format():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes.json',
-            method='GET')
-
-    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
-
-def test_get_recipes_unsupported_recipe_format_with_accept():
-    """
-    Fail over to accept header when extension not supported.
-    """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes.json',
-            method='GET', headers={'Accept': 'text/html'})
-
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
 
 def test_get_recipes_unsupported_neg_format_with_accept():
     http = httplib2.Http()
