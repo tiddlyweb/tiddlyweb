@@ -22,6 +22,8 @@ This is not complete, and likely not up to date.
 
 = After Release 1 =
 
+* align with http://www.mnot.net/blog/2008/03/20/beyond_methods
+
 * add name fragments to arguments in filters
 
 * Tiddler revisions
