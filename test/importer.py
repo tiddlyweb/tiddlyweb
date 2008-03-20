@@ -5,6 +5,9 @@ import sys
 sys.path.append('.')
 
 import codecs
+import simplejson
+import httplib2
+import re
 
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
@@ -15,6 +18,7 @@ from tiddlyweb.bag import Bag
 def import_wiki(filename='wiki'):
     f = codecs.open(filename, encoding='utf-8')
     wikitext = f.read()
+    f.close()
 
     store = Store('text')
 
@@ -38,20 +42,34 @@ def _do_bag(store):
     store.put(bag)
 
 def _do_tiddler(store, tiddler):
-    title = tiddler['title']
-    contents = tiddler.find('pre').contents[0]
-    tiddler_string = "modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s" % \
-            (tiddler.get('modifier', ''), tiddler.get('created', ''), \
-            tiddler.get('modified', ''), tiddler.get('tags', ''), contents)
-    new_tiddler = Tiddler(title)
-    new_tiddler.bag = 'wiki'
-    serializer = Serializer('text')
-    serializer.object = new_tiddler
-    serializer.from_string(tiddler_string)
-    try:
-        store.put(new_tiddler)
-    except UnicodeEncodeError, e:
-        raise Exception, 'tiddler %s caused unicode encode error: %s' % (new_tiddler.title, e)
+    tiddler_dict = {}
+    tiddler_dict['title'] = tiddler['title']
+    tiddler_dict['contents'] = tiddler.find('pre').contents[0]
+    for key in (['modifier', 'created', 'modified', 'tags']):
+        tiddler_dict[key] = tiddler.get(key, '')
+
+    tiddler_dict['tags'] = _tag_string_to_list(tiddler_dict['tags'])
+
+    json_string = simplejson.dumps(tiddler_dict)
+
+    http = httplib2.Http()
+    url = 'http://localhost:8080/bags/wiki/tiddlers/%s' % tiddler_dict['title']
+    print 'js: %s\nu: %s' % (json_string, url)
+    response, content = http.request(url, method='PUT', \
+            headers={'Content-Type': 'application/json'}, body=json_string)
+
+    print '%s, %s' % (tiddler_dict['title'], response['status'])
+
+def _tag_string_to_list(string):
+    tags = []
+    tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
+    for match in tag_matcher.finditer(string):
+        if match.group(2):
+            tags.append(match.group(2))
+        elif match.group(1):
+            tags.append(match.group(1))
+
+    return tags
 
 if __name__ == '__main__':
     import_wiki()

@@ -42,13 +42,14 @@ def get(environ, start_response):
 def put(environ, start_response):
     tiddler = _tiddler_from_path(environ)
     store = environ['tiddlyweb.store']
+    length = environ['CONTENT_LENGTH']
 
     content_type = environ['tiddlyweb.type']
 
     if content_type != 'text/plain' and content_type != 'application/json':
         raise HTTP415, '%s not supported yet' % content_type
 
-    content = environ['wsgi.input'].read()
+    content = environ['wsgi.input'].read(int(length))
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tiddler
