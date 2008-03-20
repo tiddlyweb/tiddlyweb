@@ -8,21 +8,11 @@ from tiddlyweb import control
 from tiddlyweb import web
 from tiddlyweb.web.http import HTTP404
 
-# XXX the store should be in the environ!
-
-serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
-        'text/html': ['html', 'text/html; charset=UTF-8'],
-        'text/plain': ['text', 'text/plain; charset=UTF-8'],
-        'application/json': ['json', 'application/json; charset=UTF-8'],
-        'default': ['html', 'text/html; charset=UTF-8'],
-        }
-
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
 
     start_response("200 OK",
@@ -48,7 +38,7 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tmp_bag
 

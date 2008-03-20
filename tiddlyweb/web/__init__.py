@@ -2,15 +2,26 @@ import urllib
 
 from tiddlyweb.web.http import HTTP415
 
-def get_serialize_type(environ, serializers):
+serializers = {
+        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
+        'text/html': ['html', 'text/html; charset=UTF-8'],
+        'text/plain': ['text', 'text/plain; charset=UTF-8'],
+        'application/json': ['json', 'application/json; charset=UTF-8'],
+        'default': ['html', 'text/html; charset=UTF-8'],
+        }
+
+def get_serialize_type(environ):
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
     serialize_type, mime_type = None, None
 
+    if type(accept) == str:
+        accept = [accept]
+
     while len(accept) and serialize_type == None:
-        type = accept.pop(0)
+        candidate_type = accept.pop(0)
         try:
-            serialize_type, mime_type = serializers[type]
+            serialize_type, mime_type = serializers[candidate_type]
         except KeyError:
             pass
     if not serialize_type:

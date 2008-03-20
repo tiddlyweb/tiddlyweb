@@ -5,14 +5,6 @@ from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415
 from tiddlyweb import web
 
-serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
-        'text/plain': ['text', 'text/plain; charset=UTF-8'],
-        'text/html': ['html', 'text/html; charset=UTF-8'],
-        'application/json': ['json', 'application/json; charset=UTF-8'],
-        'default': ['text', 'text/plain; charset=UTF-8'],
-        }
-
 def _tiddler_from_path(environ):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
@@ -33,7 +25,7 @@ def get(environ, start_response):
     except NoTiddlerError, e:
         raise HTTP404, '%s not found, %s' % (tiddler.title, e)
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tiddler
 
@@ -57,7 +49,8 @@ def put(environ, start_response):
         raise HTTP415, '%s not supported yet' % content_type
 
     content = environ['wsgi.input'].read()
-    serializer = Serializer(serializers[content_type][0])
+    serialize_type, mime_type = web.get_serialize_type(environ)
+    serializer = Serializer(serialize_type)
     serializer.object = tiddler
     serializer.from_string(content.decode('UTF-8'))
 

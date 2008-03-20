@@ -7,19 +7,11 @@ from tiddlyweb.web.http import HTTP415, HTTP404
 from tiddlyweb import control
 from tiddlyweb import web
 
-serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
-        'text/plain': ['text', 'text/plain; charset=UTF-8'],
-        'text/html': ['html', 'text/html; charset=UTF-8'],
-        'application/json': ['json', 'application/json; charset=UTF-8'],
-        'default': ['html', 'text/html; charset=UTF-8'],
-        }
-
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     recipes = store.list_recipes()
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
 
     start_response("200 OK",
@@ -43,7 +35,7 @@ def get(environ, start_response):
     except NoRecipeError, e:
         raise HTTP404, '%s not found, %s' % (recipe.name, e)
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = recipe
 
@@ -74,7 +66,7 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
 
-    serialize_type, mime_type = web.get_serialize_type(environ, serializers)
+    serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tmp_bag
 
