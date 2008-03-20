@@ -22,31 +22,36 @@ def import_wiki(filename='wiki'):
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
+    _do_recipe(store)
+    _do_bag(store)
+
+    for tiddler in divs:
+        _do_tiddler(store, tiddler)
+
+def _do_recipe(store):
     recipe = Recipe('wiki')
     recipe.set_recipe([['wiki', '']])
     store.put(recipe)
 
+def _do_bag(store):
     bag = Bag('wiki')
     store.put(bag)
 
-    for tiddler in divs:
-        title = tiddler['title']
-        contents = tiddler.find('pre').contents[0]
-        tiddler_string = "modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s" % \
-                (tiddler.get('modifier', ''), tiddler.get('created', ''), \
-                tiddler.get('modified', ''), tiddler.get('tags', ''), contents)
-        new_tiddler = Tiddler(title)
-        new_tiddler.bag = 'wiki'
-        serializer = Serializer('text')
-        serializer.object = new_tiddler
-        serializer.from_string(tiddler_string)
-        try:
-            store.put(new_tiddler)
-        except UnicodeEncodeError, e:
-            raise Exception, 'tiddler %s caused unicode encode error: %s' % (new_tiddler.title, e)
-        if title == 'faq':
-            print new_tiddler.title
-            print new_tiddler.content
+def _do_tiddler(store, tiddler):
+    title = tiddler['title']
+    contents = tiddler.find('pre').contents[0]
+    tiddler_string = "modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s" % \
+            (tiddler.get('modifier', ''), tiddler.get('created', ''), \
+            tiddler.get('modified', ''), tiddler.get('tags', ''), contents)
+    new_tiddler = Tiddler(title)
+    new_tiddler.bag = 'wiki'
+    serializer = Serializer('text')
+    serializer.object = new_tiddler
+    serializer.from_string(tiddler_string)
+    try:
+        store.put(new_tiddler)
+    except UnicodeEncodeError, e:
+        raise Exception, 'tiddler %s caused unicode encode error: %s' % (new_tiddler.title, e)
 
 if __name__ == '__main__':
     import_wiki()
