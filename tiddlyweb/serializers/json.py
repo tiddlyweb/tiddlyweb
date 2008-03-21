@@ -24,7 +24,9 @@ def as_recipe(recipe, input):
     """
     Turn a json string back into a recipe.
     """
-    pass
+    info = simplejson.loads(input)
+    recipe.set_recipe(info)
+    return recipe
 
 def bag_as(bag):
     """

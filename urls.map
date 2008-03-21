@@ -13,6 +13,7 @@
 # the recipe in various forms
 /recipes/{recipe_name:segment}
     GET tiddlyweb.web.recipe:get
+    PUT tiddlyweb.web.recipe:put
 
 # the tiddlers produced by this recipe
 /recipes/{recipe_name:segment}/tiddlers[.{format}]

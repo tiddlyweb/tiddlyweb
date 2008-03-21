@@ -1,8 +1,8 @@
 
 from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.store import Store, NoTiddlerError
+from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.web.http import HTTP404, HTTP415
+from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409
 from tiddlyweb import web
 
 def _tiddler_from_path(environ):
@@ -55,7 +55,11 @@ def put(environ, start_response):
     serializer.object = tiddler
     serializer.from_string(content.decode('UTF-8'))
 
-    store.put(tiddler)
+    try:
+        store.put(tiddler)
+    except NoBagError, e:
+        raise HTTP409, "Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." % \
+                (tiddler.title, tiddler.bag, e)
 
     start_response("204 No Content",
             [('Location', web.tiddler_url(environ, tiddler))])

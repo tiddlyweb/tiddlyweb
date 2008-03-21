@@ -26,22 +26,25 @@ def import_wiki(filename='wiki'):
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
-    _do_recipe(store)
+    _do_recipe()
     _do_bag(store)
 
     for tiddler in divs:
-        _do_tiddler(store, tiddler)
+        _do_tiddler(tiddler)
 
-def _do_recipe(store):
-    recipe = Recipe('wiki')
-    recipe.set_recipe([['wiki', '']])
-    store.put(recipe)
+def _do_recipe():
+    json_string = simplejson.dumps([['wiki','']])
+    http = httplib2.Http()
+    url = 'http://localhost:8080/recipes/%s' % 'wiki'
+    response, content = http.request(url, method='PUT', \
+            headers={'Content-Type': 'application/json'}, body=json_string)
+    print '%s, %s' % (json_string, response['status'])
 
 def _do_bag(store):
     bag = Bag('wiki')
     store.put(bag)
 
-def _do_tiddler(store, tiddler):
+def _do_tiddler(tiddler):
     tiddler_dict = {}
     tiddler_dict['title'] = tiddler['title']
     tiddler_dict['text'] = tiddler.find('pre').contents[0]
@@ -54,11 +57,8 @@ def _do_tiddler(store, tiddler):
 
     http = httplib2.Http()
     url = 'http://localhost:8080/bags/wiki/tiddlers/%s' % tiddler_dict['title']
-    print 'js: %s\nu: %s' % (json_string, url)
     response, content = http.request(url, method='PUT', \
             headers={'Content-Type': 'application/json'}, body=json_string)
-
-    print '%s, %s' % (tiddler_dict['title'], response['status'])
 
 def _tag_string_to_list(string):
     tags = []

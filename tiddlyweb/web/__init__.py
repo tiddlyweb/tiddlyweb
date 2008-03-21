@@ -64,3 +64,12 @@ def tiddler_url(environ, tiddler):
     host = environ.get('HTTP_HOST', '')
     return '%s://%s/bags/%s/tiddlers/%s' % (scheme, host, urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
+
+def recipe_url(environ, recipe):
+    """
+    Construct a URL for a recipe.
+    This relies on HTTP_HOST, which may not be reliable. REVIEW
+    """
+    scheme = environ['wsgi.url_scheme']
+    host = environ.get('HTTP_HOST', '')
+    return '%s://%s/recipes/%s' % (scheme, host, urllib.quote(recipe.name))
