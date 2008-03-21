@@ -44,7 +44,7 @@ def _do_bag(store):
 def _do_tiddler(store, tiddler):
     tiddler_dict = {}
     tiddler_dict['title'] = tiddler['title']
-    tiddler_dict['contents'] = tiddler.find('pre').contents[0]
+    tiddler_dict['text'] = tiddler.find('pre').contents[0]
     for key in (['modifier', 'created', 'modified', 'tags']):
         tiddler_dict[key] = tiddler.get(key, '')
 
