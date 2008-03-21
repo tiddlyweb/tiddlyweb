@@ -23,14 +23,14 @@ def test_simple_put():
     assert os.path.exists('store/bags/bagone'), \
             'path %s should be created' \
             % 'store/bags/bagone'
-    assert os.path.exists('store/bags/bagone/security_policy'), \
+    assert os.path.exists('store/bags/bagone/policy'), \
             'path %s should be created' \
-            % 'store/bags/bagone/security_policy'
+            % 'store/bags/bagone/policy'
     assert os.path.exists('store/bags/bagone/tiddlers'), \
             'path %s should be created' \
             % 'store/bags/bagone/tiddlers'
 
-    bag_security_file = file('store/bags/bagone/security_policy')
+    bag_security_file = file('store/bags/bagone/policy')
 
     policy_string = bag_security_file.read()
     assert policy_string == bagone.policy

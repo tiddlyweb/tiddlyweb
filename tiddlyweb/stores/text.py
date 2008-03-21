@@ -67,7 +67,7 @@ def bag_put(bag):
     if not os.path.exists(tiddlers_dir):
         os.mkdir(tiddlers_dir)
 
-    _write_security_policy(bag.policy, bag_path)
+    _write_policy(bag.policy, bag_path)
 
 def bag_get(bag):
     bag_path = _bag_path(bag.name)
@@ -80,7 +80,7 @@ def bag_get(bag):
     for tiddler in tiddlers:
         bag.add_tiddler(Tiddler(title=tiddler))
 
-    bag.policy = _read_security_policy(bag_path)
+    bag.policy = _read_policy(bag_path)
 
     return bag
 
@@ -90,17 +90,17 @@ def _bag_path(bag_name):
 def _tiddlers_dir(bag_name):
     return os.path.join(_bag_path(bag_name), 'tiddlers')
 
-def _write_security_policy(policy, bag_path):
-    security_filename = os.path.join(bag_path, 'security_policy')
-    security_file = codecs.open(security_filename, 'w', encoding='utf-8')
-    security_file.write(policy)
-    security_file.close()
+def _write_policy(policy, bag_path):
+    policy_filename = os.path.join(bag_path, 'policy')
+    policy_file = codecs.open(policy_filename, 'w', encoding='utf-8')
+    policy_file.write(policy)
+    policy_file.close()
 
-def _read_security_policy(bag_path):
-    security_filename = os.path.join(bag_path, 'security_policy')
-    security_file = codecs.open(security_filename, encoding='utf-8')
-    policy = security_file.read()
-    security_file.close()
+def _read_policy(bag_path):
+    policy_filename = os.path.join(bag_path, 'policy')
+    policy_file = codecs.open(policy_filename, encoding='utf-8')
+    policy = policy_file.read()
+    policy_file.close()
     return policy
 
 def tiddler_put(tiddler):

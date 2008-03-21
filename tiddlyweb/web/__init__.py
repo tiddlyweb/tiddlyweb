@@ -73,3 +73,12 @@ def recipe_url(environ, recipe):
     scheme = environ['wsgi.url_scheme']
     host = environ.get('HTTP_HOST', '')
     return '%s://%s/recipes/%s' % (scheme, host, urllib.quote(recipe.name))
+
+def bag_url(environ, bag):
+    """
+    Construct a URL for a recipe.
+    This relies on HTTP_HOST, which may not be reliable. REVIEW
+    """
+    scheme = environ['wsgi.url_scheme']
+    host = environ.get('HTTP_HOST', '')
+    return '%s://%s/bags/%s' % (scheme, host, urllib.quote(bag.name))

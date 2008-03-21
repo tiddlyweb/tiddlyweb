@@ -24,7 +24,8 @@
     GET tiddlyweb.web.bag:list
 
 # bag in various forms (rare)
-#/bags/{bag_name:segment}[/]
+/bags/{bag_name:segment}[/]
+    PUT tiddlyweb.web.bag:put
 
 # tiddlers in a bag
 /bags/{bag_name:segment}/tiddlers[.{format}]

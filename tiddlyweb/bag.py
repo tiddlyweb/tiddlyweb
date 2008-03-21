@@ -8,13 +8,13 @@ At some point the bag will have a security policy and
 add and remove will throw permissions exceptions. TBD.
 """
 
-default_security_policy = "all the world's a stage"
+default_policy = "all the world's a stage"
 
 import copy
 
 class Bag(dict):
 
-    def __init__(self, name, policy=default_security_policy, tmpbag=False):
+    def __init__(self, name, policy=default_policy, tmpbag=False):
         dict.__init__(self)
         self.name = name
         self.policy = policy

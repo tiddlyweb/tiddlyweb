@@ -38,11 +38,13 @@ def _do_recipe():
     url = 'http://localhost:8080/recipes/%s' % 'wiki'
     response, content = http.request(url, method='PUT', \
             headers={'Content-Type': 'application/json'}, body=json_string)
-    print '%s, %s' % (json_string, response['status'])
 
 def _do_bag(store):
-    bag = Bag('wiki')
-    store.put(bag)
+    json_string = simplejson.dumps({'policy': 'a different one', 'name': 'wiki'})
+    http = httplib2.Http()
+    url = 'http://localhost:8080/bags/%s' % 'wiki'
+    response, content = http.request(url, method='PUT', \
+            headers={'Content-Type': 'application/json'}, body=json_string)
 
 def _do_tiddler(tiddler):
     tiddler_dict = {}

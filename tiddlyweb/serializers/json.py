@@ -35,7 +35,10 @@ def bag_as(bag):
     return simplejson.dumps([tiddler.title for tiddler in bag.list_tiddlers()])
 
 def as_bag(bag, input):
-    pass
+    info = simplejson.loads(input)
+    if info['policy']:
+        bag.policy = info['policy']
+    return bag
 
 def tiddler_as(tiddler):
     tiddler_dict = {}

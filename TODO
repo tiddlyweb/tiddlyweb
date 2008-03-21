@@ -41,3 +41,5 @@ This is not complete, and likely not up to date.
 * sqlite store
 
 * Atom and/or RSS representation of lists of tiddlers
+
+* Proper navigability between resources in HTML and JSON reps.

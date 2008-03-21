@@ -33,7 +33,6 @@ def put(environ, start_response):
         raise HTTP415, '%s not supported yet' % content_type
 
     content = environ['wsgi.input'].read(int(length))
-    print 'c: %s' % content
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = recipe
