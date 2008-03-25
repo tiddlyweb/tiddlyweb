@@ -4,7 +4,9 @@ This is not complete, and likely not up to date.
 
 = Release 1 =
 
-* Flesh out tiddler object's handling of created field
+* Tests for '..', '/', etc in title and name fields w/ store handling.
+
+* Flesh out tiddler object's handling of created field.
 
 * confirm unicode/UTF-8 testing and handling etc
 
@@ -22,6 +24,8 @@ This is not complete, and likely not up to date.
 
 = After Release 1 =
 
+* PUT a full wiki to a recipe name and have it decomposed (as in import)
+
 * align with http://www.mnot.net/blog/2008/03/20/beyond_methods
 
 * add name fragments to arguments in filters
@@ -35,6 +39,8 @@ This is not complete, and likely not up to date.
 ** challenging for getting a user into the system
 
 * Authori[zs]ation (bag security policy handling and authoring)
+
+* store and serializer pluggability
 
 * S3 store
 
