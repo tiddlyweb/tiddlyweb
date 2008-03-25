@@ -10,6 +10,7 @@ from text import tags_as
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 from tiddlyweb import control
+from tiddlyweb.web.serve import server_host
 
 # this should come from config or even
 # from a url
@@ -60,11 +61,15 @@ def _tiddler_as_div(tiddler):
     """
     Read in the tiddler from a div.
     """
+    host = '%s://%s:%s/' % \
+            (server_host['scheme'], server_host['host'], server_host['port'])
 
-    return """<div title="%s" modifier="%s" modified="%s" created="%s" tags="%s">
+    return """<div title="%s" modifier="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
 <pre>%s</pre>
 </div>
-""" % (tiddler.title, tiddler.modifier, tiddler.modified, tiddler.created, tags_as(tiddler.tags), tiddler.text)
+""" % (tiddler.title, tiddler.modifier, host, tiddler.bag, \
+        tiddler.modified, tiddler.created, \
+        tags_as(tiddler.tags), tiddler.text)
 
 def as_tiddler(tiddler):
     pass
