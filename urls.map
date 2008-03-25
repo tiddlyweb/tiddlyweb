@@ -3,35 +3,93 @@
 # functions in this case
 
 # a psuedo-root
+# Supports GET:
+#   text/html
+# Always returns a static HTML
+# page that points to /bags and /recipes
 /
     GET tiddlyweb.web:root
 
-# list of recipes
+# List of recipes
+# Supports GET:
+#   text/plain: list of recipe_name
+#   text/html: list of links to /recipes/{recipe_name}
+#   application/json: list of recipe_name
+#
+# TODO: POST a new recipe in text and JSON
 /recipes[.{format}]
     GET tiddlyweb.web.recipe:list
 
-# the recipe in various forms
+# A recipe resource, an ordered list of bag+filter
+# Supports GET:
+#   text/plain: text representation of list of bags+filters
+#   text/html: links to bag with filter query string
+#   application/json: list of bag, filter lists
+#   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+# Supports PUT:
+#   text/plain: text representation (bag+filter URL)
+#   application/json: list of bag, filter lists (as follows)
+#      [ [ bag_name, filter_string], [ bag_name, filter_string] ]
 /recipes/{recipe_name:segment}
     GET tiddlyweb.web.recipe:get
     PUT tiddlyweb.web.recipe:put
 
 # the tiddlers produced by this recipe
+# Supports GET:
+#   text/plain: a list of tiddler names
+#   text/html: a list of links to the tidderls _in their bag_
+#   application/json: a JSON list of tiddler names
+#   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+#
+# TODO: PUT a tiddler into this location and have the bag determined
+#       for us.
 /recipes/{recipe_name:segment}/tiddlers[.{format}]
     GET tiddlyweb.web.recipe:get_tiddlers
 
 # list of bags
+# Supports GET:
+#   text/plain: a list of bag name
+#   text/html: a list of bag names linking to the the list of tidders in the
+#              bag
+#   application/json: a JSON list of bag names
 /bags[.{format}]
     GET tiddlyweb.web.bag:list
 
 # bag in various forms (rare)
+# Supports PUT:
+#   application/json: 
+#
+# TODO: Some form of GET
 /bags/{bag_name:segment}[/]
     PUT tiddlyweb.web.bag:put
 
-# tiddlers in a bag
+# tiddlers in a bag, with option filter string in the query string
+# Supports GET:
+#   text/plain: list of tiddler names
+#   text/html: list of links to tiddlers
+#   application/json: JSON list of tiddler names
+#   text/x-tiddlywiki: the tiddlers in this bag wrapped up as a TiddlyWiki
 /bags/{bag_name:segment}/tiddlers[.{format}]
     GET tiddlyweb.web.bag:get_tiddlers
 
 # a tiddler
+# Supports GET:
+#   text/plain: a text representation of the tiddler
+#   text/html: the tiddler wrapped up in an HTML div
+#   application/json: a JSON dict representing the tiddler
+#   text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+# Support PUT:
+#   text/plain: a text representation of the tiddler (as in
+#               tiddlyweb.serializers.text
+#   application/json: a JSON dict representing the tiddler
+#     fields in dict, all are strings except for tags:
+#       title: (optional)
+#       text: the content of the tiddler
+#       modifier: the author of this change
+#       modified: (optional, will default to now)
+#       created: (optional, will default to now)
+#       tags: a list of strings as tags
+#     the bag name is extracted from the URL
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.tiddler:get
     PUT tiddlyweb.web.tiddler:put
