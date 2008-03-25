@@ -10,6 +10,7 @@ def start():
         stores = Store('text')
         fixtures.muchdata(stores)
     serve.start_simple('./urls.map', 8080)
+    #serve.start_cherrypy('./urls.map', 8080)
 
 if __name__ == '__main__':
     start()
