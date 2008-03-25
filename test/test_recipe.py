@@ -67,7 +67,7 @@ def test_determine_bag_simple():
 
 def test_determine_bag_filtered():
     """
-    Work out which bag a tiddler should go to.
+    Work out which bag a tiddler should go to when no bag provided.
     """
     short_recipe = Recipe(name='foobar')
     short_recipe.set_recipe([
@@ -82,4 +82,24 @@ def test_determine_bag_filtered():
         [bagfour, '[tag[tagthree]]']
         ])
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
+    assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
+
+def test_determine_tiddler_from_recipe():
+    """
+    Work out what bag a provided tiddler is in, when we have no knowledge of the bag,
+    but we do have a recipe.
+    """
+    short_recipe = Recipe(name='foobar')
+    short_recipe.set_recipe([
+        [bagone, ''],
+        [bagfour, '[tag[tagone]]']
+        ])
+    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
+    assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
+
+    short_recipe.set_recipe([
+        [bagone, ''],
+        [bagfour, '[tag[tagthree]]']
+        ])
+    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name

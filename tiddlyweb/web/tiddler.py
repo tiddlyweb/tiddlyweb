@@ -1,8 +1,10 @@
 
 from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.recipe import Recipe
 from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409
+from tiddlyweb import control
 from tiddlyweb import web
 
 def _tiddler_from_path(environ):
@@ -15,8 +17,27 @@ def _tiddler_from_path(environ):
 
     return tiddler
 
+def get_by_recipe(environ, start_response):
+    tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
+    recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    tiddler_name = web.handle_extension(environ, tiddler_name)
+
+    tiddler = Tiddler(tiddler_name)
+    recipe = Recipe(recipe_name)
+    store = environ['tiddlyweb.store']
+    store.get(recipe)
+
+    bag = control.determine_tiddler_bag_from_recipe(recipe, tiddler)
+    tiddler.bag = bag.name
+
+    return _send_tiddler(environ, start_response, tiddler)
+
 def get(environ, start_response):
     tiddler = _tiddler_from_path(environ)
+
+    return _send_tiddler(environ, start_response, tiddler)
+
+def _send_tiddler(environ, start_response, tiddler):
 
     store = environ['tiddlyweb.store']
 

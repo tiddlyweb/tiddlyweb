@@ -34,6 +34,31 @@ def get_tiddlers_from_recipe(recipe):
             uniquifier[tiddler.title] = tiddler
     return uniquifier.values()
 
+def determine_tiddler_bag_from_recipe(recipe, tiddler):
+    """
+    We have a recipe and a tiddler name. We need to 
+    know the bag in which this tiddler can be found.
+    This is different from determine_bag_for_tiddler().
+    That one finds the bag the tiddler _could_ be in.
+    This is the bag the tiddler _is_ in.
+
+    We reverse the recipe_list, and filter each bag
+    according to the rule. Then we look in the list of
+    tiddlers and see if ours is in there.
+    """
+    store = recipe.store
+    for bag, filter_string in reversed(recipe):
+        if isinstance(bag, basestring):
+            bag = Bag(name=bag)
+        if store:
+            store.get(bag)
+        if tiddler.title in \
+                [candidate_tiddler.title \
+                for candidate_tiddler \
+                in filter_tiddlers_from_bag(bag, filter_string)]:
+            return bag
+    return None
+
 def determine_bag_for_tiddler(recipe, tiddler):
     """
     Return the bag which this tiddler would be in if we 

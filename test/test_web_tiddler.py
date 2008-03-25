@@ -127,4 +127,12 @@ def test_put_tiddler_json_bad_path():
 
     assert response['status'] == '404', 'response status should be 404 is %s' % response['status']
 
+def test_get_tiddler_via_recipe():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
+            method='GET')
+
+    assert response['status'] == '200'
+    tiddler_info = simplejson.loads(content)
+    assert tiddler_info['bag'] == 'bag28'
 

@@ -46,6 +46,16 @@
 /recipes/{recipe_name:segment}/tiddlers[.{format}]
     GET tiddlyweb.web.recipe:get_tiddlers
 
+# a tiddler produced by this recipe
+# Supports GET:
+#   text/plain: a text representation of the tiddler
+#   text/html: the tiddler wrapped up in an HTML div
+#   application/json: a JSON dict representing the tiddler
+#   text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+# Does not yet support PUT
+/recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
+    GET tiddlyweb.web.tiddler:get_by_recipe
+
 # list of bags
 # Supports GET:
 #   text/plain: a list of bag name
