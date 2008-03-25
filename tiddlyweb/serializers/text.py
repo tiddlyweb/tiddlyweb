@@ -51,11 +51,7 @@ def bag_as(bag):
     """
     List the tiddlers in a bag as text.
     """
-    lines = []
-    for tiddler in bag.list_tiddlers():
-        line = 'tiddlers/%s' % urllib.quote(tiddler.title)
-        lines.append(line)
-    return "\n".join(lines)
+    return "\n".join([tiddler.title for tiddler in bag.list_tiddlers()])
 
 def as_bag(bag, input):
     pass

@@ -9,9 +9,9 @@ from tiddlyweb.serializer import Serializer
 
 from fixtures import bagfour
 
-expected_string = """tiddlers/TiddlerOne
-tiddlers/TiddlerTwo
-tiddlers/TiddlerThree"""
+expected_string = """TiddlerOne
+TiddlerTwo
+TiddlerThree"""
 
 expected_html_string = """<ul>
 <li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
