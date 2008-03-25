@@ -114,4 +114,17 @@ def test_put_tiddler_json():
     assert info['title'] == 'TestTwo'
     assert info['text'] == 'i fight for the users'
 
+def test_put_tiddler_json_bad_path():
+    """
+    / in tiddler title is an unresolved source of some confusion.
+    """
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/..%2F..%2F..%2F..%2FTestThree',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '404', 'response status should be 404 is %s' % response['status']
+
 
