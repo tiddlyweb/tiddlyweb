@@ -22,6 +22,10 @@ This is not complete, and likely not up to date.
 
 = After Release 1 =
 
+* DELETEing tiddlers and other resources.
+
+* Client side recipe and bag construction sets.
+
 * Turn serializers and stores into classes, so instances
   can carry some configuration data (like the path of the store)
 
