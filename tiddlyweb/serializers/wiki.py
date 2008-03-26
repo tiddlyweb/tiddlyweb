@@ -61,8 +61,11 @@ def _tiddler_as_div(tiddler, recipe_name=''):
     """
     Read in the tiddler from a div.
     """
-    host = '%s://%s:%s/' % \
-            (server_host['scheme'], server_host['host'], server_host['port'])
+    try: 
+        host = '%s://%s:%s/' % \
+                (server_host['scheme'], server_host['host'], server_host['port'])
+    except KeyError:
+        host = ''
 
     return """<div title="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
 <pre>%s</pre>
