@@ -16,7 +16,7 @@
 
 * Filter
 
-  A filter on a list of tiddlers. (e.g. only those with tag "foo")
+  A filter on the list of tiddlers. (e.g. only those with tag "foo")
 
 * Recipe Line
 
@@ -32,51 +32,23 @@
 
 == URLS ==
 
-GET, PUT, DELETE a tiddler:
-    /bags/{bag name}/tiddlers/{tiddler name}
-
-GET, PUT a bag (and its metadata but not its list of tiddlers):
-    /bags/{bag name}
-
-GET all the tiddlers in a bag:
-    /bags/{bag name}/tiddlers[?filter query string]
-
-GET a list of all visible bags:
-    /bags[?filter query string]
-
-GET a workspace, or PUT a workspace recipe, via name
-    /workspaces/{workspace name}
-
-GET a list of all visible workspaces
-    /workspaces[?filter query string]
+See urls.map in this directory.
 
 == STORAGE ==
 
-Implementation of server side datastore still up in the air. 
-Considering some combination of directory hierarchy with some
-text and some YAML files (YAML is nicely readable and well 
-supported in python and many other languages).
+Storage is handled by "Stores", which implement an interface 
+for getting and putting recipes, bags and tiddlers. A text
+store has been implemented in tiddlyweb/stores/text.py.
+
+Other stores to come.
 
 We've not yet had any serious discussion about revision handling.
-
-It may be reasonable to store all this stuff as tiddlers, with
-some tiddlers being lists of tiddlers.
 
 == MISC ==
 
 * Consider using rhino for at least some the testing to replicate
   a real TiddlyWiki, or instrument a realy TiddlyWiki.
 
-* Use wsgi intercept in order to create fast tests.
-
-* Use py.test <http://codespeak.net/py/dist/test.html> for easy
-  testing.
-
-* Critical that we test at multiple levels of the system.
-
-* Make sense to duplicate filter language as query string on bag?
-  I think so. Then a recipe is simply URLs.
-
 * Syntax, semantics and mechanics of searching tiddlers still
-  needs some work.
+  needs work.
 

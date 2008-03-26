@@ -1,0 +1,25 @@
+
+TiddlyWeb is sufficiently mature to be run and messed with
+from a code checkout. Meaning you can give it a try if you like.
+
+= Requirements =
+
+* Python 2.4 or 2.5.
+* selector and simplejson must be installed where python
+  can find them (see the README file).
+
+Run 
+
+  python demo.py
+
+Point your browser at 
+
+  http://0.0.0.0:8080/recipes/TiddlyWeb.wiki
+
+and get a TiddlyWiki with content stored in this code
+checkout.
+
+You can do other exploring by pointing your browser at
+
+  http://0.0.0.0:8080/
+

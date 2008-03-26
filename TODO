@@ -58,3 +58,4 @@ This is not complete, and likely not up to date.
 * More readable, and more, HTTP based tests, demonstrating, clearly,
   the protocol.
 
+* Rhino and Selenium based testing.

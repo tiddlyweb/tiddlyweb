@@ -1,6 +1,5 @@
 
 See also: http://tiddlywiki.org/wiki/Dev:TiddlyWeb
-          http://tiddlywiki.org/wiki/Dev_talk:TiddlyWeb
 
 TiddlyWeb, aka mo'ass, is a reference implementation of an ideal
 server side implementation for TiddlyWiki. It provides a tested,
@@ -20,10 +19,17 @@ in its first several iterations.
 
 REQUIREMENTS:
 
-* Python 2.5
-* simplejson
+* Python 2.4 or 2.5
+* selector: http://lukearno.com/projects/selector/
+* simplejson: http://undefined.org/python/#simplejson
 
-See also: NOTES
+Both selector and simplejson can be installed with easy_install.
+
+See also:
+
+NOTES: For some comments on the implementation.
+TODO: For tasks that need to be done.
+RUN: To run this installation in place with some sample data.
 
 If you have questions or contributions to make to this work, 
 please post the TiddlyWikiDev group at google groups:
