@@ -16,7 +16,7 @@ function_map = {
         Bag: ['bag_as', 'as_bag']
         }
 
-class Serializer():
+class Serializer(object):
     """
     You must set object after initialization.
     """
@@ -28,7 +28,7 @@ class Serializer():
     def _figure_function(self):
         module = 'tiddlyweb.serializers.%s' % self.format
         try:
-            imported_module = __import__(module, fromlist=[self.format])
+            imported_module = __import__(module, {}, {}, [self.format])
             string_func = getattr(imported_module, function_map[self.object.__class__][0])
             object_func = getattr(imported_module, function_map[self.object.__class__][1])
             return string_func, object_func
@@ -48,13 +48,13 @@ class Serializer():
 
     def list_recipes(self, recipes):
         module = 'tiddlyweb.serializers.%s' % self.format
-        imported_module = __import__(module, fromlist=[self.format])
+        imported_module = __import__(module, {}, {}, [self.format])
         list_func = getattr(imported_module, 'list_recipes')
         return list_func(recipes)
 
     def list_bags(self, bags):
         module = 'tiddlyweb.serializers.%s' % self.format
-        imported_module = __import__(module, fromlist=[self.format])
+        imported_module = __import__(module, {}, {}, [self.format])
         list_func = getattr(imported_module, 'list_bags')
         return list_func(bags)
 

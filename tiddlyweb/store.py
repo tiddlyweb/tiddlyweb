@@ -22,7 +22,7 @@ class NoRecipeError(Exception):
 class NoTiddlerError(Exception):
     pass
 
-class Store():
+class Store(object):
 
     def __init__(self, format):
         self.format = format
@@ -74,7 +74,7 @@ class Store():
     def _figure_function(self, format, object):
         module = 'tiddlyweb.stores.%s' % format
         try:
-            imported_module = __import__(module, fromlist=[format])
+            imported_module = __import__(module, {}, {}, [format])
             put_func = getattr(imported_module, function_map[object.__class__][0])
             get_func = getattr(imported_module, function_map[object.__class__][1])
             return put_func, get_func
@@ -83,7 +83,7 @@ class Store():
 
     def list_recipes(self):
         module = 'tiddlyweb.stores.%s' % self.format
-        imported_module = __import__(module, fromlist=[self.format])
+        imported_module = __import__(module, {}, {}, [self.format])
         list_func = getattr(imported_module, 'list_recipes')
 
         return list_func()
@@ -93,7 +93,7 @@ class Store():
         Dupe with the above, please FIXME.
         """
         module = 'tiddlyweb.stores.%s' % self.format
-        imported_module = __import__(module, fromlist=[self.format])
+        imported_module = __import__(module, {}, {}, fromlist=[self.format])
         list_func = getattr(imported_module, 'list_bags')
 
         return list_func()

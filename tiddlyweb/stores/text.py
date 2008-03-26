@@ -15,15 +15,19 @@ from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError
 
+def _files_in_dir(path):
+    return filter(lambda x: not x.startswith('.'), os.listdir(path))
+
+
 def list_recipes():
     path = os.path.join(store_root, 'recipes')
-    recipes = os.listdir(path)
+    recipes = _files_in_dir(path)
 
     return [Recipe(recipe) for recipe in recipes]
 
 def list_bags():
     path = os.path.join(store_root, 'bags')
-    bags = os.listdir(path)
+    bags = _files_in_dir(path)
 
     return [Bag(bag) for bag in bags]
 
@@ -74,7 +78,7 @@ def bag_get(bag):
     tiddlers_dir = _tiddlers_dir(bag.name)
 
     try:
-        tiddlers = os.listdir(tiddlers_dir)
+        tiddlers = _files_in_dir(tiddlers_dir)
     except OSError, e:
         raise NoBagError, 'unable to list tiddlers in bag: %s' % e
     for tiddler in tiddlers:

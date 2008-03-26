@@ -25,7 +25,7 @@ def load_app(map, wrappers=[]):
             app = wrapper(app)
     return app
 
-def start_simple(filename, port):
+def start_simple(filename, hostname, port):
     """
     Start a wsgiref.simple_server to run our app.
 
@@ -37,11 +37,11 @@ def start_simple(filename, port):
     httpd = WSGIServer(('', port), WSGIRequestHandler)
     httpd.set_app(default_app(filename))
     global server_host
-    server_host = dict(scheme='http', host='0.0.0.0', port=port)
+    server_host = dict(scheme='http', host=hostname, port=port)
     print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
-def start_cherrypy(filename, port):
+def start_cherrypy(filename, hostname, port):
     """
     Start a cherrypy webserver to run our app.
     
@@ -52,7 +52,7 @@ def start_cherrypy(filename, port):
     from cherrypy import wsgiserver
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', port), default_app(filename))
     global server_host
-    server_host = dict(scheme='http', host='0.0.0.0', port=port)
+    server_host = dict(scheme='http', host=hostname, port=port)
     try:
         print "Starting CherryPy"
         server.start()
