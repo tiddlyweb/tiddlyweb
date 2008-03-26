@@ -16,15 +16,14 @@ This is not complete, and likely not up to date.
 ** Deal with non-existent bags or no bag in URL
 ** Handle updating existing tiddler appropriately
 
-* GET JSON reps of things
-
-* PUT JSON reps of things
-
 * HTTP cache headers production
 ** expiration stuff
 ** last modified time (based on grazing all the tiddlers?)
 
 = After Release 1 =
+
+* Turn serializers and stores into classes, so instances
+  can carry some configuration data (like the path of the store)
 
 * Do file locking in text store.
 
