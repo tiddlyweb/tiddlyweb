@@ -48,7 +48,6 @@ def tiddler_as(tiddler):
     return simplejson.dumps(tiddler_dict)
 
 def as_tiddler(tiddler, input):
-    print "i: %s" % input
     dict_from_input = simplejson.loads(input)
     for key, value in dict_from_input.iteritems():
         setattr(tiddler, key, value)
