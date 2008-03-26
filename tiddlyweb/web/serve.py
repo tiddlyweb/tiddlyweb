@@ -37,7 +37,7 @@ def start_simple(filename, port):
     httpd = WSGIServer(('', port), WSGIRequestHandler)
     httpd.set_app(default_app(filename))
     global server_host
-    server_host = dict(scheme='http', host='127.0.0.1', port=port)
+    server_host = dict(scheme='http', host='0.0.0.0', port=port)
     print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
@@ -50,9 +50,9 @@ def start_cherrypy(filename, port):
     """
     os.environ = {}
     from cherrypy import wsgiserver
-    server = wsgiserver.CherryPyWSGIServer(('127.0.0.1', port), default_app(filename))
+    server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', port), default_app(filename))
     global server_host
-    server_host = dict(scheme='http', host='127.0.0.1', port=port)
+    server_host = dict(scheme='http', host='0.0.0.0', port=port)
     try:
         print "Starting CherryPy"
         server.start()
