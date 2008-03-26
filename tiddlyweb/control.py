@@ -12,6 +12,7 @@ like.
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter as fl
 from tiddlyweb.serializer import TiddlerFormatError
+from tiddlyweb.store import NoBagError
 
 
 def get_tiddlers_from_recipe(recipe):
@@ -57,7 +58,8 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
                 for candidate_tiddler \
                 in filter_tiddlers_from_bag(bag, filter_string)]:
             return bag
-    return None
+
+    raise NoBagError, 'no suitable bag for %s' % tiddler.title
 
 def determine_bag_for_tiddler(recipe, tiddler):
     """
