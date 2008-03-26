@@ -27,8 +27,13 @@ def get_by_recipe(environ, start_response):
     store = environ['tiddlyweb.store']
     store.get(recipe)
 
-    bag = control.determine_tiddler_bag_from_recipe(recipe, tiddler)
+    try:
+        bag = control.determine_tiddler_bag_from_recipe(recipe, tiddler)
+    except NoBagError, e:
+        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+
     tiddler.bag = bag.name
+
 
     return _send_tiddler(environ, start_response, tiddler)
 
