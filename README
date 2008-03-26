@@ -30,6 +30,7 @@ See also:
 NOTES: For some comments on the implementation.
 TODO: For tasks that need to be done.
 RUN: To run this installation in place with some sample data.
+TESTING: Information about the tests located in the test directory.
 
 If you have questions or contributions to make to this work, 
 please post the TiddlyWikiDev group at google groups:

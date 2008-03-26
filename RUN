@@ -23,3 +23,33 @@ You can do other exploring by pointing your browser at
 
   http://0.0.0.0:8080/
 
+Any changes you make to existing tiddlers, or tiddlers
+than you create by linking from existing tiddlers,
+will be saved to the server when you click sync.
+
+= Advanced Experimentation =
+
+There are as yet no client side tools for creating
+recipes and bags. The TiddlyWebAdaptorPlugin can
+synchronize tiddler content in the workspace generated
+from a recipe, but it cannot create a recipe.
+
+If you want to create a recipe, you can do so by 
+hand. If you investigate the files in the store
+directory, the structure of existing recipe files
+and bag directories can be duplicated to create
+new ones. A recipe must consist of at least one
+bag. If there is at least one tiddler in the bag,
+it is possible to download a workspace from
+
+   http://<host>:<port>/recipes/<recipe name>.wiki
+
+New content created as links from the one tiddler
+in the bag can be synched to the server.
+
+Another option is to import an existing TiddlyWiki
+file into the datastore. Look at, and adapt
+
+  test/importer.py
+
+accordingly.

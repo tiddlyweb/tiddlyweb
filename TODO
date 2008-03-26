@@ -22,6 +22,8 @@ This is not complete, and likely not up to date.
 
 = After Release 1 =
 
+* Change Tiddly core so server.bag is an inherited field.
+
 * DELETEing tiddlers and other resources.
 
 * Client side recipe and bag construction sets.
