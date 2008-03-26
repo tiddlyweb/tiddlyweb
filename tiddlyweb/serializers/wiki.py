@@ -24,7 +24,7 @@ def recipe_as(recipe):
 
     lines = ''
     for tiddler in control.get_tiddlers_from_recipe(recipe):
-        lines += _tiddler_as_div(tiddler)
+        lines += _tiddler_as_div(tiddler, recipe.name)
 
     return _put_string_in_tiddlywiki(lines)
 
@@ -57,18 +57,18 @@ def tiddler_as(tiddler):
 
     return _put_string_in_tiddlywiki(tiddler_div)
 
-def _tiddler_as_div(tiddler):
+def _tiddler_as_div(tiddler, recipe_name=''):
     """
     Read in the tiddler from a div.
     """
     host = '%s://%s:%s/' % \
             (server_host['scheme'], server_host['host'], server_host['port'])
 
-    return """<div title="%s" modifier="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
+    return """<div title="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
 <pre>%s</pre>
 </div>
-""" % (tiddler.title, tiddler.modifier, host, tiddler.bag, \
-        tiddler.modified, tiddler.created, \
+""" % (tiddler.title, tiddler.modifier, recipe_name, \
+        host, tiddler.bag, tiddler.modified, tiddler.created, \
         tags_as(tiddler.tags), tiddler.text)
 
 def as_tiddler(tiddler):

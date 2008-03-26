@@ -15,16 +15,6 @@ tags: systemConfig excludeLists excludeSearch
 |''Comments:''|Please make comments at http://groups.google.co.uk/group/TiddlyWikiDev|
 |''License:''||
 |''~CoreVersion:''||
-
-To make this example into a real TiddlyWiki adaptor, you need to:
-
-# Globally search and replace ExampleAdpator with the name of your adaptor
-# Delete any functionality not supported by you host (for example, putTiddler may not be supported)
-# Do the actions indicated by the !!TODO comments, namely:
-## Set the values of the main variables, eg ExampleAdaptor.serverType etc
-## Fill in the uri templates in the .prototype functions
-## Parse the responseText returned in the Callback functions and put the results in the appropriate variables
-
 ***/
 
 //{{{
@@ -93,11 +83,7 @@ TiddlyWebAdaptor.minHostName = function(host)
 // Convert a page title to the normalized form used in uris
 TiddlyWebAdaptor.normalizedTitle = function(title)
 {
-        var n = title.toLowerCase();
-        n = n.replace(/\s/g,'_').replace(/\//g,'_').replace(/\./g,'_').replace(/:/g,'').replace(/\?/g,'');
-        if(n.charAt(0)=='_')
-                n = n.substr(1);
-        return String(n);
+        return title;
 };
 
 // Convert a date in YYYY-MM-DD hh:mm format into a JavaScript Date object
@@ -208,12 +194,13 @@ TiddlyWebAdaptor.prototype.generateTiddlerInfo = function(tiddler)
         var info = {};
         var host = this && this.host ? this.host : TiddlyWebAdaptor.fullHostName(tiddler.fields['server.host']);
         var bag = tiddler.fields['server.bag']
+        var workspace = tiddler.fields['server.workspace']
         var baguriTemplate = '%0bags/%1/tiddlers/%2';
         var recipeuriTemplate = '%0recipes/%1/tiddlers/%2';
         if (bag)
             info.uri = baguriTemplate.format([host,bag,tiddler.title]);
         else
-            info.uri = recipeuriTemplate.format([host,context.workspace,tiddler.title]);
+            info.uri = recipeuriTemplate.format([host,workspace,tiddler.title]);
         return info;
 };
 
@@ -262,11 +249,10 @@ TiddlyWebAdaptor.getTiddlerCallback = function(status,context,responseText,uri,x
                 }
                 context.tiddler.text = info['text'];
                 context.tiddler.tags = info['tags'];
-                context.tiddler.fields['server.page.id'] = info['title'];
-                context.tiddler.fields['server.page.name'] = info['title'];
                 context.tiddler.fields['server.bag'] = info['bag'];
                 context.tiddler.modifier = info['modifier'];
                 context.tiddler.modified = Date.convertFromYYYYMMDDHHMM(info['modified']);
+                context.tiddler.created = Date.convertFromYYYYMMDDHHMM(info['created']);
                 context.status = true;
         } else {
                 context.statusText = xhr.statusText;
