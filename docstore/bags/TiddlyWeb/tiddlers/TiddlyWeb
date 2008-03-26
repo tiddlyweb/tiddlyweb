@@ -1,0 +1,19 @@
+modifier: ChrisDent
+created: 
+modified: 200803260329
+tags: 
+
+TiddlyWeb is a ServerSide tool for use with TiddlyWiki.
+
+It is designed:
+* to provide flexible but (eventually) secure access to groups of [[Tiddlers]] stored on one or more web servers
+* to adhere as much as possible to HTTP standards and best practices
+* to make few assumptions about how content will be managed, thus enabling unexpected client applications
+* to (eventually) provide a readable codebase that acts as a reference implementation for many server side implementations
+* to have a useful set of tests
+
+These documents are in progress. They live in the eternal hope of someday achieving perfection.
+
+At the moment, they demonstrate that TiddlyWeb is working: This documentation is being written in a TiddlyWiki produced from TiddlyWeb and managed by the TiddlyWebAdaptorPlugin.
+
+TiddlyWebTechnicalOverview
