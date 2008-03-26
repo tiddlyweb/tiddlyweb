@@ -75,7 +75,7 @@ def muchdata(store):
 
     recipe = Recipe('long')
 
-    recipe_list = []
+    recipe_list = [['bag1', '']]
     for numeral in range(0, 30, 2):
         bag_name = 'bag%s' % numeral
         filter_string = 'tiddler%s' % (numeral % 10)

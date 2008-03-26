@@ -55,6 +55,7 @@
 # Does not yet support PUT
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.tiddler:get_by_recipe
+    PUT tiddlyweb.web.tiddler:put_by_recipe
 
 # list of bags
 # Supports GET:

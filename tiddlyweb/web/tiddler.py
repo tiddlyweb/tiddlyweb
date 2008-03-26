@@ -34,7 +34,6 @@ def get_by_recipe(environ, start_response):
 
     tiddler.bag = bag.name
 
-
     return _send_tiddler(environ, start_response, tiddler)
 
 def get(environ, start_response):
@@ -65,8 +64,33 @@ def _send_tiddler(environ, start_response, tiddler):
 
     return [content]
 
+def put_by_recipe(environ, start_response):
+    tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
+    recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    tiddler_name = web.handle_extension(environ, tiddler_name)
+    store = environ['tiddlyweb.store']
+    content_type = environ['tiddlyweb.type']
+
+    tiddler = Tiddler(tiddler_name)
+    recipe = Recipe(recipe_name)
+    store.get(recipe)
+
+    try:
+        bag = control.determine_bag_for_tiddler(recipe, tiddler)
+    except NoBagError, e:
+        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+
+    tiddler.bag = bag.name
+
+    return _put_tiddler(environ, start_response, tiddler)
+
 def put(environ, start_response):
     tiddler = _tiddler_from_path(environ)
+
+    return _put_tiddler(environ, start_response, tiddler)
+
+def _put_tiddler(environ, start_response, tiddler):
+
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 

@@ -136,3 +136,16 @@ def test_get_tiddler_via_recipe():
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
+def test_put_tiddler_via_recipe():
+    http = httplib2.Http()
+    json = simplejson.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/FantasticVoyage',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '204'
+    url = response['location']
+
+    reponse, content = http.request(url, method='GET', headers={'Accept': 'application/json'})
+    tiddler_dict = simplejson.loads(content)
+    assert tiddler_dict['bag'] == 'bag1'
