@@ -1,67 +1,43 @@
+modifier: ChrisDent
+modified: 200803280000
+created:
+tags:
 
 A place to note tasks that need to be done. 
 This is not complete, and likely not up to date.
 
-= Release 1 =
+!Release 1
 
 * Tests for '..', '/', etc in title and name fields w/ store handling.
-
 * Choose encoding for '/'.
-
 * Flesh out tiddler object's handling of created field.
-
 * confirm unicode/UTF-8 testing and handling etc
-
-* PUT text reps of things, with robustness
-** Deal with non-existent bags or no bag in URL
-** Handle updating existing tiddler appropriately
-
 * HTTP cache headers production
 ** expiration stuff
 ** last modified time (based on grazing all the tiddlers?)
 
-= After Release 1 =
+!After Release 1
 
-* Change Tiddly core so server.bag is an inherited field.
-
+* Change Tiddly core so server.bag is an inherited field?
+* When sending a workspace, set the recipe attribute (temporarily) on the tiddler.
 * DELETEing tiddlers and other resources.
-
 * Client side recipe and bag construction sets.
-
-* Turn serializers and stores into classes, so instances
-  can carry some configuration data (like the path of the store)
-
+* Turn serializers and stores into classes, so instances can carry some configuration data (like the path of the store)
 * Do file locking in text store.
-
 * PUT a full wiki to a recipe name and have it decomposed (as in import)
-
 * align with http://www.mnot.net/blog/2008/03/20/beyond_methods
-
 * add name fragments to arguments in filters
-
 * Tiddler revisions
-
 * Incoming HTTP cache headers handling
-
 * Authentication (basic and OpenID)
 ** credentials extraction for getting/validating the user
 ** challenging for getting a user into the system
-
 * Authori[zs]ation (bag security policy handling and authoring)
-
 * store and serializer pluggability
-
 * S3 store
-
 * sqlite store
-
-* Atom and/or RSS representation of lists of tiddlers
-
+* Atom and/or RSS representation of lists of tiddlers (on the server)
 * Proper navigability between resources in HTML and JSON reps.
-
 * Recipes that contain bags on multiple servers.
-
-* More readable, and more, HTTP based tests, demonstrating, clearly,
-  the protocol.
-
+* More readable, and more, HTTP based tests, demonstrating, clearly, the protocol.
 * Rhino and Selenium based testing.
