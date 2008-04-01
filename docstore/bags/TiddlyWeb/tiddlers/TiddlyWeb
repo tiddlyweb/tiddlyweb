@@ -1,9 +1,11 @@
 modifier: ChrisDent
 created: 
-modified: 200803260329
+modified: 200803281434
 tags: 
 
 TiddlyWeb is a ServerSide tool for use with TiddlyWiki.
+
+See [[the TiddlyWikiDev announcement|http://groups.google.com/group/TiddlyWikiDev/browse_thread/thread/f075630bd1e5564e]]
 
 It is designed:
 * to provide flexible but (eventually) secure access to groups of [[Tiddlers]] stored on one or more web servers
@@ -14,6 +16,13 @@ It is designed:
 
 These documents are in progress. They live in the eternal hope of someday achieving perfection.
 
-At the moment, they demonstrate that TiddlyWeb is working: This documentation is being written in a TiddlyWiki produced from TiddlyWeb and managed by the TiddlyWebAdaptorPlugin.
+At the moment, they demonstrate that TiddlyWeb is working: This information is being written in a TiddlyWiki produced from TiddlyWeb and managed by the TiddlyWebAdaptorPlugin.
 
-TiddlyWebTechnicalOverview
+* TiddlyWebTechnicalOverview
+* PlayAround
+* [[Sandbox]]
+* [[Feature Requests]]
+* [[Issues]]
+* [[TODO]] from the [[Code Repository]]
+
+ChrisDent took the first stab at TiddlyWeb with lots of input from JeremyRuston and the gang at [[Osmosoft]].

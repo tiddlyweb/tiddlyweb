@@ -1,6 +1,6 @@
 modifier: ChrisDent
 created: 
-modified: 200803260329
+modified: 200803271705
 tags: 
 
 TiddlyWeb is written using version 2.5 of [[Python]].
@@ -15,7 +15,7 @@ There are three primary entities operating in the TiddlyWeb system:
 * [[Bag]]s
 * [[Tiddler]]s
 
-These are represented in code by '''very''' simple classes. Recipe, Bag and Tiddler objects have no methods, only attributes. Other modules use the objects in concert with other modules to perform required actions. These other modules can be divided into sets:
+These are represented in code by very simple classes. Recipe, Bag and Tiddler objects have no methods, only attributes. Other modules use the objects in concert with other modules to perform required actions. These other modules can be divided into sets:
 
 * WebHandlers
 * [[Store]]s
