@@ -321,10 +321,13 @@ TiddlyWebAdaptor.prototype.putTiddler = function(tiddler,context,userParams,call
         var host = context.host ? context.host : TiddlyWebAdaptor.fullHostName(tiddler.fields['server.host']);
         var bag = tiddler.fields['server.bag'];
         var uri;
-        if (bag)
+        if (bag) {
             uri = baguriTemplate.format([host,bag,tiddler.title]);
-        else
+        } else if (context.workspace) {
             uri = recipeuriTemplate.format([host,context.workspace,tiddler.title]);
+	} else {
+            return 'no bag or recipe available for tiddler, set recipe';
+        }
             
         payload = {
             title: tiddler.title,
@@ -342,6 +345,8 @@ TiddlyWebAdaptor.putTiddlerCallback = function(status,context,responseText,uri,x
         if(status) {
                 context.status = true;
         } else {
+                displayMessage('putTiddler xhr status is' + xhr.status);
+                displayMessage('putTiddler xhr status text is' + xhr.statusText);
                 context.status = false;
                 context.statusText = xhr.statusText;
         }
