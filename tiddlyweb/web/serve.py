@@ -1,5 +1,6 @@
 
 import os
+import sys
 import selector
 import time
 import urllib
@@ -125,6 +126,7 @@ class SimpleLog(object):
                 }
         message = self.format % d
         print message
+	sys.stdout.flush()
 
 class StoreSet(object):
     """
