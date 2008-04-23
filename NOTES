@@ -52,3 +52,12 @@ We've not yet had any serious discussion about revision handling.
 * Syntax, semantics and mechanics of searching tiddlers still
   needs work.
 
+== Revision Handling ==
+
+Discussion with Zac led to a possible model for revisions for Tiddlers:
+
+* Tiddlers get a revision field. If unset when interacting with the store,
+  then we are operating on HEAD.
+* store implements list_tiddler_revisions(tiddler)
+
+Is this enough?
