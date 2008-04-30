@@ -1,4 +1,4 @@
-modifier: ChrisDent
+modifier: YourName
 created: 
 modified: 200803281434
 tags: 
@@ -26,3 +26,5 @@ At the moment, they demonstrate that TiddlyWeb is working: This information is b
 * [[TODO]] from the [[Code Repository]]
 
 ChrisDent took the first stab at TiddlyWeb with lots of input from JeremyRuston and the gang at [[Osmosoft]].
+
+This particular TiddlyWeb installation is demonstration site. You can PlayAround if you want to.
