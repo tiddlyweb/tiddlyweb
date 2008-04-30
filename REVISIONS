@@ -1,0 +1,80 @@
+modifier: ChrisDent
+modified: 200804280000
+created:
+tags:
+
+(Notes on how to handle Tiddler revisions, transcribed from paper. Questions are marked with a 'Q:'.)
+
+A simple way to do Tiddler revisions is simply is to say that any new version of a Tiddler creates a new revision with an identifier from a monotonic sequence (in the simplest case previously highest identifier + 1).
+
+To retrieve a specific revision of a Tiddler, the revision identifier must be provided. If no revision identifier is provided, the most recent revision is returned.
+
+When saving a Tiddler, a new revision is create in all cases: revisions are immutable. If a previous revision is to be restored as the "current" revision, it is saved as a new revision. Other metadata can indicate the revision history.
+
+Q: When a revision is restored to current, does its modified time get updated or remain the same?
+
+When retrieving a list of revisions for a Tiddler, the list is sorted by revision identifier, most recent first. It is possible to retrieve either a list of identifiers or a list of Tiddler objects.
+
+In the URI space adding revisions adds the following URLs:
+
+{{{
+/bags/{bag_name}/tiddler/{tiddler_name}/revisions
+    GET a list of revisions in various forms
+}}}
+
+{{{
+/bags/{bag_name}/tiddler/{tiddler_name}/revisions/{revision_id}
+    GET a specific tiddler at revision_id in various forms
+}}}
+
+It is not possible to PUT, POST, or DELTE at these URLs.
+
+In code, the main changes are in the Tiddler object and in the Store. 
+
+The Tiddler gains a revision attribute, which is optional. If not set, this Tiddler is at HEAD.
+
+In psuedo-code, retrieving a particular revision would look like this:
+
+{{{
+    tiddler = Tiddler(tiddler_name)
+    tiddler.revision = 4
+    store.get(tiddler)
+}}}
+
+Inside a text style store the process of retrieval would look like this:
+
+{{{
+    def get(tiddler):
+        # determine id of head if we have no revision
+        if not tiddler.revision:
+            tiddler.revision = list_revisions(tiddler)[0]
+        tiddler_file = open store/tiddler_name/tiddler.revision
+        deserialize(tiddler, tiddler_file)
+        return tiddler
+}}}
+
+And for storage, in the text store:
+
+{{{
+    def put(tiddler):
+        # pay no heed to revision on the incoming object
+        write_lock_for_tiddler(tiddler)
+        revision = list_revisions(tiddler)[0] + 1
+
+        write_tiddler_to(tiddler, store/tiddler_name/revision)
+        write_unlock_for_tiddler(tiddler)
+}}}
+
+Q: How do we deal with edit contention? What are the circumstances in which contention can arise? We probably need to know the revision of the tiddler that had been edited (if not new). If we try to write and the most recent revision on disk is not the same as the client's understanding of most recent, we have contention. Grrr, hate this part.
+
+The upshot of this is that there should be a simple API which various stores can implement in their own particular ways. That is:
+
+Tiddler gets a new attribute, revision, indicating revision.  If unset revision is HEAD
+
+Store has changed expectations in tiddler_get() and tiddler_put().
+
+If revision is set on the tiddler, tiddler_get is expected to attempt to try to retrieve that revision, otherwise HEAD. An exception should be raised when a revision does not exist.  
+
+tiddler_put's behavior depends on the answers to the Q just above.  Generally, though, put is expected to write any incoming tiddler to a newest version. 
+
+Store also has a tiddler_list_revisions() method.

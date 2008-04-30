@@ -1,106 +1,58 @@
+modifier: ChrisDent
+modified: 200804280000
+created:
+tags:
 
-(Notes and intellectual stretching exercises to get warmed up for
-writing the Auth handling for TiddlyWeb.)
+(Notes and intellectual stretching exercises to get warmed up for writing the Auth handling for TiddlyWeb.)
 
-Authentication and Authorization are an important part of TiddlyWeb:
-One of the primary goals of a TiddlyWeb is to allow multiple people
-to access the same datastore with different rights and powers.
+Authentication and Authorization are an important part of TiddlyWeb: One of the primary goals of a TiddlyWeb is to allow multiple people to access the same datastore with different rights and powers.
 
-Within the TiddlyWeb datastore, the Bag provides the mechanism, through
-the bag policy, for describing which users are allowed access to what
-tiddlers. For this to work, we must have a User and we must have
-assurances that the User is who they claim to be.
+Within the TiddlyWeb datastore, the Bag provides the mechanism, through the bag policy, for describing which users are allowed access to what tiddlers. For this to work, we must have a User and we must have assurances that the User is who they claim to be.
 
-Authorization is the facility by which a known valid user is compared
-against a set of rules, rights, privileges, powers and allowed or not
-allowed to perform an action.
+Authorization is the facility by which a known valid user is compared against a set of rules, rights, privileges, powers and allowed or not allowed to perform an action.
 
-Authentication is the process acquiring and validating an identity
-assertion and turning it into a User. Authentication is more than
-saying, "I am so and so". It is also "and here's my proof".
+Authentication is the process acquiring and validating an identity assertion and turning it into a User. Authentication is more than saying, "I am so and so". It is also "and here's my proof".
 
-In TiddlyWeb some actions are impossible (HTTP 403), some need to be
-authorized (HTTP 401) and some are possible in all cases. For those
-actions that do need to be authorized the system must check for the
-presence of a User, if there isn't one, the requestor must be challenged
-to produce one before the requested action may proceed.
+In TiddlyWeb some actions are impossible (HTTP 403), some need to be authorized (HTTP 401) and some are possible in all cases. For those actions that do need to be authorized the system must check for the presence of a User, if there isn't one, the requestor must be challenged to produce one before the requested action may proceed.
 
-When a requestor is challenged, a new request must be made, presenting
-credentials which are examined to determine if they represent, with
-proof, a valid User. This process of credentials examination may have
-multiple stages
+When a requestor is challenged, a new request must be made, presenting credentials which are examined to determine if they represent, with proof, a valid User. This process of credentials examination may have multiple stages
 
-The above information gives us the framework describe and Auth system
-for TiddlyWeb. There are four separate pieces:
+The above information gives us the framework describe and Auth system for TiddlyWeb. There are four separate pieces:
 
 * Users
 * The Credentials Extraction System
 * The Challenge System
 * The Authorization System
 
-The Authorization System is managed as a part of bags, and left for
-other documents to describe.
+The Authorization System is managed as a part of bags, and left for other documents to describe.
 
-== Users ==
+!!Users
 
-== The Credentials Extraction System ==
+!!The Credentials Extraction System
 
-== The Challenge System ==
+!!The Challenge System
 
-When a client attempts to save a tiddler to the TiddlyWeb server, it is
-likely that the bag into which the tiddler is to be saved has a policy
-that requires the request have a User. If the client makes such a request 
-but has not previously authenticated to the server OR the currently present
-credentials are insufficient, the client needs to be told by the server
-to authenticate. This is the challenge. [The server sends an HTTP 401 with
-a WWW-Authenticate header (MAYBE not, what will browsers do with weird
-WWW-Authenticate headers?).]
+When a client attempts to save a tiddler to the TiddlyWeb server, it is likely that the bag into which the tiddler is to be saved has a policy that requires the request have a User. If the client makes such a request but has not previously authenticated to the server OR the currently present credentials are insufficient, the client needs to be told by the server to authenticate. This is the challenge. [The server sends an HTTP 401 with a WWW-Authenticate header (MAYBE not, what will browsers do with weird WWW-Authenticate headers?).]
 
-Making challenges is time consuming so it is not something we want to 
-do on every request. A successful challenge should result in subsequent
-requests presenting easy to validate credentials.
+Making challenges is time consuming so it is not something we want to do on every request. A successful challenge should result in subsequent requests presenting easy to validate credentials.
 
-=== Challenge Speculation ===
+!!!Challenge Speculation
 
 There are multiple challenge scenarios:
 
-* User is at the recipe or list of tiddlers (resulting in wiki) state 
-  in the browser. In that state, we might want to challenge the browser
-  directly in the content of the response: presenting an HTML interface
-  to doing authentication, or a WWW-Authenticate (via Basic or Digest)
-  request. We might also want to allow the user the option to create
-  a new user.
-* Javascript is doing some processing in a TiddlyWiki and the request
-  needs auth. Presumably we do not wish to reload the TiddlyWiki to 
-  another HTML page as that will destroy any local changes not yet
-  updated. Also we want to be able to present the User (the one using
-  the browser that is doing its Javascript) with a set of options
-  for the various ways in which this server can allow auth, as well
-  as potentially the option to register a new user.
-* A script is automatically processing some tiddlers via the REST API,
-  and the current request needs auth. In that state we want provide
-  the script with enough information so it can choose the right 
-  way to authenticate to this particular server.
+* User is at the recipe or list of tiddlers (resulting in wiki) state in the browser. In that state, we might want to challenge the browser directly in the content of the response: presenting an HTML interface to doing authentication, or a WWW-Authenticate (via Basic or Digest) request. We might also want to allow the user the option to create a new user.
+* Javascript is doing some processing in a TiddlyWiki and the request needs auth. Presumably we do not wish to reload the TiddlyWiki to another HTML page as that will destroy any local changes not yet updated. Also we want to be able to present the User (the one using the browser that is doing its Javascript) with a set of options for the various ways in which this server can allow auth, as well as potentially the option to register a new user.
+* A script is automatically processing some tiddlers via the REST API, and the current request needs auth. In that state we want provide the script with enough information so it can choose the right way to authenticate to this particular server.
 
-There's no real difference in form between the requests of Javascript
-in the browser (the running TiddlyWiki) and requests by some other
-script. 
+There's no real difference in form between the requests of Javascript in the browser (the running TiddlyWiki) and requests by some other script. 
 
-The proper challenge response could be determined by the Content-Type or
-Accept header of the incoming request. For example if the request is for
-JSON, then it is like a script is making the request and some automatic
-processing needs to proceed. We could declare this way of being by fiat.
+The proper challenge response could be determined by the Content-Type or Accept header of the incoming request. For example if the request is for JSON, then it is like a script is making the request and some automatic processing needs to proceed. We could declare this way of being by fiat.
 
-The 401 response to JSON request could be a JSON packet that descrbes
-the options for the client, possible auth type to URI pairs (if you 
-want to Auth like X, go to URI Y and then come back and try this
-request again).
+The 401 response to JSON request could be a JSON packet that descrbes the options for the client, possible auth type to URI pairs (if you want to Auth like X, go to URI Y and then come back and try this request again).
 
-=== Challenge Example ===
+!!!Challenge Example
 
-Assume the system is willing to do a Basic Auth or OpenID challenge.
-This requires that it do basic auth and TiddlyWeb token credentials
-extraction.
+Assume the system is willing to do a Basic Auth or OpenID challenge.  This requires that it do basic auth and TiddlyWeb token credentials extraction.
 
 With request type of HTML:
 
@@ -111,42 +63,20 @@ With request type of HTML:
 * If Basic Auth is followed:
 ** The user is sent a WWW-Authenticate: Basic header
 ** The browser presents a login window.
-** The user enters their credentials, to be validated by the Basic Auth
-   Credentials Extractor as the request is sent back to the server.
+** The user enters their credentials, to be validated by the Basic Auth Credentials Extractor as the request is sent back to the server.
 * If OpenID is chosen:
 ** Ask the user for their OpenID
 ** Do the OpenID dance with query strings etc.
-** Once OpenID has been satisfied, install a tiddlyweb_token cookie
-   and redirect.
+** Once OpenID has been satisfied, install a tiddlyweb_token cookie and redirect.
 
-/challenger/basic_auth looks at incoming headers. If there is no
-Authorization header it sends WWW-Authenticate. If an Authorization
-header was present then it has already been checked by the Credentials
-Extractor. If a User is in the environment, it was valid, do a redirect
-to /original_url. If there is no User the credentials were invalid, so
-we send WWW-Authenticate again. This boils down to: if User redirect,
-otherwise send WWW-Authenticate.
+/challenger/basic_auth looks at incoming headers. If there is no Authorization header it sends WWW-Authenticate. If an Authorization header was present then it has already been checked by the Credentials Extractor. If a User is in the environment, it was valid, do a redirect to /original_url. If there is no User the credentials were invalid, so we send WWW-Authenticate again. This boils down to: if User redirect, otherwise send WWW-Authenticate.
 
-/challenger/openID sends the browser out to do the OpenID dance,
-making multiple passes through /challenger/openID as necessary. Once
-the openID is validated it must then be paired with a User. If there is
-no User that uses this OpenID we either need to fail or offer the chance
-to create a User. Once an OpenID is correctly associated with a local user
-we need to send a tiddlyweb_token cookie and redirect.
+/challenger/openID sends the browser out to do the OpenID dance, making multiple passes through /challenger/openID as necessary. Once the openID is validated it must then be paired with a User. If there is no User that uses this OpenID we either need to fail or offer the chance to create a User. Once an OpenID is correctly associated with a local user we need to send a tiddlyweb_token cookie and redirect.
 
-The use of the tiddlyweb_token demonstrates the separation between 
-the Challenge mechanism and the Credentials Extraction mechanism. Once
-the OpenID challenge is successful, subsequent requests only happen
-through the Credentials Extraction mechanism validating the tiddlyweb_token.
-Multiple Challengers might choose to resolve in the installation of
-a tiddlyweb_token.
+The use of the tiddlyweb_token demonstrates the separation between the Challenge mechanism and the Credentials Extraction mechanism. Once the OpenID challenge is successful, subsequent requests only happen through the Credentials Extraction mechanism validating the tiddlyweb_token.  Multiple Challengers might choose to resolve in the installation of a tiddlyweb_token.
 
 With a JSON request type:
 
-[1] Being vague about the mechanism of 401, it could be that in some
-cases an auth exception in the depths of the system doesn't actually
-result in a 401, but instead the delivery of a special page or
-what have you.
+[1] Being vague about the mechanism of 401, it could be that in some cases an auth exception in the depths of the system doesn't actually result in a 401, but instead the delivery of a special page or what have you.
 
-[2] Doesn't have to be a clickable list, could be forms, a variety of
-things.
+[2] Doesn't have to be a clickable list, could be forms, a variety of things.

@@ -44,3 +44,4 @@ This is not complete, and likely not up to date.
 * Recipes that contain bags on multiple servers.
 * More readable, and more, HTTP based tests, demonstrating, clearly, the protocol.
 * Rhino and Selenium based testing.
+* As a sample use case, create a blog recipe in which blog content is writeable by the author, but not by others, and there is a CommentPlugin for others to leave feedback.
