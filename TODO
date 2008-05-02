@@ -21,7 +21,6 @@ This is not complete, and likely not up to date.
 
 * Change Tiddly core so server.bag is an inherited field?
 * In SyncMachine pay attention to response codes from the web server in onGetTiddlerList and onPutTiddler, handle appropriately
-* Create an adaptor option or discover a plugin that will do autosync (on clicking done).
 * When sending a workspace, set the recipe attribute (temporarily) on the tiddler.
 * DELETEing tiddlers and other resources.
 * Client side recipe and bag construction sets.
