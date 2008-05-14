@@ -13,13 +13,16 @@ function_map = {
         Bag: ['bag_put', 'bag_get']
         }
 
-class NoBagError(Exception):
+class NoBagError(IOError):
     pass
 
-class NoRecipeError(Exception):
+class NoRecipeError(IOError):
     pass
 
-class NoTiddlerError(Exception):
+class NoTiddlerError(IOError):
+    pass
+
+class StoreLockError(IOError):
     pass
 
 class Store(object):
@@ -80,6 +83,13 @@ class Store(object):
             return put_func, get_func
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
+
+    def list_tiddler_revisions(self, tiddler):
+        module = 'tiddlyweb.stores.%s' % self.format
+        imported_module = __import__(module, {}, {}, [self.format])
+        list_func = getattr(imported_module, 'list_tiddler_revisions')
+
+        return list_func(tiddler)
 
     def list_recipes(self):
         module = 'tiddlyweb.stores.%s' % self.format

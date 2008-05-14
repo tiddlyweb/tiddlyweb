@@ -10,7 +10,7 @@ import wsgi_intercept
 import httplib2
 import simplejson
 
-from fixtures import muchdata
+from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
 
@@ -25,6 +25,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     module.store = Store('text')
+    reset_textstore()
     muchdata(module.store)
 
 def test_get_bag_tiddler_list_default():
@@ -85,7 +86,7 @@ def test_get_bags_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 33, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.rstrip().split('\n')) == 32, 'len tiddlers should be 33 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_txt():
     http = httplib2.Http()
@@ -94,7 +95,7 @@ def test_get_bags_txt():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 31, 'len tiddlers should be 32 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.rstrip().split('\n')) == 30, 'len tiddlers should be 32 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_html():
     http = httplib2.Http()
@@ -103,7 +104,7 @@ def test_get_bags_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 33, 'len bags should be 33 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.rstrip().split('\n')) == 32, 'len bags should be 33 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_bags_unsupported_neg_format():
     http = httplib2.Http()
@@ -132,7 +133,7 @@ def test_get_bags_json():
             'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
     info = simplejson.loads(content)
     assert type(info) == list
-    assert len(info) == 31
+    assert len(info) == 30
 
 def test_get_bags_unsupported_neg_format_with_accept():
     http = httplib2.Http()

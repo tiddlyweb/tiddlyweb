@@ -13,10 +13,12 @@ import sys
 sys.path.append('.')
 
 from fixtures import bagone, bagfour, textstore, reset_textstore
-from tiddlyweb.store import Store
+from tiddlyweb.store import Store, StoreLockError
 from tiddlyweb.tiddler import Tiddler
+import tiddlyweb.stores.text as texter
+import py.test
 
-expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
+expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne', '1')
 
 expected_stored_text = """modifier: AuthorOne
 created: 
@@ -84,4 +86,45 @@ def test_multiple_put():
 
     stored_dir = os.path.join(textstore.bag_store, 'bagfour', 'tiddlers')
     assert len(os.listdir(stored_dir)) == 3, 'there should be 3 files in the tiddlers directory'
+
+def test_get_revision():
+    """
+    Test we are able to retrieve a particular revision.
+    """
+
+    store = Store('text')
+    store.put(bagone)
+    tiddler = Tiddler(title='RevisionTiddler', text='how now 1')
+    tiddler.bag = 'bagone'
+    store.put(tiddler)
+    tiddler.text = 'how now 2'
+    store.put(tiddler)
+    tiddler.text = 'how now 3'
+    store.put(tiddler)
+
+    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    store.get(tiddler)
+
+    assert tiddler.text == 'how now 3'
+    assert tiddler.revision == 3
+
+    tiddler = Tiddler(title='RevisionTiddler', bag='bagone', revision=2)
+    store.get(tiddler)
+
+    assert tiddler.text == 'how now 2'
+    assert tiddler.revision == 2
+
+    revisions = store.list_tiddler_revisions(tiddler)
+    assert len(revisions) == 3
+    assert revisions[0] == 3
+
+def test_store_lock():
+    """
+    Make the sure the locking system throws the proper lock.
+    """
+
+    texter.write_lock(textstore.bag_store)
+    py.test.raises(StoreLockError, 'texter.write_lock(textstore.bag_store)')
+    texter.write_unlock(textstore.bag_store)
+    texter.write_lock(textstore.bag_store)
 

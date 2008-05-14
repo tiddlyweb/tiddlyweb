@@ -44,4 +44,22 @@ def test_tiddler_full_create():
             'tiddler tags are correct'
     assert tiddler.bag == 'bagone', \
             'tiddler has a bag of bagone'
+    assert tiddler.revision == None, \
+            'tiddler revision is unet'
 
+def test_tiddler_revision_create():
+    """
+    Confirm that when we set revision in a new Tiddler,
+    we are able to retrieve that attribute.
+    """
+
+    tiddler = Tiddler(
+            title = 'test tiddler r',
+            text = 'revision test',
+            revision = 5,
+            )
+
+    assert type(tiddler) == Tiddler, \
+            'Tiddler returns a Tiddler'
+    assert tiddler.revision == 5, \
+            'revision is set as expected, to 5'

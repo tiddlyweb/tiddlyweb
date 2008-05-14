@@ -9,7 +9,7 @@ A simple way to do Tiddler revisions is simply is to say that any new version of
 
 To retrieve a specific revision of a Tiddler, the revision identifier must be provided. If no revision identifier is provided, the most recent revision is returned.
 
-When saving a Tiddler, a new revision is create in all cases: revisions are immutable. If a previous revision is to be restored as the "current" revision, it is saved as a new revision. Other metadata can indicate the revision history.
+When saving a Tiddler, a new revision is created in all cases: revisions are immutable. If a previous revision is to be restored as the "current" revision, it is saved as a new revision. Other metadata can indicate the revision history.
 
 Q: When a revision is restored to current, does its modified time get updated or remain the same?
 

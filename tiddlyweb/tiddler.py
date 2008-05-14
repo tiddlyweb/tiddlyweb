@@ -30,6 +30,7 @@ class Tiddler(object):
             modifier=None,
             tags=[],
             bag=None,
+            revision=None,
             text=None):
         self.title = title
         self.modifier = modifier
@@ -38,6 +39,7 @@ class Tiddler(object):
         self.tags = tags
         self.bag = bag
         self.text = text
+        self.revision = revision
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None
