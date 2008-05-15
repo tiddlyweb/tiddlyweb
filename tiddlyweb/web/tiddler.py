@@ -7,12 +7,22 @@ from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409
 from tiddlyweb import control
 from tiddlyweb import web
 
+# XXX duplication with get_by_recipe, refactor
 def _tiddler_from_path(environ):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
-    tiddler_name = web.handle_extension(environ, tiddler_name)
+    revision = environ['wsgiorg.routing_args'][1].get('revision', None)
+    if revision:
+        revision = web.handle_extension(environ, revision)
+    else:
+        tiddler_name = web.handle_extension(environ, tiddler_name)
 
     tiddler = Tiddler(tiddler_name)
+    if revision:
+        try:
+            tiddler.revision = int(revision)
+        except ValueError, e:
+            raise HTTP404, '%s not a revision of %s: %s' % (revision, tiddler_name, e)
     tiddler.bag = bag_name
 
     return tiddler
@@ -20,9 +30,19 @@ def _tiddler_from_path(environ):
 def get_by_recipe(environ, start_response):
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
-    tiddler_name = web.handle_extension(environ, tiddler_name)
+    revision = environ['wsgiorg.routing_args'][1].get('revision', None)
+    if revision:
+        revision = web.handle_extension(environ, revision)
+    else:
+        tiddler_name = web.handle_extension(environ, tiddler_name)
 
     tiddler = Tiddler(tiddler_name)
+    if revision:
+        try:
+            tiddler.revision = int(revision)
+        except ValueError, e:
+            raise HTTP404, '%s not a revision of %s: %s' % (revision, tiddler_name, e)
+
     recipe = Recipe(recipe_name)
     store = environ['tiddlyweb.store']
     store.get(recipe)

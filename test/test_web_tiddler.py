@@ -43,9 +43,25 @@ def test_get_tiddler():
     assert response['status'] == '200', 'response status should be 200'
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
+def test_get_tiddler_revision():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+    assert 'revision="1"' in content
+
 def test_get_missing_tiddler():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler27',
+            method='GET')
+
+    assert response['status'] == '404', 'response status should be 404'
+
+def test_get_missing_tiddler_revision():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler27/revisions/99',
             method='GET')
 
     assert response['status'] == '404', 'response status should be 404'
@@ -58,6 +74,16 @@ def test_get_tiddler_wiki():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+
+def test_get_tiddler_revision_wiki():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1.wiki',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
+    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+    assert 'revision="1"' in content
 
 def test_put_tiddler_txt():
     http = httplib2.Http()
