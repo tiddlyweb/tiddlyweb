@@ -172,7 +172,6 @@ def _read_lock_file(lockfile):
 def _lock_filename(filename):
     pathname, basename = os.path.split(filename)
     lock_filename = os.path.join(pathname, '.%s' % basename)
-    print lock_filename
     return lock_filename
 
 def _tiddler_base_filename(tiddler):
