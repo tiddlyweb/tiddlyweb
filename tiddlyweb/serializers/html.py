@@ -71,7 +71,7 @@ def as_bag(bag, input):
     pass
 
 def tiddler_as(tiddler):
-    return """<div title="%s" revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">
+    return """<div title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">
 <pre>%s</pre>
 </div>
 """ % (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, tags_as(tiddler.tags), tiddler.text)

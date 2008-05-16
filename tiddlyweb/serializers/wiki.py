@@ -67,7 +67,7 @@ def _tiddler_as_div(tiddler, recipe_name=''):
     except KeyError:
         host = ''
 
-    return """<div title="%s" revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
+    return """<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
 <pre>%s</pre>
 </div>
 """ % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name, \

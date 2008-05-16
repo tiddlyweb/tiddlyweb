@@ -177,7 +177,8 @@ TiddlyWebAdaptor.getTiddlerListCallback = function(status,context,responseText,u
                 }
                 var list = [];
                 for(var i=0; i < tiddlers.length; i++) {
-                    var tiddler = new Tiddler(tiddlers[i])
+                    var tiddler = new Tiddler(tiddlers[i]['title']);
+                    tiddler.fields['server.page.revision'] = tiddlers[i]['revision'];
                     list.push(tiddler);
                 }
                 context.tiddlers = list;
@@ -218,12 +219,11 @@ TiddlyWebAdaptor.prototype.getTiddler = function(title,context,userParams,callba
         if(title)
                 context.title = title;
         if(context.revision) {
-// !!TODO set the uriTemplate
-                var uriTemplate = '%0%1%2%3';
+                var uriTemplate = '%0recipes/%1/tiddlers/%2/revisions/%3';
         } else {
                 uriTemplate = '%0recipes/%1/tiddlers/%2';
         }
-        uri = uriTemplate.format([context.host,context.workspace,TiddlyWebAdaptor.normalizedTitle(title)]);
+        uri = uriTemplate.format([context.host,context.workspace,TiddlyWebAdaptor.normalizedTitle(title),context.revision]);
 
         context.tiddler = new Tiddler(title);
         context.tiddler.fields['server.type'] = TiddlyWebAdaptor.serverType;
@@ -250,6 +250,7 @@ TiddlyWebAdaptor.getTiddlerCallback = function(status,context,responseText,uri,x
                 context.tiddler.text = info['text'];
                 context.tiddler.tags = info['tags'];
                 context.tiddler.fields['server.bag'] = info['bag'];
+                context.tiddler.fields['server.page.revision'] = info['revison']
                 context.tiddler.modifier = info['modifier'];
                 context.tiddler.modified = Date.convertFromYYYYMMDDHHMM(info['modified']);
                 context.tiddler.created = Date.convertFromYYYYMMDDHHMM(info['created']);
@@ -264,45 +265,44 @@ TiddlyWebAdaptor.getTiddlerCallback = function(status,context,responseText,uri,x
                 context.callback(context,context.userParams);
 };
 
-// NOT YET IMPLEMENTED
 TiddlyWebAdaptor.prototype.getTiddlerRevisionList = function(title,limit,context,userParams,callback)
 {
         context = this.setContext(context,userParams,callback);
-// !!TODO set the uriTemplate
-        var uriTemplate = '%0%1%2';
-        if(!limit)
-                limit = 10;
-        var uri = uriTemplate.format([context.host,context.workspace,TiddlyWebAdaptor.normalizedTitle(title),limit]);
+        var uriTemplate = '%0recipes/%1/tiddlers/%2/revisions';
+        // no support for limit
+        var uri = uriTemplate.format([context.host,context.workspace,TiddlyWebAdaptor.normalizedTitle(title)]);
         var req = TiddlyWebAdaptor.doHttpGET(uri,TiddlyWebAdaptor.getTiddlerRevisionListCallback,context);
         return typeof req == 'string' ? req : true;
 };
 
-// NOT YET IMPLEMENTED
 TiddlyWebAdaptor.getTiddlerRevisionListCallback = function(status,context,responseText,uri,xhr)
 {
         context.status = false;
         if(status) {
-                var content = null;
                 try {
-// !!TODO: parse the responseText here
-                        var list = [];
-                        var tiddler = new Tiddler('example');
-// !!TODO: fill in tiddler fields as available
-                        //tiddler.modified = TiddlyWebAdaptor.dateFromEditTime();
-                        //tiddler.modifier = ;
-                        //tiddler.tags = ;
-                        //tiddler.fields['server.page.id'] = ;
-                        //tiddler.fields['server.page.name'] = ;
-                        //tiddler.fields['server.page.revision'] = ;
-                        list.push(tiddler);
+                    eval('var info=' + responseText);
                 } catch (ex) {
                         context.statusText = exceptionText(ex,TiddlyWebAdaptor.serverParsingErrorMessage);
                         if(context.callback)
                                 context.callback(context,context.userParams);
                         return;
                 }
+                var list = [];
+                for(var i=0; i&lt;info.length; i++) {
+                    var tiddler = new Tiddler(info[i]['title']);
+                    tiddler.modifier = info[i]['modifier'];
+                    tiddler.tags = info[i]['tags'];
+                    tiddler.fields['server.page.revision'] = info[i]['revision'];
+                    tiddler.modified = Date.convertFromYYYYMMDDHHMM(info[i]['modified']);
+                    tiddler.created = Date.convertFromYYYYMMDDHHMM(info[i]['created']);
+                    list.push(tiddler);
+                }
                 var sortField = 'server.page.revision';
-                list.sort(function(a,b) {return a.fields[sortField] < b.fields[sortField] ? +1 : (a.fields[sortField] == b.fields[sortField] ? 0 : -1);});
+                list.sort(function(a,b) {
+                    return a.fields[sortField] &lt; b.fields[sortField]
+                      ? +1
+                      : (a.fields[sortField] == b.fields[sortField] ? 0 : -1);
+                 });
                 context.revisions = list;
                 context.status = true;
         } else {
@@ -333,7 +333,8 @@ TiddlyWebAdaptor.prototype.putTiddler = function(tiddler,context,userParams,call
             title: tiddler.title,
             text: tiddler.text,
             modifier: tiddler.modifier,
-            tags: tiddler.tags
+            tags: tiddler.tags,
+            revision: tiddler['server.page.revision']
         };
         payload = JSON.stringify(payload)
         var req = TiddlyWebAdaptor.doHttpPUT(uri,TiddlyWebAdaptor.putTiddlerCallback,context,{},payload,TiddlyWebAdaptor.mimeType);
