@@ -51,7 +51,10 @@ def bag_as(bag):
     """
     List the tiddlers in a bag as text.
     """
-    return "\n".join([tiddler.title for tiddler in bag.list_tiddlers()])
+    if bag.revbag:
+        return "\n".join(["%s:%s" % (tiddler.title, tiddler.revision) for tiddler in bag.list_tiddlers()])
+    else:
+        return "\n".join([tiddler.title for tiddler in bag.list_tiddlers()])
 
 def as_bag(bag, input):
     pass

@@ -31,8 +31,12 @@ def as_recipe(recipe, input):
 def bag_as(bag):
     """
     List the tiddlers in a bag as text.
+    We will likely want to expand this someday.
     """
-    return simplejson.dumps([tiddler.title for tiddler in bag.list_tiddlers()])
+    if bag.revbag:
+        return simplejson.dumps([(tiddler.title, tiddler.revision) for tiddler in bag.list_tiddlers()])
+    else:
+        return simplejson.dumps([tiddler.title for tiddler in bag.list_tiddlers()])
 
 def as_bag(bag, input):
     info = simplejson.loads(input)

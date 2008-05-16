@@ -1,0 +1,18 @@
+
+If you have been using TiddlyWeb prior to there being support
+for revisions, you can update your text store with a simple script,
+assuming you have a bourne style shell.
+
+Each bag lives in bags directory:
+
+   store/bags/<bag_name>
+
+Each of those directories contains a tiddler directory:
+
+  store/bags/<bag_name>/tiddlers
+
+cd into each <bag_name>/tiddlers directory and run this:
+
+  for i in * ; do echo $i; mv "$i" tmp; mkdir "$i"; mv tmp "$i/1";done
+
+Obviously more of this could be automated. Contributions welcome.

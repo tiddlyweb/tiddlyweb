@@ -58,9 +58,11 @@ def bag_as(bag):
     """
     lines = []
     output = '<ul>\n'
-# XXX we are encoding an absolute url here, which is not such a good thing
     for tiddler in bag.list_tiddlers():
-        line = '<li><a href="/bags/%s/tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.title)
+        if bag.revbag:
+            line = '<li><a href="/bags/%s/tiddlers/%s/revisions/%s">%s:%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.revision, tiddler.title, tiddler.revision)
+        else:
+            line = '<li><a href="/bags/%s/tiddlers/%s">%s</a></li>' % (urllib.quote(tiddler.bag), urllib.quote(tiddler.title), tiddler.title)
         lines.append(line)
     output += "\n".join(lines)
     return output + '\n</ul>'

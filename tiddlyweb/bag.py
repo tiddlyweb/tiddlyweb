@@ -13,12 +13,16 @@ default_policy = "all the world's a stage"
 import copy
 
 class Bag(dict):
+    """
+    XXX: We should subclass for tmpbag and revbag.
+    """
 
-    def __init__(self, name, policy=default_policy, tmpbag=False):
+    def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False):
         dict.__init__(self)
         self.name = name
         self.policy = policy
         self.tmpbag = tmpbag
+        self.revbag = revbag
         self.order = []
         # reference to the store which 'got' us
         # this is can be used in serialization

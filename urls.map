@@ -53,11 +53,14 @@
 #   application/json: a JSON dict representing the tiddler
 #   text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
-    GET tiddlyweb.web.tiddler:get_by_recipe
-    PUT tiddlyweb.web.tiddler:put_by_recipe
+    GET tiddlyweb.web.tiddler:get
+    PUT tiddlyweb.web.tiddler:put
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
-    GET tiddlyweb.web.tiddler:get_by_recipe
+    GET tiddlyweb.web.tiddler:get
+
+/recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
+    GET tiddlyweb.web.tiddler:get_revisions
 
 # list of bags
 # Supports GET:
@@ -109,4 +112,8 @@
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
     GET tiddlyweb.web.tiddler:get
+
+/bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
+    GET tiddlyweb.web.tiddler:get_revisions
+
 

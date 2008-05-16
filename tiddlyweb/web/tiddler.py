@@ -1,6 +1,7 @@
 
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409
@@ -16,11 +17,24 @@ def get(environ, start_response):
     return _send_tiddler(environ, start_response, tiddler)
 
 def _send_tiddler_revisions(environ, start_response, tiddler):
-    content = 'no done'
-    start_response("200 OK",
-            [('Content-Type', mime_type)])
+    store = environ['tiddlyweb.store']
 
-    return [content]
+    tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
+    for revision in store.list_tiddler_revisions(tiddler):
+        tmp_tiddler = Tiddler(title=tiddler.title, revision=revision, bag=tiddler.bag)
+        try:
+            store.get(tmp_tiddler)
+        except NoTiddlerError, e:
+            raise HTTP404, 'tiddler %s at revision % not found, %s' % (tiddler.title, revision, e)
+        tmp_bag.add_tiddler(tmp_tiddler)
+
+    serialize_type, mime_type = web.get_serialize_type(environ)
+    serializer = Serializer(serialize_type)
+    serializer.object = tmp_bag
+
+    start_response("200 OK", [('Content-Type', mime_type),
+             ('Set-Cookie', 'chkHttpReadOnly=false')])
+    return [serializer.to_string()]
 
 def _send_tiddler(environ, start_response, tiddler):
 
