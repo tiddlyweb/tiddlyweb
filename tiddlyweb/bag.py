@@ -24,14 +24,17 @@ class Bag(dict):
         # this is can be used in serialization
         self.store = None
 
+    def _tiddler_key(self, tiddler):
+        return '%s.%s' % (tiddler.title, tiddler.revision)
+
     def __getitem__(self, tiddler):
-        return dict.__getitem__(self, tiddler.title)
+        return dict.__getitem__(self, self._tiddler_key(tiddler) )
 
     def __setitem__(self, tiddler):
-        dict.__setitem__(self, tiddler.title, tiddler)
+        dict.__setitem__(self, self._tiddler_key(tiddler), tiddler)
 
     def __delitem__(self, tiddler):
-        dict.__delitem__(self, tiddler.title)
+        dict.__delitem__(self, self._tiddler_key(tiddler))
 
     def add_tiddler(self, tiddler):
         if self.tmpbag:
@@ -40,15 +43,15 @@ class Bag(dict):
             bags_tiddler = copy.deepcopy(tiddler)
             bags_tiddler.bag = self.name
             tiddler = bags_tiddler
-        if tiddler.title in self.order:
-            self.order.remove(tiddler.title)
-        self.order.append(tiddler.title)
+        if self._tiddler_key(tiddler) in self.order:
+            self.order.remove(self._tiddler_key(tiddler))
+        self.order.append(self._tiddler_key(tiddler))
         self.__setitem__(tiddler)
 
     def remove_tiddler(self, tiddler):
-        if tiddler.title in self.order:
-            self.order.remove(tiddler.title)
+        if self._tiddler_key(tiddler) in self.order:
+            self.order.remove(self._tiddler_key(tiddler))
         self.__delitem__(tiddler)
 
     def list_tiddlers(self):
-        return [self.get(title, None) for title in self.order]
+        return [self.get(keyword, None) for keyword in self.order]
