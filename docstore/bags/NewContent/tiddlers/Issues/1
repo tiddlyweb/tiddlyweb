@@ -1,0 +1,8 @@
+modifier: ChrisDent
+created: 
+modified: 200803281434
+tags: 
+
+* Things that require the MarkupPreHead tiddler, such as the SplashScreenPlugin don't seem to work when loading the page from the server.
+* If a wiki/workspace is created from a bag or filtered bag, content cannot be synched as the tiddlers have no server.workspace field. server.bag ought to be enough, but the Adaptor mechanism does not yet think that way.
+* A workspace can only be synched from {{{GET /recipes/{recipe_name}.wiki}}} not {{{GET /recipes/{recipe_name}/tiddlers.wiki}}}. Both should be acceptable. The latter does not work because workspace does not get set on the tiddlers as they are serialized because they code doesn't know the recipe at that time. Probably need to put a temporary attribute of {{{recipe}}} on the Tiddler object.
