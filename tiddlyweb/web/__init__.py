@@ -33,7 +33,10 @@ def get_serialize_type(environ):
 def handle_extension(environ, resource_name):
     extension = environ.get('tiddlyweb.extension')
     if extension:
-        resource_name = resource_name[0 : resource_name.rfind('.' + extension)]
+        try:
+            resource_name = resource_name[0 : resource_name.rindex('.' + extension)]
+        except ValueError:
+            pass
 
     return resource_name
 
