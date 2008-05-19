@@ -16,6 +16,7 @@ This is not complete, and likely not up to date.
 ** expiration stuff
 ** last modified time (based on grazing all the tiddlers?)
 * filter strings on recipe lists
+* fix tags_as and as_tags in html serializer
 
 !After Release 1
 
