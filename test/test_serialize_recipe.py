@@ -37,7 +37,7 @@ def test_generated_wiki():
 
     assert string.startswith('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'), 'looks like we got an empty.html doc'
     assert 'c tiddler one' in string
-    assert '<div title="TiddlerOne" revision="None" modifier="AuthorOne"' in string
+    assert '<div title="TiddlerOne" server.page.revision="None" modifier="AuthorOne"' in string
 
 def test_simple_recipe():
     recipe = Recipe('other')

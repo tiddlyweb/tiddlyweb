@@ -31,6 +31,15 @@ class Bag(dict):
     def _tiddler_key(self, tiddler):
         return '%s.%s' % (tiddler.title, tiddler.revision)
 
+    def _tiddler_copy(self, tiddler):
+        if self.tmpbag:
+            pass
+        else:
+            bags_tiddler = copy.deepcopy(tiddler)
+            bags_tiddler.bag = self.name
+            tiddler = bags_tiddler
+        return tiddler
+
     def __getitem__(self, tiddler):
         return dict.__getitem__(self, self._tiddler_key(tiddler) )
 
@@ -41,12 +50,7 @@ class Bag(dict):
         dict.__delitem__(self, self._tiddler_key(tiddler))
 
     def add_tiddler(self, tiddler):
-        if self.tmpbag:
-            pass
-        else:
-            bags_tiddler = copy.deepcopy(tiddler)
-            bags_tiddler.bag = self.name
-            tiddler = bags_tiddler
+        tiddler = self._tiddler_copy(tiddler)
         if self._tiddler_key(tiddler) in self.order:
             self.order.remove(self._tiddler_key(tiddler))
         self.order.append(self._tiddler_key(tiddler))
