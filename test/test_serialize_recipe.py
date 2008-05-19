@@ -55,8 +55,3 @@ def test_simple_recipe():
     recipe = Recipe('other')
     recipe.set_recipe([['bagboom', '']])
     assert recipe != new_recipe, 'modified recipe not equal new_recipe'
-
-
-
-
-
