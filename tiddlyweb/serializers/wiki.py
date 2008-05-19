@@ -6,73 +6,83 @@ This is initially for the sake of testing the bits.
 
 import codecs
 
-from text import tags_as
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 from tiddlyweb import control
 from tiddlyweb.web.serve import server_host
+from tiddlyweb.serializers import SerializationInterface
 
 # this should come from config or even
 # from a url
 empty_html = 'lib/empty.html'
 splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
-def recipe_as(recipe):
-    """
-    Recipe as a wiki.
-    """
+class Serialization(SerializationInterface):
 
-    lines = ''
-    for tiddler in control.get_tiddlers_from_recipe(recipe):
-        lines += _tiddler_as_div(tiddler, recipe.name)
+    def recipe_as(self, recipe):
+        """
+        Recipe as a wiki.
+        """
 
-    return _put_string_in_tiddlywiki(lines)
+        lines = ''
+        for tiddler in control.get_tiddlers_from_recipe(recipe):
+            lines += self._tiddler_as_div(tiddler, recipe.name)
 
-def _put_string_in_tiddlywiki(lines):
-    tiddlystart, tiddlyfinish = _split_empty_html()
-    return tiddlystart + lines + splitter + tiddlyfinish
+        return self._put_string_in_tiddlywiki(lines)
 
-def as_recipe(recipe, input):
-    pass
+    def _put_string_in_tiddlywiki(self, lines):
+        tiddlystart, tiddlyfinish = self._split_empty_html()
+        return tiddlystart + lines + splitter + tiddlyfinish
 
-def _split_empty_html():
+    def as_recipe(self, recipe, input):
+        pass
+
+    def _split_empty_html(self):
 # this could throw, which is just fine, 
 # that's what we want
-    f = codecs.open(empty_html, encoding='utf-8')
-    wiki = f.read()
-    return wiki.split(splitter)
+        f = codecs.open(empty_html, encoding='utf-8')
+        wiki = f.read()
+        return wiki.split(splitter)
 
-def bag_as(bag):
-    lines = ''
-    for tiddler in bag.list_tiddlers():
-        lines += _tiddler_as_div(tiddler)
+    def bag_as(self, bag):
+        lines = ''
+        for tiddler in bag.list_tiddlers():
+            lines += _tiddler_as_div(tiddler)
 
-    return _put_string_in_tiddlywiki(lines)
+        return self._put_string_in_tiddlywiki(lines)
 
-def as_bag(bag):
-    pass
+    def as_bag(self, bag):
+        pass
 
-def tiddler_as(tiddler):
-    tiddler_div = _tiddler_as_div(tiddler)
+    def tiddler_as(self, tiddler):
+        tiddler_div = self._tiddler_as_div(tiddler)
 
-    return _put_string_in_tiddlywiki(tiddler_div)
+        return self._put_string_in_tiddlywiki(tiddler_div)
 
-def _tiddler_as_div(tiddler, recipe_name=''):
-    """
-    Read in the tiddler from a div.
-    """
-    try: 
-        host = '%s://%s:%s/' % \
-                (server_host['scheme'], server_host['host'], server_host['port'])
-    except KeyError:
-        host = ''
+    def _tiddler_as_div(self, tiddler, recipe_name=''):
+        """
+        Read in the tiddler from a div.
+        """
+        try: 
+            host = '%s://%s:%s/' % \
+                    (server_host['scheme'], server_host['host'], server_host['port'])
+        except KeyError:
+            host = ''
 
-    return """<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
-<pre>%s</pre>
-</div>
-""" % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name, \
-        host, tiddler.bag, tiddler.modified, tiddler.created, \
-        tags_as(tiddler.tags), tiddler.text)
+        return """<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">
+    <pre>%s</pre>
+    </div>
+    """ % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name, \
+            host, tiddler.bag, tiddler.modified, tiddler.created, \
+            self.tags_as(tiddler.tags), tiddler.text)
 
-def as_tiddler(tiddler):
-    pass
+    def as_tiddler(self, tiddler):
+        pass
+
+    def tags_as(self, tags):
+        tag_string_list = []
+        for tag in tags:
+            if ' ' in tag:
+                tag = '[[%s]]' % tag
+            tag_string_list.append(tag)
+        return ' '.join(tag_string_list)

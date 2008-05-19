@@ -25,36 +25,32 @@ class Serializer(object):
         self.format = format
         self.object = None
 
-    def _figure_function(self):
+    def _figure_serialization(self):
         module = 'tiddlyweb.serializers.%s' % self.format
         try:
-            imported_module = __import__(module, {}, {}, [self.format])
-            string_func = getattr(imported_module, function_map[self.object.__class__][0])
-            object_func = getattr(imported_module, function_map[self.object.__class__][1])
-            return string_func, object_func
+            imported_module = __import__(module, {}, {}, ['Serialization'])
+            self.serialization = imported_module.Serialization()
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
 
     def __str__(self):
-        string_func, object_func = self._figure_function()
+        self._figure_serialization()
+        string_func = getattr(self.serialization, function_map[self.object.__class__][0])
         return string_func(self.object)
 
     def to_string(self):
         return self.__str__()
 
     def from_string(self, input_string):
-        string_func, object_func = self._figure_function()
+        self._figure_serialization()
+        object_func = getattr(self.serialization, function_map[self.object.__class__][1])
         return object_func(self.object, input_string)
 
     def list_recipes(self, recipes):
-        module = 'tiddlyweb.serializers.%s' % self.format
-        imported_module = __import__(module, {}, {}, [self.format])
-        list_func = getattr(imported_module, 'list_recipes')
-        return list_func(recipes)
+        self._figure_serialization()
+        return self.serialization.list_recipes(recipes)
 
     def list_bags(self, bags):
-        module = 'tiddlyweb.serializers.%s' % self.format
-        imported_module = __import__(module, {}, {}, [self.format])
-        list_func = getattr(imported_module, 'list_bags')
-        return list_func(bags)
+        self._figure_serialization()
+        return self.serialization.list_bags(bags)
 

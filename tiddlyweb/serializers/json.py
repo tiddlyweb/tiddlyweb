@@ -7,51 +7,54 @@ import urllib
 import simplejson
 
 from tiddlyweb.serializer import TiddlerFormatError
+from tiddlyweb.serializers import SerializationInterface
 
-def list_recipes(recipes):
-    return simplejson.dumps([recipe.name for recipe in recipes])
+class Serialization(SerializationInterface):
 
-def list_bags(bags):
-    return simplejson.dumps([bag.name for bag in bags])
+    def list_recipes(self, recipes):
+        return simplejson.dumps([recipe.name for recipe in recipes])
 
-def recipe_as(recipe):
-    """
-    Recipe as json.
-    """
-    return simplejson.dumps(recipe)
+    def list_bags(self, bags):
+        return simplejson.dumps([bag.name for bag in bags])
 
-def as_recipe(recipe, input):
-    """
-    Turn a json string back into a recipe.
-    """
-    info = simplejson.loads(input)
-    recipe.set_recipe(info)
-    return recipe
+    def recipe_as(self, recipe):
+        """
+        Recipe as json.
+        """
+        return simplejson.dumps(recipe)
 
-def bag_as(bag):
-    """
-    List the tiddlers in a bag as json.
-    We will likely want to expand this someday.
-    """
-    return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
+    def as_recipe(self, recipe, input):
+        """
+        Turn a json string back into a recipe.
+        """
+        info = simplejson.loads(input)
+        recipe.set_recipe(info)
+        return recipe
 
-def as_bag(bag, input):
-    info = simplejson.loads(input)
-    if info['policy']:
-        bag.policy = info['policy']
-    return bag
+    def bag_as(self, bag):
+        """
+        List the tiddlers in a bag as json.
+        We will likely want to expand this someday.
+        """
+        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
 
-def tiddler_as(tiddler):
-    tiddler_dict = {}
-    for key in ['title', 'revision', 'modifier', 'created', 'modified', 'tags', 'text', 'bag']:
-        tiddler_dict[key] = getattr(tiddler, key, None)
+    def as_bag(self, bag, input):
+        info = simplejson.loads(input)
+        if info['policy']:
+            bag.policy = info['policy']
+        return bag
 
-    return simplejson.dumps(tiddler_dict)
+    def tiddler_as(self, tiddler):
+        tiddler_dict = {}
+        for key in ['title', 'revision', 'modifier', 'created', 'modified', 'tags', 'text', 'bag']:
+            tiddler_dict[key] = getattr(tiddler, key, None)
 
-def as_tiddler(tiddler, input):
-    dict_from_input = simplejson.loads(input)
-    for key, value in dict_from_input.iteritems():
-        setattr(tiddler, key, value)
+        return simplejson.dumps(tiddler_dict)
 
-    return tiddler
+    def as_tiddler(self, tiddler, input):
+        dict_from_input = simplejson.loads(input)
+        for key, value in dict_from_input.iteritems():
+            setattr(tiddler, key, value)
+
+        return tiddler
 
