@@ -60,6 +60,15 @@ def test_generated_html():
     assert string == expected_html_string
     assert '%s' % html_serializer == expected_html_string
 
+def test_generated_wiki():
+    wiki_serializer = Serializer('wiki')
+    wiki_serializer.object = bagfour
+    string = wiki_serializer.to_string()
+
+    assert '<div title="TiddlerOne' in string
+    assert '<div title="TiddlerTwo' in string
+    assert '<div title="TiddlerThree' in string
+
 def test_generated_html_with_revbag():
     html_serializer = Serializer('html')
     bagfour.revbag = True
