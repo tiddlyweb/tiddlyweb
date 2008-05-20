@@ -10,13 +10,11 @@ This is not complete, and likely not up to date.
 
 * Tests for '..', '/', etc in title and name fields w/ store handling.
 * Choose encoding for '/'.
-* Flesh out tiddler object's handling of created field.
 * confirm unicode/UTF-8 testing and handling etc
 * HTTP cache headers production
 ** expiration stuff
 ** last modified time (based on grazing all the tiddlers?)
 * filter strings on recipe lists
-* fix tags_as and as_tags in html serializer
 
 !After Release 1
 
