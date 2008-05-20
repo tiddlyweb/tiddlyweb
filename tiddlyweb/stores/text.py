@@ -74,18 +74,16 @@ def tiddler_get(tiddler):
     Get a tiddler as string from a bag and deserialize it into 
     object.
     """
-
     try:
-        tiddler_base_filename = _tiddler_base_filename(tiddler)
-        tiddler_revision = _tiddler_revision_filename(tiddler)
-        tiddler_filename = os.path.join(tiddler_base_filename, str(tiddler_revision))
-        tiddler_file = codecs.open(tiddler_filename, encoding='utf-8')
-        serializer = Serializer('text')
-        serializer.object = tiddler
-        tiddler_string = tiddler_file.read()
-        tiddler_file.close()
-        tiddler = serializer.from_string(tiddler_string)
-        tiddler.revision = tiddler_revision
+        # read in the desired tiddler
+        tiddler = _read_tiddler_revision(tiddler)
+        # now make another tiddler to get created time 
+        # base_tiddler is the head of the revision stack
+        base_tiddler = Tiddler(tiddler.title)
+        base_tiddler.bag = tiddler.bag
+        base_tiddler = _read_tiddler_revision(base_tiddler, index=-1)
+        # set created on new tiddler from modified on base_tiddler (might be the same)
+        tiddler.created = base_tiddler.modified
         return tiddler
     except IOError, e:
         raise NoTiddlerError, 'no tiddler for %s: %s' % (tiddler.title, e)
@@ -186,6 +184,23 @@ def _read_lock_file(lockfile):
     lock.close()
     return pid
 
+def _read_tiddler_file(tiddler, tiddler_filename):
+    tiddler_file = codecs.open(tiddler_filename, encoding='utf-8')
+    serializer = Serializer('text')
+    serializer.object = tiddler
+    tiddler_string = tiddler_file.read()
+    tiddler_file.close()
+    tiddler = serializer.from_string(tiddler_string)
+    return tiddler
+
+def _read_tiddler_revision(tiddler, index=0):
+    tiddler_base_filename = _tiddler_base_filename(tiddler)
+    tiddler_revision = _tiddler_revision_filename(tiddler, index=index)
+    tiddler_filename = os.path.join(tiddler_base_filename, str(tiddler_revision))
+    tiddler = _read_tiddler_file(tiddler, tiddler_filename)
+    tiddler.revision = tiddler_revision
+    return tiddler
+
 def _read_policy(bag_path):
     policy_filename = os.path.join(bag_path, 'policy')
     policy_file = codecs.open(policy_filename, encoding='utf-8')
@@ -210,14 +225,14 @@ def _tiddler_base_filename(tiddler):
 def _tiddlers_dir(bag_name):
     return os.path.join(_bag_path(bag_name), 'tiddlers')
 
-def _tiddler_revision_filename(tiddler):
+def _tiddler_revision_filename(tiddler, index=0):
     revision = 0
     if tiddler.revision:
         revision = tiddler.revision
     else:
         revisions = list_tiddler_revisions(tiddler)
         if revisions:
-            revision = revisions[0]
+            revision = revisions[index]
     return int(revision)
 
 def _write_policy(policy, bag_path):

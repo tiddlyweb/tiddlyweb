@@ -10,7 +10,9 @@ import wsgi_intercept
 import httplib2
 import simplejson
 
-from fixtures import muchdata
+from re import match
+
+from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
 
@@ -33,6 +35,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     module.store = Store('text')
+    reset_textstore()
     muchdata(module.store)
 
 def test_get_tiddler():
@@ -99,8 +102,11 @@ def test_put_tiddler_txt():
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
     content = content.decode('UTF-8')
-    assert content.strip().rstrip() == text_put_body.strip().rstrip()#, \
-           # 'content should be #%s#, is #%s#' % (content.strip().rstrip(), text_put_body.strip().rstrip())
+    contents = content.strip().rstrip().split('\n')
+    texts = text_put_body.strip().rstrip().split('\n')
+    assert contents[0] == texts[0] # modifier
+    assert contents[-1] == texts[-1] # text
+    assert contents[-3] == texts[-3] # tags
 
 def test_put_tiddler_txt_no_modified():
     """
@@ -176,18 +182,15 @@ def test_put_tiddler_via_recipe():
     tiddler_dict = simplejson.loads(content)
     assert tiddler_dict['bag'] == 'bag1'
 
-def test_put_tiddler_txt():
+def test_get_tiddler_text_created():
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
-
-    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
-    tiddler_url = response['location']
-    assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne', \
-            'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestOne is %s' \
-            % tiddler_url
-
+    tiddler_url = 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne'
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
+
     content = content.decode('UTF-8')
-    assert content.strip().rstrip() == text_put_body.strip().rstrip()
+    contents = content.strip().rstrip().split('\n')
+    texts = text_put_body.strip().rstrip().split('\n')
+    assert contents[0] == u'modifier: ArthurDent'
+    assert contents[-1] == u'Towels' # text
+    assert contents[-3] == u'tags: ' # tags
+    assert match('created: \d{12}', contents[1])
