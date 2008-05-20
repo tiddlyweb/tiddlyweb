@@ -5,6 +5,7 @@ Test turning a recipe into other forms.
 
 import sys
 sys.path.append('.')
+
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.serializer import Serializer
 
@@ -55,3 +56,24 @@ def test_simple_recipe():
     recipe = Recipe('other')
     recipe.set_recipe([['bagboom', '']])
     assert recipe != new_recipe, 'modified recipe not equal new_recipe'
+
+def test_json_recipe():
+    """
+    JSON serializer roundtrips.
+    """
+    recipe = Recipe('other')
+    recipe.set_recipe([['bagbuzz', '']])
+    serializer = Serializer('json')
+    serializer.object = recipe
+    string = serializer.to_string()
+
+    other_recipe = Recipe('other')
+    serializer.object = other_recipe
+    serializer.from_string(string)
+
+    assert recipe == other_recipe
+
+    serializer.object = other_recipe
+    other_string = serializer.to_string()
+
+    assert string == other_string

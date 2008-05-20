@@ -59,9 +59,6 @@ class Serialization(SerializationInterface):
         else:
             return "\n".join([tiddler.title for tiddler in bag.list_tiddlers()])
 
-    def as_bag(self, bag, input):
-        pass
-
     def tiddler_as(self, tiddler):
         return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s\n' \
                 % (tiddler.modifier, tiddler.created, tiddler.modified, \
@@ -75,7 +72,7 @@ class Serialization(SerializationInterface):
 
             for field, value in [x.split(': ') for x in headers]:
                 setattr(tiddler, field, value)
-        except ValueError, e:
+        except AttributeError, e:
             raise TiddlerFormatError, 'malformed tiddler string: %s' % e
 
         tag_string = tiddler.tags

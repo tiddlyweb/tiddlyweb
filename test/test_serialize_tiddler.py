@@ -12,14 +12,24 @@ import sys
 sys.path.append('.')
 
 import simplejson
+import py.test
 
 from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.serializer import Serializer
+from tiddlyweb.serializer import Serializer, TiddlerFormatError
 
 expected_string = """modifier: test@example.com
 created: 
 modified: 200803030303
 tags: foobar [[foo bar]]
+
+Hello, I'm the content.
+"""
+
+# cosmic rays have injected noise into this tiddler string
+bad_string = """modifiXr: test@example.com
+created: 
+modiFied: 200803030303
+tgs: foobar [[foo bar]]
 
 Hello, I'm the content.
 """
@@ -38,7 +48,6 @@ def setup_module(module):
     pass
 
 def test_generated_txt_string():
-
     serializer = Serializer('text')
     serializer.object = tiddler
     string = serializer.to_string()
@@ -49,6 +58,13 @@ def test_generated_txt_string():
 
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
+
+def test_bad_string_raises():
+    serializer = Serializer('text')
+    foobar = Tiddler('foobar')
+    serializer.object = foobar
+
+    py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
 
 def test_generated_json_string():
     serializer = Serializer('json')

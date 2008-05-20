@@ -22,6 +22,16 @@ class Tiddler(object):
 
     """
 
+    __slots__ = ['title',
+            'modified',
+            'created',
+            'modifier',
+            'tags',
+            'bag',
+            'revision',
+            'text',
+            'bag',
+            'store']
 
     def __init__(self,
             title=None,
