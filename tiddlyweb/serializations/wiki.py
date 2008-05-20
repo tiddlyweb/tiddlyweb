@@ -30,20 +30,6 @@ class Serialization(SerializationInterface):
 
         return self._put_string_in_tiddlywiki(lines)
 
-    def _put_string_in_tiddlywiki(self, lines):
-        tiddlystart, tiddlyfinish = self._split_empty_html()
-        return tiddlystart + lines + splitter + tiddlyfinish
-
-    def as_recipe(self, recipe, input):
-        pass
-
-    def _split_empty_html(self):
-# this could throw, which is just fine, 
-# that's what we want
-        f = codecs.open(empty_html, encoding='utf-8')
-        wiki = f.read()
-        return wiki.split(splitter)
-
     def bag_as(self, bag):
         lines = ''
         for tiddler in bag.list_tiddlers():
@@ -51,13 +37,29 @@ class Serialization(SerializationInterface):
 
         return self._put_string_in_tiddlywiki(lines)
 
-    def as_bag(self, bag):
-        pass
-
     def tiddler_as(self, tiddler):
         tiddler_div = self._tiddler_as_div(tiddler)
 
         return self._put_string_in_tiddlywiki(tiddler_div)
+
+    def tags_as(self, tags):
+        tag_string_list = []
+        for tag in tags:
+            if ' ' in tag:
+                tag = '[[%s]]' % tag
+            tag_string_list.append(tag)
+        return ' '.join(tag_string_list)
+
+    def _put_string_in_tiddlywiki(self, lines):
+        tiddlystart, tiddlyfinish = self._split_empty_html()
+        return tiddlystart + lines + splitter + tiddlyfinish
+
+    def _split_empty_html(self):
+# this could throw, which is just fine, 
+# that's what we want
+        f = codecs.open(empty_html, encoding='utf-8')
+        wiki = f.read()
+        return wiki.split(splitter)
 
     def _tiddler_as_div(self, tiddler, recipe_name=''):
         """
@@ -76,13 +78,3 @@ class Serialization(SerializationInterface):
             host, tiddler.bag, tiddler.modified, tiddler.created, \
             self.tags_as(tiddler.tags), tiddler.text)
 
-    def as_tiddler(self, tiddler):
-        pass
-
-    def tags_as(self, tags):
-        tag_string_list = []
-        for tag in tags:
-            if ' ' in tag:
-                tag = '[[%s]]' % tag
-            tag_string_list.append(tag)
-        return ' '.join(tag_string_list)
