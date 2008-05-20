@@ -47,7 +47,7 @@ class Serialization(SerializationInterface):
     def bag_as(self, bag):
         lines = ''
         for tiddler in bag.list_tiddlers():
-            lines += _tiddler_as_div(tiddler)
+            lines += self._tiddler_as_div(tiddler)
 
         return self._put_string_in_tiddlywiki(lines)
 
