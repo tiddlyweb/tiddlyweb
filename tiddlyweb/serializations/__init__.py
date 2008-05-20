@@ -5,6 +5,23 @@ class SerializationInterface(object):
     either turn an input string into the object named
     by the method, or turn the object into a string
     form.
+
+    The interface is fairly simple: For the data 
+    entities that exist in the TiddlyWeb system there
+    (optionally) exists <entity>_as and as_<entity> methods
+    in each Serialization.
+    
+    *_as returns a string form of the entity, perhaps as
+    HTML, Text, YAML, Atom, whatever the Serialzation does.
+
+    as_* takes a provided entity and string and updates
+    the skeletal entity to represent the information
+    contain in the string (in the Serialization format).
+
+    There are also two supporting methods, list_recipes()
+    and list_bags() that provide convince methods for
+    presenting a collection of either in the Serialization
+    form. A string is returned.
     """
 
     def recipe_as(self, recipe):
