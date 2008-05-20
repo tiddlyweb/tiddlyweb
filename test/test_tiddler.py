@@ -13,9 +13,11 @@ def setup_module(module):
     pass
 
 def test_tiddler_create():
-    tiddler = Tiddler()
+    tiddler = Tiddler('hello')
 
     assert type(tiddler) == Tiddler, 'Tiddler returns a Tiddler, %s, %s' % (type(tiddler), Tiddler)
+    assert 'hello<tiddlyweb.tiddler.Tiddler object' in '%s' % tiddler
+
 
 def test_tiddler_full_create():
     """

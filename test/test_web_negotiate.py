@@ -29,6 +29,18 @@ def test_accept_header():
     assert environ['tiddlyweb.type'][0] == 'text/plain', \
             'tiddlyweb.type should be text/plain, found %s' % environ['tiddlyweb.type'][0]
 
+def test_accept_ill_formed_header():
+    """
+    Given an accept header in the environ,
+    that is poorly formed, properly skip over a bad entry.
+    """
+    environ['HTTP_ACCEPT'] = '; q=1.0, text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
+
+    neg.figure_type(environ)
+
+    assert environ['tiddlyweb.type'][0] == 'text/plain', \
+            'tiddlyweb.type should be text/plain, found %s' % environ['tiddlyweb.type'][0]
+
 
 def test_file_extension():
     """
