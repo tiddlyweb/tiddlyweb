@@ -26,7 +26,7 @@ class Serializer(object):
         self.object = None
 
     def _figure_serialization(self):
-        module = 'tiddlyweb.serializers.%s' % self.format
+        module = 'tiddlyweb.serializations.%s' % self.format
         try:
             imported_module = __import__(module, {}, {}, ['Serialization'])
             self.serialization = imported_module.Serialization()

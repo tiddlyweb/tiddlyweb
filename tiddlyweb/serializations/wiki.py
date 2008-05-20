@@ -10,7 +10,7 @@ from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 from tiddlyweb import control
 from tiddlyweb.web.serve import server_host
-from tiddlyweb.serializers import SerializationInterface
+from tiddlyweb.serializations import SerializationInterface
 
 # this should come from config or even
 # from a url
@@ -51,6 +51,9 @@ class Serialization(SerializationInterface):
 
         return self._put_string_in_tiddlywiki(lines)
 
+    def as_bag(self, bag):
+        pass
+
     def tiddler_as(self, tiddler):
         tiddler_div = self._tiddler_as_div(tiddler)
 
@@ -73,3 +76,13 @@ class Serialization(SerializationInterface):
             host, tiddler.bag, tiddler.modified, tiddler.created, \
             self.tags_as(tiddler.tags), tiddler.text)
 
+    def as_tiddler(self, tiddler):
+        pass
+
+    def tags_as(self, tags):
+        tag_string_list = []
+        for tag in tags:
+            if ' ' in tag:
+                tag = '[[%s]]' % tag
+            tag_string_list.append(tag)
+        return ' '.join(tag_string_list)

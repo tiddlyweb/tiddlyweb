@@ -2,11 +2,12 @@
 Text based serializers.
 """
 
+import re
 import urllib
 import simplejson
 
 from tiddlyweb.serializer import TiddlerFormatError
-from tiddlyweb.serializers import SerializationInterface
+from tiddlyweb.serializations import SerializationInterface
 
 class Serialization(SerializationInterface):
 
