@@ -5,7 +5,11 @@ Test turning a bag into other forms.
 
 import sys
 sys.path.append('.')
+
+import simplejson
+
 from tiddlyweb.serializer import Serializer
+from tiddlyweb.bag import Bag
 
 from fixtures import bagfour
 
@@ -53,12 +57,8 @@ def test_generated_html():
     html_serializer.object = bagfour
     string = html_serializer.to_string()
 
-    assert string == expected_html_string, \
-            'serialized bag looks like we expect. should be %s, got %s' \
-            % (expected_html_string, string)
-
-    assert '%s' % html_serializer == expected_html_string, \
-            'serializer goes to string as expected_string, got %s' % html_serializer
+    assert string == expected_html_string
+    assert '%s' % html_serializer == expected_html_string
 
 def test_generated_html_with_revbag():
     html_serializer = Serializer('html')
@@ -69,3 +69,15 @@ def test_generated_html_with_revbag():
     assert string == expected_html_revbag_string
     assert '%s' % html_serializer == expected_html_revbag_string
     bagfour.revbag = False
+
+def test_json_to_bag():
+    serializer = Serializer('json')
+
+    json_string = simplejson.dumps(dict(policy='i wish i was'))
+    newbag = Bag('bagho')
+    serializer.object = newbag
+    serializer.from_string(json_string)
+
+    assert newbag.name == 'bagho'
+    assert newbag.policy == 'i wish i was'
+

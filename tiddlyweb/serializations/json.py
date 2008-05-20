@@ -39,6 +39,10 @@ class Serialization(SerializationInterface):
         return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
 
     def as_bag(self, bag, input):
+        """
+        Turn a JSON string into a bag. This is
+        _not_ symetric with bag_as.
+        """
         info = simplejson.loads(input)
         if info['policy']:
             bag.policy = info['policy']
