@@ -1,4 +1,7 @@
-
+"""
+Functions and Classes for running the TiddlyWeb
+web server.
+"""
 import os
 import sys
 import selector

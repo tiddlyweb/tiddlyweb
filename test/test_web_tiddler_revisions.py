@@ -63,6 +63,16 @@ def test_get_tiddler_revision_list():
     assert '3' in content
     assert 'revisions' in content
 
+def test_get_tiddler_revision_list_404():
+    """
+    Get a 404 when the tiddler doesn't exist.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/Test99/revisions',
+            method='GET')
+
+    assert response['status'] == '404'
+
 def test_get_tiddler_not_revision_list():
     """
     When we retrieve a tiddler list we don't want their revision links.

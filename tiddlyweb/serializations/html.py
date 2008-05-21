@@ -2,7 +2,6 @@
 HTML based serializers.
 """
 
-import re
 import urllib
 
 from tiddlyweb.serializer import TiddlerFormatError

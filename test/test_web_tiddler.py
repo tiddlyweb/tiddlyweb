@@ -69,6 +69,13 @@ def test_get_missing_tiddler_revision():
 
     assert response['status'] == '404', 'response status should be 404'
 
+def test_get_tiddler_missing_revision():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/99',
+            method='GET')
+
+    assert response['status'] == '404'
+
 def test_get_tiddler_wiki():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8.wiki',

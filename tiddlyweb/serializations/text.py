@@ -2,7 +2,6 @@
 Text based serializers.
 """
 
-import re
 import urllib
 
 from tiddlyweb.serializer import TiddlerFormatError
@@ -81,21 +80,3 @@ class Serialization(SerializationInterface):
 
         return tiddler
 
-    def as_tags(self, string):
-        tags = []
-        tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
-        for match in tag_matcher.finditer(string):
-            if match.group(2):
-                tags.append(match.group(2))
-            elif match.group(1):
-                tags.append(match.group(1))
-
-        return tags
-
-    def tags_as(self, tags):
-        tag_string_list = []
-        for tag in tags:
-            if ' ' in tag:
-                tag = '[[%s]]' % tag
-            tag_string_list.append(tag)
-        return ' '.join(tag_string_list)

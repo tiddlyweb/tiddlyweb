@@ -1,3 +1,6 @@
+"""
+The Recipe class.
+"""
 
 class Recipe(list):
     """
@@ -13,7 +16,6 @@ class Recipe(list):
     sake of easy testing, the bag argument can
     be a Bag.
     """
-
     def __init__(self, name):
         list.__init__(self)
         self.name = name

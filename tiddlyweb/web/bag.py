@@ -1,3 +1,10 @@
+"""
+Methods for accessing Bag entities, GET the
+tiddlers in the bag, list the available bags,
+PUT a Bag as a JSON object.
+
+These need some refactoring.
+"""
 
 import urllib
 
@@ -7,18 +14,6 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
 from tiddlyweb import web
 from tiddlyweb.web.http import HTTP404
-
-def list(environ, start_response):
-    store = environ['tiddlyweb.store']
-    bags = store.list_bags()
-
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
-
-    start_response("200 OK",
-            [('Content-Type', mime_type)])
-
-    return [ serializer.list_bags(bags) ]
 
 def get_tiddlers(environ, start_response):
     filter_string = urllib.unquote(environ['QUERY_STRING'])
@@ -45,6 +40,18 @@ def get_tiddlers(environ, start_response):
     start_response("200 OK", [('Content-Type', mime_type),
              ('Set-Cookie', 'chkHttpReadOnly=false')])
     return [serializer.to_string()]
+
+def list(environ, start_response):
+    store = environ['tiddlyweb.store']
+    bags = store.list_bags()
+
+    serialize_type, mime_type = web.get_serialize_type(environ)
+    serializer = Serializer(serialize_type)
+
+    start_response("200 OK",
+            [('Content-Type', mime_type)])
+
+    return [ serializer.list_bags(bags) ]
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']

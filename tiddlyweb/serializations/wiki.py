@@ -42,14 +42,6 @@ class Serialization(SerializationInterface):
 
         return self._put_string_in_tiddlywiki(tiddler_div)
 
-    def tags_as(self, tags):
-        tag_string_list = []
-        for tag in tags:
-            if ' ' in tag:
-                tag = '[[%s]]' % tag
-            tag_string_list.append(tag)
-        return ' '.join(tag_string_list)
-
     def _put_string_in_tiddlywiki(self, lines):
         tiddlystart, tiddlyfinish = self._split_empty_html()
         return tiddlystart + lines + splitter + tiddlyfinish

@@ -1,4 +1,7 @@
-
+"""
+Access to Tiddlers via the web. GET and PUT
+a Tiddler, GET a list of revisions of a Tiddler.
+"""
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
@@ -107,13 +110,18 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
 
     tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
-    for revision in store.list_tiddler_revisions(tiddler):
-        tmp_tiddler = Tiddler(title=tiddler.title, revision=revision, bag=tiddler.bag)
-        try:
-            store.get(tmp_tiddler)
-        except NoTiddlerError, e:
-            raise HTTP404, 'tiddler %s at revision % not found, %s' % (tiddler.title, revision, e)
-        tmp_bag.add_tiddler(tmp_tiddler)
+    try:
+        for revision in store.list_tiddler_revisions(tiddler):
+            tmp_tiddler = Tiddler(title=tiddler.title, revision=revision, bag=tiddler.bag)
+            try:
+                store.get(tmp_tiddler)
+            except NoTiddlerError, e:
+                # If a particular revision is not present in the store.
+                raise HTTP404, 'tiddler %s at revision % not found, %s' % (tiddler.title, revision, e)
+            tmp_bag.add_tiddler(tmp_tiddler)
+    except NoTiddlerError, e:
+        # If a tiddler is not present in the store.
+        raise HTTP404, 'tiddler %s not found, %s' % (tiddler.title, e)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)

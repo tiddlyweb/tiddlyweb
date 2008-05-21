@@ -11,7 +11,7 @@ import wsgi_intercept
 import httplib2
 import simplejson
 
-from fixtures import muchdata
+from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
 
@@ -26,6 +26,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     module.store = Store('text')
+    reset_textstore()
     muchdata(module.store)
 
 def test_get_recipe_wiki():
@@ -47,8 +48,8 @@ def test_get_recipe_txt():
     response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
-    assert '/bags/bag8/tiddlers?tiddler8' in content, 'recipe contains tiddler 8 from bag 8'
+    assert response['status'] == '200'
+    assert '/bags/bag8/tiddlers?tiddler8' in content
 
 def test_get_recipe_not():
     """
@@ -58,7 +59,7 @@ def test_get_recipe_not():
     response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
             method='GET')
 
-    assert response['status'] == '415', 'response status should be 415'
+    assert response['status'] == '415'
 
 def test_get_recipe_not_with_accept():
     """
@@ -69,7 +70,7 @@ def test_get_recipe_not_with_accept():
     response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
             method='GET', headers={'Accept': 'text/plain'})
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
 
 def test_get_missing_recipe():
     """

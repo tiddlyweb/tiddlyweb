@@ -2,7 +2,6 @@
 Text based serializers.
 """
 
-import re
 import urllib
 import simplejson
 
