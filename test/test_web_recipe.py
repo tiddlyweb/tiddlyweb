@@ -135,3 +135,36 @@ def test_get_recipes_unsupported_neg_format_with_accept():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+
+def test_put_recipe():
+    """
+    Get a recipe as json then put it back with a different name.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.json',
+            method='GET')
+
+    json = content
+    assert response['status'] == '200'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '204'
+    assert response['location'] == 'http://our_test_domain:8001/recipes/other'
+
+def test_put_recipe_415():
+    """
+    Get a recipe as json then fail to put it back as text.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
+            method='GET')
+
+    text = content
+    assert response['status'] == '200'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=text)
+
+    assert response['status'] == '415'
