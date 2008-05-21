@@ -8,8 +8,10 @@ import os
 import sys
 sys.path.append('.')
 
+import py.test
+
 from fixtures import tiddlers, bagone, reset_textstore
-from tiddlyweb.store import Store
+from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 
@@ -54,3 +56,9 @@ def test_simple_get():
     store.get(the_tiddler)
     assert the_tiddler.title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
     assert sorted(the_tiddler.tags) == sorted(tiddler.tags)
+
+def test_failed_get():
+    store = Store('text')
+    bag = Bag(name='bagnine')
+    py.test.raises(NoBagError, 'store.get(bag)')
+

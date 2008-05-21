@@ -125,6 +125,11 @@ def test_store_lock():
 
     texter.write_lock(textstore.bag_store)
     py.test.raises(StoreLockError, 'texter.write_lock(textstore.bag_store)')
-    texter.write_unlock(textstore.bag_store)
-    texter.write_lock(textstore.bag_store)
+
+    texter.write_lock(textstore.bag_store + '/bagone/tiddlers/foobar')
+    tiddler = Tiddler('foobar', text='hello')
+    tiddler.bag = 'bagone'
+    store = Store('text')
+    py.test.raises(StoreLockError, 'store.put(tiddler)')
+
 
