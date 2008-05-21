@@ -7,7 +7,9 @@ tiddler data store. And the rest of the underneath the web code.
 
 import sys
 sys.path.append('.')
+
 from tiddlyweb import filter
+from tiddlyweb.tiddler import Tiddler
 
 from fixtures import tiddlers
 
@@ -145,6 +147,24 @@ def test_string_composed_filter_with_remove_by_title():
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
     assert found_tiddlers[0].title == 'TiddlerOne', 'the found tiddler should be TiddlerOne, got %s' % found_tiddlers[0].title
+
+def test_string_composed_filter_with_spaces():
+    """
+    Test spaces in filter.
+    """
+
+    tiddlers = []
+    for name in ['one', 'two', 'three']:
+        tiddler = Tiddler('tiddler %s' % name)
+        tiddler.text = name
+        tiddlers.append(tiddler)
+
+    filter_string = '[[tiddler one]]'
+
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
+    assert found_tiddlers[0].title == 'tiddler one'
 
 def test_string_composed_filter_with_remove_by_tag():
     """

@@ -1,4 +1,3 @@
-
 """
 Utilities for filtering tiddlers by the various tiddler
 filtering strategies. We translate a filter string
@@ -55,14 +54,12 @@ def by_title(title, tiddlers):
     """
     Return those tiddlers that match title.
     """
-
     return [tiddler for tiddler in tiddlers if tiddler.title == title]
 
 def by_tag(tag, tiddlers):
     """
     Return those tiddlers that have tag tag.
     """
-
     return [tiddler for tiddler in tiddlers if tag in tiddler.tags]
 
 def by_composition(filters, tiddlers):
@@ -70,14 +67,13 @@ def by_composition(filters, tiddlers):
     Build a list of tiddlers from a list of filters.
     We are adding to a list, not winnowing a list.
     """
-
-# special case no filters to return all tiddlers
+    # special case no filters to return all tiddlers
     if len(filters) == 0 or filters == None:
         return tiddlers
 
-# keep the collection unique
+    # keep the collection unique
     found_tiddlers = {}
-# keep the collection ordered
+    # keep the collection ordered
     found_tiddlers_list = []
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
@@ -155,7 +151,6 @@ def make_count():
     """
     Limit the number of tiddlers by the argument.
     """
-
     def count_filter(count, tiddlers):
         return tiddlers[0:int(count)]
 
@@ -166,7 +161,6 @@ def make_sort():
     """
     Sort the tiddlers we have so far
     """
-
     def sort_filter(field, tiddlers):
         reverse = False
         if field.find('-') == 0:
@@ -182,5 +176,3 @@ def make_sort():
     sort_filter.sorter = 1
 
     return sort_filter
-
-
