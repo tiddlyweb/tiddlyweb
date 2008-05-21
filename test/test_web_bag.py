@@ -13,6 +13,7 @@ import simplejson
 from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
+from tiddlyweb.bag import Bag
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -36,6 +37,16 @@ def test_get_bag_tiddler_list_default():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
+
+def test_get_bag_tiddler_list_404():
+    """
+    A request for the tiddlers in a non existent bag gives a 404.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag99/tiddlers',
+            method='GET')
+
+    assert response['status'] == '404'
 
 def test_get_bag_tiddler_list_text():
     http = httplib2.Http()
@@ -142,3 +153,50 @@ def test_get_bags_unsupported_neg_format_with_accept():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+
+def test_get_bag_tiddler_list_empty():
+    """
+    A request for the tiddlers in a non existent bag gives a 404.
+    """
+
+    bag = Bag('bagempty');
+    store.put(bag)
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.txt',
+            method='GET')
+
+    assert response['status'] == '200'
+    assert content == ''
+
+def test_put_bag():
+    """
+    PUT a new bag to the server.
+    """
+    json_string = simplejson.dumps(dict(policy='i wish i was'))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json_string)
+    location = response['location']
+
+    assert response['status'] == '204'
+    assert location == 'http://our_test_domain:8001/bags/bagpuss'
+
+    response, content = http.request(location, method='GET',
+            headers={'Accept': 'application/json'})
+
+    assert response['status'] == '200'
+    assert content == '[]' # empty json list
+
+def test_put_bag_wrong_type():
+    """
+    PUT a new bag to the server.
+    """
+    json_string = simplejson.dumps(dict(policy='i wish i was'))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=json_string)
+
+    assert response['status'] == '415'

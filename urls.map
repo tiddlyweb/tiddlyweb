@@ -77,6 +77,7 @@
 #
 # TODO: Some form of GET
 /bags/{bag_name:segment}[/]
+    GET tiddlyweb.web.bag:get
     PUT tiddlyweb.web.bag:put
 
 # tiddlers in a bag, with option filter string in the query string
