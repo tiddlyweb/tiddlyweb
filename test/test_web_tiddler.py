@@ -197,9 +197,15 @@ def test_put_tiddler_via_recipe():
     assert tiddler_dict['bag'] == 'bag1'
 
 def test_get_tiddler_text_created():
+    """
+    Make sure the tiddler comes back to us as we expect.
+    In the process confirm that Accept header processing is working
+    as expect, by wanting xml (which we don't do), more than text/plain,
+    which we do.
+    """
     http = httplib2.Http()
     tiddler_url = 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne'
-    response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
+    response, content = http.request(tiddler_url, headers={'Accept': 'text/xml; q=1, text/plain'})
 
     content = content.decode('UTF-8')
     contents = content.strip().rstrip().split('\n')

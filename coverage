@@ -5,6 +5,7 @@
 # requires figleaf from:
 #   http://darcs.idyll.org/~t/projects/figleaf/doc/
 
+find tiddlyweb -name "*.py" > interesting_files.txt
 rm -rf html
 figleaf /usr/local/bin/py.test
 figleaf2html -f interesting_files.txt
