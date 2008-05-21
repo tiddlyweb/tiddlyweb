@@ -6,7 +6,12 @@ things.
 
 import sys
 sys.path.append('.')
+
+import py.test
+
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.store import NoBagError
 from tiddlyweb import control
 
 from fixtures import tiddlers, bagone, bagtwo, bagthree, bagfour, recipe_list
@@ -103,3 +108,27 @@ def test_determine_tiddler_from_recipe():
         ])
     bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
+
+    lonely_tiddler = Tiddler('lonely')
+    lonely_tiddler.bag = 'lonelybag'
+
+    py.test.raises(NoBagError,
+            'bag = control.determine_tiddler_bag_from_recipe(short_recipe, lonely_tiddler)')
+
+def test_determine_bag_fail():
+
+    lonely_recipe = Recipe(name='thing')
+    lonely_recipe.set_recipe([
+        [bagone, '[tag[hello]]']
+        ])
+
+    lonely_tiddler = Tiddler('lonely')
+    lonely_tiddler.tags = ['hello']
+    bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)
+    assert bag.name == bagone.name
+
+    lonely_recipe.set_recipe([
+        [bagone, '[tag[goodbye]]']
+        ])
+    py.test.raises(NoBagError,
+            'bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)')
