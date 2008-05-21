@@ -15,6 +15,12 @@ expected_string = """/bags/bagone/tiddlers?TiddlerOne
 /bags/bagtwo/tiddlers?TiddlerTwo
 /bags/bagthree/tiddlers?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
 
+expected_html_string = """<ul>
+<li><a href="/bags/bagone/tiddlers?TiddlerOne">bag: bagone filter:TiddlerOne</a></li>
+<li><a href="/bags/bagtwo/tiddlers?TiddlerTwo">bag: bagtwo filter:TiddlerTwo</a></li>
+<li><a href="/bags/bagthree/tiddlers?%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D">bag: bagthree filter:[tag[tagone]] [tag[tagthree]]</a></li>
+</ul>"""
+
 def setup_module(module):
     module.recipe = Recipe(name='testrecipe')
     module.recipe.set_recipe(recipe_list)
@@ -30,6 +36,14 @@ def test_generated_text():
 
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
+
+def test_generated_html():
+    serializer = Serializer('html')
+    serializer.object = recipe
+    string = serializer.to_string()
+
+    assert string == expected_html_string
+    assert '%s' % serializer == expected_html_string
 
 def test_generated_wiki():
     serializer = Serializer('wiki')
