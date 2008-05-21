@@ -30,20 +30,15 @@ class Store(object):
     def __init__(self, format):
         self.format = format
 
-    def put(self, *things):
+    def put(self, thing):
         """
-        put a thing, recipe, bag or one or more tiddlers.
+        put a thing, recipe, bag or tiddler.
 
         Should there be handling here for things of
         wrong type?
-
-        Look at how simple get() is, can we be more like that?
         """
-        if type(things) == Recipe:
-            return self._put_recipe(things)
-        if type(things) == Bag:
-            return self._put_bag(things)
-        return self._put_tiddlers(*things)
+        put_func, get_func = self._figure_function(self.format, thing)
+        return put_func(thing)
 
     def get(self, thing):
         """
@@ -55,24 +50,6 @@ class Store(object):
         put_function , get_func = self._figure_function(self.format, thing)
         thing.store = self
         return get_func(thing)
-
-    def _put_recipe(self, recipe):
-        recipe_put_func, recipe_get_func = self._figure_function(self.format, recipe)
-
-        recipe_put_func(recipe)
-
-    def _put_bag(self, bag):
-        bag_put_func, bag_get_func = self._figure_function(self.format, bag)
-
-        bag_put_func(bag)
-
-    def _put_tiddlers(self, *tiddlers):
-        if len(tiddlers) == 1 and type(tiddlers[0]) == list:
-            tiddlers = tiddlers[0]
-        tiddler_put_func, tiddler_get_func = self._figure_function(self.format, tiddlers[0])
-
-        for tiddler in tiddlers:
-            tiddler_put_func(tiddler)
 
     def _figure_function(self, format, object):
         module = 'tiddlyweb.stores.%s' % format

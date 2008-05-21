@@ -74,19 +74,6 @@ def test_simple_get():
 
     assert sorted(stored_tiddler.tags) == ['tag five', 'tagone', 'tagtwo']
 
-def test_multiple_put():
-    """
-    put all the tiddlers in a bag and make sure they are there.
-    """
-
-    reset_textstore()
-    store = Store('text')
-    store.put(bagfour)
-    store.put(bagfour.list_tiddlers())
-
-    stored_dir = os.path.join(textstore.bag_store, 'bagfour', 'tiddlers')
-    assert len(os.listdir(stored_dir)) == 3, 'there should be 3 files in the tiddlers directory'
-
 def test_get_revision():
     """
     Test we are able to retrieve a particular revision.
