@@ -1,6 +1,11 @@
+"""
+A group of exception classes representating HTTP error 
+statuses, along with a WSGI middleware to turn the
+exceptions into proper HTTP headers.
 
-# these guys needs messages and a base class so 
-# we dont' need all the code in HTTPExceptor
+These exception need messages and a base class so 
+we don't need all the code in HTTPExceptor.
+"""
 class HTTP415(Exception):
     pass
 

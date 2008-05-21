@@ -1,28 +1,22 @@
 
-"""
-A Recipe is an ordered list that represents 
-a program for creating a collection of tiddlers.
-
-Each line in the recipe is the combination of a
-bag and a filter string. For this implementation
-we have a list of lists.
-
-In common usage a recipe contains only strings
-representing bags and filters, but for the 
-sake of easy testing, the bag argument can
-be a Bag.
-"""
-
-import filter
-from bag import Bag
-
 class Recipe(list):
+    """
+    A Recipe is an ordered list that represents 
+    a program for creating a collection of tiddlers.
+
+    Each line in the recipe is the combination of a
+    bag and a filter string. For this implementation
+    we have a list of lists.
+
+    In common usage a recipe contains only strings
+    representing bags and filters, but for the 
+    sake of easy testing, the bag argument can
+    be a Bag.
+    """
 
     def __init__(self, name):
         list.__init__(self)
         self.name = name
-        # reference to the store which 'got' us
-        # this is can be used in serialization
         self.store = None
 
     def set_recipe(self, recipe_list):

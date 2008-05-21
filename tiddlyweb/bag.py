@@ -1,21 +1,23 @@
-
-"""
-A Bag is a collection of tiddlers, unique by the title
-of the tiddler. A bag can have tiddlers added, removed,
-and listed.
-
-At some point the bag will have a security policy and
-add and remove will throw permissions exceptions. TBD.
-"""
-
-default_policy = "all the world's a stage"
-
 import copy
 
 class Bag(dict):
     """
     XXX: We should subclass for tmpbag and revbag.
+
+    A Bag is a collection of tiddlers, usually unique by
+    the title of the tiddler. A bag can have tiddlers added, removed,
+    and listed.
+
+    A Bag which has been retrieved from a Store will have
+    its 'store' attribute set to the store it was retrieved
+    from. This makes it possible to later lazily load the
+    tiddlers that are in the bag.
+
+    At some point the bag will have a security policy and
+    add and remove will throw permissions exceptions. TBD.
     """
+
+    default_policy = "all the world's a stage"
 
     def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False):
         dict.__init__(self)
@@ -24,8 +26,6 @@ class Bag(dict):
         self.tmpbag = tmpbag
         self.revbag = revbag
         self.order = []
-        # reference to the store which 'got' us
-        # this is can be used in serialization
         self.store = None
 
     def _tiddler_key(self, tiddler):
@@ -63,3 +63,4 @@ class Bag(dict):
 
     def list_tiddlers(self):
         return [self.get(keyword, None) for keyword in self.order]
+
