@@ -24,6 +24,7 @@ class Serializer(object):
     def __init__(self, format):
         self.format = format
         self.object = None
+        self._figure_serialization()
 
     def _figure_serialization(self):
         module = 'tiddlyweb.serializations.%s' % self.format
@@ -34,7 +35,6 @@ class Serializer(object):
             raise ImportError("couldn't load %s: %s" % (module, err))
 
     def __str__(self):
-        self._figure_serialization()
         string_func = getattr(self.serialization, function_map[self.object.__class__][0])
         return string_func(self.object)
 
@@ -42,15 +42,12 @@ class Serializer(object):
         return self.__str__()
 
     def from_string(self, input_string):
-        self._figure_serialization()
         object_func = getattr(self.serialization, function_map[self.object.__class__][1])
         return object_func(self.object, input_string)
 
     def list_recipes(self, recipes):
-        self._figure_serialization()
         return self.serialization.list_recipes(recipes)
 
     def list_bags(self, bags):
-        self._figure_serialization()
         return self.serialization.list_bags(bags)
 
