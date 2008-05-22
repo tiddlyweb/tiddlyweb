@@ -90,6 +90,22 @@ def test_get_recipe_tiddler_list():
     assert response['status'] == '200', 'response status should be 200'
     assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
 
+def test_get_recipe_tiddler_list_filtered_one():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddler8',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert content == 'tiddler8'
+
+def test_get_recipe_tiddler_list_filtered_empty():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddlerfoo',
+            method='GET')
+
+    assert response['status'] == '200', 'response status should be 200'
+    assert content == ''
+
 def test_get_recipes_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes',

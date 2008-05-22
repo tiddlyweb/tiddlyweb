@@ -14,7 +14,6 @@ This is not complete, and likely not up to date.
 * HTTP cache headers production
 ** expiration stuff
 ** last modified time (based on grazing all the tiddlers?)
-* filter strings on recipe lists
 
 !After Release 1
 
