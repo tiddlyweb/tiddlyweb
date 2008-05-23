@@ -70,5 +70,5 @@ class Serialization(SerializationInterface):
         return """<div title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">
     <pre>%s</pre>
     </div>
-    """ % (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags), tiddler.text)
+    """ % (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags), self._html_encode(tiddler.text))
 

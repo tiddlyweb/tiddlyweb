@@ -66,5 +66,5 @@ class Serialization(SerializationInterface):
         return '<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s">\n<pre>%s</pre>\n</div>' \
                 % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name,
                         host, tiddler.bag, tiddler.modified, tiddler.created,
-                        self.tags_as(tiddler.tags), tiddler.text)
+                        self.tags_as(tiddler.tags), self._html_encode(tiddler.text))
 

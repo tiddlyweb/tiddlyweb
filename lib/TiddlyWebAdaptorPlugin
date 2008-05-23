@@ -288,7 +288,7 @@ TiddlyWebAdaptor.getTiddlerRevisionListCallback = function(status,context,respon
                         return;
                 }
                 var list = [];
-                for(var i=0; i&lt;info.length; i++) {
+                for(var i=0; i<info.length; i++) {
                     var tiddler = new Tiddler(info[i]['title']);
                     tiddler.modifier = info[i]['modifier'];
                     tiddler.tags = info[i]['tags'];
@@ -299,7 +299,7 @@ TiddlyWebAdaptor.getTiddlerRevisionListCallback = function(status,context,respon
                 }
                 var sortField = 'server.page.revision';
                 list.sort(function(a,b) {
-                    return a.fields[sortField] &lt; b.fields[sortField]
+                    return a.fields[sortField] < b.fields[sortField]
                       ? +1
                       : (a.fields[sortField] == b.fields[sortField] ? 0 : -1);
                  });

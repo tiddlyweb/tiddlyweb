@@ -112,3 +112,10 @@ class SerializationInterface(object):
                 tag = '[[%s]]' % tag
             tag_string_list.append(tag)
         return ' '.join(tag_string_list)
+
+    def _html_encode(self, text):
+        """
+        Take some text and "protect" it for send out over the 
+        wire as something like HTML.
+        """
+	return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
