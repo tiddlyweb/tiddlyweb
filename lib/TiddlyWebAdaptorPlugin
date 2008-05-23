@@ -51,17 +51,17 @@ TiddlyWebAdaptor.prototype.setContext = function(context,userParams,callback)
 
 TiddlyWebAdaptor.doHttpGET = function(uri,callback,params,headers,data,contentType,username,password)
 {
-        return doHttp('GET',uri,data,contentType,username,password,callback,params,headers);
+        return doHttp('GET',uri,data,contentType,username,password,callback,params,headers,1);
 };
 
 TiddlyWebAdaptor.doHttpPOST = function(uri,callback,params,headers,data,contentType,username,password)
 {
-        return doHttp('POST',uri,data,contentType,username,password,callback,params,headers);
+        return doHttp('POST',uri,data,contentType,username,password,callback,params,headers,1);
 };
 
 TiddlyWebAdaptor.doHttpPUT = function(uri,callback,params,headers,data,contentType,username,password)
 {
-        return doHttp('PUT',uri,data,contentType,username,password,callback,params,headers);
+        return doHttp('PUT',uri,data,contentType,username,password,callback,params,headers,1);
 };
 
 TiddlyWebAdaptor.fullHostName = function(host)
