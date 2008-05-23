@@ -8,6 +8,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import py.test
 
 import tiddlyweb.web
 from tiddlyweb.recipe import Recipe
@@ -55,3 +56,15 @@ def test_bag_url():
     bag = Bag('hello')
 
     assert tiddlyweb.web.bag_url(environ, bag) == 'http://example.com/bags/hello'
+
+def test_http_date_from_timestamp():
+    timestamp = '200805231010'
+    assert tiddlyweb.web.http_date_from_timestamp(timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
+
+def test_http_date_from_timestamp_invalid():
+    timestamp = '200702291010'
+    py.test.raises(ValueError, 'tiddlyweb.web.http_date_from_timestamp(timestamp)')
+
+def test_http_date_from_timestamp_pre_1900():
+    timestamp = '108502281010'
+    py.test.raises(ValueError, 'tiddlyweb.web.http_date_from_timestamp(timestamp)')
