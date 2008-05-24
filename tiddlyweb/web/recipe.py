@@ -42,12 +42,26 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
 
+    last_modified = None
+    if tiddlers:
+         last_modified = web.http_date_from_timestamp(_last_modified_tiddler(tmp_bag.list_tiddlers()))
+         last_modified = ('Last-Modified', last_modified)
+
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tmp_bag
 
-    start_response("200 OK", [('Content-Type', mime_type)])
+    response = [('Content-Type', mime_type),
+            ('Set-Cookie', 'chkHttpReadOnly=false')]
+
+    if last_modified:
+        response.append(last_modified)
+
+    start_response("200 OK", response)
     return [serializer.to_string()]
+
+def _last_modified_tiddler(tiddlers):
+    return str(max([int(tiddler.modified) for tiddler in tiddlers]))
 
 def list(environ, start_response):
     store = environ['tiddlyweb.store']

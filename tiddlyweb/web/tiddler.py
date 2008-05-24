@@ -102,7 +102,8 @@ def _send_tiddler(environ, start_response, tiddler):
         raise HTTP415, e
 
     start_response("200 OK",
-            [('Content-Type', mime_type)])
+            [('Last-Modified', web.http_date_from_timestamp(tiddler.modified)),
+                ('Content-Type', mime_type)])
 
     return [content]
 

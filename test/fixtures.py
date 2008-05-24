@@ -99,6 +99,8 @@ def create_tiddler(store, bag, numeral):
     if not numeral % 4:
         tags.append('tagfour')
     tiddler.tags = tags
+    if tiddler.title == 'tiddler8':
+        tiddler.modified = '200805230303'
     store.put(tiddler)
 
 def create_bag(store, numeral):

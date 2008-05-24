@@ -95,6 +95,7 @@ def test_get_recipe_tiddler_list_filtered_one():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddler8',
             method='GET')
 
+    assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
     assert response['status'] == '200', 'response status should be 200'
     assert content == 'tiddler8'
 
