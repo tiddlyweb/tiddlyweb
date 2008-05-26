@@ -32,11 +32,6 @@ def test_simple_put():
             'path %s should be created' \
             % 'store/bags/bagone/tiddlers'
 
-    bag_security_file = file('store/bags/bagone/policy')
-
-    policy_string = bag_security_file.read()
-    assert policy_string == bagone.policy
-
 def test_simple_get():
 
     store = Store('text')
@@ -50,7 +45,12 @@ def test_simple_get():
     assert bag.list_tiddlers()[0].title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
     assert bag.list_tiddlers()[0].text == None
     assert bag.list_tiddlers()[0].tags == []
-    assert bag.policy == bagone.policy
+    assert bag.policy.read == bagone.policy.read
+    assert bag.policy.write == bagone.policy.write
+    assert bag.policy.create == bagone.policy.create
+    assert bag.policy.delete == bagone.policy.delete
+    assert bag.policy.manage == bagone.policy.manage
+    assert bag.policy.owner == bagone.policy.owner
     
     the_tiddler = bag.list_tiddlers()[0]
     store.get(the_tiddler)

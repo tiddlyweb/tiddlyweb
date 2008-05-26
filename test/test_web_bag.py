@@ -15,6 +15,14 @@ from fixtures import muchdata, reset_textstore
 from tiddlyweb.store import Store
 from tiddlyweb.bag import Bag
 
+policy_dict = dict(
+        read=['chris','jeremy'],
+        write=['chris','jeremy'],
+        create=['chris','jeremy'],
+        delete=['chris'],
+        manage=['chris'],
+        owner='chris')
+
 def setup_module(module):
     from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
@@ -174,7 +182,7 @@ def test_put_bag():
     """
     PUT a new bag to the server.
     """
-    json_string = simplejson.dumps(dict(policy='i wish i was'))
+    json_string = simplejson.dumps(dict(policy=policy_dict))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
@@ -194,7 +202,7 @@ def test_put_bag_wrong_type():
     """
     PUT a new bag to the server.
     """
-    json_string = simplejson.dumps(dict(policy='i wish i was'))
+    json_string = simplejson.dumps(dict(policy=policy_dict))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',

@@ -9,8 +9,9 @@ store_root = 'store'
 import os
 import codecs
 import time
+import simplejson
 
-from tiddlyweb.bag import Bag
+from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
@@ -206,6 +207,10 @@ def _read_policy(bag_path):
     policy_file = codecs.open(policy_filename, encoding='utf-8')
     policy = policy_file.read()
     policy_file.close()
+    policy_data = simplejson.loads(policy)
+    policy = Policy()
+    for key, value in policy_data.items():
+        policy.__setattr__(key, value)
     return policy
 
 def _recipe_path(recipe):
@@ -236,8 +241,12 @@ def _tiddler_revision_filename(tiddler, index=0):
     return int(revision)
 
 def _write_policy(policy, bag_path):
+    policy_dict = {}
+    for key in ['read','write','create','delete','manage','owner']:
+        policy_dict[key] = policy.__getattribute__(key)
+    policy_string = simplejson.dumps(policy_dict)
     policy_filename = os.path.join(bag_path, 'policy')
     policy_file = codecs.open(policy_filename, 'w', encoding='utf-8')
-    policy_file.write(policy)
+    policy_file.write(policy_string)
     policy_file.close()
 

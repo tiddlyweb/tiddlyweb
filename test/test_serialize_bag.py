@@ -82,11 +82,12 @@ def test_generated_html_with_revbag():
 def test_json_to_bag():
     serializer = Serializer('json')
 
-    json_string = simplejson.dumps(dict(policy='i wish i was'))
+    json_string = simplejson.dumps(dict(policy=dict(read=['user1'])))
     newbag = Bag('bagho')
     serializer.object = newbag
     serializer.from_string(json_string)
 
     assert newbag.name == 'bagho'
-    assert newbag.policy == 'i wish i was'
+    assert newbag.policy.read == ['user1']
+    assert newbag.policy.manage == ['NONE']
 

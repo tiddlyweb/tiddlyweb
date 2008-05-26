@@ -1,5 +1,31 @@
 import copy
 
+class Policy(object):
+    """
+    A container for information about the 
+    contraints on a bag. A bag is something that
+    contains tiddlers. We need to be able to say
+    who can do what to do those tiddlers. We also
+    need to be able to say who can manage those
+    constraints.
+    """
+
+    def __init__(self, owner=None, read=[], write=[], create=[], delete=[], manage=['NONE']):
+        self.owner = owner
+        self.read = read
+        self.write = write
+        self.create = create
+        self.delete = delete
+        self.manage = manage
+
+    def allows(self, user_sign, constraint):
+        user_list = self.__getattribute__(constraint)
+        if len(user_list) == 0:
+            return True
+        if len(user_list) == 1 and user_list[0] == 'NONE':
+            return False
+        return user_sign in self.__getattribute__(constraint)
+
 class Bag(dict):
     """
     XXX: We should subclass for tmpbag and revbag.
@@ -17,7 +43,7 @@ class Bag(dict):
     add and remove will throw permissions exceptions. TBD.
     """
 
-    default_policy = "all the world's a stage"
+    default_policy = Policy()
 
     def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False):
         dict.__init__(self)
@@ -64,28 +90,3 @@ class Bag(dict):
     def list_tiddlers(self):
         return [self.get(keyword, None) for keyword in self.order]
 
-class Policy(object):
-    """
-    A container for information about the 
-    contraints on a bag. A bag is something that
-    contains tiddlers. We need to be able to say
-    who can do what to do those tiddlers. We also
-    need to be able to say who can manage those
-    constraints.
-    """
-
-    def __init__(self, owner=None, read=[], write=[], create=[], delete=[], manage=['NONE']):
-        self.owner = owner
-        self.read = read
-        self.write = write
-        self.create = create
-        self.delete = delete
-        self.manage = manage
-
-    def allows(self, user_sign, constraint):
-        user_list = self.__getattribute__(constraint)
-        if len(user_list) == 0:
-            return True
-        if len(user_list) == 1 and user_list[0] == 'NONE':
-            return False
-        return user_sign in self.__getattribute__(constraint)

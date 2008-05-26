@@ -7,6 +7,7 @@ import simplejson
 
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.bag import Policy
 
 class Serialization(SerializationInterface):
 
@@ -44,7 +45,9 @@ class Serialization(SerializationInterface):
         """
         info = simplejson.loads(input)
         if info['policy']:
-            bag.policy = info['policy']
+            bag.policy = Policy()
+            for key, value in info['policy'].items():
+                bag.policy.__setattr__(key, value)
         return bag
 
     def tiddler_as(self, tiddler):
