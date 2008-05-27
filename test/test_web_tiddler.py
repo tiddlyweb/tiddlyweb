@@ -223,18 +223,18 @@ def test_get_tiddler_text_created():
     assert contents[-3] == u'tags: ' # tags
     assert match('created: \d{12}', contents[1])
 
-def _put_policy(policy_dict):
+def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/unreadable',
+    response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
 
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('UTF-8')
     http = httplib2.Http()
-    _put_policy(dict(policy=dict(read=['NONE'],write=['NONE'],create=['NONE'])))
+    _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['NONE'])))
 
     # try to create a tiddler and fail
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
@@ -243,7 +243,7 @@ def test_tiddler_bag_constraints():
     assert 'may not create on unreadable' in content
 
     # create and succeed
-    _put_policy(dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
+    _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
@@ -255,7 +255,7 @@ def test_tiddler_bag_constraints():
     assert 'may not write on unreadable' in content
 
     # write and succeed
-    _put_policy(dict(policy=dict(read=['NONE'],write=['cdent'],create=['NONE'])))
+    _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['cdent'],create=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
@@ -267,8 +267,38 @@ def test_tiddler_bag_constraints():
     assert 'may not read on unreadable' in content
 
     # update the policy so we can read and GET the thing
-    _put_policy(dict(policy=dict(read=['cdent'],write=['NONE'])))
+    _put_policy('unreadable', dict(policy=dict(read=['cdent'],write=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='GET', headers={'Accept': 'text/plain'})
     assert response['status'] == '200'
     assert 'John Smith' in content
+
+def test_get_tiddler_via_recipe_with_perms():
+
+    _put_policy('bag28', dict(policy=dict(read=['NONE'],write=['NONE'])))
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
+            method='GET')
+    assert response['status'] == '403'
+    assert 'may not read on bag28' in content
+
+    _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['NONE'])))
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
+            method='GET')
+    assert response['status'] == '200'
+
+    tiddler_info = simplejson.loads(content)
+    assert tiddler_info['bag'] == 'bag28'
+
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '403'
+    assert 'may not write on bag28' in content
+
+    _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
