@@ -42,10 +42,13 @@ class Serialization(SerializationInterface):
         wiki = f.read()
         return wiki.split(splitter)
 
-    def _tiddler_as_div(self, tiddler, recipe_name=''):
+    def _tiddler_as_div(self, tiddler):
         """
         Read in the tiddler from a div.
         """
+        recipe_name = ''
+        if tiddler.recipe:
+            recipe_name = tiddler.recipe
         try: 
             host = '%s://%s:%s/' % \
                     (server_host['scheme'], server_host['host'], server_host['port'])

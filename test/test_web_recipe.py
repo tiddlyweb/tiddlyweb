@@ -201,6 +201,20 @@ def test_get_recipe_wiki_bag_constraints():
     assert response['status'] == '403'
     assert 'may not read on bag28' in content
 
+
+def test_get_recipe_wiki_has_workspace_bag_does_not():
+    _put_policy('bag28', dict(policy=dict(read=[])))
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
+            method='GET')
+    assert response['status'] == '200'
+    assert 'workspace="long"' in content
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers.wiki',
+            method='GET')
+    assert response['status'] == '200'
+    assert 'workspace="long"' not in content
+
 def _put_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!

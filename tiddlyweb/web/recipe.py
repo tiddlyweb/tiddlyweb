@@ -47,6 +47,7 @@ def get_tiddlers(environ, start_response):
         store.get(bag)
         if not bag.policy.allows(usersign, 'read'):
             raise HTTP403, '%s may not read on %s' % (usersign, bag.name)
+        tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
 
     last_modified = None

@@ -31,6 +31,7 @@ class Tiddler(object):
             'revision',
             'text',
             'bag',
+            'recipe',
             'store']
 
     def __init__(self,
@@ -40,6 +41,7 @@ class Tiddler(object):
             modifier=None,
             tags=[],
             bag=None,
+            recipe=None,
             revision=None,
             text=None):
         self.title = title
@@ -48,6 +50,7 @@ class Tiddler(object):
         self.created = created
         self.tags = tags
         self.bag = bag
+        self.recipe = recipe
         self.text = text
         self.revision = revision
         # reference to the store which 'got' us
