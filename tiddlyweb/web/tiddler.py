@@ -7,7 +7,7 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409
+from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409, HTTP403
 from tiddlyweb import control
 from tiddlyweb import web
 
@@ -86,6 +86,15 @@ def _put_tiddler(environ, start_response, tiddler):
 
 def _send_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
+    usersign = environ['tiddlyweb.usersign']
+
+    bag = Bag(tiddler.bag)
+    try:
+        store.get(bag)
+        if not bag.policy.allows(usersign, 'read'):
+            raise HTTP403, '%s may not read %s' % (usersign, bag.name)
+    except NoBagError, e:
+        raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
 
     try:
         store.get(tiddler)

@@ -9,6 +9,9 @@ we don't need all the code in HTTPExceptor.
 class HTTP415(Exception):
     pass
 
+class HTTP403(Exception):
+    pass
+
 class HTTP404(Exception):
     pass
 
@@ -34,4 +37,8 @@ class HTTPExceptor(object):
         except HTTP404, e:
             start_response("404 Not Found", [('Content-Type', 'text/plain')])
             output = '404 Not Found: %s' % e
+            return [output]
+        except HTTP403, e:
+            start_response("403 Forbidden", [('Content-Type', 'text/plain')])
+            output = '403 Forbidden: %s' % e
             return [output]

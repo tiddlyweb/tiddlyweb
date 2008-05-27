@@ -222,3 +222,20 @@ def test_get_tiddler_text_created():
     assert contents[-1] == u'Towels' # text
     assert contents[-3] == u'tags: ' # tags
     assert match('created: \d{12}', contents[1])
+
+def test_get_tiddler_no_read():
+    json = simplejson.dumps(dict(policy=dict(read=['NONE'],write=['cdent'])))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'
+
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
+            method='GET', headers={'Accept': 'text/plain'})
+    assert response['status'] == '403'

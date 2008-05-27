@@ -81,8 +81,22 @@ def default_app(filename):
                 this is not a GET).
     EncodeUTF8: encode internal unicode data as UTF-8 output .
     """
-    return load_app(filename, [StoreSet, Negotiate, HTTPExceptor, EncodeUTF8, SimpleLog])
+    return load_app(filename, [StoreSet, UserExtract, Negotiate, HTTPExceptor, EncodeUTF8, SimpleLog])
     #return load_app(filename, [StoreSet, Negotiate])
+
+class UserExtract(object):
+    """
+    Stub WSGI Middleware to set the User, if it can be 
+    found in the request. Note this does nothing yet,
+    it's always the same user, me!
+    """
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        username = 'cdent' # or GUEST
+        environ['tiddlyweb.usersign'] = username
+        return self.application(environ, start_response)
 
 class SimpleLog(object):
     """
