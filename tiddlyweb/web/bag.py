@@ -23,7 +23,7 @@ def get(environ, start_response):
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     if serialize_type not in ['json', 'html', 'text']:
-        raise HTTP415, '%s not supported yet' % serialize_type
+        raise HTTP415, '%s not supported' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = bag
 
@@ -76,7 +76,7 @@ def list(environ, start_response):
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     if serialize_type not in ['json', 'html', 'text']:
-        raise HTTP415, '%s not supported yet' % serialize_type
+        raise HTTP415, '%s not supported' % serialize_type
     serializer = Serializer(serialize_type)
 
     start_response("200 OK",
@@ -94,7 +94,7 @@ def put(environ, start_response):
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     if serialize_type not in ['json']:
-        raise HTTP415, '%s not supported yet' % serialize_type
+        raise HTTP415, '%s not supported' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = bag
     content = environ['wsgi.input'].read(int(length))
