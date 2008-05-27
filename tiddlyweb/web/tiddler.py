@@ -23,6 +23,16 @@ def put(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_bag_for_tiddler)
     return _put_tiddler(environ, start_response, tiddler)
 
+def _check_bag_constraint(environ, bag, constraint):
+    store = environ['tiddlyweb.store']
+    usersign = environ['tiddlyweb.usersign']
+    try:
+        store.get(bag)
+        if not bag.policy.allows(usersign, constraint):
+            raise HTTP403, '%s may not %s on %s' % (usersign, constraint, bag.name)
+    except NoBagError, e:
+        raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
+
 def _determine_tiddler(environ, bag_finder):
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
     revision = environ['wsgiorg.routing_args'][1].get('revision', None)
@@ -67,13 +77,20 @@ def _put_tiddler(environ, start_response, tiddler):
     if content_type != 'text/plain' and content_type != 'application/json':
         raise HTTP415, '%s not supported yet' % content_type
 
-    content = environ['wsgi.input'].read(int(length))
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
-    serializer.object = tiddler
-    serializer.from_string(content.decode('UTF-8'))
-
     try:
+        bag = Bag(tiddler.bag)
+        try:
+            store.list_tiddler_revisions(tiddler)
+            _check_bag_constraint(environ, bag, 'write')
+        except NoTiddlerError:
+            _check_bag_constraint(environ, bag, 'create')
+
+        content = environ['wsgi.input'].read(int(length))
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type)
+        serializer.object = tiddler
+        serializer.from_string(content.decode('UTF-8'))
+
         store.put(tiddler)
     except NoBagError, e:
         raise HTTP409, "Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." % \
@@ -86,15 +103,10 @@ def _put_tiddler(environ, start_response, tiddler):
 
 def _send_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
-    usersign = environ['tiddlyweb.usersign']
 
     bag = Bag(tiddler.bag)
-    try:
-        store.get(bag)
-        if not bag.policy.allows(usersign, 'read'):
-            raise HTTP403, '%s may not read %s' % (usersign, bag.name)
-    except NoBagError, e:
-        raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
+    # this will raise 403 if constraint does not pass
+    _check_bag_constraint(environ, bag, 'read')
 
     try:
         store.get(tiddler)

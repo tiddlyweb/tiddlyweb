@@ -8,6 +8,11 @@ class Policy(object):
     who can do what to do those tiddlers. We also
     need to be able to say who can manage those
     constraints.
+
+    The init parameters represent a default policy.
+    The default policy should really come from 
+    server configuration. Then we can declare this
+    installation as open-ish, or closed-ish.
     """
 
     def __init__(self, owner=None, read=[], write=[], create=[], delete=[], manage=['NONE']):

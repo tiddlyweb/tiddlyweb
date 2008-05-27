@@ -41,18 +41,21 @@ def test_put_tiddler_txt_1():
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
 
 def test_put_tiddler_txt_2():
     http = httplib2.Http()
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
 
 def test_put_tiddler_txt_3():
     http = httplib2.Http()
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
 
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
@@ -62,6 +65,30 @@ def test_get_tiddler_revision_list():
     assert response['status'] == '200'
     assert '3' in content
     assert 'revisions' in content
+
+def test_get_tiddler_revision_1():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/1',
+            method='GET')
+    assert response['status'] == '200'
+
+def test_get_tiddler_revision_2():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/2',
+            method='GET')
+    assert response['status'] == '200'
+
+def test_get_tiddler_revision_3():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
+            method='GET')
+    assert response['status'] == '200'
+
+def test_get_tiddler_revision_4_fail():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/4',
+            method='GET')
+    assert response['status'] == '404'
 
 def test_get_tiddler_revision_list_404():
     """
