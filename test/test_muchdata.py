@@ -46,11 +46,11 @@ def test_construct_from_recipe():
     recipe = Recipe('long')
     store.get(recipe)
 
-    serializer = Serializer('wiki')
+    serializer = Serializer('html')
     serializer.object = recipe
-    wiki_text = serializer.to_string()
+    html_text = serializer.to_string()
 
-    assert 'i am tiddler 8' in wiki_text, 'wiki contains tiddler 8'
+    assert 'filter:tiddler8' in html_text
 
 def test_get_tiddlers_from_bag():
     """

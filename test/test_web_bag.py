@@ -133,7 +133,7 @@ def test_get_bags_unsupported_neg_format():
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
 
-def test_get_bags_unsupported_recipe_format():
+def test_get_bags_unsupported_format():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags.jpeg',
             method='GET')
@@ -142,7 +142,7 @@ def test_get_bags_unsupported_recipe_format():
 
 def test_get_bags_json():
     """
-    Fails over to accept header.
+    Uses extension.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags.json',
@@ -154,6 +154,15 @@ def test_get_bags_json():
     info = simplejson.loads(content)
     assert type(info) == list
     assert len(info) == 30
+
+def test_get_bags_wiki():
+    """
+    Doesn't support wiki.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.wiki',
+            method='GET')
+    assert response['status'] == '415'
 
 def test_get_bags_unsupported_neg_format_with_accept():
     http = httplib2.Http()
@@ -208,6 +217,15 @@ def test_put_bag_wrong_type():
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=json_string)
 
+    assert response['status'] == '415'
+
+def test_get_bag_wiki():
+    """
+    Doesn't support wiki.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0.wiki',
+            method='GET')
     assert response['status'] == '415'
 
 def test_get_bag_tiddlers_constraints():

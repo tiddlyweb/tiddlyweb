@@ -22,6 +22,8 @@ def get(environ, start_response):
     bag = _get_bag(environ, bag_name)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
+    if serialize_type not in ['json', 'html', 'text']:
+        raise HTTP415, '%s not supported yet' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = bag
 
@@ -73,6 +75,8 @@ def list(environ, start_response):
     bags = store.list_bags()
 
     serialize_type, mime_type = web.get_serialize_type(environ)
+    if serialize_type not in ['json', 'html', 'text']:
+        raise HTTP415, '%s not supported yet' % serialize_type
     serializer = Serializer(serialize_type)
 
     start_response("200 OK",
@@ -88,15 +92,12 @@ def put(environ, start_response):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
-    content_type = environ['tiddlyweb.type']
-
-    if content_type != 'application/json':
-        raise HTTP415, '%s not supported yet' % content_type
-
-    content = environ['wsgi.input'].read(int(length))
     serialize_type, mime_type = web.get_serialize_type(environ)
+    if serialize_type not in ['json']:
+        raise HTTP415, '%s not supported yet' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = bag
+    content = environ['wsgi.input'].read(int(length))
     serializer.from_string(content.decode('UTF-8'))
 
     store.put(bag)

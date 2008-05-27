@@ -19,17 +19,6 @@ splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
 class Serialization(SerializationInterface):
 
-    def recipe_as(self, recipe):
-        """
-        Recipe as a wiki.
-        """
-
-        lines = ''
-        for tiddler in control.get_tiddlers_from_recipe(recipe):
-            lines += self._tiddler_as_div(tiddler, recipe.name)
-
-        return self._put_string_in_tiddlywiki(lines)
-
     def bag_as(self, bag):
         lines = ''
         for tiddler in bag.list_tiddlers():

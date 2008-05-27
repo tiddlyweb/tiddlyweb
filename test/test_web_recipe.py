@@ -29,7 +29,7 @@ def setup_module(module):
     reset_textstore()
     muchdata(module.store)
 
-def test_get_recipe_wiki():
+def test_get_recipe_wiki_fail():
     """
     Return a wiki for a recipe we can access.
     """
@@ -37,8 +37,7 @@ def test_get_recipe_wiki():
     response, content = http.request('http://our_test_domain:8001/recipes/long.wiki',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
-    assert 'i am tiddler 8' in content, 'wiki contains tiddler 8'
+    assert response['status'] == '415'
 
 def test_get_recipe_txt():
     """
@@ -172,7 +171,7 @@ def test_put_recipe():
 
 def test_put_recipe_415():
     """
-    Get a recipe as json then fail to put it back as text.
+    Get a recipe as text then fail to put it back as text.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long.txt',

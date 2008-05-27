@@ -17,13 +17,14 @@ def get(environ, start_response):
     recipe = _determine_recipe(environ)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
+    if serialize_type not in ['json', 'html', 'text']:
+        raise HTTP415, '%s not supported yet' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = recipe
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",
-            [('Content-Type', mime_type),
-             ('Set-Cookie', 'chkHttpReadOnly=false')])
+            [('Content-Type', mime_type)])
     return [serializer.to_string()]
 
 def get_tiddlers(environ, start_response):
@@ -89,15 +90,12 @@ def put(environ, start_response):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
-    content_type = environ['tiddlyweb.type']
-
-    if content_type != 'application/json':
-        raise HTTP415, '%s not supported yet' % content_type
-
-    content = environ['wsgi.input'].read(int(length))
     serialize_type, mime_type = web.get_serialize_type(environ)
+    if serialize_type not in ['json']:
+        raise HTTP415, '%s not supported yet' % serialize_type
     serializer = Serializer(serialize_type)
     serializer.object = recipe
+    content = environ['wsgi.input'].read(int(length))
     serializer.from_string(content.decode('UTF-8'))
 
     store.put(recipe)
