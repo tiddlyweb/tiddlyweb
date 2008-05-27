@@ -209,3 +209,26 @@ def test_put_bag_wrong_type():
             method='PUT', headers={'Content-Type': 'text/plain'}, body=json_string)
 
     assert response['status'] == '415'
+
+def test_get_bag_tiddlers_constraints():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
+            method='GET')
+    assert response['status'] == '200'
+
+    _put_policy('bag0', dict(policy=dict(read=['NONE'])))
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
+            method='GET')
+    assert response['status'] == '403'
+    assert 'may not read on bag0' in content
+
+def _put_policy(bag_name, policy_dict):
+    """
+    XXX: This is duplicated from test_web_tiddler. Clean up!
+    """
+    json = simplejson.dumps(policy_dict)
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'
