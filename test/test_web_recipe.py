@@ -185,3 +185,30 @@ def test_put_recipe_415():
             method='PUT', headers={'Content-Type': 'text/plain'}, body=text)
 
     assert response['status'] == '415'
+
+def test_get_recipe_wiki_bag_constraints():
+    """
+    Make sure that when the constraints on a bag don't let read
+    that a recipe with that bag throws an error.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
+            method='GET')
+    assert response['status'] == '200'
+
+    _put_policy('bag28', dict(policy=dict(read=['NONE'])))
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
+            method='GET')
+    assert response['status'] == '403'
+    assert 'may not read on bag28' in content
+
+def _put_policy(bag_name, policy_dict):
+    """
+    XXX: This is duplicated from test_web_tiddler. Clean up!
+    """
+    json = simplejson.dumps(policy_dict)
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'

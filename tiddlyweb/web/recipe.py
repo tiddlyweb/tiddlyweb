@@ -9,7 +9,7 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.web.http import HTTP415, HTTP404
+from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
 from tiddlyweb import control
 from tiddlyweb import web
 
@@ -28,6 +28,8 @@ def get(environ, start_response):
 
 def get_tiddlers(environ, start_response):
     filter_string = urllib.unquote(environ['QUERY_STRING'])
+    usersign = environ['tiddlyweb.usersign']
+    store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
 
     # get the tiddlers from the recipe and uniquify them
@@ -40,6 +42,10 @@ def get_tiddlers(environ, start_response):
     tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
     tmp_bag = Bag('tmp_bag2', tmpbag=True)
     for tiddler in tiddlers:
+        bag = Bag(tiddler.bag)
+        store.get(bag)
+        if not bag.policy.allows(usersign, 'read'):
+            raise HTTP403, '%s may not read on %s' % (usersign, bag.name)
         tmp_bag.add_tiddler(tiddler)
 
     last_modified = None
