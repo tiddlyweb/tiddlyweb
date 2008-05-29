@@ -1,4 +1,5 @@
 import urllib
+import time
 from datetime import datetime
 
 from tiddlyweb.web.http import HTTP415
@@ -89,5 +90,5 @@ def bag_url(environ, bag):
     return '%s://%s/bags/%s' % (scheme, host, urllib.quote(bag.name))
 
 def http_date_from_timestamp(timestamp):
-    timestamp_datetime = datetime.strptime(timestamp, '%Y%m%d%H%M')
+    timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
