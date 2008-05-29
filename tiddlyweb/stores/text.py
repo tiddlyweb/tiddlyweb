@@ -113,7 +113,8 @@ def tiddler_put(tiddler):
                 raise StoreLockError, e
             time.sleep(.1)
 
-    tiddler_filename = os.path.join(tiddler_base_filename, '%s' % (_tiddler_revision_filename(tiddler) + 1))
+    revision = _tiddler_revision_filename(tiddler) + 1
+    tiddler_filename = os.path.join(tiddler_base_filename, '%s' % revision)
     tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
 
     serializer = Serializer('text')
@@ -122,6 +123,7 @@ def tiddler_put(tiddler):
     tiddler_file.write(serializer.to_string())
 
     write_unlock(tiddler_base_filename)
+    tiddler.revision = revision
     tiddler_file.close()
 
 def list_recipes():

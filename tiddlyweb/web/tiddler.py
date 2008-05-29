@@ -96,8 +96,11 @@ def _put_tiddler(environ, start_response, tiddler):
         raise HTTP409, "Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." % \
                 (tiddler.title, tiddler.bag, e)
 
+    etag = _tiddler_etag(tiddler)
+
     start_response("204 No Content",
-            [('Location', web.tiddler_url(environ, tiddler))])
+            [('Location', web.tiddler_url(environ, tiddler)),
+                ('Etag', etag)])
 
     return []
 
@@ -122,9 +125,12 @@ def _send_tiddler(environ, start_response, tiddler):
     except TiddlerFormatError, e:
         raise HTTP415, e
 
+    etag = _tiddler_etag(tiddler)
+
     start_response("200 OK",
             [('Last-Modified', web.http_date_from_timestamp(tiddler.modified)),
-                ('Content-Type', mime_type)])
+                ('Content-Type', mime_type),
+                ('Etag', etag)])
 
     return [content]
 
@@ -152,4 +158,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     start_response("200 OK", [('Content-Type', mime_type),
              ('Set-Cookie', 'chkHttpReadOnly=false')])
     return [serializer.to_string()]
+
+def _tiddler_etag(tiddler):
+    return '%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision)
 
