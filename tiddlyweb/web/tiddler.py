@@ -7,7 +7,7 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.web.http import HTTP404, HTTP415, HTTP409, HTTP403
+from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP403, HTTP304
 from tiddlyweb import control
 from tiddlyweb import web
 
@@ -80,8 +80,10 @@ def _put_tiddler(environ, start_response, tiddler):
     try:
         bag = Bag(tiddler.bag)
         try:
-            store.list_tiddler_revisions(tiddler)
+            revision = store.list_tiddler_revisions(tiddler)[0]
+            tiddler.revision = revision
             _check_bag_constraint(environ, bag, 'write')
+            _check_etag(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
 
@@ -104,6 +106,21 @@ def _put_tiddler(environ, start_response, tiddler):
 
     return []
 
+def _check_etag(environ, tiddler):
+    request_method = environ['REQUEST_METHOD']
+    tiddler_etag = _tiddler_etag(tiddler)
+
+    if request_method == 'GET':
+        incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
+        if incoming_etag == tiddler_etag:
+            raise HTTP304, incoming_etag
+    elif request_method == 'PUT':
+        incoming_etag = environ.get('HTTP_IF_MATCH', None)
+        if incoming_etag and incoming_etag != tiddler_etag:
+            raise HTTP412, 'Etag no match'
+    else:
+        return
+
 def _send_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
 
@@ -115,6 +132,11 @@ def _send_tiddler(environ, start_response, tiddler):
         store.get(tiddler)
     except NoTiddlerError, e:
         raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+
+    # this will raise 304
+    # have to do this check after we read from the store because
+    # we need the revision, which is sad
+    _check_etag(environ, tiddler)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)

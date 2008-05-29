@@ -6,7 +6,13 @@ exceptions into proper HTTP headers.
 These exception need messages and a base class so 
 we don't need all the code in HTTPExceptor.
 """
+class HTTP304(Exception):
+    pass
+
 class HTTP415(Exception):
+    pass
+
+class HTTP412(Exception):
     pass
 
 class HTTP403(Exception):
@@ -26,9 +32,17 @@ class HTTPExceptor(object):
     def __call__(self, environ, start_response):
         try:
             return self.application(environ, start_response)
+        except HTTP304, e:
+            start_response("304 Not Modified", [('Etag', e)])
+            output = ''
+            return [output]
         except HTTP415, e:
             start_response("415 Unsupported", [('Content-Type', 'text/plain')])
             output = '415 Unsupported: %s' % e
+            return [output]
+        except HTTP412, e:
+            start_response("412 Precondition Failed", [('Content-Type', 'text/plain')])
+            output = '412 Precondition Failed: %s' % e
             return [output]
         except HTTP409, e:
             start_response('409 Conflict', [('Content-Type', 'text/plain')])

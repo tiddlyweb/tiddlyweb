@@ -56,6 +56,7 @@ def test_put_tiddler_txt_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
+    assert response['etag'] == 'bag1/TestOne/3'
 
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
@@ -83,6 +84,7 @@ def test_get_tiddler_revision_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
             method='GET')
     assert response['status'] == '200'
+    assert response['etag'] == 'bag1/TestOne/3'
 
 def test_get_tiddler_revision_4_fail():
     http = httplib2.Http()

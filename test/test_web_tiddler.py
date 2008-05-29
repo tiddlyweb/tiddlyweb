@@ -3,6 +3,7 @@ Test that GETting a tiddler in some form.
 """
 
 import sys
+import os
 sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
@@ -209,6 +210,46 @@ def test_get_tiddler_etag_bag():
     assert response['etag'] == 'bag28/tiddler8/1'
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
+
+def test_get_tiddler_cached():
+    [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
+    http = httplib2.Http('.test_cache')
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['etag'] == 'bag28/tiddler8/1'
+    assert not response.fromcache
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
+            method='GET')
+    assert response['status'] == '304'
+    assert response['etag'] == 'bag28/tiddler8/1'
+    assert response.fromcache
+
+def test_put_tiddler_cache_fakey():
+    [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
+    http_caching = httplib2.Http('.test_cache')
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+
+    response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'
+    assert response['etag'] == 'bag1/CashForCache/1'
+
+    response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
+            method='GET', headers={'Accept': 'application/json'})
+    assert response['status'] == '200'
+    assert response['etag'] == 'bag1/CashForCache/1'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'
+    assert response['etag'] == 'bag1/CashForCache/2'
+
+    response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '412'
 
 def test_put_tiddler_via_recipe():
     http = httplib2.Http()
