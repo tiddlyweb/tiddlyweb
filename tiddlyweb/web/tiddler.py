@@ -55,6 +55,7 @@ def _determine_tiddler(environ, bag_finder):
         recipe = Recipe(recipe_name)
         store = environ['tiddlyweb.store']
         store.get(recipe)
+        tiddler.recipe = recipe_name
 
         try:
             bag = bag_finder(recipe, tiddler)
@@ -141,7 +142,7 @@ def _send_tiddler(environ, start_response, tiddler):
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
     serializer.object = tiddler
-
+    
     try:
         content = serializer.to_string()
     except TiddlerFormatError, e:

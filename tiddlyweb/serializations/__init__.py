@@ -118,4 +118,4 @@ class SerializationInterface(object):
         Take some text and "protect" it for send out over the 
         wire as something like HTML.
         """
-	return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+	return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')

@@ -88,11 +88,11 @@ def test_tiddler_from_json():
 def test_tiddler_html_encode():
     serializer = Serializer('html')
     tiddler= Tiddler('jeremy found a bug')
-    tiddler.text = '"Hello." I\'m > than 5 & < you.'
+    tiddler.text = u'"Hello." I\'m > than 5 & < you.'
     serializer.object = tiddler
     string = serializer.to_string()
 
-    assert '&quot;Hello.&quot; I\'m &gt; than 5 &amp; &lt; you.' in string
+    assert '"Hello." I\'m &gt; than 5 &amp; &lt; you.' in string
 
 
 

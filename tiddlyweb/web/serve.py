@@ -167,5 +167,11 @@ class EncodeUTF8(object):
     def __init__(self, application):
         self.application = application
 
+    def _encoder(self, string):
+        # if we are currently unicode, encode to utf-8
+        if type(string) == unicode:
+            string = string.encode('utf-8')
+        return string
+
     def __call__(self, environ, start_response):
-        return [x.encode('utf-8') for x in self.application(environ, start_response)]
+        return [self._encoder(x) for x in self.application(environ, start_response)]
