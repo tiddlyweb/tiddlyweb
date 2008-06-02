@@ -33,8 +33,8 @@ class HTTPExceptor(object):
         try:
             return self.application(environ, start_response)
         except HTTP304, e:
-            start_response("304 Not Modified", [('Etag', e)])
-            output = ''
+            start_response("304 Not Modified", [('Etag', '%s' % e)])
+            output = '304 Not Modified'
             return [output]
         except HTTP415, e:
             start_response("415 Unsupported", [('Content-Type', 'text/plain')])
