@@ -79,17 +79,24 @@ class Serialization(SerializationInterface):
                 if '/' in url_fragment:
                     return url_fragment, True
                 return '%s%s' % (base_url, urllib.quote(url_fragment)), False
+
+            posthook = PostHook()
+
             if tiddler.recipe:
                 list_link = '/recipes/%s/tiddlers' % tiddler.recipe
             else:
                 list_link = '/bags/%s/tiddlers' % tiddler.bag
-            link_context = {'$BASE_URL': list_link} 
+            link_context = {
+                    '$BASE_URL': list_link,
+                    '$REFLOW': 0
+                    } 
             html, context = wikklytext.WikklyText_to_InnerHTML(
                     text=tiddler.text,
                     setvars=link_context,
                     encoding='utf-8', # is this going to cause double encoding
                     safe_mode=True,
-                    url_resolver=our_resolver
+                    url_resolver=our_resolver,
+                    tree_posthook=posthook.treehook
                     )
             return """
 <html>
@@ -110,4 +117,22 @@ class Serialization(SerializationInterface):
     (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags))
 
 
+
+class PostHook(object):
+    def __init__(self):
+        # make map of wikiwords
+        self.wikiwords = InfiniteDict()
+            
+    def treehook(self, rootnode, context):
+        from wikklytext.wikwords import wikiwordify
+        # add links to any wikiword
+        wikiwordify(rootnode, context, self.wikiwords)
+
+
+class InfiniteDict(dict):
+    def __getitem__(self, name):
+        return name
+
+    def has_key(self, name):
+        return True
 
