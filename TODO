@@ -17,6 +17,7 @@ This is not complete, and likely not up to date.
 
 !After Release 1
 
+* Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)
 * Change Tiddly core so server.bag is an inherited field?
 * In SyncMachine pay attention to response codes from the web server in onGetTiddlerList and onPutTiddler, handle appropriately
 * When sending a workspace, set the recipe attribute (temporarily) on the tiddler.
