@@ -78,13 +78,15 @@ def _put_tiddler(environ, start_response, tiddler):
     if content_type != 'text/plain' and content_type != 'application/json':
         raise HTTP415, '%s not supported' % content_type
 
+    last_modified = None
+    etag = None
     try:
         bag = Bag(tiddler.bag)
         try:
             revision = store.list_tiddler_revisions(tiddler)[0]
             tiddler.revision = revision
             _check_bag_constraint(environ, bag, 'write')
-            _check_etag(environ, tiddler)
+            last_modfied, etag = _validate_tiddler(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
 
@@ -101,26 +103,36 @@ def _put_tiddler(environ, start_response, tiddler):
 
     etag = _tiddler_etag(tiddler)
 
-    start_response("204 No Content",
-            [('Location', web.tiddler_url(environ, tiddler)),
-                ('Etag', etag)])
+    response = [('Location', web.tiddler_url(environ, tiddler))]
+    if etag:
+        response.append(etag)
+    start_response("204 No Content", response)
 
     return []
 
-def _check_etag(environ, tiddler):
+def _validate_tiddler(environ, tiddler):
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
 
+    etag = None
+    last_modified = None
     if request_method == 'GET':
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
         if incoming_etag == tiddler_etag:
             raise HTTP304, incoming_etag
+        last_modified_string = web.http_date_from_timestamp(tiddler.modified)
+        last_modified = ('Last-Modified', last_modified_string)
+        incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
+        if incoming_modified and \
+                (web.datetime_from_http_date(incoming_modified) >= web.datetime_from_http_date(last_modified_string)):
+            raise HTTP304, ''
+
     elif request_method == 'PUT':
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         if incoming_etag and incoming_etag != tiddler_etag:
             raise HTTP412, 'Etag no match'
-    else:
-        return
+    etag = ('Etag', tiddler_etag)
+    return last_modified, etag
 
 def _send_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
@@ -137,7 +149,7 @@ def _send_tiddler(environ, start_response, tiddler):
     # this will raise 304
     # have to do this check after we read from the store because
     # we need the revision, which is sad
-    _check_etag(environ, tiddler)
+    last_modified, etag = _validate_tiddler(environ, tiddler)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type)
@@ -148,12 +160,14 @@ def _send_tiddler(environ, start_response, tiddler):
     except TiddlerFormatError, e:
         raise HTTP415, e
 
-    etag = _tiddler_etag(tiddler)
-
-    start_response("200 OK",
-            [('Last-Modified', web.http_date_from_timestamp(tiddler.modified)),
-                ('Content-Type', mime_type),
-                ('Etag', etag)])
+    cache_header = ('Cache-Control', 'no-cache')
+    content_header = ('Content-Type', mime_type)
+    response = [cache_header, content_header]
+    if last_modified:
+        response.append(last_modified)
+    if etag:
+        response.append(etag)
+    start_response("200 OK", response)
 
     return [content]
 
@@ -174,13 +188,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
         # If a tiddler is not present in the store.
         raise HTTP404, 'tiddler %s not found, %s' % (tiddler.title, e)
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
-    serializer.object = tmp_bag
-
-    start_response("200 OK", [('Content-Type', mime_type),
-             ('Set-Cookie', 'chkHttpReadOnly=false')])
-    return [serializer.to_string()]
+    return web.send_tiddlers(environ, start_response, tmp_bag)
 
 def _tiddler_etag(tiddler):
     return '%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision)
