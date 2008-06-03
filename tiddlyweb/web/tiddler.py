@@ -101,8 +101,7 @@ def _put_tiddler(environ, start_response, tiddler):
         raise HTTP409, "Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." % \
                 (tiddler.title, tiddler.bag, e)
 
-    etag = _tiddler_etag(tiddler)
-
+    etag = ('Etag', _tiddler_etag(tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]
     if etag:
         response.append(etag)
