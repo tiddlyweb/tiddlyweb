@@ -1,3 +1,6 @@
+import sys
+import traceback
+
 """
 A group of exception classes representating HTTP error 
 statuses, along with a WSGI middleware to turn the
@@ -5,6 +8,9 @@ exceptions into proper HTTP headers.
 
 These exception need messages and a base class so 
 we don't need all the code in HTTPExceptor.
+
+XXX: The Exceptor should log errors for each of
+these exceptions as in the finall except clause.
 """
 class HTTP304(Exception):
     pass
@@ -56,3 +62,9 @@ class HTTPExceptor(object):
             start_response("403 Forbidden", [('Content-Type', 'text/plain')])
             output = '403 Forbidden: %s' % e
             return [output]
+        except:
+            etype, value, tb = sys.exc_info()
+            exception_text = ''.join(traceback.format_exception(etype, value, tb, None))
+            print >> environ['wsgi.errors'], exception_text
+            start_response('500 server error', [('Content-Type', 'text/plain')])
+            return [exception_text]

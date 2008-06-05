@@ -74,14 +74,21 @@ def default_app(filename):
     Eventually these should come from configuration. For now it
     is static, and consists of:
 
+    === The following wrap above the core app ===
+    HTTPExceptor: trap exceptions raised deeper in the code. 
+                  Most of the time we hope these are HTTP
+                  related, and we can send them on as such.
     StoreSet: set tiddlyweb.store in the environment to be a 
               tiddlyweb.store object.
+    UserExtract: Attemp to get a usersign from the request.
     Negotiate: do content negotiation, setting tiddlyweb.type to
                 the preferred Accept type, or to Content-Type (if
                 this is not a GET).
-    EncodeUTF8: encode internal unicode data as UTF-8 output .
+    === The following do things to the result  ===
+    EncodeUTF8: encode internal unicode data as UTF-8 output.
+    SimpleLog: write a log of activity
     """
-    return load_app(filename, [StoreSet, UserExtract, Negotiate, HTTPExceptor, EncodeUTF8, SimpleLog])
+    return load_app(filename, [HTTPExceptor, StoreSet, UserExtract, Negotiate, EncodeUTF8, SimpleLog])
     #return load_app(filename, [StoreSet, Negotiate])
 
 class UserExtract(object):
