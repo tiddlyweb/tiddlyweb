@@ -57,8 +57,8 @@ def test_generated_html():
     html_serializer.object = bagfour
     string = html_serializer.to_string()
 
-    assert string == expected_html_string
-    assert '%s' % html_serializer == expected_html_string
+    assert expected_html_string in string
+    assert expected_html_string in '%s' % html_serializer
 
 def test_generated_wiki():
     wiki_serializer = Serializer('wiki')
@@ -75,8 +75,8 @@ def test_generated_html_with_revbag():
     html_serializer.object = bagfour
     string = html_serializer.to_string()
 
-    assert string == expected_html_revbag_string
-    assert '%s' % html_serializer == expected_html_revbag_string
+    assert expected_html_revbag_string in string
+    assert expected_html_revbag_string in '%s' % html_serializer
     bagfour.revbag = False
 
 def test_json_to_bag():

@@ -44,7 +44,7 @@ def test_get_bag_tiddler_list_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
+    assert content.count('<li>') == 10
 
 def test_get_bag_tiddler_list_404():
     """
@@ -72,7 +72,7 @@ def test_get_bag_tiddler_list_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
+    assert content.count('<li>') == 10
 
 def test_get_bag_tiddler_list_415():
     http = httplib2.Http()
@@ -88,7 +88,7 @@ def test_get_bag_tiddler_list_html_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 12, 'len tiddlers should be 12 is %s' % len(content.split('\n'))
+    assert content.count('<li>') == 10
 
 def test_get_bag_tiddler_list_filtered():
     http = httplib2.Http()

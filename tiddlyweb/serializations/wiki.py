@@ -1,7 +1,5 @@
 """
-Serialize into a fullblow tiddlywiki wiki.
-
-This is initially for the sake of testing the bits.
+Serialize into a fullblown tiddlywiki wiki.
 """
 
 import codecs

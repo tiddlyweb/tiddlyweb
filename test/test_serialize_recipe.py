@@ -42,8 +42,8 @@ def test_generated_html():
     serializer.object = recipe
     string = serializer.to_string()
 
-    assert string == expected_html_string
-    assert '%s' % serializer == expected_html_string
+    assert expected_html_string in string
+    assert expected_html_string in '%s' % serializer
 
 def test_simple_recipe():
     recipe = Recipe('other')

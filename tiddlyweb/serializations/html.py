@@ -38,7 +38,6 @@ class Serialization(SerializationInterface):
         Recipe as html.
         """
         lines = []
-        output = '<ul>\n'
         for bag, filter in recipe:
             line = '<li><a href="'
             if not isinstance(bag, basestring):
@@ -48,29 +47,55 @@ class Serialization(SerializationInterface):
                 line += '?%s' % urllib.quote(filter)
             line += '">bag: %s filter:%s</a></li>' % (bag, filter)
             lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+        output = "\n".join(lines)
+        title = 'Bags in Recipe %s' % recipe.name
+        tiddler_link = '%s/tiddlers' % urllib.quote(recipe.name)
+        return """
+<html>
+<head><title>%s</title></head>
+<body>
+<ul>
+%s
+</ul>
+<div><a href="%s">Tiddlers in Recipe</a></div>
+</body></html>""" % (title, output, tiddler_link)
 
     def bag_as(self, bag):
         """
         List the tiddlers in a bag as html.
         """
         lines = []
-        output = '<ul>\n'
         for tiddler in bag.list_tiddlers():
             if tiddler.recipe:
                 base = 'recipes'
                 base_link = urllib.quote(tiddler.recipe)
+                wiki_link = '/recipes/%s/tiddlers' % base_link
+                title = 'Tiddlers in Recipe %s' % tiddler.recipe
             else:
                 base = 'bags'
                 base_link = urllib.quote(tiddler.bag)
+                wiki_link = '/bags/%s/tiddlers' % base_link
+                title = 'Tiddlers in Bag %s' % tiddler.bag
             if bag.revbag:
                 line = '<li><a href="/%s/%s/tiddlers/%s/revisions/%s">%s:%s</a></li>' % (base, base_link, urllib.quote(tiddler.title), tiddler.revision, tiddler.title, tiddler.revision)
+                wiki_link += '/%s/revisions' % urllib.quote(tiddler.title)
+                title = 'Revisions of Tiddler %s' % tiddler.title
             else:
                 line = '<li><a href="/%s/%s/tiddlers/%s">%s</a></li>' % (base, base_link, urllib.quote(tiddler.title), tiddler.title)
             lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+        output = "\n".join(lines)
+        return """
+<html>
+<head><title>%s</title></head>
+<body>
+<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+<hr>
+<ul>
+%s
+</ul>
+</div>
+</body></html>""" % (title, '%s.wiki' % wiki_link, output)
+
 
     def tiddler_as(self, tiddler):
         try:
@@ -84,8 +109,10 @@ class Serialization(SerializationInterface):
 
             if tiddler.recipe:
                 list_link = '/recipes/%s/tiddlers' % tiddler.recipe
+                list_title = 'Recent Changes in Recipe %s' % tiddler.recipe
             else:
                 list_link = '/bags/%s/tiddlers' % tiddler.bag
+                list_title = 'Recent Changes in Bag %s' % tiddler.bag
             link_context = {
                     '$BASE_URL': list_link,
                     '$REFLOW': 0
@@ -93,7 +120,7 @@ class Serialization(SerializationInterface):
             html, context = wikklytext.WikklyText_to_InnerHTML(
                     text=tiddler.text,
                     setvars=link_context,
-                    encoding='utf-8', # is this going to cause double encoding
+                    encoding='utf-8',
                     safe_mode=True,
                     url_resolver=our_resolver,
                     tree_posthook=posthook.treehook
@@ -102,13 +129,13 @@ class Serialization(SerializationInterface):
 <html>
 <head><title>%s</title></head>
 <body>
-<div><a href="%s" title="tiddler list">Tiddler List</a></div>
+<div><a href="%s" title="tiddler list">%s</a></div>
 <hr>
 %s
 %s
 </div>
 </body></html>
-            """ % (tiddler.title, list_link, self._tiddler_div(tiddler).encode('utf-8'), html)
+            """ % (tiddler.title, urllib.quote('%s?[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
         except ImportError:
             return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
 
