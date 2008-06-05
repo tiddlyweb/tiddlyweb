@@ -81,6 +81,8 @@ def put(environ, start_response):
     content = environ['wsgi.input'].read(int(length))
     serializer.from_string(content.decode('UTF-8'))
 
+    bag.policy.owner = environ['tiddlyweb.usersign']
+
     store.put(bag)
 
     start_response("204 No Content",

@@ -60,7 +60,8 @@ class Serialization(SerializationInterface):
     def as_tiddler(self, tiddler, input):
         dict_from_input = simplejson.loads(input)
         for key, value in dict_from_input.iteritems():
-            setattr(tiddler, key, value)
+            if value:
+                setattr(tiddler, key, value)
 
         return tiddler
 

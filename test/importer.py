@@ -8,26 +8,22 @@ import codecs
 import simplejson
 import httplib2
 import re
+import urllib
 
-from tiddlyweb.store import Store
-from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.bag import Bag
+def _html_decode(text):
+    return text.replace('&gt;', '>').replace('&lt;', '<').replace('&amp;', '&').replace('&quot;', '"')
 
 def import_wiki(filename='wiki'):
     f = codecs.open(filename, encoding='utf-8')
     wikitext = f.read()
     f.close()
 
-    store = Store('text')
-
     soup = BeautifulSoup(wikitext)
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
     _do_recipe()
-    _do_bag(store)
+    _do_bag()
 
     for tiddler in divs:
         _do_tiddler(tiddler)
@@ -39,8 +35,8 @@ def _do_recipe():
     response, content = http.request(url, method='PUT', \
             headers={'Content-Type': 'application/json'}, body=json_string)
 
-def _do_bag(store):
-    json_string = simplejson.dumps({'policy': 'a different one', 'name': 'wiki'})
+def _do_bag():
+    json_string = simplejson.dumps({'policy': dict(), 'name': 'wiki'})
     http = httplib2.Http()
     url = 'http://localhost:8080/bags/%s' % 'wiki'
     response, content = http.request(url, method='PUT', \
@@ -49,7 +45,8 @@ def _do_bag(store):
 def _do_tiddler(tiddler):
     tiddler_dict = {}
     tiddler_dict['title'] = tiddler['title']
-    tiddler_dict['text'] = tiddler.find('pre').contents[0]
+    tiddler_dict['text'] = _html_decode(tiddler.find('pre').contents[0])
+
     for key in (['modifier', 'created', 'modified', 'tags']):
         tiddler_dict[key] = tiddler.get(key, '')
 
@@ -58,9 +55,11 @@ def _do_tiddler(tiddler):
     json_string = simplejson.dumps(tiddler_dict)
 
     http = httplib2.Http()
-    url = 'http://localhost:8080/bags/wiki/tiddlers/%s' % tiddler_dict['title']
+    url = 'http://localhost:8080/bags/wiki/tiddlers/%s' % urllib.quote(tiddler_dict['title'])
     response, content = http.request(url, method='PUT', \
             headers={'Content-Type': 'application/json'}, body=json_string)
+    if response['status'] != '204':
+        print '%s: %s' % (response['status'], content)
 
 def _tag_string_to_list(string):
     tags = []
