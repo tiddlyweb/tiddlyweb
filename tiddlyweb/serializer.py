@@ -27,12 +27,14 @@ class Serializer(object):
         self._figure_serialization()
 
     def _figure_serialization(self):
-        module = 'tiddlyweb.serializations.%s' % self.format
         try:
-            imported_module = __import__(module, {}, {}, ['Serialization'])
-            self.serialization = imported_module.Serialization()
+            imported_module = __import__('tiddlyweb.serializations.%s' % self.format,
+                    {}, {}, ['Serialization'])
+        except ImportError, err:
+            imported_module = __import__(self.format, {}, {}, ['Serialization'])
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
+        self.serialization = imported_module.Serialization()
 
     def __str__(self):
         string_func = getattr(self.serialization, function_map[self.object.__class__][0])

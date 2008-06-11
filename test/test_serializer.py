@@ -17,3 +17,6 @@ def setup_module(module):
 def test_module_load_fail():
     py.test.raises(ImportError, 'serializer = Serializer("notexistserialization")')
 
+def test_load_module_on_other_path():
+    serializer = Serializer("test.other.tiddlyweb.serializations.debug")
+    assert type(serializer) == Serializer
