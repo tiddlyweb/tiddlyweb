@@ -12,23 +12,41 @@ we don't need all the code in HTTPExceptor.
 XXX: The Exceptor should log errors for each of
 these exceptions as in the finall except clause.
 """
-class HTTP304(Exception):
-    pass
+class HTTPException(Exception):
+    status = ''
 
-class HTTP415(Exception):
-    pass
+    def headers(self):
+        return [('Content-Type', 'text/plain')]
 
-class HTTP412(Exception):
-    pass
+    def output(self):
+        return '%s: %s' % (self.status, self)
 
-class HTTP403(Exception):
-    pass
+class HTTP304(HTTPException):
+    status = '304 Not Modified'
 
-class HTTP404(Exception):
-    pass
+    def headers(self):
+        return [('Etag', '%s' % self)]
 
-class HTTP409(Exception):
-    pass
+    def output(self):
+        return ''
+
+class HTTP401(HTTPException):
+    status = '401 Unauthorized'
+
+class HTTP403(HTTPException):
+    status = '403 Forbidden'
+
+class HTTP404(HTTPException):
+    status = '404 Not Found'
+
+class HTTP409(HTTPException):
+    status = '409 Conflict'
+
+class HTTP412(HTTPException):
+    status = '412 Precondition Failed'
+
+class HTTP415(HTTPException):
+    status = '415 Unsupported'
 
 class HTTPExceptor(object):
 
@@ -38,30 +56,9 @@ class HTTPExceptor(object):
     def __call__(self, environ, start_response):
         try:
             return self.application(environ, start_response)
-        except HTTP304, e:
-            start_response("304 Not Modified", [('Etag', '%s' % e)])
-            output = ''
-            return [output]
-        except HTTP415, e:
-            start_response("415 Unsupported", [('Content-Type', 'text/plain')])
-            output = '415 Unsupported: %s' % e
-            return [output]
-        except HTTP412, e:
-            start_response("412 Precondition Failed", [('Content-Type', 'text/plain')])
-            output = '412 Precondition Failed: %s' % e
-            return [output]
-        except HTTP409, e:
-            start_response('409 Conflict', [('Content-Type', 'text/plain')])
-            output = '409 Conflict: %s' % e
-            return [output]
-        except HTTP404, e:
-            start_response("404 Not Found", [('Content-Type', 'text/plain')])
-            output = '404 Not Found: %s' % e
-            return [output]
-        except HTTP403, e:
-            start_response("403 Forbidden", [('Content-Type', 'text/plain')])
-            output = '403 Forbidden: %s' % e
-            return [output]
+        except HTTPException, e:
+            start_response(e.status, e.headers())
+            return [e.output()]
         except:
             etype, value, tb = sys.exc_info()
             exception_text = ''.join(traceback.format_exception(etype, value, tb, None))
