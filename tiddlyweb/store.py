@@ -29,15 +29,17 @@ class Store(object):
 
     def __init__(self, format):
         self.format = format
-        self.imported_module = self._import()
+        self._import()
 
     def _import(self):
-        module = 'tiddlyweb.stores.%s' % self.format
         try:
-            imported_module = __import__(module, {}, {}, [self.format])
+            imported_module = __import__('tiddlyweb.stores.%s' % self.format,
+                    {}, {}, ['Store'])
+        except ImportError, err:
+            imported_module = __import__(self.format, {}, {}, ['Store'])
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
-        return imported_module
+        self.storage = imported_module.Store()
 
     def put(self, thing):
         """
@@ -61,18 +63,19 @@ class Store(object):
         return get_func(thing)
 
     def _figure_function(self, object):
-        put_func = getattr(self.imported_module, function_map[object.__class__][0])
-        get_func = getattr(self.imported_module, function_map[object.__class__][1])
+        print dir(self.storage)
+        put_func = getattr(self.storage, function_map[object.__class__][0])
+        get_func = getattr(self.storage, function_map[object.__class__][1])
         return put_func, get_func
 
     def list_tiddler_revisions(self, tiddler):
-        list_func = getattr(self.imported_module, 'list_tiddler_revisions')
+        list_func = getattr(self.storage, 'list_tiddler_revisions')
         return list_func(tiddler)
 
     def list_recipes(self):
-        list_func = getattr(self.imported_module, 'list_recipes')
+        list_func = getattr(self.storage, 'list_recipes')
         return list_func()
 
     def list_bags(self):
-        list_func = getattr(self.imported_module, 'list_bags')
+        list_func = getattr(self.storage, 'list_bags')
         return list_func()
