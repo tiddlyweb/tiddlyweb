@@ -303,7 +303,7 @@ def test_tiddler_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not create on unreadable' in content
+    assert 'may not create' in content
 
     # create and succeed
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
@@ -315,7 +315,7 @@ def test_tiddler_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not write on unreadable' in content
+    assert 'may not write' in content
 
     # write and succeed
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['cdent'],create=['NONE'])))
@@ -327,7 +327,7 @@ def test_tiddler_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='GET', headers={'Accept': 'text/plain'})
     assert response['status'] == '403'
-    assert 'may not read on unreadable' in content
+    assert 'may not read' in content
 
     # update the policy so we can read and GET the thing
     _put_policy('unreadable', dict(policy=dict(read=['cdent'],write=['NONE'])))
@@ -343,7 +343,7 @@ def test_get_tiddler_via_recipe_with_perms():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read on bag28' in content
+    assert 'may not read' in content
 
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['NONE'])))
     http = httplib2.Http()
@@ -358,7 +358,7 @@ def test_get_tiddler_via_recipe_with_perms():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not write on bag28' in content
+    assert 'may not write' in content
 
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
     encoded_body = text_put_body.encode('UTF-8')

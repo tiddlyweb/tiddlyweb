@@ -238,7 +238,7 @@ def test_get_bag_tiddlers_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read on bag0' in content
+    assert 'may not read' in content
 
 def _put_policy(bag_name, policy_dict):
     """

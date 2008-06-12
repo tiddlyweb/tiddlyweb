@@ -7,6 +7,9 @@ import sys
 sys.path.append('.')
 from tiddlyweb.bag import Policy, Bag
 
+import py.test
+from tiddlyweb.auth import ForbiddenError, UserRequiredError
+
 def setup_module(module):
     pass
 
@@ -45,16 +48,16 @@ def test_policy_allows():
 
     assert policy.allows('chris', 'read')
     assert policy.allows('jeremy', 'read')
-    assert not policy.allows('jeremy', 'write')
+    py.test.raises(ForbiddenError, 'policy.allows("jeremy", "write")')
     assert policy.allows('chris', 'manage')
-    assert not policy.allows('jeremy', 'manage')
+    py.test.raises(ForbiddenError, 'policy.allows("jeremy", "manage")')
     assert policy.allows('chris', 'create')
-    assert not policy.allows('NONE', 'write')
-    assert not policy.allows('barnabas', 'read')
-    assert not policy.allows('barnabas', 'write')
+    py.test.raises(ForbiddenError, 'policy.allows("NONE", "write")')
+    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "read")')
+    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "write")')
     assert policy.allows('barnabas', 'create')
     assert policy.allows('barnabas', 'delete')
-    assert not policy.allows('barnabas', 'manage')
+    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "manage")')
 
 def test_bag_policy():
 
@@ -62,5 +65,6 @@ def test_bag_policy():
     bag.policy = Policy(read=['chris','jeremy'])
 
     assert bag.policy.allows('chris', 'read')
-    assert not bag.policy.allows('chris', 'manage')
+    py.test.raises(ForbiddenError, 'bag.policy.allows("chris", "manage")')
+    py.test.raises(UserRequiredError, 'bag.policy.allows("GUEST", "read")')
 

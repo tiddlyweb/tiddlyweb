@@ -1,5 +1,7 @@
 import copy
 
+from tiddlyweb.auth import ForbiddenError, UserRequiredError
+
 class Policy(object):
     """
     A container for information about the 
@@ -28,8 +30,12 @@ class Policy(object):
         if len(user_list) == 0:
             return True
         if len(user_list) == 1 and user_list[0] == 'NONE':
-            return False
-        return user_sign in self.__getattribute__(constraint)
+            raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
+        if user_sign in self.__getattribute__(constraint):
+            return True
+        if user_sign == 'GUEST':
+            raise UserRequiredError, 'real user required to %s' % constraint
+        raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
 
 class Bag(dict):
     """

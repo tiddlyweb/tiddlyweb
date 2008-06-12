@@ -11,7 +11,7 @@ from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
 from tiddlyweb import control
-from tiddlyweb import web
+from tiddlyweb.web import util as web
 
 def get(environ, start_response):
     recipe = _determine_recipe(environ)
@@ -45,8 +45,9 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         bag = Bag(tiddler.bag)
         store.get(bag)
-        if not bag.policy.allows(usersign, 'read'):
-            raise HTTP403, '%s may not read on %s' % (usersign, bag.name)
+
+        bag.policy.allows(usersign, 'read')
+
         tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
 

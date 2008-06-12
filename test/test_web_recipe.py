@@ -149,7 +149,6 @@ def test_get_recipes_unsupported_neg_format_with_accept():
     response, content = http.request('http://our_test_domain:8001/recipes.gif',
             method='GET', headers={'Accept': 'text/html'})
 
-    print content
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
 
@@ -200,7 +199,7 @@ def test_get_recipe_wiki_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read on bag28' in content
+    assert 'may not read' in content
 
 
 def test_get_recipe_wiki_has_workspace_bag_does_not():

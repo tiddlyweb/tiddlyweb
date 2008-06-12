@@ -12,8 +12,8 @@ from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb import control
-from tiddlyweb import web
-from tiddlyweb.web.http import HTTP404, HTTP415, HTTP403
+from tiddlyweb.web import util as web
+from tiddlyweb.web.http import HTTP404, HTTP415
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -41,8 +41,8 @@ def get_tiddlers(environ, start_response):
     bag = _get_bag(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
-    if not bag.policy.allows(usersign, 'read'):
-        raise HTTP403, '%s may not read on %s' % (usersign, bag.name)
+    # will raise exception if there are problems
+    bag.policy.allows(usersign, 'read')
 
     tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
     tmp_bag = Bag('tmp_bag', tmpbag=True)
@@ -98,4 +98,3 @@ def _get_bag(environ, bag_name):
     except NoBagError, e:
         raise HTTP404, '%s not found, %s' % (bag.name, e)
     return bag
-

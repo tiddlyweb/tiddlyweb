@@ -9,6 +9,7 @@ import time
 import urllib
 
 from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
 
@@ -75,6 +76,9 @@ def default_app(filename):
     is static, and consists of:
 
     === The following wrap above the core app ===
+    PermissionsExceptor: Watch for permissions exceptions
+                         and handle them according to authentication
+                         handling rules.
     HTTPExceptor: trap exceptions raised deeper in the code. 
                   Most of the time we hope these are HTTP
                   related, and we can send them on as such.
@@ -88,7 +92,7 @@ def default_app(filename):
     EncodeUTF8: encode internal unicode data as UTF-8 output.
     SimpleLog: write a log of activity
     """
-    return load_app(filename, [HTTPExceptor, StoreSet, UserExtract, Negotiate, EncodeUTF8, SimpleLog])
+    return load_app(filename, [Negotiate, StoreSet, UserExtract, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
     #return load_app(filename, [StoreSet, Negotiate])
 
 class UserExtract(object):
@@ -102,6 +106,7 @@ class UserExtract(object):
 
     def __call__(self, environ, start_response):
         username = 'cdent' # or GUEST
+        #username = 'GUEST'
         environ['tiddlyweb.usersign'] = username
         return self.application(environ, start_response)
 

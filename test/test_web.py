@@ -11,6 +11,7 @@ import httplib2
 import py.test
 
 import tiddlyweb.web
+import tiddlyweb.web.util
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 
@@ -49,22 +50,22 @@ def test_recipe_url():
     environ = {'wsgi.url_scheme':'http', 'HTTP_HOST':'example.com'}
     recipe = Recipe('hello')
 
-    assert tiddlyweb.web.recipe_url(environ, recipe) == 'http://example.com/recipes/hello'
+    assert tiddlyweb.web.util.recipe_url(environ, recipe) == 'http://example.com/recipes/hello'
 
 def test_bag_url():
     environ = {'wsgi.url_scheme':'http', 'HTTP_HOST':'example.com'}
     bag = Bag('hello')
 
-    assert tiddlyweb.web.bag_url(environ, bag) == 'http://example.com/bags/hello'
+    assert tiddlyweb.web.util.bag_url(environ, bag) == 'http://example.com/bags/hello'
 
 def test_http_date_from_timestamp():
     timestamp = '200805231010'
-    assert tiddlyweb.web.http_date_from_timestamp(timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
+    assert tiddlyweb.web.util.http_date_from_timestamp(timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
 
 def test_http_date_from_timestamp_invalid():
     timestamp = '200702291010'
-    py.test.raises(ValueError, 'tiddlyweb.web.http_date_from_timestamp(timestamp)')
+    py.test.raises(ValueError, 'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
 
 def test_http_date_from_timestamp_pre_1900():
     timestamp = '108502281010'
-    py.test.raises(ValueError, 'tiddlyweb.web.http_date_from_timestamp(timestamp)')
+    py.test.raises(ValueError, 'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')

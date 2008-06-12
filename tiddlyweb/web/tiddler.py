@@ -9,7 +9,7 @@ from tiddlyweb.store import Store, NoTiddlerError, NoBagError
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP403, HTTP304
 from tiddlyweb import control
-from tiddlyweb import web
+from tiddlyweb.web import util as web
 
 def get(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
@@ -28,8 +28,7 @@ def _check_bag_constraint(environ, bag, constraint):
     usersign = environ['tiddlyweb.usersign']
     try:
         store.get(bag)
-        if not bag.policy.allows(usersign, constraint):
-            raise HTTP403, '%s may not %s on %s' % (usersign, constraint, bag.name)
+        bag.policy.allows(usersign, constraint)
     except NoBagError, e:
         raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
 
