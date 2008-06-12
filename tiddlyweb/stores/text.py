@@ -131,7 +131,7 @@ class Store(StorageInterface):
 
     def list_recipes(self):
         path = os.path.join(store_root, 'recipes')
-        recipes = _files_in_dir(path)
+        recipes = self._files_in_dir(path)
 
         return [Recipe(recipe) for recipe in recipes]
 

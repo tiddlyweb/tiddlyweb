@@ -79,14 +79,14 @@ def test_get_missing_recipe():
     response, content = http.request('http://our_test_domain:8001/recipes/not_there',
             method='GET')
 
-    assert response['status'] == '404', 'response status should be 404'
+    assert response['status'] == '404'
 
 def test_get_recipe_tiddler_list():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
     assert content.count('<li>') == 10
 
 def test_get_recipe_tiddler_list_filtered_one():
@@ -95,7 +95,7 @@ def test_get_recipe_tiddler_list_filtered_one():
             method='GET')
 
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
     assert content == 'tiddler8'
 
 def test_get_recipe_tiddler_list_filtered_empty():
@@ -103,7 +103,7 @@ def test_get_recipe_tiddler_list_filtered_empty():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddlerfoo',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
     assert content == ''
 
 def test_get_recipes_default():
@@ -111,7 +111,7 @@ def test_get_recipes_default():
     response, content = http.request('http://our_test_domain:8001/recipes',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 3, 'len recipe should be 3 is %s' % len(content.rstrip().split('\n'))
 
@@ -120,7 +120,7 @@ def test_get_recipes_txt():
     response, content = http.request('http://our_test_domain:8001/recipes.txt',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200'
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
     assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
 
@@ -129,7 +129,7 @@ def test_get_recipes_json():
     response, content = http.request('http://our_test_domain:8001/recipes.json',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['status'] == '200'
     assert response['content-type'] == 'application/json; charset=UTF-8', \
             'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
     info = simplejson.loads(content)
@@ -142,14 +142,15 @@ def test_get_recipes_unsupported_neg_format():
     response, content = http.request('http://our_test_domain:8001/recipes.gif',
             method='GET')
 
-    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+    assert response['status'] == '415'
 
 def test_get_recipes_unsupported_neg_format_with_accept():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes.gif',
             method='GET', headers={'Accept': 'text/html'})
 
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    print content
+    assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
 
 def test_put_recipe():
