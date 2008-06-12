@@ -155,7 +155,7 @@ class SimpleLog(object):
                 }
         message = self.format % d
         print message
-	sys.stdout.flush()
+        sys.stdout.flush()
 
 class StoreSet(object):
     """
