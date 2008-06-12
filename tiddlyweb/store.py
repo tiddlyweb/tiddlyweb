@@ -63,7 +63,6 @@ class Store(object):
         return get_func(thing)
 
     def _figure_function(self, object):
-        print dir(self.storage)
         put_func = getattr(self.storage, function_map[object.__class__][0])
         get_func = getattr(self.storage, function_map[object.__class__][1])
         return put_func, get_func
