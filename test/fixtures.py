@@ -60,12 +60,14 @@ class textstore:
     store_dirname = 'store'
     bag_store = os.path.join(store_dirname, 'bags')
     recipe_store = os.path.join(store_dirname, 'recipes')
+    user_store = os.path.join(store_dirname, 'users')
 
 def reset_textstore():
     if os.path.exists(textstore.store_dirname):
         shutil.rmtree(textstore.store_dirname)
     os.makedirs(textstore.bag_store)
     os.makedirs(textstore.recipe_store)
+    os.makedirs(textstore.user_store)
 
 def muchdata(store):
     for bag_numeral in range(30):

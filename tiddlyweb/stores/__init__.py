@@ -37,6 +37,12 @@ class StorageInterface(object):
     def tiddler_put(self, tiddler):
         pass
 
+    def user_get(self, user):
+        pass
+
+    def user_put(self, user):
+        pass
+
     def list_recipes(self):
         pass
 

@@ -6,11 +6,14 @@ Put and Get TiddlyWeb things to and from some store.
 from tiddler import Tiddler
 from bag import Bag
 from recipe import Recipe
+from user import User
 
+# there should be a way to do this more dynamic?
 function_map = {
         Recipe: ['recipe_put', 'recipe_get'],
         Tiddler: ['tiddler_put', 'tiddler_get'],
-        Bag: ['bag_put', 'bag_get']
+        Bag: ['bag_put', 'bag_get'],
+        User: ['user_put', 'user_get']
         }
 
 class NoBagError(IOError):
@@ -20,6 +23,9 @@ class NoRecipeError(IOError):
     pass
 
 class NoTiddlerError(IOError):
+    pass
+
+class NoUserError(IOError):
     pass
 
 class StoreLockError(IOError):

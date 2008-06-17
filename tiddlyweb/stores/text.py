@@ -15,7 +15,7 @@ from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, StoreLockError
+from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, NoUserError, StoreLockError
 from tiddlyweb.stores import StorageInterface
 
 class Store(StorageInterface):
@@ -129,6 +129,31 @@ class Store(StorageInterface):
         tiddler.revision = revision
         tiddler_file.close()
 
+    def user_get(self, user):
+        user_path = self._user_path(user)
+
+        try:
+            user_file = codecs.open(user_path, encoding='utf-8')
+            user_info = user_file.read()
+            user_file.close()
+            user_data = simplejson.loads(user_info)
+            for key, value in user_data.items():
+                user.__setattr__(key, value)
+            return user
+        except IOError, e:
+            raise NoUserError, 'unable to get user %s: %s' % (user.usersign, e)
+
+    def user_put(self, user):
+        user_path = self._user_path(user)
+
+        user_file = codecs.open(user_path, 'w', encoding='utf-8')
+        user_dict = {}
+        for key in ['usersign','auth_system','note']:
+            user_dict[key] = user.__getattribute__(key)
+        user_info = simplejson.dumps(user_dict, indent=0)
+        user_file.write(user_info)
+        user_file.close()
+
     def list_recipes(self):
         path = os.path.join(store_root, 'recipes')
         recipes = self._files_in_dir(path)
@@ -220,6 +245,9 @@ class Store(StorageInterface):
 
     def _recipe_path(self, recipe):
         return os.path.join(store_root, 'recipes', recipe.name)
+
+    def _user_path(self, user):
+        return os.path.join(store_root, 'users', user.usersign)
 
     def _tiddler_base_filename(self, tiddler):
         # should be get a Bag or a name here?
