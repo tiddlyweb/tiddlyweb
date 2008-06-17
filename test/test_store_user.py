@@ -16,7 +16,7 @@ def setup_module(module):
 
 def test_simple_put():
     store = Store('text')
-    user = User('cdent', auth_system='http_basic', note='foo')
+    user = User('cdent', note='foo')
     store.put(user)
 
     assert os.path.exists(expected_stored_filename)

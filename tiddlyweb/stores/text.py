@@ -148,7 +148,7 @@ class Store(StorageInterface):
 
         user_file = codecs.open(user_path, 'w', encoding='utf-8')
         user_dict = {}
-        for key in ['usersign','auth_system','note']:
+        for key in ['usersign', 'note']:
             user_dict[key] = user.__getattribute__(key)
         user_info = simplejson.dumps(user_dict, indent=0)
         user_file.write(user_info)

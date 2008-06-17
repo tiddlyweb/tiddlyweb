@@ -11,11 +11,8 @@ class User(object):
     This is all subject to change.
     """
 
-    default_auth_system = 'http_basic'
-
-    def __init__(self, usersign, auth_system=default_auth_system, note=None):
+    def __init__(self, usersign, note=None):
         self.usersign = usersign
-        self.auth_system = auth_system
         self.note = note
 
     def __repr__(self):

@@ -10,7 +10,6 @@ import py.test
 from tiddlyweb.user import User
 
 usersign = 'cdent'
-auth_system = 'http_basic'
 note = 'for future expansion'
 
 def setup_module(module):
@@ -23,7 +22,6 @@ def test_user_create():
     assert user.usersign == 'cdent'
     user.note = note
     assert user.note == note
-    assert user.auth_system == auth_system
 
     user.note = 'bar'
     assert user.note == 'bar'
