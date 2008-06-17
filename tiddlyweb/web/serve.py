@@ -8,6 +8,8 @@ import selector
 import time
 import urllib
 
+from base64 import b64decode
+
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
@@ -105,8 +107,11 @@ class UserExtract(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        username = 'cdent' # or GUEST
-        #username = 'GUEST'
+        username = 'GUEST'
+        user_info = environ.get('HTTP_AUTHORIZATION', None)
+        if user_info and user_info.startswith('Basic'):
+            user_info = user_info.split(' ')[1]
+            username, password = b64decode(user_info).split(':')
         environ['tiddlyweb.usersign'] = username
         return self.application(environ, start_response)
 

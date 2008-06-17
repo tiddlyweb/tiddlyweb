@@ -21,6 +21,15 @@ class HTTPException(Exception):
     def output(self):
         return '%s: %s' % (self.status, self)
 
+class HTTP302(HTTPException):
+    status = '302 Found'
+
+    def headers(self):
+        return [('Location', '%s' % self)]
+
+    def output(self):
+        return ''
+
 class HTTP304(HTTPException):
     status = '304 Not Modified'
 

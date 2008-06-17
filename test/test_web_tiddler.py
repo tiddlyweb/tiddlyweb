@@ -11,11 +11,14 @@ import wsgi_intercept
 import httplib2
 import simplejson
 
+from base64 import b64encode
 from re import match
 
 from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
+
+authorization = b64encode('cdent:foo')
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -301,38 +304,42 @@ def test_tiddler_bag_constraints():
 
     # try to create a tiddler and fail
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '403'
     assert 'may not create' in content
 
     # create and succeed
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '204'
 
     # write and fail
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '403'
     assert 'may not write' in content
 
     # write and succeed
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['cdent'],create=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '204'
 
     # read and fail
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='GET', headers={'Accept': 'text/plain'})
+            method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '403'
     assert 'may not read' in content
 
     # update the policy so we can read and GET the thing
     _put_policy('unreadable', dict(policy=dict(read=['cdent'],write=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
-            method='GET', headers={'Accept': 'text/plain'})
+            method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '200'
     assert 'John Smith' in content
 
@@ -348,7 +355,7 @@ def test_get_tiddler_via_recipe_with_perms():
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['NONE'])))
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
-            method='GET')
+            headers=dict(Authorization='Basic %s' % authorization), method='GET')
     assert response['status'] == '200'
 
     tiddler_info = simplejson.loads(content)
@@ -356,12 +363,28 @@ def test_get_tiddler_via_recipe_with_perms():
 
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '403'
     assert 'may not write' in content
 
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
     assert response['status'] == '204'
+
+    _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['nancy'])))
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
+            body=encoded_body)
+    assert response['status'] == '403'
+
+    _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
+    encoded_body = text_put_body.encode('UTF-8')
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='PUT', headers={'Content-Type': 'text/plain'},
+            body=encoded_body)
+    assert response['status'] == '302'
