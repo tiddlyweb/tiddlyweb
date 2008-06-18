@@ -68,7 +68,7 @@ class HTTPExceptor(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         try:
             return self.application(environ, start_response)
         except HTTPException, e:
@@ -78,5 +78,5 @@ class HTTPExceptor(object):
             etype, value, tb = sys.exc_info()
             exception_text = ''.join(traceback.format_exception(etype, value, tb, None))
             print >> environ['wsgi.errors'], exception_text
-            start_response('500 server error', [('Content-Type', 'text/plain')])
+            start_response('500 server error', [('Content-Type', 'text/plain')], exc_info)
             return [exception_text]

@@ -1,5 +1,5 @@
 """
-Simple functios for storing bags as textfile
+Simple functions for storing stuff as textfiles
 on the filesystem.
 """
 
