@@ -387,4 +387,6 @@ def test_get_tiddler_via_recipe_with_perms():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='PUT', headers={'Content-Type': 'text/plain'},
             body=encoded_body)
-    assert response['status'] == '302'
+    # when we PUT without permission there's no good way to handle auth
+    # so we just forbid.
+    assert response['status'] == '403'

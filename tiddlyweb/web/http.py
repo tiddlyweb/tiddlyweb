@@ -19,7 +19,7 @@ class HTTPException(Exception):
         return [('Content-Type', 'text/plain')]
 
     def output(self):
-        return '%s: %s' % (self.status, self)
+        return ['%s: %s' % (self.status, self)]
 
 class HTTP302(HTTPException):
     status = '302 Found'
@@ -28,7 +28,7 @@ class HTTP302(HTTPException):
         return [('Location', '%s' % self)]
 
     def output(self):
-        return ''
+        return ['']
 
 class HTTP304(HTTPException):
     status = '304 Not Modified'
@@ -37,10 +37,16 @@ class HTTP304(HTTPException):
         return [('Etag', '%s' % self)]
 
     def output(self):
-        return ''
+        return ['']
 
 class HTTP401(HTTPException):
     status = '401 Unauthorized'
+
+    def headers(self):
+        return [('WWW-Authenticate', '%s' % self)]
+
+    def output(self):
+        return ['']
 
 class HTTP403(HTTPException):
     status = '403 Forbidden'
@@ -67,7 +73,7 @@ class HTTPExceptor(object):
             return self.application(environ, start_response)
         except HTTPException, e:
             start_response(e.status, e.headers())
-            return [e.output()]
+            return e.output()
         except:
             etype, value, tb = sys.exc_info()
             exception_text = ''.join(traceback.format_exception(etype, value, tb, None))

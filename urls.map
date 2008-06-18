@@ -117,4 +117,11 @@
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
     GET tiddlyweb.web.tiddler:get_revisions
 
+# the user challenge mechanism
 
+# at base this returns a list of the available challenge mechanism
+/challenge
+    GET tiddlyweb.web.challenge:base
+
+/challenge/{challenger}
+    GET tiddlyweb.web.challenge:challenge

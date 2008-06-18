@@ -7,6 +7,7 @@ import sys
 import selector
 import time
 import urllib
+import Cookie
 
 from base64 import b64decode
 
@@ -100,8 +101,10 @@ def default_app(filename):
 class UserExtract(object):
     """
     Stub WSGI Middleware to set the User, if it can be 
-    found in the request. Note this does nothing yet,
-    it's always the same user, me!
+    found in the request.
+
+    This is just crap to hold things together until
+    we have the real thing.
     """
     def __init__(self, application):
         self.application = application
@@ -112,6 +115,14 @@ class UserExtract(object):
         if user_info and user_info.startswith('Basic'):
             user_info = user_info.split(' ')[1]
             username, password = b64decode(user_info).split(':')
+        user_cookie = environ.get('HTTP_COOKIE', None)
+        if user_cookie:
+            cookie = Cookie.SimpleCookie()
+            cookie.load(user_cookie)
+            try:
+                username = cookie['tiddlyweb_insecure_user'].value
+            except KeyError:
+                pass
         environ['tiddlyweb.usersign'] = username
         return self.application(environ, start_response)
 
