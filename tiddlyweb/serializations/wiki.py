@@ -2,8 +2,6 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
-import codecs
-
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 from tiddlyweb import control
@@ -36,8 +34,9 @@ class Serialization(SerializationInterface):
     def _split_empty_html(self):
 # this could throw, which is just fine, 
 # that's what we want
-        f = codecs.open(empty_html, encoding='utf-8')
+        f = open(empty_html)
         wiki = f.read()
+        wiki = unicode(wiki, 'utf-8')
         return wiki.split(splitter)
 
     def _tiddler_as_div(self, tiddler):
