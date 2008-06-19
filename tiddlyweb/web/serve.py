@@ -16,8 +16,26 @@ from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
 
-server_host = {}
-server_store = 'text'
+# The System's Configuration, to be carried
+# around in the environ. Eventually this
+# be in an actual file.
+config = {
+        'server_store': 'text',
+        'server_host': {},
+        'extension_types': {
+            'txt': 'text/plain',
+            'html': 'text/html',
+            'json': 'application/json',
+            'wiki': 'text/x-tiddlywiki',
+        },
+        'serializers': {
+            'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
+            'text/html': ['html', 'text/html; charset=UTF-8'],
+            'text/plain': ['text', 'text/plain; charset=UTF-8'],
+            'application/json': ['json', 'application/json; charset=UTF-8'],
+            'default': ['html', 'text/html; charset=UTF-8'],
+        }
+        }
 """
 A dict explaining the scheme, host and port of our server.
 FIXME: a hack to get the server.host set properly in outgoing
@@ -31,10 +49,9 @@ def load_app(host, port, store, map, wrappers=[]):
     is surround by wrappers, which either set something in the 
     environment or modify the request, or transform output.
     """
-    global server_store
-    server_store = store
-    global server_host
-    server_host = dict(scheme='http', host=host, port=port)
+    global config
+    config['server_store'] = store
+    config['server_host'] = dict(scheme='http', host=host, port=port)
     app = selector.Selector(mapfile=map)
     if wrappers:
         for wrapper in wrappers:
@@ -97,7 +114,20 @@ def default_app(hostname, port, filename):
     EncodeUTF8: encode internal unicode data as UTF-8 output.
     SimpleLog: write a log of activity
     """
-    return load_app(hostname, port, 'text', filename, [Negotiate, StoreSet, UserExtract, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
+    return load_app(hostname, port, 'text', filename, [Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
+
+class Configurator(object):
+    """
+    Stub WSGI Middleware to handle setting a config dict
+    for every request.
+    """
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        global config
+        environ['tiddlyweb.config'] = config
+        return self.application(environ, start_response)
 
 class UserExtract(object):
     """
@@ -184,7 +214,7 @@ class StoreSet(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        db = Store(server_store)
+        db = Store(environ['tiddlyweb.config']['server_store'])
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
 

@@ -3,13 +3,6 @@ WSGI Middleware to do pseudo-content negotiation
 and put the type in tiddlyweb.type.
 """
 
-extension_types = {
-        'txt': 'text/plain',
-        'html': 'text/html',
-        'json': 'application/json',
-        'wiki': 'text/x-tiddlywiki',
-        }
-
 class Negotiate(object):
 
     def __init__(self, application):
@@ -36,6 +29,8 @@ class Negotiate(object):
     def _figure_type_for_get(self, environ):
         accept_header = environ.get('HTTP_ACCEPT')
         path_info = environ.get('PATH_INFO')
+
+        extension_types = environ['tiddlyweb.config']['extension_types']
 
         our_types = []
 

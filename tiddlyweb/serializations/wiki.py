@@ -5,7 +5,7 @@ Serialize into a fullblown tiddlywiki wiki.
 from tiddlyweb.bag import Bag
 from tiddlyweb import filter
 from tiddlyweb import control
-from tiddlyweb.web.serve import server_host
+from tiddlyweb.web.serve import config
 from tiddlyweb.serializations import SerializationInterface
 
 # this should come from config or even
@@ -47,6 +47,7 @@ class Serialization(SerializationInterface):
         if tiddler.recipe:
             recipe_name = tiddler.recipe
         try: 
+            server_host = config['tiddlyweb.config']
             host = '%s://%s:%s/' % \
                     (server_host['scheme'], server_host['host'], server_host['port'])
         except KeyError:

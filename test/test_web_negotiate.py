@@ -11,10 +11,11 @@ import sys
 sys.path.append('.')
 
 from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.serve import config
 
 def setup_module(module):
     module.neg = Negotiate(lambda x: x)
-    module.environ = {}
+    module.environ = {'tiddlyweb.config': config}
     environ['REQUEST_METHOD'] = 'GET'
 
 def test_accept_header():

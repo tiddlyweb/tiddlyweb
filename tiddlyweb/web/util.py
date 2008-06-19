@@ -5,17 +5,10 @@ from datetime import datetime
 from tiddlyweb.web.http import HTTP415, HTTP304
 from tiddlyweb.serializer import Serializer
 
-serializers = {
-        'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
-        'text/html': ['html', 'text/html; charset=UTF-8'],
-        'text/plain': ['text', 'text/plain; charset=UTF-8'],
-        'application/json': ['json', 'application/json; charset=UTF-8'],
-        'default': ['html', 'text/html; charset=UTF-8'],
-        }
-
 def get_serialize_type(environ):
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
+    serializers = environ['tiddlyweb.config']['serializers']
     serialize_type, mime_type = None, None
 
     if type(accept) == str:
