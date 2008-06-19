@@ -82,7 +82,10 @@ def _put_tiddler(environ, start_response, tiddler):
     try:
         bag = Bag(tiddler.bag)
         try:
-            revision = store.list_tiddler_revisions(tiddler)[0]
+            try:
+                revision = store.list_tiddler_revisions(tiddler)[0]
+            except IndexError:
+                revision = 1
             tiddler.revision = revision
             _check_bag_constraint(environ, bag, 'write')
             last_modfied, etag = _validate_tiddler(environ, tiddler)
@@ -189,5 +192,5 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     return web.send_tiddlers(environ, start_response, tmp_bag)
 
 def _tiddler_etag(tiddler):
-    return '%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision)
+    return str('%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision))
 
