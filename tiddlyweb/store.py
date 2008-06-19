@@ -8,14 +8,6 @@ from bag import Bag
 from recipe import Recipe
 from user import User
 
-# there should be a way to do this more dynamic?
-function_map = {
-        Recipe: ['recipe_put', 'recipe_get'],
-        Tiddler: ['tiddler_put', 'tiddler_get'],
-        Bag: ['bag_put', 'bag_get'],
-        User: ['user_put', 'user_get']
-        }
-
 class NoBagError(IOError):
     pass
 
@@ -69,8 +61,12 @@ class Store(object):
         return get_func(thing)
 
     def _figure_function(self, object):
-        put_func = getattr(self.storage, function_map[object.__class__][0])
-        get_func = getattr(self.storage, function_map[object.__class__][1])
+        lower_class = object.__class__.__name__.lower()
+        try:
+            put_func = getattr(self.storage, '%s_put' % lower_class)
+            get_func = getattr(self.storage, '%s_get' % lower_class)
+        except AttributeError, e:
+            raise AttributeError('unable to figure functions for %s: %s' % (lower_class, e))
         return put_func, get_func
 
     def list_tiddler_revisions(self, tiddler):
