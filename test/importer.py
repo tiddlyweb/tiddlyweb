@@ -74,4 +74,4 @@ def _tag_string_to_list(string):
     return tags
 
 if __name__ == '__main__':
-    import_wiki(filename=sys.argv[1], hostname=sys.argv[2], port=sys.argv[3C)
+    import_wiki(filename=sys.argv[1], hostname=sys.argv[2], port=sys.argv[3])
