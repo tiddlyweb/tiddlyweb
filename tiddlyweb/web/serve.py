@@ -17,19 +17,24 @@ from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
 
 server_host = {}
+server_store = 'text'
 """
 A dict explaining the scheme, host and port of our server.
 FIXME: a hack to get the server.host set properly in outgoing
 wikis.
 """
 
-def load_app(map, wrappers=[]):
+def load_app(host, port, store, map, wrappers=[]):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
     is surround by wrappers, which either set something in the 
     environment or modify the request, or transform output.
     """
+    global server_store
+    server_store = store
+    global server_host
+    server_host = dict(scheme='http', host=host, port=port)
     app = selector.Selector(mapfile=map)
     if wrappers:
         for wrapper in wrappers:
@@ -45,10 +50,8 @@ def start_simple(filename, hostname, port):
     """
     os.environ = {}
     from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
-    httpd = WSGIServer(('', port), WSGIRequestHandler)
-    httpd.set_app(default_app(filename))
-    global server_host
-    server_host = dict(scheme='http', host=hostname, port=port)
+    httpd = WSGIServer((hostname, port), WSGIRequestHandler)
+    httpd.set_app(default_app(hostname, port, filename))
     print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
@@ -61,16 +64,15 @@ def start_cherrypy(filename, hostname, port):
     """
     os.environ = {}
     from cherrypy import wsgiserver
-    server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', port), default_app(filename))
-    global server_host
-    server_host = dict(scheme='http', host=hostname, port=port)
+    server = wsgiserver.CherryPyWSGIServer((hostname, port),
+            default_app(hostname, port, filename))
     try:
         print "Starting CherryPy"
         server.start()
     except KeyboardInterrupt:
         server.stop()
 
-def default_app(filename):
+def default_app(hostname, port, filename):
     """
     The pointer to our url map, plus the list of middleware 
     wrappers which we require.
@@ -95,8 +97,7 @@ def default_app(filename):
     EncodeUTF8: encode internal unicode data as UTF-8 output.
     SimpleLog: write a log of activity
     """
-    return load_app(filename, [Negotiate, StoreSet, UserExtract, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
-    #return load_app(filename, [StoreSet, Negotiate])
+    return load_app(hostname, port, 'text', filename, [Negotiate, StoreSet, UserExtract, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
 
 class UserExtract(object):
     """
@@ -151,7 +152,7 @@ class SimpleLog(object):
                 if name.lower() == 'content-length':
                     bytes = value
             self.write_log(environ, req_uri, status, bytes)
-            return start_response(status, headers)
+            return start_response(status, headers, exc_info)
         return self.application(environ, replacement_start_response)
 
     def write_log(self, environ, req_uri, status, bytes):
@@ -183,7 +184,7 @@ class StoreSet(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        db = Store('text')
+        db = Store(server_store)
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
 

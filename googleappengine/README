@@ -1,0 +1,63 @@
+
+It is possible to run TiddlyWeb on Google's AppEngine service, 
+with some work.
+
+*** Familiarity with AppEngine is required for any of this to 
+*** make sense. This development was done using the OS X
+*** GoogleAppEngineLauncher.
+
+The basic requirement is to create a Store that uses the google
+appengine data system. Once that is made it is just a matter of
+gathering up the necessary required modules in an appengine 
+directory and then deploying to the service.
+
+The store is included in the directory with this README: googledata.py.
+
+For the sake of simplicity tiddlers revisions and bag policies are
+not supported. Neither are required for TiddlyWeb to operate (as
+long as you don't request a revisions URL). Very simple db.Model
+classes that mirror Recipe, Tiddler and Bag are used for storage. 
+
+main.py is the script which appengine uses to get things going.
+Because TiddlyWeb is a pure WSGI application with no framework 
+requirements, there's not a lot that happens here. A significant
+difference from the default server run is that the SimpleLog
+WSGI app is not included in the stack. Appengine does its own 
+logging.
+
+The AppEngine SDK should create app.yaml and index.yaml files
+for you in a directory. The penultimate step is gathering the necessary
+libraries and files into that directory. This can be done by symlink 
+or copy. Here are the requirements:
+
+* lib from the TiddlyWeb source
+* tiddlyweb from the TiddlyWeb source
+* urls.map from the TiddlyWeb source
+* External requirements. Don't use eggs.
+** selector.py
+** resolver.py
+** simplejson
+** If you want server side wikitext to html rendering:
+*** wikklytext 
+*** ply
+
+Finally, edit main.py such that the host and port information
+contained therein is appropriate for your use.
+
+You will need to put something in your TiddlyWeb. Check out
+test/importer.py to see how to either:
+
+* import an existing TiddlyWiki file
+* code samples on how to PUT recipes, bags and tiddlers
+
+If you want to be able to sync or autosave you will need
+plugins:
+
+* TiddlyWebAdaptorPlugin
+* TiddlyWebAutoSavePlugin
+
+Feel free to contact me with questions. Or post to the
+TiddlyWikiDev google group.
+-- 
+Chris Dent
+<cdent@peermore.com>
