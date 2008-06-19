@@ -21,7 +21,7 @@
 #
 
 
-from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract
+from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract, Configurator
 from tiddlyweb.auth import PermissionsExceptor
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.http import HTTPExceptor
@@ -36,7 +36,7 @@ def google_app():
     filename = 'urls.map'
     server_store = 'googledata'
     return load_app(host, port, server_store, filename, [
-        Negotiate, StoreSet, UserExtract, PermissionsExceptor, HTTPExceptor, EncodeUTF8
+        Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
         ])
 
 def main():
