@@ -42,11 +42,21 @@ def get_tiddlers(environ, start_response):
     # then filter those tiddlers
     tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
     tmp_bag = Bag('tmp_bag2', tmpbag=True)
-    for tiddler in tiddlers:
-        bag = Bag(tiddler.bag)
-        store.get(bag)
 
-        bag.policy.allows(usersign, 'read')
+    # Make an optimization so we are not going
+    # to the database to load the policies of
+    # the same bag over and over.
+    policies = {}
+    for tiddler in tiddlers:
+        bag_name = tiddler.bag
+        try:
+            policies['bag_name'].allows(usersign, 'read')
+        except KeyError:
+            bag = Bag(tiddler.bag)
+            store.get(bag)
+            policy = bag.policy
+            policies['bag_name'] = policy
+            policies['bag_name'].allows(usersign, 'read')
 
         tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
