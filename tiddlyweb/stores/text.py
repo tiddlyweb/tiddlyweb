@@ -10,6 +10,7 @@ import os
 import codecs
 import time
 import simplejson
+import shutil
 
 from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
@@ -72,6 +73,20 @@ class Store(StorageInterface):
             os.mkdir(tiddlers_dir)
 
         self._write_policy(bag.policy, bag_path)
+
+    def tiddler_delete(self, tiddler):
+        """
+        Irrevocably remove a tiddler and its directory.
+        """
+        try:
+            tiddler_base_filename = self._tiddler_base_filename(tiddler)
+            if not os.path.exists(tiddler_base_filename):
+                raise NoTiddlerError, '%s not present' % tiddler_base_filename
+            shutil.rmtree(tiddler_base_filename)
+        except NoTiddlerError:
+            raise
+        except IOError, e:
+            raise IOError, 'unable to delete %s: %s' % (tiddler.title, e)
 
     def tiddler_get(self, tiddler):
         """

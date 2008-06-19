@@ -145,7 +145,9 @@ class UserExtract(object):
         user_info = environ.get('HTTP_AUTHORIZATION', None)
         if user_info and user_info.startswith('Basic'):
             user_info = user_info.split(' ')[1]
-            username, password = b64decode(user_info).split(':')
+            candidate_username, password = b64decode(user_info).split(':')
+            if candidate_username == password:
+                username = candidate_username
         user_cookie = environ.get('HTTP_COOKIE', None)
         if user_cookie:
             cookie = Cookie.SimpleCookie()

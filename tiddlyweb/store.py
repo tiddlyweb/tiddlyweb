@@ -39,15 +39,12 @@ class Store(object):
             raise ImportError("couldn't load %s: %s" % (module, err))
         self.storage = imported_module.Store()
 
-    def put(self, thing):
+    def delete(self, thing):
         """
-        put a thing, recipe, bag or tiddler.
-
-        Should there be handling here for things of
-        wrong type?
+        Delete a know object.
         """
-        put_func, get_func = self._figure_function(thing)
-        return put_func(thing)
+        func = self._figure_function('delete', thing)
+        return func(thing)
 
     def get(self, thing):
         """
@@ -56,18 +53,27 @@ class Store(object):
         Should there be handling here for things of
         wrong type?
         """
-        put_function , get_func = self._figure_function(thing)
+        func = self._figure_function('get', thing)
         thing.store = self
-        return get_func(thing)
+        return func(thing)
 
-    def _figure_function(self, object):
+    def put(self, thing):
+        """
+        put a thing, recipe, bag or tiddler.
+
+        Should there be handling here for things of
+        wrong type?
+        """
+        func = self._figure_function('put', thing)
+        return func(thing)
+
+    def _figure_function(self, activity, object):
         lower_class = object.__class__.__name__.lower()
         try:
-            put_func = getattr(self.storage, '%s_put' % lower_class)
-            get_func = getattr(self.storage, '%s_get' % lower_class)
+            func = getattr(self.storage, '%s_%s' % (lower_class, activity))
         except AttributeError, e:
-            raise AttributeError('unable to figure functions for %s: %s' % (lower_class, e))
-        return put_func, get_func
+            raise AttributeError('unable to figure function for %s: %s' % (lower_class, e))
+        return func
 
     def list_tiddler_revisions(self, tiddler):
         list_func = getattr(self.storage, 'list_tiddler_revisions')

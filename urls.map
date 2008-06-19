@@ -55,6 +55,7 @@
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.tiddler:get
     PUT tiddlyweb.web.tiddler:put
+    DELETE tiddlyweb.web.tiddler:delete
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
     GET tiddlyweb.web.tiddler:get
@@ -110,6 +111,7 @@
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.tiddler:get
     PUT tiddlyweb.web.tiddler:put
+    DELETE tiddlyweb.web.tiddler:delete
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
     GET tiddlyweb.web.tiddler:get

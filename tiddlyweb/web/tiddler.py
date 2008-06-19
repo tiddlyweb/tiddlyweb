@@ -19,6 +19,10 @@ def get_revisions(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
+def delete(environ, start_response):
+    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    return _delete_tiddler(environ, start_response, tiddler)
+
 def put(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_bag_for_tiddler)
     return _put_tiddler(environ, start_response, tiddler)
@@ -31,6 +35,21 @@ def _check_bag_constraint(environ, bag, constraint):
         bag.policy.allows(usersign, constraint)
     except NoBagError, e:
         raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
+
+def _delete_tiddler(environ, start_response, tiddler):
+    store = environ['tiddlyweb.store']
+
+    bag = Bag(tiddler.bag)
+    # this will raise 403 if constraint does not pass
+    _check_bag_constraint(environ, bag, 'delete')
+
+    try:
+        store.delete(tiddler)
+    except NoTiddlerError, e:
+        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+
+    start_response("204 No Content", [])
+    return []
 
 def _determine_tiddler(environ, bag_finder):
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']

@@ -15,8 +15,6 @@ from base64 import b64encode
 from fixtures import muchdata, reset_textstore
 from tiddlyweb.store import Store
 
-authorization = b64encode('cdent:foo')
-
 def setup_module(module):
     from tiddlyweb.web import serve
     def app_fn():

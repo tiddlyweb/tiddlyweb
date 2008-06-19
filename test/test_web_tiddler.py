@@ -18,7 +18,7 @@ from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
 
-authorization = b64encode('cdent:foo')
+authorization = b64encode('cdent:cdent')
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -390,3 +390,49 @@ def test_get_tiddler_via_recipe_with_perms():
     # when we PUT without permission there's no good way to handle auth
     # so we just forbid.
     assert response['status'] == '403'
+
+def test_delete_tiddler_in_recipe():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='DELETE')
+    assert response['status'] == '204'
+
+# there are multiple tiddler8s in the recipe
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='DELETE')
+    assert response['status'] == '204'
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='DELETE')
+    assert response['status'] == '204'
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='DELETE')
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+            method='DELETE')
+    assert response['status'] == '404'
+
+def test_delete_tiddler_in_bag():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+            method='DELETE')
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+            method='DELETE')
+    assert response['status'] == '404'
+
+def test_delete_tiddler_in_bag_perms():
+    _put_policy('bag0', dict(policy=dict(read=['cdent'],write=['cdent'],delete=['cdent'])))
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0',
+            method='DELETE')
+    assert response['status'] == '403'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0',
+            method='DELETE', headers={'Authorization': 'Basic %s' % authorization})
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0',
+            method='DELETE', headers={'Authorization': 'Basic %s' % authorization})
+    assert response['status'] == '404'
