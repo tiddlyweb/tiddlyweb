@@ -53,11 +53,9 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
             bag = Bag(name=bag)
         if store:
             store.get(bag)
-        if tiddler.title in \
-                [candidate_tiddler.title \
-                for candidate_tiddler \
-                in filter_tiddlers_from_bag(bag, filter_string)]:
-            return bag
+        for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
+            if tiddler.title == candidate_tiddler.title:
+                return bag
 
     raise NoBagError, 'no suitable bag for %s' % tiddler.title
 
@@ -94,10 +92,12 @@ def get_tiddlers_from_bag(bag):
         for tiddler in tiddlers:
             try:
                 bag.store.get(tiddler)
+                # would be great to be a generator here
+                # but the filtering architecture isn't up for it     
+                #yield tiddler
             except TiddlerFormatError:
                 # XXX do more here
                 pass
-
     return tiddlers
 
 def filter_tiddlers_from_bag(bag, filter, filterargs=None):
