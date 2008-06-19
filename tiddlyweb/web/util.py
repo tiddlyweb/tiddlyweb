@@ -85,8 +85,9 @@ def send_tiddlers(environ, start_response, bag):
     if etag:
         response.append(etag)
 
+    output = serializer.to_string()
     start_response("200 OK", response)
-    return [serializer.to_string()]
+    return [output]
 
 def _last_modified_tiddler(tiddlers):
     return str(max([int(tiddler.modified) for tiddler in tiddlers]))
