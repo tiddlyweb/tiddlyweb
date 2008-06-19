@@ -31,6 +31,9 @@ class SerializationInterface(object):
     form. A string is returned.
     """
 
+    def __init__(self, environ={}):
+        self.environ = environ
+
     def recipe_as(self, recipe):
         """
         Serialize a Recipe into this serializer's form.

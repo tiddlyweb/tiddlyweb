@@ -14,9 +14,10 @@ class Serializer(object):
     You must set object after initialization.
     """
 
-    def __init__(self, format):
+    def __init__(self, format, environ={}):
         self.format = format
         self.object = None
+        self.environ = environ
         self._figure_serialization()
 
     def _figure_serialization(self):
@@ -27,7 +28,7 @@ class Serializer(object):
             imported_module = __import__(self.format, {}, {}, ['Serialization'])
         except ImportError, err:
             raise ImportError("couldn't load %s: %s" % (module, err))
-        self.serialization = imported_module.Serialization()
+        self.serialization = imported_module.Serialization(self.environ)
 
     def __str__(self):
         lower_class = self.object.__class__.__name__.lower()

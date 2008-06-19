@@ -19,7 +19,7 @@ def get(environ, start_response):
     serialize_type, mime_type = web.get_serialize_type(environ)
     if serialize_type not in ['json', 'html', 'text']:
         raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type)
+    serializer = Serializer(serialize_type, environ)
     serializer.object = recipe
 
     # setting the cookie for text/plain is harmless
@@ -58,7 +58,7 @@ def list(environ, start_response):
     recipes = store.list_recipes()
 
     serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
+    serializer = Serializer(serialize_type, environ)
 
     start_response("200 OK",
             [('Content-Type', mime_type)])
@@ -76,7 +76,7 @@ def put(environ, start_response):
     serialize_type, mime_type = web.get_serialize_type(environ)
     if serialize_type not in ['json']:
         raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type)
+    serializer = Serializer(serialize_type, environ)
     serializer.object = recipe
     content = environ['wsgi.input'].read(int(length))
     serializer.from_string(content.decode('UTF-8'))

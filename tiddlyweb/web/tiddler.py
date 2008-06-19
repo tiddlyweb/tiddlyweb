@@ -94,7 +94,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
         content = environ['wsgi.input'].read(int(length))
         serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type)
+        serializer = Serializer(serialize_type, environ)
         serializer.object = tiddler
         serializer.from_string(content.decode('UTF-8'))
 
@@ -153,7 +153,7 @@ def _send_tiddler(environ, start_response, tiddler):
     last_modified, etag = _validate_tiddler(environ, tiddler)
 
     serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
+    serializer = Serializer(serialize_type, environ)
     serializer.object = tiddler
     
     try:

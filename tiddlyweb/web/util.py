@@ -64,7 +64,7 @@ def send_tiddlers(environ, start_response, bag):
         last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)
 
     serialize_type, mime_type = get_serialize_type(environ)
-    serializer = Serializer(serialize_type)
+    serializer = Serializer(serialize_type, environ)
     serializer.object = bag
 
     content_header = ('Content-Type', mime_type)
