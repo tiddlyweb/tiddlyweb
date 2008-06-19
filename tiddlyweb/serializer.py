@@ -10,12 +10,6 @@ from bag import Bag
 class TiddlerFormatError(Exception):
     pass
 
-function_map = {
-        Recipe: ['recipe_as', 'as_recipe'],
-        Tiddler: ['tiddler_as', 'as_tiddler'],
-        Bag: ['bag_as', 'as_bag']
-        }
-
 class Serializer(object):
     """
     You must set object after initialization.
@@ -37,14 +31,22 @@ class Serializer(object):
         self.serialization = imported_module.Serialization()
 
     def __str__(self):
-        string_func = getattr(self.serialization, function_map[self.object.__class__][0])
+        lower_class = self.object.__class__.__name__.lower()
+        try:
+            string_func = getattr(self.serialization, '%s_as' % lower_class)
+        except AttributeError, e:
+            raise AttributeError('unable to find to string function for %s' % lower_class)
         return string_func(self.object)
 
     def to_string(self):
         return self.__str__()
 
     def from_string(self, input_string):
-        object_func = getattr(self.serialization, function_map[self.object.__class__][1])
+        lower_class = self.object.__class__.__name__.lower()
+        try:
+            object_func = getattr(self.serialization, 'as_%s' % lower_class)
+        except AttributeError, e:
+            raise AttributeError('unable to find from string function for %s' % lower_class)
         return object_func(self.object, input_string)
 
     def list_recipes(self, recipes):
