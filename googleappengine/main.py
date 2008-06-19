@@ -31,6 +31,8 @@ import wsgiref.handlers
 def google_app():
     host = 'tiddlyweb.appspot.com'
     port = 80
+    #host = 'localhost'
+    #port = 8000
     filename = 'urls.map'
     server_store = 'googledata'
     return load_app(host, port, server_store, filename, [

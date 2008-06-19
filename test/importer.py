@@ -36,7 +36,7 @@ def _do_recipe(hostname, port):
             headers={'Content-Type': 'application/json'}, body=json_string)
 
 def _do_bag(hostname, port):
-    json_string = simplejson.dumps({'policy': dict(), 'name': 'wiki'})
+    json_string = simplejson.dumps({'policy': dict()})
     http = httplib2.Http()
     url = 'http://%s:%s/bags/%s' % (hostname, port, 'wiki')
     response, content = http.request(url, method='PUT', \

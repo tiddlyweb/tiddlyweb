@@ -3,9 +3,10 @@ Simple functions for storing stuff as textfiles
 on the filesystem.
 """
 
-store_root = 'store'
+import logging
 
 from google.appengine.ext import db
+#from google.appengine.api import memcache
 
 from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
@@ -34,6 +35,15 @@ class GDTiddler(db.Model):
 class Store(StorageInterface):
 
     def recipe_get(self, recipe):
+#         try:
+#             mem_recipe = memcache.get('recipe:%s' % recipe.name)
+#             if mem_recipe is not None:
+#                 recipe.set_recipe(mem_recipe.get_recipe())
+#                 return recipe
+#         except KeyError, e:
+#             logging.warning('key error on rcipe_get: %s' % e)
+#             pass
+
         recipe_query = GDRecipe.gql('WHERE name = :1')
         recipe_query.bind(recipe.name)
         gdrecipe = recipe_query.get()
@@ -44,6 +54,9 @@ class Store(StorageInterface):
             recipe_list.append([bag, filter])
 
         recipe.set_recipe(recipe_list)
+
+#         memcache.add('recipe:%s' % recipe.name, recipe)
+
         return recipe
 
     def recipe_put(self, recipe):
@@ -53,6 +66,7 @@ class Store(StorageInterface):
             line = '%s?%s' % (bag, filter)
             recipe_list.append(line)
         gdrecipe.recipe = recipe_list
+#        memcache.set('recipe:%s' % recipe.name, recipe)
         gdrecipe.put()
 
     def bag_get(self, bag):
@@ -77,6 +91,16 @@ class Store(StorageInterface):
         gdbag.put()
 
     def tiddler_get(self, tiddler):
+#         try:
+#             mem_tiddler = memcache.get('tiddler:%s:%s' % (tiddler.bag, tiddler.title))
+#             if mem_tiddler is not None:
+#                 for item in ['text', 'modifier', 'modified', 'created', 'tags']:
+#                     tiddler.__setattr__(item, mem_tiddler.__getattribute__(item))
+#                 return tiddler
+#         except KeyError, e:
+#             logging.warning('key error on tiddler_get: %s' % e)
+#             pass
+
         tiddler_query = GDTiddler.gql('WHERE title = :1 and bag = :2')
         tiddler_query.bind(tiddler.title, tiddler.bag)
         gdtiddler = tiddler_query.get()
@@ -88,6 +112,7 @@ class Store(StorageInterface):
         tiddler.text = gdtiddler.text
         tiddler.tags = gdtiddler.tags
 
+#        memcache.add('tiddler:%s:%s' % (tiddler.bag, tiddler.title), tiddler)
         return tiddler
 
     def tiddler_put(self, tiddler):
@@ -97,6 +122,7 @@ class Store(StorageInterface):
         gdtiddler.created = tiddler.created
         gdtiddler.text = tiddler.text
         gdtiddler.tags = tiddler.tags
+#        memcache.set('tiddler:%s:%s' % (tiddler.bag, tiddler.title), tiddler)
         gdtiddler.put()
 
     def user_get(self, user):
