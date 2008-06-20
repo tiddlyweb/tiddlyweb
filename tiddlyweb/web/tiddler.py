@@ -68,8 +68,8 @@ def _determine_tiddler(environ, bag_finder):
     tiddler = Tiddler(tiddler_name)
     tiddler.revision = revision
 
-    try:
-        recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
+    if recipe_name:
         recipe = Recipe(recipe_name)
         store = environ['tiddlyweb.store']
         store.get(recipe)
@@ -81,7 +81,7 @@ def _determine_tiddler(environ, bag_finder):
             raise HTTP404, '%s not found, %s' % (tiddler.title, e)
 
         bag_name = bag.name
-    except KeyError:
+    else:
         bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
 
     tiddler.bag = bag_name
