@@ -6,7 +6,7 @@ on the filesystem.
 import logging
 
 from google.appengine.ext import db
-#from google.appengine.api import memcache
+from google.appengine.api import memcache
 
 from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
@@ -34,19 +34,20 @@ class GDTiddler(db.Model):
 
 class Store(StorageInterface):
 
-    def recipe_get(self, recipe):
-#         try:
-#             mem_recipe = memcache.get('recipe:%s' % recipe.name)
-#             if mem_recipe is not None:
-#                 recipe.set_recipe(mem_recipe.get_recipe())
-#                 return recipe
-#         except KeyError, e:
-#             logging.warning('key error on rcipe_get: %s' % e)
-#             pass
+    def _recipe_key(self, name):
+        return 'key:recipe:%s' % name
 
-        recipe_query = GDRecipe.gql('WHERE name = :1')
-        recipe_query.bind(recipe.name)
-        gdrecipe = recipe_query.get()
+    def _bag_key(self, name):
+        return 'key:bag:%s' % name
+
+    def _tiddler_key(self, tiddler):
+        return 'key:tiddler:%s:%s' % (tiddler.bag, tiddler.title)
+
+    def recipe_get(self, recipe):
+        gdrecipe = GDRecipe.get_by_key_name(self._recipe_key(recipe.name))
+
+        if not gdrecipe:
+            raise NoRecipeError
         
         recipe_list = []
         for line in gdrecipe.recipe:
@@ -54,56 +55,80 @@ class Store(StorageInterface):
             recipe_list.append([bag, filter])
 
         recipe.set_recipe(recipe_list)
-
-#         memcache.add('recipe:%s' % recipe.name, recipe)
-
         return recipe
 
     def recipe_put(self, recipe):
-        gdrecipe = GDRecipe(key_name='key:%s' % recipe.name, name=recipe.name)
+        gdrecipe = GDRecipe(key_name=self._recipe_key(recipe.name), name=recipe.name)
         recipe_list = []
         for bag, filter in recipe.get_recipe():
             line = '%s?%s' % (bag, filter)
             recipe_list.append(line)
         gdrecipe.recipe = recipe_list
-#        memcache.set('recipe:%s' % recipe.name, recipe)
         gdrecipe.put()
 
     def bag_get(self, bag):
-        bag_query = GDBag.gql('WHERE name = :1')
+        try:
+            mem_bag = memcache.get(self._bag_key(bag.name))
+            if mem_bag is not None:
+                for tiddler_title in mem_bag.tiddlers:
+                    bag.add_tiddler(Tiddler(tiddler_title))
+                return bag
+            logging.info('memcache miss on bag %s' % bag.name)
+        except KeyError:
+            pass
+
+        gdbag = GDBag.get_by_key_name(self._bag_key(bag.name))
+
+        if not gdbag:
+            raise NoBagError
+
         bag_tiddler_query = GDTiddler.gql('WHERE bag = :1')
-
-        bag_query.bind(bag.name)
-        gdbag = bag_query.get()
-
         bag_tiddler_query.bind(bag.name)
         
+        bags_tiddlers = []
         for gdtiddler in bag_tiddler_query:
             tiddler = Tiddler(gdtiddler.title)
             bag.add_tiddler(tiddler)
+            bags_tiddlers.append(tiddler.title)
 
 # ignore policy for now, use the default
 
+        gdbag.tiddlers = bags_tiddlers
+        memcache.add(self._bag_key(bag.name), gdbag)
         return bag
 
     def bag_put(self, bag):
-        gdbag = GDBag(key_name='key:%s' % bag.name, name=bag.name)
+        gdbag = GDBag(key_name=self._bag_key(bag.name), name=bag.name)
+        gdbag.tiddlers = [tiddler.title for tiddler in bag.list_tiddlers()]
         gdbag.put()
+        memcache.set(self._bag_key(bag.name), gdbag)
+
+    def tiddler_delete(self, tiddler):
+        gdtiddler = GDTiddler.get_by_key_name(self._tiddler_key(tiddler))
+
+        if not gdtiddler:
+            raise NoTiddlerError, 'tiddler %s not found' % (tiddler.title)
+
+        logging.info('deleting tiddler %s so trashing bag cache at %s' % (tiddler.title, tiddler.bag))
+        memcache.delete(self._bag_key(tiddler.bag))
+        memcache.delete(self._tiddler_key(tiddler))
+        gdtiddler.delete()
 
     def tiddler_get(self, tiddler):
-#         try:
-#             mem_tiddler = memcache.get('tiddler:%s:%s' % (tiddler.bag, tiddler.title))
-#             if mem_tiddler is not None:
-#                 for item in ['text', 'modifier', 'modified', 'created', 'tags']:
-#                     tiddler.__setattr__(item, mem_tiddler.__getattribute__(item))
-#                 return tiddler
-#         except KeyError, e:
-#             logging.warning('key error on tiddler_get: %s' % e)
-#             pass
+        try:
+            mem_tiddler = memcache.get(self._tiddler_key(tiddler))
+            if mem_tiddler is not None:
+                for item in ['text', 'bag', 'modifier', 'modified', 'created', 'tags']:
+                    tiddler.__setattr__(item, mem_tiddler.__getattribute__(item))
+                return tiddler
+        except KeyError:
+            pass
 
-        tiddler_query = GDTiddler.gql('WHERE title = :1 and bag = :2')
-        tiddler_query.bind(tiddler.title, tiddler.bag)
-        gdtiddler = tiddler_query.get()
+        logging.warning('memcache miss on tiddler %s' % tiddler.title)
+        gdtiddler = GDTiddler.get_by_key_name(self._tiddler_key(tiddler))
+
+        if not gdtiddler:
+            raise NoTiddlerError, 'tiddler %s not found' % (tiddler.title)
 
         # be explicit for now
         tiddler.modifier = gdtiddler.modifier
@@ -111,19 +136,21 @@ class Store(StorageInterface):
         tiddler.created = gdtiddler.created
         tiddler.text = gdtiddler.text
         tiddler.tags = gdtiddler.tags
+        tiddler.bag = gdtiddler.bag
 
-#        memcache.add('tiddler:%s:%s' % (tiddler.bag, tiddler.title), tiddler)
+        memcache.add(self._tiddler_key(tiddler), gdtiddler)
         return tiddler
 
     def tiddler_put(self, tiddler):
-        gdtiddler = GDTiddler(key_name='key:%s:%s' % (tiddler.title, tiddler.bag), title=tiddler.title, bag=tiddler.bag)
+        gdtiddler = GDTiddler(key_name=self._tiddler_key(tiddler), title=tiddler.title, bag=tiddler.bag)
         gdtiddler.modifier = tiddler.modifier
         gdtiddler.modified = tiddler.modified
         gdtiddler.created = tiddler.created
         gdtiddler.text = tiddler.text
         gdtiddler.tags = tiddler.tags
-#        memcache.set('tiddler:%s:%s' % (tiddler.bag, tiddler.title), tiddler)
         gdtiddler.put()
+        memcache.delete(self._bag_key(tiddler.bag))
+        memcache.delete(self._tiddler_key(tiddler))
 
     def user_get(self, user):
         pass
