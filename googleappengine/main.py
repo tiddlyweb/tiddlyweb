@@ -27,6 +27,16 @@ from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.http import HTTPExceptor
 
 import wsgiref.handlers
+import urllib
+
+class ScriptCleanup(object):
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        environ['PATH_INFO'] = urllib.unquote(environ['PATH_INFO'])
+        return self.application(environ, start_response)
 
 def google_app():
     host = 'tiddlyweb.appspot.com'
@@ -35,9 +45,10 @@ def google_app():
     #port = 8000
     filename = 'urls.map'
     server_store = 'googledata'
-    return load_app(host, port, server_store, filename, [
+    app = load_app(host, port, server_store, filename, [
         Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
         ])
+    return ScriptCleanup(app)
 
 def main():
   wsgiref.handlers.CGIHandler().run(google_app())
