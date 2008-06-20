@@ -2,9 +2,6 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
-from tiddlyweb.bag import Bag
-from tiddlyweb import filter
-from tiddlyweb import control
 from tiddlyweb.serializations import SerializationInterface
 
 # this should come from config or even

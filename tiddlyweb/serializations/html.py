@@ -96,36 +96,49 @@ class Serialization(SerializationInterface):
 </div>
 </body></html>""" % (title, '%s.wiki' % wiki_link, output)
 
-
     def tiddler_as(self, tiddler):
         try:
-            import wikklytext
-            def our_resolver(url_fragment, base_url, site_url):
-                if '/' in url_fragment:
-                    return url_fragment, True
-                return '%s%s' % (base_url, urllib.quote(url_fragment)), False
+            return self._tiddler_to_wikklyhtml(tiddler)
+        except ImportError:
+            return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
 
-            posthook = PostHook()
+    def _tiddler_div(self, tiddler):
+        return u'<div title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">' % \
+    (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags))
 
-            if tiddler.recipe:
-                list_link = '/recipes/%s/tiddlers' % tiddler.recipe
-                list_title = 'Recent Changes in Recipe %s' % tiddler.recipe
-            else:
-                list_link = '/bags/%s/tiddlers' % tiddler.bag
-                list_title = 'Recent Changes in Bag %s' % tiddler.bag
-            link_context = {
-                    '$BASE_URL': list_link,
-                    '$REFLOW': 0
-                    } 
-            html, context = wikklytext.WikklyText_to_InnerHTML(
-                    text=tiddler.text,
-                    setvars=link_context,
-                    encoding='utf-8',
-                    safe_mode=True,
-                    url_resolver=our_resolver,
-                    tree_posthook=posthook.treehook
-                    )
-            return """
+    def _tiddler_to_html(self, base_url, list_link, tiddler):
+        import wikklytext
+        def our_resolver(url_fragment, base_url, site_url):
+            if '/' in url_fragment:
+                return url_fragment, True
+            return '%s%s' % (base_url, urllib.quote(url_fragment)), False
+
+        posthook = PostHook()
+
+        link_context = {
+                '$BASE_URL': '%s%s' % (base_url, list_link),
+                '$REFLOW': 0
+                } 
+        html, context = wikklytext.WikklyText_to_InnerHTML(
+                text=tiddler.text,
+                setvars=link_context,
+                encoding='utf-8',
+                safe_mode=True,
+                url_resolver=our_resolver,
+                tree_posthook=posthook.treehook
+                )
+        return html
+
+    def _tiddler_to_wikklyhtml(self, tiddler):
+        if tiddler.recipe:
+            list_link = 'recipes/%s/tiddlers' % tiddler.recipe
+            list_title = 'Recent Changes in Recipe %s' % tiddler.recipe
+        else:
+            list_link = 'bags/%s/tiddlers' % tiddler.bag
+            list_title = 'Recent Changes in Bag %s' % tiddler.bag
+
+        html = self._tiddler_to_html('/', list_link, tiddler)
+        return """
 <html>
 <head><title>%s</title></head>
 <body>
@@ -135,15 +148,7 @@ class Serialization(SerializationInterface):
 %s
 </div>
 </body></html>
-            """ % (tiddler.title, urllib.quote('%s?[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
-        except ImportError:
-            return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
-
-    def _tiddler_div(self, tiddler):
-        return '<div title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">' % \
-    (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags))
-
-
+""" % (tiddler.title, urllib.quote('/%s?[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
 
 class PostHook(object):
     def __init__(self):
@@ -154,7 +159,6 @@ class PostHook(object):
         from wikklytext.wikwords import wikiwordify
         # add links to any wikiword
         wikiwordify(rootnode, context, self.wikiwords)
-
 
 class InfiniteDict(dict):
     def __getitem__(self, name):
