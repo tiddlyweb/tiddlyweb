@@ -30,9 +30,10 @@ class UserExtract(object):
                 imported_module = __import__('tiddlyweb.web.extractors.%s' % extractor_name,
                         {}, {}, ['Extractor'])
             except ImportError:
-                imported_module = __import__(extractor_name, {}, {}, ['Extractor'])
-            except ImportError, e:
-                raise ImportError('could not load extractor %s: %s' % (extractor_name, e))
+                try:
+                    imported_module = __import__(extractor_name, {}, {}, ['Extractor'])
+                except ImportError, e:
+                    raise ImportError('could not load extractor %s: %s' % (extractor_name, e))
             extractor = imported_module.Extractor()
             extracted_user = extractor.extract(environ, start_response)
             if extracted_user:

@@ -17,6 +17,7 @@ from tiddlyweb.store import Store
 
 def setup_module(module):
     from tiddlyweb.web import serve
+    serve.config['auth_systems'].append('not.really.there')
     def app_fn():
         return serve.default_app('our_test_domain', 8001, 'urls.map')
     httplib2_intercept.install()
@@ -39,6 +40,20 @@ def test_challenge_cookie_form():
     assert response['status'] == '200'
     assert '<form' in content
 
+def test_challenge_not_there_in_config():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/challenge/not_there', method='GET')
+
+    assert response['status'] == '404'
+
+def test_challenge_unable_to_import():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/challenge/not.really.there', method='GET')
+
+    print content
+    assert response['status'] == '404'
+    assert 'Unable to import' in content
+
 def test_redirect_to_challenge():
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
 
@@ -49,7 +64,6 @@ def test_redirect_to_challenge():
     assert 'cookie_form' in content
 
 def test_simple_cookie_redirect():
-
     try:
         http = httplib2.Http()
         response, content = http.request(\

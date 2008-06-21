@@ -25,9 +25,10 @@ class Serializer(object):
             imported_module = __import__('tiddlyweb.serializations.%s' % self.format,
                     {}, {}, ['Serialization'])
         except ImportError, err:
-            imported_module = __import__(self.format, {}, {}, ['Serialization'])
-        except ImportError, err:
-            raise ImportError("couldn't load %s: %s" % (module, err))
+            try:
+                imported_module = __import__(self.format, {}, {}, ['Serialization'])
+            except ImportError, err:
+                raise ImportError("couldn't load module for %s: %s" % (self.format, err))
         self.serialization = imported_module.Serialization(self.environ)
 
     def __str__(self):

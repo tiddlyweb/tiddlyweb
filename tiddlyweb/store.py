@@ -34,9 +34,10 @@ class Store(object):
             imported_module = __import__('tiddlyweb.stores.%s' % self.format,
                     {}, {}, ['Store'])
         except ImportError, err:
-            imported_module = __import__(self.format, {}, {}, ['Store'])
-        except ImportError, err:
-            raise ImportError("couldn't load store for %s: %s" % (self.format, err))
+            try:
+                imported_module = __import__(self.format, {}, {}, ['Store'])
+            except ImportError, err:
+                raise ImportError("couldn't load store for %s: %s" % (self.format, err))
         self.storage = imported_module.Store()
 
     def delete(self, thing):

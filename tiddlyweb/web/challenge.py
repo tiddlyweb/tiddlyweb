@@ -34,8 +34,9 @@ def challenge(environ, start_response):
         imported_module = __import__('tiddlyweb.web.challengers.%s' % challenger_name,
                 {}, {}, ['Challenger'])
     except ImportError:
-        imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
-    except ImportError, e:
-        raise HTTP404, 'Unable to import challenger %s: %s' % (challenger_name, e)
+        try:
+            imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
+        except ImportError, e:
+            raise HTTP404, 'Unable to import challenger %s: %s' % (challenger_name, e)
     challenger = imported_module.Challenger()
     return challenger.challenge(environ, start_response)
