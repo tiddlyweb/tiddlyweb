@@ -1,30 +1,49 @@
 modifier: ChrisDent
-modified: 200803280000
-created: 
+modified: 200806220000
+created: 200803280000
 tags: 
 
-A place to note tasks that need to be done. 
-This is not complete, and likely not up to date.
+A place to note tasks that need to be done. This is not complete, and likely not up to date.
+
+If you think there should be something on this list, contact ChrisDent.
+
+!Functionality
+
+* DELETEing resources besides tiddlers.
+* PUT a full wiki to a recipe name and have it decomposed (as in import)
+* add name fragments to arguments in filters
+* Authentication
+** Policy decisions/flowchart of authentication handling.
+** credentials extraction for getting/validating the user (started)
+** challenging for getting a user into the system (started)
+** OpenID handling
+* Additional stores
+** S3 store
+** sqlite store
+** subversion store
+* Create a thing like /importer that has the test/importer.py sort of doing its thing.
+* Modification times and other metadata and header handling for bag and recipe entities.
+
+!Tests and assurancs
 
 * Tests for '..', '/', etc in title and name fields w/ store handling.
+* Rhino and Selenium based testing.
+
+!Cleanliness, Documentation and Protocol Behavior
+
+* Proper navigability between resources in HTML and JSON reps.
+* More readable, and more, HTTP based tests, demonstrating, clearly, the protocol.
+* As a sample use case, create a blog recipe in which blog content is writeable by the author, but not by others, and there is a CommentPlugin for others to leave feedback.
+
+!Client side issues and plugins
+
+* Bag security policy authoring
+* Client side recipe and bag construction sets.
 * Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)
 * Change Tiddly core so server.bag is an inherited field?
 * In SyncMachine pay attention to response codes from the web server in onGetTiddlerList and onPutTiddler, handle appropriately
-* DELETEing resources besides tiddlers.
-* Client side recipe and bag construction sets.
-* PUT a full wiki to a recipe name and have it decomposed (as in import)
-* align with http://www.mnot.net/blog/2008/03/20/beyond_methods
-* add name fragments to arguments in filters
-* Authentication (basic and OpenID)
-** credentials extraction for getting/validating the user (started)
-** challenging for getting a user into the system (started)
-* Bag security policy authoring
-* S3 store
-* sqlite store
-* Proper navigability between resources in HTML and JSON reps.
+
+!Moonbeams from Ponies of the Future
+
+* Align with http://www.mnot.net/blog/2008/03/20/beyond_methods
 * Recipes that contain bags on multiple servers.
-* More readable, and more, HTTP based tests, demonstrating, clearly, the protocol.
-* Rhino and Selenium based testing.
-* As a sample use case, create a blog recipe in which blog content is writeable by the author, but not by others, and there is a CommentPlugin for others to leave feedback.
-* Create a thing like /importer that has the test/importer.py sort of doing its thing.
-* Modification times and other metadata and header handling for bag and recipe entities.
