@@ -38,7 +38,7 @@
 # Supports GET:
 #   text/plain: a list of tiddler names
 #   text/html: a list of links to the tidderls _in their bag_
-#   application/json: a JSON list of tiddler names
+#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ...}
 #   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
 #
 # TODO: PUT a tiddler into this location and have the bag determined
@@ -68,7 +68,7 @@
 #   text/plain: a list of bag name
 #   text/html: a list of bag names linking to the the list of tidders in the
 #              bag
-#   application/json: a JSON list of bag names
+#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ...}
 /bags[.{format}]
     GET tiddlyweb.web.bag:list
 
