@@ -85,7 +85,7 @@ class Store(StorageInterface):
             shutil.rmtree(tiddler_base_filename)
         except NoTiddlerError:
             raise
-        except IOError, e:
+        except Exception, e:
             raise IOError, 'unable to delete %s: %s' % (tiddler.title, e)
 
     def tiddler_get(self, tiddler):
