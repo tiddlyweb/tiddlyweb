@@ -36,6 +36,9 @@ config = {
         'extractors': [
             'http_basic',
             'simple_cookie',
+            ],
+        'auth_systems': [
+            'cookie_form',
             ]
         }
 """

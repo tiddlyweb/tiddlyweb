@@ -28,9 +28,9 @@ class UserExtract(object):
         for extractor_name in environ['tiddlyweb.config']['extractors']:
             try:
                 imported_module = __import__('tiddlyweb.web.extractors.%s' % extractor_name,
-                        {}, {}, ['Store'])
+                        {}, {}, ['Extractor'])
             except ImportError:
-                imported_moduel = __import__(extractor_name, {}, {}, ['Store'])
+                imported_module = __import__(extractor_name, {}, {}, ['Extractor'])
             except ImportError, e:
                 raise ImportError('could not load extractor %s: %s' % (extractor_name, e))
             extractor = imported_module.Extractor()
