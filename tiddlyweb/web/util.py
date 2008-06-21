@@ -93,30 +93,31 @@ def datetime_from_http_date(http_datestring):
     http_datetime = datetime(*(time.strptime(http_datestring, '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime
 
+def server_base_url(environ):
+    server_host = environ['tiddlyweb.config']['server_host']
+    port = str(server_host['port'])
+    if port == '80' or port == '443':
+        port = ''
+    else:
+        port = ':%s' % port
+    host = '%s://%s%s/' % (server_host['scheme'], server_host['host'], port)
+    return host
+
 def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
-    This relies on HTTP_HOST, which may not be reliable. REVIEW
     """
-    scheme = environ['wsgi.url_scheme']
-    host = environ.get('HTTP_HOST', '')
-    return '%s://%s/bags/%s/tiddlers/%s' % (scheme, host, urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
+    return '%sbags/%s/tiddlers/%s' % (server_base_url(environ), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
 def recipe_url(environ, recipe):
     """
     Construct a URL for a recipe.
-    This relies on HTTP_HOST, which may not be reliable. REVIEW
     """
-    scheme = environ['wsgi.url_scheme']
-    host = environ.get('HTTP_HOST', '')
-    return '%s://%s/recipes/%s' % (scheme, host, urllib.quote(recipe.name))
+    return '%srecipes/%s' % (server_base_url(environ), urllib.quote(recipe.name))
 
 def bag_url(environ, bag):
     """
     Construct a URL for a recipe.
-    This relies on HTTP_HOST, which may not be reliable. REVIEW
     """
-    scheme = environ['wsgi.url_scheme']
-    host = environ.get('HTTP_HOST', '')
-    return '%s://%s/bags/%s' % (scheme, host, urllib.quote(bag.name))
+    return '%sbags/%s' % (server_base_url(environ), urllib.quote(bag.name))
 

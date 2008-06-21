@@ -3,6 +3,7 @@ Serialize into a fullblown tiddlywiki wiki.
 """
 
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.web.util import server_base_url
 
 # this should come from config or even
 # from a url
@@ -43,7 +44,7 @@ class Serialization(SerializationInterface):
         if tiddler.recipe:
             recipe_name = tiddler.recipe
         try: 
-            host = self._server_host_string()
+            host = server_base_url(self.environ)
         except KeyError:
             host = ''
 
@@ -52,12 +53,3 @@ class Serialization(SerializationInterface):
                         host, tiddler.bag, tiddler.modified, tiddler.created,
                         self.tags_as(tiddler.tags), self._html_encode(tiddler.text))
 
-    def _server_host_string(self):
-        server_host = self.environ['tiddlyweb.config']['server_host']
-        port = str(server_host['port'])
-        if port == '80' or port == '443':
-            port = ''
-        else:
-            port = ':%s' % port
-        host = '%s://%s%s/' % (server_host['scheme'], server_host['host'], port)
-        return host

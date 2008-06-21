@@ -3,6 +3,7 @@ import cgi
 from Cookie import SimpleCookie
 
 from tiddlyweb.web.http import HTTP401
+from tiddlyweb.web.util import server_base_url
 
 auth_systems = ['cookie_form']
 
@@ -15,7 +16,7 @@ def _challenger_url(environ, system):
         redirect = '?tiddlyweb_redirect=%s' % redirect
     else:
         redirect = ''
-    return '%s://%s/challenge/%s%s' % (scheme, host, system, redirect)
+    return '%schallenge/%s%s' % (server_base_url(environ), system, redirect)
 
 def base(environ, start_response):
     start_response('401 Unauthorized', [

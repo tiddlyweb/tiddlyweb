@@ -47,14 +47,14 @@ def test_get_root():
     assert content == expected_content
 
 def test_recipe_url():
-    environ = {'wsgi.url_scheme':'http', 'HTTP_HOST':'example.com'}
+    environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
     recipe = Recipe('hello')
 
     assert tiddlyweb.web.util.recipe_url(environ, recipe) == 'http://example.com/recipes/hello'
 
 def test_bag_url():
-    environ = {'wsgi.url_scheme':'http', 'HTTP_HOST':'example.com'}
     bag = Bag('hello')
+    environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
 
     assert tiddlyweb.web.util.bag_url(environ, bag) == 'http://example.com/bags/hello'
 
