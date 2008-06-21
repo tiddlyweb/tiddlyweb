@@ -12,6 +12,7 @@ we don't need all the code in HTTPExceptor.
 XXX: The Exceptor should log errors for each of
 these exceptions as in the finall except clause.
 """
+
 class HTTPException(Exception):
     status = ''
 

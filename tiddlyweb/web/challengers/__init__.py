@@ -1,3 +1,6 @@
+"""
+The ChallengerInterface class.
+"""
 
 class ChallengerInterface(object):
     """

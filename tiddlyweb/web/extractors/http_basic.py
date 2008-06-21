@@ -1,3 +1,7 @@
+"""
+A very simple extractor that looks at the HTTP Authorization
+header and looks for Basic auth information therein.
+"""
 
 from base64 import b64decode
 

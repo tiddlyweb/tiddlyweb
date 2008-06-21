@@ -1,3 +1,6 @@
+"""
+The ExtractorInterface class.
+"""
 
 class ExtractorInterface(object):
     """

@@ -94,30 +94,34 @@ def datetime_from_http_date(http_datestring):
     return http_datetime
 
 def server_base_url(environ):
+    """
+    Using information in tiddlyweb.config, construct 
+    the base URL of the server, sans the trailing /.
+    """
     server_host = environ['tiddlyweb.config']['server_host']
     port = str(server_host['port'])
     if port == '80' or port == '443':
         port = ''
     else:
         port = ':%s' % port
-    host = '%s://%s%s/' % (server_host['scheme'], server_host['host'], port)
+    host = '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
     return host
 
 def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
     """
-    return '%sbags/%s/tiddlers/%s' % (server_base_url(environ), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
+    return '%s/bags/%s/tiddlers/%s' % (server_base_url(environ), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
 def recipe_url(environ, recipe):
     """
     Construct a URL for a recipe.
     """
-    return '%srecipes/%s' % (server_base_url(environ), urllib.quote(recipe.name))
+    return '%s/recipes/%s' % (server_base_url(environ), urllib.quote(recipe.name))
 
 def bag_url(environ, bag):
     """
     Construct a URL for a recipe.
     """
-    return '%sbags/%s' % (server_base_url(environ), urllib.quote(bag.name))
+    return '%s/bags/%s' % (server_base_url(environ), urllib.quote(bag.name))
 

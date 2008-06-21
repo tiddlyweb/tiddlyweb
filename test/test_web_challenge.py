@@ -64,18 +64,22 @@ def test_redirect_to_challenge():
     assert 'cookie_form' in content
 
 def test_simple_cookie_redirect():
+    raised = 0
     try:
         http = httplib2.Http()
         response, content = http.request(\
                 'http://our_test_domain:8001/challenge/cookie_form?user=cdent&password=cdent&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 method='GET', redirections=0)
     except httplib2.RedirectLimit, e:
-        assert e.response['status'] == '303'
-        headers = {}
-        headers['cookie'] = e.response['set-cookie']
-        response, content = http.request(e.response['location'], method='GET', headers=headers)
-        assert response['status'] == '200'
-        assert 'i am tiddler 8' in content
+        raised = 1
+
+    assert raised
+    assert e.response['status'] == '303'
+    headers = {}
+    headers['cookie'] = e.response['set-cookie']
+    response, content = http.request(e.response['location'], method='GET', headers=headers)
+    assert response['status'] == '200'
+    assert 'i am tiddler 8' in content
 
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)

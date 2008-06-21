@@ -1,3 +1,8 @@
+"""
+Convenience routines for presenting the root of
+the web server. There are probably better places
+for this.
+"""
 
 root_page = """<html>
 <head>

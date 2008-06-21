@@ -1,3 +1,12 @@
+"""
+An extractor for looking at a cookie
+named 'tiddlyweb_insecure_user'. Thus
+named because the value in the cookie cannot
+be considered secure because it is easily 
+spoofed.
+
+Here for testing and development.
+"""
 
 import Cookie
 

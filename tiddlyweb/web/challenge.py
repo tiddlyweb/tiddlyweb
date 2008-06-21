@@ -14,7 +14,7 @@ def _challenger_url(environ, system):
         redirect = '?tiddlyweb_redirect=%s' % redirect
     else:
         redirect = ''
-    return '%schallenge/%s%s' % (server_base_url(environ), system, redirect)
+    return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 
 def base(environ, start_response):
     auth_systems = environ['tiddlyweb.config']['auth_systems']

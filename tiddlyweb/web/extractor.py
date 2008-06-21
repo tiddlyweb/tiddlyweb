@@ -1,6 +1,8 @@
-
-
-import Cookie
+"""
+A place for handling the extraction of user
+credentials from incoming requests. UserExtract
+passes to a stack of extractors.
+"""
 
 class UserExtract(object):
     """
