@@ -36,7 +36,7 @@ class Store(object):
         except ImportError, err:
             imported_module = __import__(self.format, {}, {}, ['Store'])
         except ImportError, err:
-            raise ImportError("couldn't load %s: %s" % (module, err))
+            raise ImportError("couldn't load store for %s: %s" % (self.format, err))
         self.storage = imported_module.Store()
 
     def delete(self, thing):

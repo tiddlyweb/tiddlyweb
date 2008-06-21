@@ -7,11 +7,9 @@ import sys
 import selector
 import time
 import urllib
-import Cookie
-
-from base64 import b64decode
 
 from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
@@ -34,7 +32,11 @@ config = {
             'text/plain': ['text', 'text/plain; charset=UTF-8'],
             'application/json': ['json', 'application/json; charset=UTF-8'],
             'default': ['html', 'text/html; charset=UTF-8'],
-        }
+        },
+        'extractors': [
+            'http_basic',
+            'simple_cookie',
+            ]
         }
 """
 A dict explaining the scheme, host and port of our server.
@@ -127,36 +129,6 @@ class Configurator(object):
     def __call__(self, environ, start_response):
         global config
         environ['tiddlyweb.config'] = config
-        return self.application(environ, start_response)
-
-class UserExtract(object):
-    """
-    Stub WSGI Middleware to set the User, if it can be 
-    found in the request.
-
-    This is just crap to hold things together until
-    we have the real thing.
-    """
-    def __init__(self, application):
-        self.application = application
-
-    def __call__(self, environ, start_response):
-        username = 'GUEST'
-        user_info = environ.get('HTTP_AUTHORIZATION', None)
-        if user_info and user_info.startswith('Basic'):
-            user_info = user_info.split(' ')[1]
-            candidate_username, password = b64decode(user_info).split(':')
-            if candidate_username == password:
-                username = candidate_username
-        user_cookie = environ.get('HTTP_COOKIE', None)
-        if user_cookie:
-            cookie = Cookie.SimpleCookie()
-            cookie.load(user_cookie)
-            try:
-                username = cookie['tiddlyweb_insecure_user'].value
-            except KeyError:
-                pass
-        environ['tiddlyweb.usersign'] = username
         return self.application(environ, start_response)
 
 class SimpleLog(object):
