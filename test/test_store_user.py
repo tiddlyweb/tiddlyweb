@@ -17,6 +17,7 @@ def setup_module(module):
 def test_simple_put():
     store = Store('text')
     user = User('cdent', note='foo')
+    user.set_password('cowpig')
     store.put(user)
 
     assert os.path.exists(expected_stored_filename)
@@ -27,6 +28,8 @@ def test_simple_get():
     store.get(user)
 
     assert user.note == 'foo'
+    assert user.check_password('cowpig')
+    assert not user.check_password('pigcow')
 
 def test_failed_get():
     store = Store('text')

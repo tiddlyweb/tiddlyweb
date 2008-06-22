@@ -33,3 +33,11 @@ def test_user_stringification():
     user = User('monkey')
 
     assert 'monkey' in '%s' % user
+
+def test_user_password():
+    user = User('monkey')
+    user.set_password('cowpig')
+
+    assert user.check_password('cowpig'), 'correct password returns true'
+    assert not user.check_password('pigcow'), 'bad password returns false'
+
