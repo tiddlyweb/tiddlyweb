@@ -25,7 +25,6 @@
 #   text/plain: text representation of list of bags+filters
 #   text/html: links to bag with filter query string
 #   application/json: list of bag, filter lists
-#   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
 # Supports PUT:
 #   text/plain: text representation (bag+filter URL)
 #   application/json: list of bag, filter lists (as follows)
