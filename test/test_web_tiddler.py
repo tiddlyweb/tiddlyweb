@@ -17,8 +17,10 @@ from re import match
 from fixtures import muchdata, reset_textstore
 
 from tiddlyweb.store import Store
+from tiddlyweb.user import User
 
-authorization = b64encode('cdent:cdent')
+authorization = b64encode('cdent:cowpig')
+bad_authorization = b64encode('cdent:cdent')
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -41,6 +43,10 @@ def setup_module(module):
     module.store = Store('text')
     reset_textstore()
     muchdata(module.store)
+
+    user = User('cdent')
+    user.set_password('cowpig')
+    module.store.put(user)
 
 def test_get_tiddler():
     http = httplib2.Http()
@@ -320,6 +326,13 @@ def test_tiddler_bag_constraints():
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': '%s' % authorization},
+            body=encoded_body)
+    assert response['status'] == '403'
+
+    # fail when bad auth info
+    _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % bad_authorization},
             body=encoded_body)
     assert response['status'] == '403'
 

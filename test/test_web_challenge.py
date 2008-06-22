@@ -14,6 +14,7 @@ from base64 import b64encode
 
 from fixtures import muchdata, reset_textstore
 from tiddlyweb.store import Store
+from tiddlyweb.user import User
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -25,6 +26,10 @@ def setup_module(module):
     module.store = Store('text')
     reset_textstore()
     muchdata(module.store)
+
+    user = User('cdent')
+    user.set_password('cowpig')
+    store.put(user)
 
 def test_challenge_base():
     http = httplib2.Http()
@@ -50,7 +55,6 @@ def test_challenge_unable_to_import():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge/not.really.there', method='GET')
 
-    print content
     assert response['status'] == '404'
     assert 'Unable to import' in content
 
@@ -68,7 +72,7 @@ def test_simple_cookie_redirect():
     try:
         http = httplib2.Http()
         response, content = http.request(\
-                'http://our_test_domain:8001/challenge/cookie_form?user=cdent&password=cdent&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+                'http://our_test_domain:8001/challenge/cookie_form?user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 method='GET', redirections=0)
     except httplib2.RedirectLimit, e:
         raised = 1

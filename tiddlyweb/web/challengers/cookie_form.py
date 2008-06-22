@@ -8,6 +8,7 @@ import Cookie
 
 from tiddlyweb.web.challengers import ChallengerInterface
 from tiddlyweb.web.util import server_base_url
+from tiddlyweb.user import User
 
 class Challenger(ChallengerInterface):
 
@@ -44,19 +45,27 @@ Password <input type="password" name="password" size="40" />
 </html>
 """ % (message, redirect)]
 
-    def _validate_and_redirect(self, environ, start_response, user, password, redirect):
-        if user == password:
-            uri = '%s%s' % (server_base_url(environ), redirect)
-            cookie = Cookie.SimpleCookie()
-            cookie['tiddlyweb_insecure_user'] = user
-            cookie['tiddlyweb_insecure_user']['path'] = '/'
-            start_response('303 See Other', [
-                ('Set-Cookie', cookie.output(header='')),
-                ('Location', uri)
-                ])
-            return [uri]
-        else:
-            return self._send_cookie_form(environ, start_response, redirect, 'User or Password no good')
+    def _validate_and_redirect(self, environ, start_response, username, password, redirect):
+        try:
+            store = environ['tiddlyweb.store']
+            user = User(username)
+            store.get(user)
+            if user.check_password(password):
+                uri = '%s%s' % (server_base_url(environ), redirect)
+                cookie = Cookie.SimpleCookie()
+                cookie['tiddlyweb_insecure_user'] = user.usersign
+                cookie['tiddlyweb_insecure_user']['path'] = '/'
+                start_response('303 See Other', [
+                    ('Set-Cookie', cookie.output(header='')),
+                    ('Location', uri)
+                    ])
+                return [uri]
+        except KeyError:
+            pass
+        except NoUserError:
+            pass
+        return self._send_cookie_form(environ, start_response, redirect, 'User or Password no good')
+
 
 
 

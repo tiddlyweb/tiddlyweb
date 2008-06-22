@@ -11,6 +11,7 @@ Here for testing and development.
 import Cookie
 
 from tiddlyweb.web.extractors import ExtractorInterface
+from tiddlyweb.user import User
 
 class Extractor(ExtractorInterface):
 
@@ -20,8 +21,13 @@ class Extractor(ExtractorInterface):
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)
             usersign = cookie['tiddlyweb_insecure_user'].value
-            return usersign
+            user = User(usersign)
+            store = environ['tiddlyweb.store']
+            store.get(user)
+            return user.usersign
         except KeyError:
-            return False
+            pass
+        except NoUserError:
+            pass
         return False
 
