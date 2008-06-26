@@ -111,6 +111,29 @@ def bag(args):
     store = Store(config['server_store'])
     store.put(bag)
 
+@_make_command('Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>')
+def tiddler(args):
+    try:
+        tiddler_name, bag_name = args[0:3]
+    except IndexError:
+        help()
+    except ValueError:
+        help()
+
+    from tiddlyweb.tiddler import Tiddler
+    from tiddlyweb.serializer import Serializer
+    from tiddlyweb.store import Store
+
+    tiddler = Tiddler(tiddler_name)
+    tiddler.bag = bag_name
+
+    content = _read_stdin()
+    serializer = Serializer('text')
+    serializer.object = tiddler
+    serializer.from_string(content)
+    store = Store(config['server_store'])
+    store.put(tiddler)
+
 @_make_command('List this help')
 def help(*args):
     for key in sorted(commands):

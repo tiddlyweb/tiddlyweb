@@ -1,7 +1,7 @@
 
 import os
 
-import server
+from tiddlyweb.manage import server
 
 store_name = 'store'
 real_store = 'docstore'
@@ -12,7 +12,7 @@ def go():
     except OSError:
         print 'symlink failed, continuing'
     try:
-        server.start('0.0.0.0', '8080')
+        server(['0.0.0.0', '8080'])
     except KeyboardInterrupt:
         print 'shutting down'
     os.unlink(store_name)

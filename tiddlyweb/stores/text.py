@@ -219,7 +219,10 @@ class Store(StorageInterface):
         os.unlink(lock_filename)
 
     def _bag_path(self, bag_name):
-        return os.path.join(store_root, 'bags', bag_name)
+        try:
+            return os.path.join(store_root, 'bags', bag_name)
+        except AttributeError, e:
+            raise NoBagError, 'No bag name: %s' % e
 
     def _files_in_dir(self, path):
         return filter(lambda x: not x.startswith('.'), os.listdir(path))
