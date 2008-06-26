@@ -49,7 +49,7 @@ class Serialization(SerializationInterface):
         recipe.set_recipe(recipe_lines)
         return recipe
 
-    def bag_as(self, bag):
+    def list_tiddlers(self, bag):
         """
         List the tiddlers in a bag as text.
         """

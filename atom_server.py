@@ -8,6 +8,7 @@ from test import fixtures
 
 config['extension_types']['atom'] = 'application/atom+xml'
 config['serializers']['application/atom+xml'] = ['atom.atom', 'application/atom+xml; charset=UTF-8']
+config['serializers']['text/html'] = ['atom.htmlatom', 'text/html; charset=UTF-8']
 
 def start(hostname, port):
     if not os.path.exists(fixtures.textstore.store_dirname):

@@ -73,7 +73,7 @@ class HTTPExceptor(object):
         try:
             return self.application(environ, start_response)
         except HTTPException, e:
-            start_response(e.status, e.headers())
+            start_response(e.status, e.headers(), exc_info)
             return e.output()
         except:
             etype, value, tb = sys.exc_info()

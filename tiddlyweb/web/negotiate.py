@@ -8,7 +8,7 @@ class Negotiate(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         self.figure_type(environ)
         return self.application(environ,start_response)
 

@@ -2,6 +2,7 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
+from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
 
@@ -12,7 +13,7 @@ splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
 class Serialization(SerializationInterface):
 
-    def bag_as(self, bag):
+    def list_tiddlers(self, bag):
         lines = ''
         for tiddler in bag.list_tiddlers():
             lines += self._tiddler_as_div(tiddler)

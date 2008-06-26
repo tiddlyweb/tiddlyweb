@@ -34,7 +34,6 @@ def test_extractor_not_there_in_config():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/', method='GET')
 
-    print content
     assert response['status'] == '500'
     assert 'ImportError' in content
 

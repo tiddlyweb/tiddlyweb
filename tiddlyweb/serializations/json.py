@@ -17,6 +17,13 @@ class Serialization(SerializationInterface):
     def list_bags(self, bags):
         return simplejson.dumps([bag.name for bag in bags])
 
+    def list_tiddlers(self, bag):
+        """
+        List the tiddlers in a bag as json.
+        We will likely want to expand this someday.
+        """
+        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
+
     def recipe_as(self, recipe):
         """
         Recipe as json.
@@ -32,11 +39,12 @@ class Serialization(SerializationInterface):
         return recipe
 
     def bag_as(self, bag):
-        """
-        List the tiddlers in a bag as json.
-        We will likely want to expand this someday.
-        """
-        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
+        policy = bag.policy
+        policy_dict = {}
+        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+            policy_dict[key] = getattr(policy, key)
+        info = dict(policy=policy_dict)
+        return simplejson.dumps(info)
 
     def as_bag(self, bag, input):
         """

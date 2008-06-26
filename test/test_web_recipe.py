@@ -103,8 +103,7 @@ def test_get_recipe_tiddler_list_filtered_empty():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddlerfoo',
             method='GET')
 
-    assert response['status'] == '200'
-    assert content == ''
+    assert response['status'] == '404'
 
 def test_get_recipes_default():
     http = httplib2.Http()
@@ -171,7 +170,7 @@ def test_put_recipe():
 
 def test_put_recipe_415():
     """
-    Get a recipe as text then fail to put it back as text.
+    Get a recipe as text then fail to put it back as wiki.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
@@ -181,7 +180,7 @@ def test_put_recipe_415():
     assert response['status'] == '200'
 
     response, content = http.request('http://our_test_domain:8001/recipes/other',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=text)
+            method='PUT', headers={'Content-type': 'text/x-tiddlywiki'}, body=text)
 
     assert response['status'] == '415'
 

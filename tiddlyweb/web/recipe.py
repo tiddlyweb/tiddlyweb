@@ -9,7 +9,7 @@ import urllib
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoRecipeError
-from tiddlyweb.serializer import Serializer
+from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
 from tiddlyweb import control
 from tiddlyweb.web import util as web
@@ -17,16 +17,18 @@ from tiddlyweb.web import util as web
 def get(environ, start_response):
     recipe = _determine_recipe(environ)
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    if serialize_type not in ['json', 'html', 'text']:
-        raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type, environ)
-    serializer.object = recipe
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = recipe
+        content = serializer.to_string()
+    except NoSerializationError:
+        raise HTTP415, 'Content type %s not supported' % mime_type
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",
             [('Content-Type', mime_type)])
-    return [serializer.to_string()]
+    return [content]
 
 def get_tiddlers(environ, start_response):
     filter_string = urllib.unquote(environ['QUERY_STRING'])
@@ -84,15 +86,16 @@ def put(environ, start_response):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    if serialize_type not in ['json']:
-        raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type, environ)
-    serializer.object = recipe
-    content = environ['wsgi.input'].read(int(length))
-    serializer.from_string(content.decode('UTF-8'))
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = recipe
+        content = environ['wsgi.input'].read(int(length))
+        serializer.from_string(content.decode('UTF-8'))
 
-    store.put(recipe)
+        store.put(recipe)
+    except NoSerializationError:
+        raise HTTP415, 'Content type %s not supported' % serialize_type
 
     start_response("204 No Content",
             [('Location', web.recipe_url(environ, recipe))])

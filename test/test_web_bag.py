@@ -174,7 +174,7 @@ def test_get_bags_unsupported_neg_format_with_accept():
 
 def test_get_bag_tiddler_list_empty():
     """
-    A request for the tiddlers in a non existent bag gives a 404.
+    A request for the tiddlers in an empty bag gives a 404.
     """
 
     bag = Bag('bagempty');
@@ -184,8 +184,7 @@ def test_get_bag_tiddler_list_empty():
     response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.txt',
             method='GET')
 
-    assert response['status'] == '200'
-    assert content == ''
+    assert response['status'] == '404'
 
 def test_put_bag():
     """
@@ -205,7 +204,8 @@ def test_put_bag():
             headers={'Accept': 'application/json'})
 
     assert response['status'] == '200'
-    assert content == '[]' # empty json list
+    info = simplejson.loads(content)
+    assert info['policy']['delete'] == policy_dict['delete']
 
 def test_put_bag_wrong_type():
     """

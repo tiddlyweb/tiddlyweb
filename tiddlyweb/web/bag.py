@@ -10,7 +10,7 @@ import urllib
 
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoBagError
-from tiddlyweb.serializer import Serializer
+from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.http import HTTP404, HTTP415
@@ -21,13 +21,14 @@ def get(environ, start_response):
 
     bag = _get_bag(environ, bag_name)
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    if serialize_type not in ['json', 'html', 'text']:
-        raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type, environ)
-    serializer.object = bag
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = bag
 
-    content = serializer.to_string()
+        content = serializer.to_string()
+    except NoSerializationError:
+        raise HTTP415, 'Content type not supported: %s' % mime_type
 
     start_response("200 Ok",
             [('Content-Type', mime_type)])
@@ -55,15 +56,19 @@ def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    if serialize_type not in ['json', 'html', 'text']:
-        raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type, environ)
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+
+        content = serializer.list_bags(bags)
+
+    except NoSerializationError:
+        raise HTTP415, 'Content type not supported: %s' % mime_type
 
     start_response("200 OK",
             [('Content-Type', mime_type)])
 
-    return [ serializer.list_bags(bags) ]
+    return [content]
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -73,17 +78,18 @@ def put(environ, start_response):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    if serialize_type not in ['json']:
-        raise HTTP415, '%s not supported' % serialize_type
-    serializer = Serializer(serialize_type, environ)
-    serializer.object = bag
-    content = environ['wsgi.input'].read(int(length))
-    serializer.from_string(content.decode('UTF-8'))
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = bag
+        content = environ['wsgi.input'].read(int(length))
+        serializer.from_string(content.decode('UTF-8'))
 
-    bag.policy.owner = environ['tiddlyweb.usersign']
+        bag.policy.owner = environ['tiddlyweb.usersign']
 
-    store.put(bag)
+        store.put(bag)
+    except NoSerializationError:
+        raise HTTP415, 'Content type not supported: %s' % serialize_type
 
     start_response("204 No Content",
             [('Location', web.bag_url(environ, bag))])

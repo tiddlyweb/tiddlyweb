@@ -9,6 +9,9 @@ from bag import Bag
 class TiddlerFormatError(Exception):
     pass
 
+class NoSerializationError(Exception):
+    pass
+
 class Serializer(object):
     """
     You must set object after initialization.
@@ -55,4 +58,7 @@ class Serializer(object):
 
     def list_bags(self, bags):
         return self.serialization.list_bags(bags)
+
+    def list_tiddlers(self, bag):
+        return self.serialization.list_tiddlers(bag)
 

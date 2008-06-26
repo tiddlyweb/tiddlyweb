@@ -60,7 +60,7 @@ class Serialization(SerializationInterface):
 <div><a href="%s">Tiddlers in Recipe</a></div>
 </body></html>""" % (title, output, tiddler_link)
 
-    def bag_as(self, bag):
+    def list_tiddlers(self, bag):
         """
         List the tiddlers in a bag as html.
         """
@@ -85,16 +85,20 @@ class Serialization(SerializationInterface):
             lines.append(line)
         output = "\n".join(lines)
         return """
-<html>
-<head><title>%s</title></head>
-<body>
-<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+%s
 <hr>
 <ul>
 %s
 </ul>
 </div>
-</body></html>""" % (title, '%s.wiki' % wiki_link, output)
+</body></html>""" % (self._tiddler_list_header(title, wiki_link), output)
+
+    def _tiddler_list_header(self, title, wiki_link):
+        return"""
+<html>
+<head><title>%s</title></head>
+<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+<body>""" % (title, '%s.wiki' % wiki_link)
 
     def tiddler_as(self, tiddler):
         try:

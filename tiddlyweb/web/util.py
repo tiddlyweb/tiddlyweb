@@ -67,7 +67,6 @@ def send_tiddlers(environ, start_response, bag):
 
     serialize_type, mime_type = get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
-    serializer.object = bag
 
     content_header = ('Content-Type', mime_type)
     cache_header = ('Cache-Control', 'no-cache')
@@ -80,7 +79,7 @@ def send_tiddlers(environ, start_response, bag):
     if etag:
         response.append(etag)
 
-    output = serializer.to_string()
+    output = serializer.list_tiddlers(bag)
     start_response("200 OK", response)
     return [output]
 

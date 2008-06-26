@@ -129,7 +129,7 @@ class Configurator(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         global config
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
@@ -148,7 +148,7 @@ class SimpleLog(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         req_uri = urllib.quote(environ.get('SCRIPT_NAME', '')
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
@@ -190,7 +190,7 @@ class StoreSet(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         db = Store(environ['tiddlyweb.config']['server_store'])
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
@@ -209,5 +209,5 @@ class EncodeUTF8(object):
             string = string.encode('utf-8')
         return string
 
-    def __call__(self, environ, start_response):
+    def __call__(self, environ, start_response, exc_info=None):
         return [self._encoder(x) for x in self.application(environ, start_response)]

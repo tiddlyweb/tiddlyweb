@@ -36,34 +36,38 @@ expected_html_revbag_string = """<ul>
 def setup_module(module):
     module.serializer = Serializer('text')
 
-def test_generated_string():
+def test_generate_json():
+    serializer = Serializer('json')
     serializer.object = bagfour
     string = serializer.to_string()
+
+    json = simplejson.loads(string)
+    assert json['policy']['manage'] == ['NONE']
+
+
+def test_generated_string():
+    string = serializer.list_tiddlers(bagfour)
 
     assert string == expected_string
-    assert '%s' % serializer == expected_string
 
 def test_generated_string_with_revbag():
-    serializer.object = bagfour
     bagfour.revbag = True
-    string = serializer.to_string()
+    string = serializer.list_tiddlers(bagfour)
 
     assert string == expected_revbag_string
-    assert '%s' % serializer == expected_revbag_string
     bagfour.revbag = False
 
 def test_generated_html():
     html_serializer = Serializer('html')
-    html_serializer.object = bagfour
-    string = html_serializer.to_string()
+    string = html_serializer.list_tiddlers(bagfour)
 
     assert expected_html_string in string
-    assert expected_html_string in '%s' % html_serializer
 
 def test_generated_wiki():
     wiki_serializer = Serializer('wiki')
-    wiki_serializer.object = bagfour
-    string = wiki_serializer.to_string()
+    # work around a limitation in the serializations
+    # when store is not set, we assume the bag has not been reified
+    string = wiki_serializer.list_tiddlers(bagfour)
 
     assert '<div title="TiddlerOne' in string
     assert '<div title="TiddlerTwo' in string
@@ -72,11 +76,9 @@ def test_generated_wiki():
 def test_generated_html_with_revbag():
     html_serializer = Serializer('html')
     bagfour.revbag = True
-    html_serializer.object = bagfour
-    string = html_serializer.to_string()
+    string = html_serializer.list_tiddlers(bagfour)
 
     assert expected_html_revbag_string in string
-    assert expected_html_revbag_string in '%s' % html_serializer
     bagfour.revbag = False
 
 def test_json_to_bag():

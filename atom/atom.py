@@ -29,7 +29,7 @@ class Serialization(HTMLSerialization):
     def recipe_as(self, recipe):
         pass
 
-    def bag_as(self, bag):
+    def list_tiddlers(self, bag):
         """
         Turn the contents of a bag into an Atom Feed.
         """
