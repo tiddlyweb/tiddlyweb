@@ -23,7 +23,9 @@ REQUIREMENTS:
 * selector: http://lukearno.com/projects/selector/
 * simplejson: http://undefined.org/python/#simplejson
 
-Both selector and simplejson can be installed with easy_install.
+Both selector and simplejson can be installed with easy_install, which
+either comes with your python distribution and should be on your path,
+or is part of setuptools which you can install.
 
 See also:
 
@@ -31,6 +33,7 @@ NOTES: For some comments on the implementation.
 TODO: For tasks that need to be done.
 RUN: To run this installation in place with some sample data.
 TESTING: Information about the tests located in the test directory.
+COOKBOOK: A guide to how to setup a TiddlyWeb server with your own content.
 
 If you have questions or contributions to make to this work, 
 please post the TiddlyWikiDev group at google groups:
