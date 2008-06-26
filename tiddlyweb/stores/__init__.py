@@ -19,6 +19,9 @@ class StorageInterface(object):
     methods for presenting a collection.
     """
 
+    def __init__(self, environ={}):
+        self.environ = environ
+
     def recipe_get(self, recipe):
         pass
 

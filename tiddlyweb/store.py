@@ -8,6 +8,8 @@ from bag import Bag
 from recipe import Recipe
 from user import User
 
+from tiddlyweb.config import config
+
 class NoBagError(IOError):
     pass
 
@@ -25,8 +27,9 @@ class StoreLockError(IOError):
 
 class Store(object):
 
-    def __init__(self, format):
+    def __init__(self, format, environ={'tiddlyweb.config': config}):
         self.format = format
+        self.environ = environ
         self._import()
 
     def _import(self):
@@ -38,7 +41,7 @@ class Store(object):
                 imported_module = __import__(self.format, {}, {}, ['Store'])
             except ImportError, err:
                 raise ImportError("couldn't load store for %s: %s" % (self.format, err))
-        self.storage = imported_module.Store()
+        self.storage = imported_module.Store(self.environ)
 
     def delete(self, thing):
         """

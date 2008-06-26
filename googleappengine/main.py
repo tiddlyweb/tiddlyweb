@@ -21,7 +21,7 @@
 #
 
 
-from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract, Configurator
+from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract, Configurator, config
 from tiddlyweb.auth import PermissionsExceptor
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.http import HTTPExceptor
@@ -44,8 +44,8 @@ def google_app():
     #host = 'localhost'
     #port = 8000
     filename = 'urls.map'
-    server_store = 'googledata'
-    app = load_app(host, port, server_store, filename, [
+    config['server_store'] = ['googledata', {}]
+    app = load_app(host, port, filename, [
         Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
         ])
     return ScriptCleanup(app)

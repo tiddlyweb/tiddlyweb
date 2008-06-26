@@ -2,7 +2,7 @@
 import os
 import sys
 from tiddlyweb.web import serve
-from tiddlyweb.web.serve import config
+from tiddlyweb.config import config
 from tiddlyweb.store import Store
 from test import fixtures
 

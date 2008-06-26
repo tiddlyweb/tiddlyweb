@@ -4,7 +4,6 @@ on the filesystem.
 """
 
 # get from config!
-store_root = 'store'
 
 import os
 import codecs
@@ -175,13 +174,13 @@ class Store(StorageInterface):
         user_file.close()
 
     def list_recipes(self):
-        path = os.path.join(store_root, 'recipes')
+        path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
 
         return [Recipe(recipe) for recipe in recipes]
 
     def list_bags(self):
-        path = os.path.join(store_root, 'bags')
+        path = os.path.join(self._store_root(), 'bags')
         bags = self._files_in_dir(path)
 
         return [Bag(bag) for bag in bags]
@@ -220,7 +219,7 @@ class Store(StorageInterface):
 
     def _bag_path(self, bag_name):
         try:
-            return os.path.join(store_root, 'bags', bag_name)
+            return os.path.join(self._store_root(), 'bags', bag_name)
         except AttributeError, e:
             raise NoBagError, 'No bag name: %s' % e
 
@@ -267,10 +266,10 @@ class Store(StorageInterface):
         return policy
 
     def _recipe_path(self, recipe):
-        return os.path.join(store_root, 'recipes', recipe.name)
+        return os.path.join(self._store_root(), 'recipes', recipe.name)
 
-    def _user_path(self, user):
-        return os.path.join(store_root, 'users', user.usersign)
+    def _store_root(self):
+        return self.environ['tiddlyweb.config']['server_store'][1]['store_root']
 
     def _tiddler_base_filename(self, tiddler):
         # should be get a Bag or a name here?
@@ -295,6 +294,9 @@ class Store(StorageInterface):
             if revisions:
                 revision = revisions[index]
         return int(revision)
+
+    def _user_path(self, user):
+        return os.path.join(self._store_root(), 'users', user.usersign)
 
     def _write_policy(self, policy, bag_path):
         policy_dict = {}

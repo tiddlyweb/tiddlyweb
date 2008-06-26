@@ -14,48 +14,15 @@ from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.store import Store
 
-# The System's Configuration, to be carried
-# around in the environ. Eventually this
-# be in an actual file.
-config = {
-        'server_store': 'text',
-        'server_host': {},
-        'extension_types': {
-            'txt': 'text/plain',
-            'html': 'text/html',
-            'json': 'application/json',
-            'wiki': 'text/x-tiddlywiki',
-        },
-        'serializers': {
-            'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
-            'text/html': ['html', 'text/html; charset=UTF-8'],
-            'text/plain': ['text', 'text/plain; charset=UTF-8'],
-            'application/json': ['json', 'application/json; charset=UTF-8'],
-            'default': ['html', 'text/html; charset=UTF-8'],
-        },
-        'extractors': [
-            'http_basic',
-            'simple_cookie',
-            ],
-        'auth_systems': [
-            'cookie_form',
-            ]
-        }
-"""
-A dict explaining the scheme, host and port of our server.
-FIXME: a hack to get the server.host set properly in outgoing
-wikis.
-"""
+from tiddlyweb.config import config
 
-def load_app(host, port, store, map, wrappers=[]):
+def load_app(host, port, map, wrappers=[]):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
     is surround by wrappers, which either set something in the 
     environment or modify the request, or transform output.
     """
-    global config
-    config['server_store'] = store
     config['server_host'] = dict(scheme='http', host=host, port=port)
     app = selector.Selector(mapfile=map)
     if wrappers:
@@ -119,7 +86,7 @@ def default_app(hostname, port, filename):
     EncodeUTF8: encode internal unicode data as UTF-8 output.
     SimpleLog: write a log of activity
     """
-    return load_app(hostname, port, 'text', filename, [Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
+    return load_app(hostname, port, filename, [Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
 
 class Configurator(object):
     """
@@ -130,7 +97,6 @@ class Configurator(object):
         self.application = application
 
     def __call__(self, environ, start_response, exc_info=None):
-        global config
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
 
@@ -191,7 +157,7 @@ class StoreSet(object):
         self.application = application
 
     def __call__(self, environ, start_response, exc_info=None):
-        db = Store(environ['tiddlyweb.config']['server_store'])
+        db = Store(environ['tiddlyweb.config']['server_store'][0], environ)
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
 
