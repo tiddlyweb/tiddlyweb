@@ -16,13 +16,12 @@ commands = {}
 def _make_command(description):
     def decorate(f):
         global commands
-        f.manage_command = True
         f.description = description
         commands[f.__name__] = f
         return f
     return decorate
 
-@_make_command('Start the server: <host or ip name> <port>')
+@_make_command('Start the server: <hostname or ip number> <port>')
 def server(args):
     try:
         hostname, port = args[0:2]
@@ -61,15 +60,56 @@ def adduser(args):
 
 @_make_command('Import a Tiddlywiki html file into a bag: <filename> <bag name>')
 def imwiki(args):
-    print 'import args is: %s' % args
+    from tiddlyweb.importer import import_wiki
+    try:
+        filename, bag_name = args[0:2]
+        import_wiki(filename, bag_name)
+    except IndexError:
+        help()
+    except ValueError:
+        help()
 
-@_make_command('Create or update a recipe with the text on stdin: <recipe name>')
+@_make_command('Create or update a recipe with the recipe text on stdin: <recipe name>')
 def recipe(args):
-    print 'recipe args is: %s' % args
+    try:
+        recipe_name = args[0]
+    except IndexError:
+        help()
 
-@_make_command('Create or update a bag with the text on stdin: <bag name>')
+    from tiddlyweb.recipe import Recipe
+    from tiddlyweb.serializer import Serializer
+    from tiddlyweb.store import Store
+
+    recipe = Recipe(recipe_name)
+
+    content = _read_stdin()
+    serializer = Serializer('text')
+    serializer.object = recipe
+    serializer.from_string(content)
+    store = Store(config['server_store'])
+    store.put(recipe)
+
+@_make_command('Create or update a bag with the json text on stdin: <bag name>')
 def bag(args):
-    print 'bag args is: %s' % args
+    try:
+        bag_name = args[0]
+    except IndexError:
+        help()
+
+    from tiddlyweb.bag import Bag
+    from tiddlyweb.serializer import Serializer
+    from tiddlyweb.store import Store
+
+    bag = Bag(bag_name)
+
+    content = _read_stdin()
+    if not len(content):
+        content = '{"policy":{}}'
+    serializer = Serializer('json')
+    serializer.object = bag
+    serializer.from_string(content)
+    store = Store(config['server_store'])
+    store.put(bag)
 
 @_make_command('List this help')
 def help(*args):
@@ -92,4 +132,7 @@ def handle(args):
         commands[candidate_command](args)
     else:
         help(args)
+
+def _read_stdin():
+    return sys.stdin.read()
 
