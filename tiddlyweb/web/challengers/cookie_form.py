@@ -9,6 +9,7 @@ import Cookie
 from tiddlyweb.web.challengers import ChallengerInterface
 from tiddlyweb.web.util import server_base_url
 from tiddlyweb.user import User
+from tiddlyweb.store import NoUserError
 
 class Challenger(ChallengerInterface):
 
@@ -23,8 +24,8 @@ class Challenger(ChallengerInterface):
         except KeyError:
             return self._send_cookie_form(environ, start_response, redirect)
 
-    def _send_cookie_form(self, environ, start_response, redirect, message=''):
-        start_response('200 OK', [
+    def _send_cookie_form(self, environ, start_response, redirect, status='201 OK',  message=''):
+        start_response(status, [
             ('Content-Type', 'text/html')
             ])
         return [
@@ -46,6 +47,7 @@ Password <input type="password" name="password" size="40" />
 """ % (message, redirect)]
 
     def _validate_and_redirect(self, environ, start_response, username, password, redirect):
+        status = '401 Unauthorized'
         try:
             store = environ['tiddlyweb.store']
             user = User(username)
@@ -64,7 +66,7 @@ Password <input type="password" name="password" size="40" />
             pass
         except NoUserError:
             pass
-        return self._send_cookie_form(environ, start_response, redirect, 'User or Password no good')
+        return self._send_cookie_form(environ, start_response, redirect, status, 'User or Password no good')
 
 
 
