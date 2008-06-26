@@ -129,6 +129,7 @@ class SimpleLog(object):
         return self.application(environ, replacement_start_response)
 
     def write_log(self, environ, req_uri, status, bytes):
+        environ['REMOTE_USER'] = environ.get('tiddlyweb.usersign', '')
         if bytes is None:
             bytes = '-'
         d = {
