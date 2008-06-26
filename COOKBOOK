@@ -1,0 +1,265 @@
+
+Version 0.1 A draft. Improvement suggestions most welcome.
+
+This document attempts to provide a cookbook for people
+who wish to start up a TiddlyWeb server with their own
+content. These instructions assume you've read README
+and RUN and been able to get a test server with test
+content operating correctly. If you've not yet done that,
+please read those files first and confirm that your system
+will run TiddlyWeb.
+
+Once you have a running TiddlyWeb, we're going to shut it
+down, remove its data store, create a new store, put data
+in it and then start up a new server. These instructions 
+assume you are working from a unix-like shell. Where you see
+'$' starting a line, that's a line for you to type into the
+shell. Other shells like the Windows command line will work
+similarly, perhaps with slight changes to the syntax. Before
+each block of $ lines will be an explanation of what you're
+about to do. Each block is followed by what should have happened.
+When you are to fill in a piece of information yourself, it is
+bracketed like this:
+
+  $ mkdir <directory name>
+
+That means you should type 'mkdir', a space, the name of the
+directory you are creating and then press return.
+
+Let's begin.
+
+1. Get Where You Need to Be
+
+The first step is to locate yourself in the directory 
+where you find this COOKBOOK file. It should also contain
+a file called 'manager'. We'll be using this file a lot in
+the next steps. If you run it without any arguments you should
+get a list of possible commands. Try it:
+
+  $ ./manager
+
+You should see something like this:
+
+adduser     Add or update a user to the database: <username> <password>
+bag         Create or update a bag with the json text on stdin: <bag name>
+help        List this help
+imwiki      Import a Tiddlywiki html file into a bag: <filename> <bag name>
+recipe      Create or update a recipe with the recipe text on stdin: <recipe name>
+server      Start the server: <hostname or ip number> <port>
+tiddler     Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>
+
+If you get something else that looks like an error try running 
+this instead:
+
+  $ python manager
+
+If that does work, in the instructions below wherever you see
+'./manager' use 'python manager' instead. If it doesn't work 
+then you are in an unsual situation. First make sure the stuff
+in README and RUN checks out okay and then contact TiddlyWikiDev
+for some assistance if not.
+
+2. Create Your Base Store
+
+By default, TiddlyWeb uses a text based storage system with its
+root in a directory named 'store' in the same directory from which
+the server starts. That's the directory we are in right now.
+
+First we need to remove any remains from the store used in earlier
+experiments:
+
+  $ rm -r store
+
+Then we need to remake the store directory (now empty) and three
+required directories within:
+
+  $ mkdir store
+  $ mkdir store/bags
+  $ mkdir store/recipes
+  $ mkdir store/users
+
+We do an rm of store itself, not just its contents because in 
+some cases store may be symlink.
+
+3. Create Your First Bag
+
+TiddlyWeb tiddler content is stored in bags. Each bag gets a name.
+If you have two tiddlers with the same title, but in two differently
+named bags, they are two different tiddlers. In TiddlyWeb when we
+refer to a tiddler, we refer to it using the combination of its
+bag's name and its tiddler title.
+
+To put content into a TiddlyWeb server, we first have to create a bag.
+Bag's have permission structures which can be set. For now we will ignore
+those and use the default, which is that everyone can read or write 
+content from and to a bag.
+
+The first bag we'll create is one that contains the two plugins that
+make TiddlyWeb automatically synchronize content back to the server 
+after it has been edited in a TiddlyWiki. We'll call this bag
+'TiddlyWeb'. Where the below shows ^D, type ctrl-d.
+
+  $ ./manager bag TiddlyWeb
+  ^D
+
+If you get no response it worked.
+
+Now we'll add two tiddlers that are included with the distribution
+to the bag. These are located in the lib directory. They are
+specially formatted for use with the TiddlyWeb text store.
+
+  $ ./manager tiddler TiddlyWebAdaptorPlugin TiddlyWeb < lib/TiddlyWebAdaptorPlugin
+  $ ./manager tiddler TiddlyWebAutoSavePlugin TiddlyWeb < lib/TiddlyWebAutoSavePlugin
+
+This stores the two named plugins into the TiddlyWeb bag.
+
+4. Import A TiddlyWiki
+
+Now, to bootstrap the collection of content on your TiddlyWeb server,
+we're going to import one or more existing TiddlyWiki files into the
+server, making a bag for each one. The first thing you need to do is
+locate the TiddlyWiki HTML files and note their path on the filesystem.
+If they are not on your system, download them using whatever method you
+prefer (your browser, wget, curl, lwp_request, whatever it takes).
+
+Create a bag for each TiddlyWiki you wish to import, replace <bag name>
+with a unique name for each TiddlyWiki. You can use spaces if you want.
+Remember which name goes with which TiddlyWiki.
+
+  $ ./manager bag <bag name>
+  ^D
+
+Once you have created the bags, import the wikis. The following
+command will import one wiki into one bag.
+
+  $ ./manager imwiki <path to wiki file> <bag name>
+
+If there are no errors from this, the tiddlers were imported. You can
+confirm this by doing a directory list of the bag:
+
+  $ ls store/bags/<bag name>/tiddlers
+
+If your system has the 'ls' command that should return a list of the
+tiddlers that were in the TiddlyWiki you have imported.
+
+5. Create A Recipe
+
+A recipe is a way to generate a collection of tiddlers by using tiddlers
+from multiple bags. The recipe itself is a list of bags with optional
+filter instructions. A filter selects only some of the tiddlers in a
+bag, or sorts them. If there is no filter, all the tiddlers from the
+bag are included. If there are tiddlers with duplicate names, the tiddler
+from the last bag to have it is the one that is included in the collection
+(the recipes are processed in order).
+
+Your recipe gets a name. This name will be used in URLs that you publish,
+so make it meaningful to you. 
+
+For this cookbook we'll ignore filters for now, and create a simple
+recipe that allows the content you imported from one of your TiddlyWikis
+to be presented through TiddlyWeb and be edited. For this you'll need
+the name of the bag in which the tiddlers you want can be found. Use
+that name in the instructions below. The two lines that follow the line 
+beginning with $ are lines for you to type (substituting the bag's name
+for <bag name>. Make sure you type them correctly:
+
+  $ ./manager recipe <recipe name>
+  /bags/TiddlyWeb/tiddlers
+  /bags/<bag name>/tiddlers
+  ^D
+
+If there are no errors, you should now have a recipe. It's time to
+start the server.
+
+6. Start The Server
+
+TiddlyWeb comes with its own built in web server. It can be run with
+any sever you like, with some scripting, but for these current purposes
+the built in server should work fine. You need to decide the hostname
+or ip number and port on which your server is going to run. If you're just
+experimenting on your local machine, for now you can use 0.0.0.0 for the
+ip number and 8080 for the port number. If you are running TiddlyWeb on
+a remote server you need to choose the hostname of that server, and an
+available port.
+
+Once you have figured these bits out you can start the server:
+
+  $ ./manager server <ip number> <port>
+
+You should see 'Starting CherryPy' and the $ prompt will not come
+back. It's time to go to your web browser. For the examples below
+we'll use 0.0.0.0 and 8080 for ip number and port. Replace these
+with the information you chose. Go to:
+
+  http://0.0.0.0:8080/
+
+You should see a list containing 'recipes' and 'bags'. Click 
+around and see what you can discover. Going to
+
+  http://0.0.0.0:8080/recipes/<recipe name>/tiddlers
+
+will give you a list (in HTML) of tiddlers in the recipe.
+
+  http://0.0.0.0:8080/recipes/<recipe name>/tiddlers.txt
+
+will get you the same list as text.
+
+  http://0.0.0.0:8080/recipes/<recipe name>/tiddlers.wiki
+
+will get you a TiddlyWiki containing the tiddlers. Editing
+one of those tiddlers should result in the tiddler being saved
+back to the server. You can look at a tiddler from the recipe
+on the server, as HTML, by going to:
+
+  http://0.0.0.0:8080/recipes/<recipe name>/tiddlers/<tiddler title>
+
+If you have wikklytext installed, the wikitext will be rendered to
+HTML, with clickable links. If you are not using wikklytext, you'll
+see plain text.
+
+7. What Next?
+
+Now you have a working TiddlyWeb server. You can stop and start it
+whenever you like. If you want to start it and keep a record of the log
+you may, depending on operating system and shell choices, do something 
+like this:
+
+  $ ./manager server <ip number> <port> &> server.log &
+
+If you encounter difficulties using TiddlyWeb contact the TiddlyWikiDev
+Google Group, or contact the first author Chris Dent, <cdent@peermore.com>.
+
+You can create bags and recipes as you need them for whatever functionality
+you might need. With filters it is possible to create complex recipes.
+
+TiddlyWeb is highly extensible, with a slowly growing collection of 
+plugins for using different storage mechanism and outputting different
+types of a content. For example TiddlyWeb can now run on Google's app
+engine service and it can provide Atom feeds of lists of tiddlers.
+
+TiddlyWeb is built as a REST API so can be flexibly accessed by a variety
+of clients: a web browser, TiddlyWiki, script languages, other web
+servers. By looking through the code and experimenting with the URLs
+given to the server you'll see that TiddlyWeb can do far more than 
+explained in this document. Have fun with it.
+
+8. What's Been Left Out?
+
+This document makes no effort to explain some concepts in TiddlyWeb
+which may be important to some users. Please look elsewhere in
+the distribution and on the web for additional documentation. Things
+not covered include:
+
+* Filters on bags and recipes, both in recipes and in URLs. Any
+  list of tiddlers may be filtered.
+* User creation, authentication and authorizatin. TiddlyWeb has
+  a flexible user handling system. By default no user is required
+  and no restrictions are presented.
+* TiddlyWeb is a Python WSGI application, and as such can be run
+  under many different web servers without much issue.
+* TiddlyWeb has a flexible storage system that makes it possible to
+  create code which allows tiddlers, bags and recipes to be stored
+  in many different systems (on disk, in a database, in Google's
+  data system, in Amazon's S3, whatever you can think of).
+
+

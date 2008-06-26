@@ -23,6 +23,12 @@ REQUIREMENTS:
 * selector: http://lukearno.com/projects/selector/
 * simplejson: http://undefined.org/python/#simplejson
 
+OPTIONAL:
+
+* If you want server side wikitext to html rendering also
+  install wikklytext. This is _highly_ recommended.
+  See: http://wikklytext.com/wiki/InstallPythonPackage.html
+
 Both selector and simplejson can be installed with easy_install, which
 either comes with your python distribution and should be on your path,
 or is part of setuptools which you can install.
