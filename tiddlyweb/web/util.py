@@ -2,7 +2,7 @@ import urllib
 import time
 from datetime import datetime
 
-from tiddlyweb.web.http import HTTP415, HTTP304
+from tiddlyweb.web.http import HTTP415, HTTP304, HTTP404
 from tiddlyweb.serializer import Serializer
 
 def get_serialize_type(environ):
@@ -62,6 +62,8 @@ def send_tiddlers(environ, start_response, bag):
 
     if bags_tiddlers:
         last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)
+    else:
+        raise HTTP404, 'No tiddlers in container'
 
     serialize_type, mime_type = get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
