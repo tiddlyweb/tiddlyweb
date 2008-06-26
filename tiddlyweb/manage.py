@@ -34,7 +34,7 @@ def server(args):
     from test import fixtures
     if not os.path.exists(fixtures.textstore.store_dirname):
         fixtures.reset_textstore()
-        store = Store('text')
+        store = Store(config['server_store'][0])
         fixtures.muchdata(store)
     serve.start_cherrypy('./urls.map', hostname, int(port))
 
@@ -48,7 +48,7 @@ def adduser(args):
         help()
 
     try:
-        store = Store(config['server_store'])
+        store = Store(config['server_store'][0])
         user = User(username)
         user.set_password(password)
         store.put(user)
@@ -86,7 +86,7 @@ def recipe(args):
     serializer = Serializer('text')
     serializer.object = recipe
     serializer.from_string(content)
-    store = Store(config['server_store'])
+    store = Store(config['server_store'][0])
     store.put(recipe)
 
 @_make_command('Create or update a bag with the json text on stdin: <bag name>')
@@ -108,7 +108,7 @@ def bag(args):
     serializer = Serializer('json')
     serializer.object = bag
     serializer.from_string(content)
-    store = Store(config['server_store'])
+    store = Store(config['server_store'][0])
     store.put(bag)
 
 @_make_command('Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>')
@@ -131,7 +131,7 @@ def tiddler(args):
     serializer = Serializer('text')
     serializer.object = tiddler
     serializer.from_string(content)
-    store = Store(config['server_store'])
+    store = Store(config['server_store'][0])
     store.put(tiddler)
 
 @_make_command('List this help')

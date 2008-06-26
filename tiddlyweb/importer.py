@@ -31,7 +31,7 @@ def _do_tiddler(bagname, tiddler):
             new_tiddler.__setattr__(key, data)
     new_tiddler.tags = _tag_string_to_list(tiddler.get('tags', ''))
 
-    store = Store(config['server_store'])
+    store = Store(config['server_store'][0])
     store.put(new_tiddler)
 
 def _tag_string_to_list(string):
