@@ -95,7 +95,7 @@ def _put_tiddler(environ, start_response, tiddler):
     content_type = environ['tiddlyweb.type']
 
     if content_type != 'text/plain' and content_type != 'application/json':
-        raise HTTP415, '%s not supported' % content_type
+        raise HTTP415, '%s not supported ' % content_type
 
     last_modified = None
     etag = None

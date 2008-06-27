@@ -41,10 +41,11 @@ class ScriptCleanup(object):
 def google_app():
     host = 'tiddlyweb.appspot.com'
     port = 80
-    #host = 'localhost'
-    #port = 8000
     filename = 'urls.map'
     config['server_store'] = ['googledata', {}]
+    config['extension_types']['atom'] = 'application/atom+xml'
+    config['serializers']['application/atom+xml'] = ['atom.atom', 'application/atom+xml; charset=UTF-8']
+    config['serializers']['text/html'] = ['atom.htmlatom', 'text/html; charset=UTF-8']
     app = load_app(host, port, filename, [
         Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
         ])

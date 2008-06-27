@@ -24,7 +24,7 @@ class Challenger(ChallengerInterface):
         except KeyError:
             return self._send_cookie_form(environ, start_response, redirect)
 
-    def _send_cookie_form(self, environ, start_response, redirect, status='201 OK',  message=''):
+    def _send_cookie_form(self, environ, start_response, redirect, status='200 OK',  message=''):
         start_response(status, [
             ('Content-Type', 'text/html')
             ])

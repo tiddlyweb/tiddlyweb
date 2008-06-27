@@ -24,7 +24,10 @@ class Negotiate(object):
             self._figure_type_for_other(environ)
 
     def _figure_type_for_other(self, environ):
-        environ['tiddlyweb.type'] = environ.get('CONTENT_TYPE')
+        content_type = environ.get('CONTENT_TYPE', None)
+        if content_type:
+            content_type = content_type.split(';')[0]
+            environ['tiddlyweb.type'] = content_type
 
     def _figure_type_for_get(self, environ):
         accept_header = environ.get('HTTP_ACCEPT')
