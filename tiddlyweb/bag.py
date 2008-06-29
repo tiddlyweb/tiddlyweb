@@ -31,6 +31,9 @@ class Policy(object):
             return True
         if len(user_list) == 1 and user_list[0] == 'NONE':
             raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
+        if len(user_list) == 1 and user_list[0] == 'ANY':
+            if user_sign is not 'GUEST':
+                return True
         if user_sign in self.__getattribute__(constraint):
             return True
         if user_sign == 'GUEST':

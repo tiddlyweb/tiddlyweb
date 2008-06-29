@@ -59,6 +59,12 @@ def test_policy_allows():
     assert policy.allows('barnabas', 'delete')
     py.test.raises(ForbiddenError, 'policy.allows("barnabas", "manage")')
 
+def test_policy_any():
+    policy = Policy(read=['ANY'],write=['ANY'])
+    assert policy.allows('randomer', 'read')
+    assert policy.allows('boom', 'write')
+    py.test.raises(UserRequiredError, 'policy.allows("GUEST", "read")')
+
 def test_bag_policy():
 
     bag = Bag('policy_tester')
