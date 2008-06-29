@@ -48,8 +48,8 @@ def google_app():
     config['extension_types']['atom'] = 'application/atom+xml'
     config['serializers']['application/atom+xml'] = ['atom.atom', 'application/atom+xml; charset=UTF-8']
     config['serializers']['text/html'] = ['atom.htmlatom', 'text/html; charset=UTF-8']
-    config['extractors'].append('google_user_extractor')
-    config['auth_systems'].append('google_user_challenger')
+    config['extractors'] = ['google_user_extractor']
+    config['auth_systems'] = ['google_user_challenger']
 
     app = load_app(host, port, filename, [
         Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
