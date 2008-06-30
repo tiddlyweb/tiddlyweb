@@ -90,3 +90,8 @@ class Store(object):
     def list_bags(self):
         list_func = getattr(self.storage, 'list_bags')
         return list_func()
+
+    def search(self, search_query):
+        list_func = getattr(self.storage, 'search')
+        return list_func(search_query)
+

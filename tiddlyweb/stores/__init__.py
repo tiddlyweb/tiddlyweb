@@ -54,3 +54,14 @@ class StorageInterface(object):
 
     def list_tiddler_revisions(self, tiddler):
         pass
+
+    def tiddler_written(self, tiddler):
+        """
+        Notify the system that a tiddler has been stored.
+        This is done to cause search system to update or
+        otherwise deal with new content.
+        """
+        pass
+
+    def search(self, search_query):
+        pass
