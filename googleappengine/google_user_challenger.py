@@ -7,7 +7,7 @@ from tiddlyweb.web.http import HTTP302
 
 class Challenger(ChallengerInterface):
 
-    def challenge(self, environ, start_response):
+    def challenge_get(self, environ, start_response):
         request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
         redirect = request_info.get('tiddlyweb_redirect', [''])[0]
         

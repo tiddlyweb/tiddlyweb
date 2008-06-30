@@ -4,9 +4,9 @@ The ChallengerInterface class.
 
 class ChallengerInterface(object):
     """
-    An interface for challenge users for login
+    An interface for challenging users for login
     purposes. The chalenger basically does whatever
-    it want and _may_ result in doing some to 
+    it wants and _may_ result in doing something to 
     a response that causes the user's next request
     to pass an extractor.
 
@@ -20,5 +20,8 @@ class ChallengerInterface(object):
     to completion.
     """
 
-    def challenge(self, environ, start_response):
+    def challenge_get(self, environ, start_response):
+        pass
+
+    def challenge_post(self, environ, start_response):
         pass

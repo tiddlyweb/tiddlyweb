@@ -24,7 +24,15 @@ def base(environ, start_response):
     return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in \
             [_challenger_url(environ, system)  for system in auth_systems]]
 
-def challenge(environ, start_response):
+def challenge_get(environ, start_response):
+    challenger = _determine_challenger(environ, start_response)
+    return challenger.challenge_get(environ, start_response)
+
+def challenge_post(environ, start_response):
+    challenger = _determine_challenger(environ, start_response)
+    return challenger.challenge_post(environ, start_response)
+
+def _determine_challenger(environ, start_response):
     challenger_name = environ['wsgiorg.routing_args'][1]['challenger']
     # If the challenger is not in config, do a 404, we don't want
     # to import any old code.
@@ -38,5 +46,4 @@ def challenge(environ, start_response):
             imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
         except ImportError, e:
             raise HTTP404, 'Unable to import challenger %s: %s' % (challenger_name, e)
-    challenger = imported_module.Challenger()
-    return challenger.challenge(environ, start_response)
+    return imported_module.Challenger()

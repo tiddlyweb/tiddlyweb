@@ -71,9 +71,11 @@ def test_simple_cookie_redirect():
     raised = 0
     try:
         http = httplib2.Http()
-        response, content = http.request(\
-                'http://our_test_domain:8001/challenge/cookie_form?user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
-                method='GET', redirections=0)
+        response, content = http.request(
+                'http://our_test_domain:8001/challenge/cookie_form',
+                method='POST',
+                body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+                redirections=0)
     except httplib2.RedirectLimit, e:
         raised = 1
 

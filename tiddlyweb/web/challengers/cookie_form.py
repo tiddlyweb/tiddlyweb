@@ -14,8 +14,13 @@ from sha import sha
 
 class Challenger(ChallengerInterface):
 
-    def challenge(self, environ, start_response):
+    def challenge_get(self, environ, start_response):
         request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
+        redirect = request_info.get('tiddlyweb_redirect', [''])[0]
+        return self._send_cookie_form(environ, start_response, redirect)
+
+    def challenge_post(self, environ, start_response):
+        request_info = cgi.parse_qs(environ['wsgi.input'].read())
         redirect = request_info.get('tiddlyweb_redirect', [''])[0]
         
         try:
@@ -70,8 +75,3 @@ Password <input type="password" name="password" size="40" />
         except NoUserError:
             pass
         return self._send_cookie_form(environ, start_response, redirect, status, 'User or Password no good')
-
-
-
-
-

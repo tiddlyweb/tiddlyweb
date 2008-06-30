@@ -125,4 +125,5 @@
     GET tiddlyweb.web.challenge:base
 
 /challenge/{challenger:segment}
-    GET tiddlyweb.web.challenge:challenge
+    GET tiddlyweb.web.challenge:challenge_get
+    POST tiddlyweb.web.challenge:challenge_post
