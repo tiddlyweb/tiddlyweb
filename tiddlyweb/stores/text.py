@@ -202,6 +202,8 @@ class Store(StorageInterface):
         bags = self._files_in_dir(path)
         found_tiddlers = []
 
+        query = search_query.lower()
+
         for bagname in bags:
             tiddler_dir = os.path.join(self._store_root(), 'bags', bagname, 'tiddlers')
             tiddler_files = self._files_in_dir(tiddler_dir)
@@ -211,7 +213,7 @@ class Store(StorageInterface):
                 try:
                     tiddler_file = open(os.path.join(tiddler_dir, tiddler_name, str(revision_id)))
                     for line in tiddler_file:
-                        if search_query in line:
+                        if query in line.lower():
                             found_tiddlers.append(tiddler)
                             break
                 except OSError, e:

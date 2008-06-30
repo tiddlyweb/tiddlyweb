@@ -59,17 +59,22 @@ class Bag(dict):
 
     default_policy = Policy()
 
-    def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False):
+    def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False, searchbag=False):
         dict.__init__(self)
         self.name = name
         self.policy = policy
         self.tmpbag = tmpbag
         self.revbag = revbag
+        self.searchbag = searchbag
         self.order = []
         self.store = None
 
     def _tiddler_key(self, tiddler):
-        return '%s.%s' % (tiddler.title, tiddler.revision)
+        if self.searchbag:
+            return '%s.%s.%s' % (tiddler.bag, tiddler.title, tiddler.revision)
+        if self.revbag:
+            return '%s.%s' % (tiddler.title, tiddler.revision)
+        return '%s' % (tiddler.title)
 
     def _tiddler_copy(self, tiddler):
         if self.tmpbag:

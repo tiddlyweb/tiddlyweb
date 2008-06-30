@@ -40,6 +40,9 @@ class HTTP304(HTTPException):
     def output(self):
         return ['']
 
+class HTTP400(HTTPException):
+    status = '400 Bad Request'
+
 class HTTP401(HTTPException):
     status = '401 Unauthorized'
 

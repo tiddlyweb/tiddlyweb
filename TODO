@@ -9,6 +9,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Do some testing and fixing to enable Unicode Tiddler titles.
 * Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
 * /search that leads search_tiddlers on the store
 ** could be just a pass

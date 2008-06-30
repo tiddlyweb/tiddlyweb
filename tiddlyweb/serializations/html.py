@@ -83,6 +83,9 @@ class Serialization(SerializationInterface):
             else:
                 line = '<li><a href="/%s/%s/tiddlers/%s">%s</a></li>' % (base, base_link, urllib.quote(tiddler.title), tiddler.title)
             lines.append(line)
+        if bag.searchbag:
+            title = 'Found Tiddlers'
+            wiki_link = None
         output = "\n".join(lines)
         return """
 %s
@@ -94,11 +97,18 @@ class Serialization(SerializationInterface):
 </body></html>""" % (self._tiddler_list_header(title, wiki_link), output)
 
     def _tiddler_list_header(self, title, wiki_link):
+        if wiki_link:
+            return"""
+<html>
+<head><title>%s</title></head>
+<body>
+<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+""" % (title, '%s.wiki' % wiki_link)
         return"""
 <html>
 <head><title>%s</title></head>
-<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
-<body>""" % (title, '%s.wiki' % wiki_link)
+<body>
+""" % title
 
     def tiddler_as(self, tiddler):
         try:

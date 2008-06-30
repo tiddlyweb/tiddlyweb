@@ -12,7 +12,6 @@ class ForbiddenError(Exception):
 class UserRequiredError(Exception):
     pass
 
-
 class PermissionsExceptor(object):
 
     def __init__(self, application):

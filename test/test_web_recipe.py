@@ -12,7 +12,6 @@ import httplib2
 import simplejson
 
 from fixtures import muchdata, reset_textstore
-
 from tiddlyweb.store import Store
 
 def setup_module(module):

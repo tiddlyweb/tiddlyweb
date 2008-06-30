@@ -21,7 +21,8 @@ from tiddlyweb.serializations.html import Serialization as HTMLSerialization
 class Serialization(HTMLSerialization):
 
     def _tiddler_list_header(self, title, wiki_link):
-        return"""
+        if wiki_link:
+            return"""
 <html>
 <head>
 <title>%s</title>
@@ -30,3 +31,11 @@ class Serialization(HTMLSerialization):
 <body>
 <div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
 """ % (title, '%s.atom' % wiki_link, '%s.wiki' % wiki_link)
+        return"""
+<html>
+<head>
+<title>%s</title>
+</head>
+<body>
+""" % title
+

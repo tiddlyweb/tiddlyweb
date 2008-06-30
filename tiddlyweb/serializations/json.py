@@ -22,7 +22,7 @@ class Serialization(SerializationInterface):
         List the tiddlers in a bag as json.
         We will likely want to expand this someday.
         """
-        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision} for tiddler in bag.list_tiddlers()])
+        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision, 'bag':tiddler.bag} for tiddler in bag.list_tiddlers()])
 
     def recipe_as(self, recipe):
         """

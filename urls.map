@@ -37,7 +37,7 @@
 # Supports GET:
 #   text/plain: a list of tiddler names
 #   text/html: a list of links to the tidderls _in their bag_
-#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ...}
+#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 #   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
 #
 # TODO: PUT a tiddler into this location and have the bag determined
@@ -67,7 +67,7 @@
 #   text/plain: a list of bag name
 #   text/html: a list of bag names linking to the the list of tidders in the
 #              bag
-#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ...}
+#   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 /bags[.{format}]
     GET tiddlyweb.web.bag:list
 
@@ -118,12 +118,17 @@
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
     GET tiddlyweb.web.tiddler:get_revisions
 
-# the user challenge mechanism
+# a search mechanism: returns a list of tiddlers based on
+# the query passed in on the query string
+/search[.{format}]
+    GET tiddlyweb.web.search:get
 
+# the user challenge mechanism
 # at base this returns a list of the available challenge mechanism
 /challenge
     GET tiddlyweb.web.challenge:base
 
+# one of potentially many challengers.
 /challenge/{challenger:segment}
     GET tiddlyweb.web.challenge:challenge_get
     POST tiddlyweb.web.challenge:challenge_post
