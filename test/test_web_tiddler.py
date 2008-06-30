@@ -388,13 +388,6 @@ def test_get_tiddler_via_recipe_with_perms():
     assert response['status'] == '403'
     assert 'may not write' in content
 
-    _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
-    encoded_body = text_put_body.encode('UTF-8')
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='PUT', headers={'Content-Type': 'text/plain', 'Cookie': 'tiddlyweb_insecure_user=cdent'},
-            body=encoded_body)
-    assert response['status'] == '204'
-
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['nancy'])))
     encoded_body = text_put_body.encode('UTF-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',

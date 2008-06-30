@@ -11,7 +11,7 @@ Here for testing and development.
 import Cookie
 
 from tiddlyweb.web.extractors import ExtractorInterface
-from tiddlyweb.user import User
+from sha import sha
 
 class Extractor(ExtractorInterface):
 
@@ -20,14 +20,13 @@ class Extractor(ExtractorInterface):
             user_cookie = environ['HTTP_COOKIE']
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)
-            usersign = cookie['tiddlyweb_insecure_user'].value
-            user = User(usersign)
-            store = environ['tiddlyweb.store']
-            store.get(user)
-            return user.usersign
+            cookie_value = cookie['tiddlyweb_user'].value
+            secret = environ['tiddlyweb.config']['secret']
+            usersign, cookie_secret = cookie_value.split(':')
+
+            if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
+                return usersign
         except KeyError:
-            pass
-        except NoUserError:
             pass
         return False
 

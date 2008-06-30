@@ -24,7 +24,10 @@ config = {
             ],
         'auth_systems': [
             'cookie_form',
-            ]
+            ],
+        # XXX this should come from a file
+        'secret': 'this should come from a file',
+
         }
 """
 A dict explaining the scheme, host and port of our server.
