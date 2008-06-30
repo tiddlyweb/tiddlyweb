@@ -11,11 +11,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 * Do some testing and fixing to enable Unicode Tiddler titles.
 * Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
-* /search that leads search_tiddlers on the store
-** could be just a pass
-** search_tiddlers gets a free string, returns a list of Tiddlers, which the handler is required to filter for permissions.
-*** how the searching is done is up to the store and invisible to the rest of the system
-** create a tiddler_written() hook location in the store, for overrides
 * Adjust filter_string handling in queries so that it is a named argument, not just the straight QUERY_STRING.
 * DELETEing resources besides tiddlers.
 * PUT a full wiki to a recipe or bag name and have it decomposed (as in import)
