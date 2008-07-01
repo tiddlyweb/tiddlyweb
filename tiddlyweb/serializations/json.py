@@ -48,8 +48,7 @@ class Serialization(SerializationInterface):
 
     def as_bag(self, bag, input):
         """
-        Turn a JSON string into a bag. This is
-        _not_ symetric with bag_as.
+        Turn a JSON string into a bag.
         """
         info = simplejson.loads(input)
         if info['policy']:

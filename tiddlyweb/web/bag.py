@@ -13,7 +13,7 @@ from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
 from tiddlyweb.web import util as web
-from tiddlyweb.web.http import HTTP404, HTTP415
+from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -51,6 +51,25 @@ def get_tiddlers(environ, start_response):
         tmp_bag.add_tiddler(tiddler)
 
     return web.send_tiddlers(environ, start_response, tmp_bag)
+
+def import_wiki(environ, start_response):
+    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag = _get_bag(environ, bag_name)
+    content = environ['wsgi.input'].read()
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = bag
+
+        serializer.from_string(content)
+    except NoSerializationError:
+        raise HTTP415, 'Content type not supported: %s' % mime_type
+    except AttributeError, e:
+        raise HTTP400, 'Content malformed: %s' % e
+
+    start_response("204 No Content",
+            [('Location', '%s/tiddlers' % web.bag_url(environ, bag))])
+    return ['']
 
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
