@@ -28,7 +28,7 @@ class Challenger(ChallengerInterface):
             password = request_info['password'][0]
             return self._validate_and_redirect(environ, start_response, user, password, redirect)
         except KeyError:
-            return self._send_cookie_form(environ, start_response, redirect)
+            return self._send_cookie_form(environ, start_response, redirect, '401 Unauthorized')
 
     def _send_cookie_form(self, environ, start_response, redirect, status='200 OK',  message=''):
         start_response(status, [

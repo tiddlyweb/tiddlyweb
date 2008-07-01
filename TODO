@@ -9,8 +9,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
-* Do some testing and fixing to enable Unicode Tiddler titles.
-* Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
+* Unify filter string syntax on Jon's research.
 * Adjust filter_string handling in queries so that it is a named argument, not just the straight QUERY_STRING.
 * DELETEing resources besides tiddlers.
 * PUT a full wiki to a recipe or bag name and have it decomposed (as in import)
@@ -31,6 +30,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 * Tests for '..', '/', etc in title and name fields w/ store handling.
 * Rhino and Selenium based testing.
+* Do some testing and fixing to enable Unicode Tiddler titles.
 
 !Cleanliness, Documentation and Protocol Behavior
 
@@ -40,6 +40,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Client side issues and plugins
 
+* Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
 * Bag security policy authoring
 * Client side recipe and bag construction sets.
 * Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)

@@ -87,6 +87,20 @@ def test_simple_cookie_redirect():
     assert response['status'] == '200'
     assert 'i am tiddler 8' in content
 
+def test_malformed_post():
+    """
+    If we leave out some info in the post, 
+    we need to just see the form again.
+    """
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/challenge/cookie_form',
+            method='POST',
+            body='user=cdent&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+            redirections=0)
+    assert response['status'] == '401'
+    assert '<form' in content
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 
