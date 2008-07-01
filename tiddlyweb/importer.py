@@ -8,11 +8,13 @@ from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
 from tiddlyweb.tiddler import Tiddler
 
-def import_wiki(filename='wiki', bagname='wiki'):
+def import_wiki_file(filename='wiki', bagname='wiki'):
     f = codecs.open(filename, encoding='utf-8')
     wikitext = f.read()
     f.close()
+    return import_wiki(wikitext, bagname)
 
+def import_wiki(wikitext, bagname='wiki'):
     soup = BeautifulSoup(wikitext)
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')

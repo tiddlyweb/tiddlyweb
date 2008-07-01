@@ -60,10 +60,10 @@ def adduser(args):
 
 @_make_command('Import a Tiddlywiki html file into a bag: <filename> <bag name>')
 def imwiki(args):
-    from tiddlyweb.importer import import_wiki
+    from tiddlyweb.importer import import_wiki_file
     try:
         filename, bag_name = args[0:2]
-        import_wiki(filename, bag_name)
+        import_wiki_file(filename, bag_name)
     except IndexError:
         help()
     except ValueError:
