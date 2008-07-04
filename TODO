@@ -9,6 +9,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Move filter query string processing into middleware that is up a stage, so it can be in the environment and used throughout the application (e.g the html serialzation can know if a filter string is present when it makes * URLs). This fixes the "these tiddlers as a wiki" links.
 * Change outgoing wiki serialization so that it handles a few template variables for things like <title>, prehead, posthead, etc. (see: http://groups.google.com/group/TiddlyWikiDev/msg/4a3505c17caa81f4)
 * Fix json handling in GAE (the json module does not load). (via bentrem)
 * There are unicode issues in the GAE handling of html content. (via bentrem)
