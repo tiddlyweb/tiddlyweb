@@ -92,7 +92,7 @@ def test_get_bag_tiddler_list_html_default():
 
 def test_get_bag_tiddler_list_filtered():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt?tiddler8',
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt?filter=tiddler8',
             method='GET')
 
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'

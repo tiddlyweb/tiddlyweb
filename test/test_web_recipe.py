@@ -47,7 +47,7 @@ def test_get_recipe_txt():
             method='GET')
 
     assert response['status'] == '200'
-    assert '/bags/bag8/tiddlers?tiddler8' in content
+    assert '/bags/bag8/tiddlers?filter=tiddler8' in content
 
 def test_get_recipe_not():
     """
@@ -90,7 +90,7 @@ def test_get_recipe_tiddler_list():
 
 def test_get_recipe_tiddler_list_filtered_one():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddler8',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=tiddler8',
             method='GET')
 
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
@@ -99,7 +99,7 @@ def test_get_recipe_tiddler_list_filtered_one():
 
 def test_get_recipe_tiddler_list_filtered_empty():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?tiddlerfoo',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=tiddlerfoo',
             method='GET')
 
     assert response['status'] == '404'

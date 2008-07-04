@@ -5,6 +5,7 @@ produced by a recipe.
 """
 
 import urllib
+import cgi
 
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
@@ -31,7 +32,8 @@ def get(environ, start_response):
     return [content]
 
 def get_tiddlers(environ, start_response):
-    filter_string = urllib.unquote(environ['QUERY_STRING'])
+    request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
+    filter_string = request_info.get('filter', [''])[0]
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)

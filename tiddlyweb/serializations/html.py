@@ -44,7 +44,7 @@ class Serialization(SerializationInterface):
                 bag = bag.name
             line += '/bags/%s/tiddlers' % urllib.quote(bag)
             if filter:
-                line += '?%s' % urllib.quote(filter)
+                line += '?filter=%s' % urllib.quote(filter)
             line += '">bag: %s filter:%s</a></li>' % (bag, filter)
             lines.append(line)
         output = "\n".join(lines)
