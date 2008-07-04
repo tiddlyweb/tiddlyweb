@@ -15,6 +15,16 @@ nasty XML details.
 
 """
 
+import time
+import types
+import urllib
+import datetime
+import re
+import email.Utils
+
+from xml.sax.saxutils import XMLGenerator
+
+
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.serializations.html import Serialization as HTMLSerialization
 
@@ -83,7 +93,15 @@ class Serialization(HTMLSerialization):
                     (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
         description = self._tiddler_to_html(self._server_url(), tiddler_link, tiddler)
-        feed.add_item(title=tiddler.title, link=link, description=description)
+        feed.add_item(title=tiddler.title,
+                link=link,
+                description=description,
+                author_name=tiddler.modifier,
+                pubdate=self._tiddler_datetime(tiddler.modified)
+                )
+
+    def _tiddler_datetime(self, date_string):
+        return datetime.datetime(*(time.strptime(date_string, '%Y%m%d%H%M')[0:6]))
 
     def _server_url(self):
         try:
@@ -101,15 +119,6 @@ class Serialization(HTMLSerialization):
 """
 Atom feed generation from django.
 """
-
-import types
-import urllib
-import datetime
-import re
-import time
-import email.Utils
-
-from xml.sax.saxutils import XMLGenerator
 
 class SimplerXMLGenerator(XMLGenerator):
     def addQuickElement(self, name, contents=None, attrs=None):
