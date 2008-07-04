@@ -162,7 +162,7 @@ class Serialization(SerializationInterface):
 %s
 </div>
 </body></html>
-""" % (tiddler.title, urllib.quote('/%s?[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
+""" % (tiddler.title, urllib.quote('/%s?filter=[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
 
 class PostHook(object):
     def __init__(self):
