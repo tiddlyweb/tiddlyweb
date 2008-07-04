@@ -9,10 +9,11 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Change outgoing wiki serialization so that it handles a few template variables for things like <title>, prehead, posthead, etc. (see: http://groups.google.com/group/TiddlyWikiDev/msg/4a3505c17caa81f4)
+* Fix json handling in GAE (the json module does not load). (via bentrem)
+* There are unicode issues in the GAE handling of html content. (via bentrem)
 * Unify filter string syntax on Jon's research.
-* Adjust filter_string handling in queries so that it is a named argument, not just the straight QUERY_STRING.
 * DELETEing resources besides tiddlers.
-* PUT a full wiki to a recipe or bag name and have it decomposed (as in import)
 * add name fragments to arguments in filters
 * Authentication
 ** Policy decisions/flowchart of authentication handling.
@@ -23,7 +24,6 @@ If you think there should be something on this list, contact ChrisDent.
 ** S3 store
 ** sqlite store
 ** subversion store
-* Create a thing like /importer that has the test/importer.py sort of doing its thing.
 * Modification times and other metadata and header handling for bag and recipe entities.
 
 !Tests and assurancs
@@ -46,6 +46,7 @@ If you think there should be something on this list, contact ChrisDent.
 * Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)
 * Change Tiddly core so server.bag is an inherited field?
 * In SyncMachine pay attention to response codes from the web server in onGetTiddlerList and onPutTiddler, handle appropriately
+* Create a command line tool for creating bags and recipes on remote servers.
 
 !Moonbeams from Ponies of the Future
 
