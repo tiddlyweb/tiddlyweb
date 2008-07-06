@@ -1,25 +1,46 @@
 """
-A class and other thingies for a Tiddler.
+A module containing the Tiddler class and related functions.
 """
 
 from datetime import datetime
 
 def current_timestring():
+    """Translate 'now' into a TiddlyWiki conformat timestring."""
     dt = datetime.utcnow()
     return unicode(dt.strftime('%Y%m%d%H%M'))
 
 class Tiddler(object):
     """
-    A proper tiddler has the follow attributes:
-    title: the name of the tiddler
-    modifier: the name of the thing that edited the tiddler
-    modified: the last time it was edited
-    created: the time it was created
-    tags: the list of tags this tiddler has.
+    The universal content object in the TiddlyWiki
+    universe, corresponding to a Page in other wiki
+    systems. A Tiddler has text and some associated 
+    metadata. The text can be anything, but is usually
+    wikitext in some form, or Javascript code to be
+    used as a plugin.
 
-    created is going to take some diddling to get 
-    right. So we ignore it for now.
+    Tiddler is intentional just a container of data.
+    That is, it has no methods which change the state
+    of attributes in the Tiddler or manipulate the tiddler.
+    Changing the attributes is done by directly changing
+    the attributes. This is done to make the Tiddler
+    easier to store and serialize in a diversity of ways.
+    
+    A Tiddler has several attributes:
 
+    title: The name of the tiddler. Required.
+    modified: A string representing when this tiddler was
+             last changed. Defaults to now.
+    created: A string representing when this tiddler was
+            created.
+    tags: A list of strings that describe the tiddler.
+    text: The contents of the tiddler. A string.
+    revision: The revision of this tiddler. An int.
+    bag: The name of the bag in which this tiddler exists,
+         if any. Usually set by internal code.
+    recipe: The name of the recipe in which this tiddler exists,
+            if any. Usually set by internal code.
+    store: A reference to the Store object which retrieved
+           this tiddler from persistent storage.
     """
 
     __slots__ = ['title',
@@ -44,6 +65,11 @@ class Tiddler(object):
             recipe=None,
             revision=None,
             text=None):
+        """
+        Create a new Tiddler object.
+
+        A title is required to ceate a tiddler.
+        """
         self.title = title
         self.modifier = modifier
         self.modified = modified
@@ -59,8 +85,8 @@ class Tiddler(object):
 
     def __repr__(self):
         """
-        Include the name of the tiddler in the repr.
-        This is nice for debugging.
+        Make the printed tiddler include the title so we
+        can distinguish between them while debugging.
         """
         return self.title + object.__repr__(self)
 
