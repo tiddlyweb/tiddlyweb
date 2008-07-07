@@ -24,6 +24,7 @@ config = {
             ],
         'auth_systems': [
             'cookie_form',
+            'openid',
             ],
         # XXX this should come from a file
         'secret': 'this should come from a file',

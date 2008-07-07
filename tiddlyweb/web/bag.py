@@ -57,7 +57,8 @@ def get_tiddlers(environ, start_response):
 def import_wiki(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag = _get_bag(environ, bag_name)
-    content = environ['wsgi.input'].read()
+    length = environ['CONTENT_LENGTH']
+    content = environ['wsgi.input'].read(int(length))
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)

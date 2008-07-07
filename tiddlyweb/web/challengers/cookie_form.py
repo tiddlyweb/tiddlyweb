@@ -20,7 +20,7 @@ class Challenger(ChallengerInterface):
         return self._send_cookie_form(environ, start_response, redirect)
 
     def challenge_post(self, environ, start_response):
-        request_info = cgi.parse_qs(environ['wsgi.input'].read())
+        request_info = cgi.parse_qs(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         redirect = request_info.get('tiddlyweb_redirect', [''])[0]
         
         try:
@@ -41,7 +41,7 @@ class Challenger(ChallengerInterface):
 <body>
 <pre>
 %s
-<form action="" method="GET">
+<form action="" method="POST">
 User: <input name="user" size="40" />
 Password <input type="password" name="password" size="40" />
 <input type="hidden" name="tiddlyweb_redirect" value="%s" />

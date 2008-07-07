@@ -108,3 +108,29 @@ def _put_policy(bag_name, policy_dict):
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
+
+def test_openid():
+    """
+    An incomplete test of the openid implementation.
+    This test confirms that our server will send a redirect
+    as expected, but that's about it.
+    """
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/challenge/openid?tiddlyweb_redirect=http://www.example.com/',
+            method='GET')
+
+    assert response['status'] == '200'
+    assert 'name="openid"' in content
+
+    raised = 0
+    try:
+        response, content = http.request(
+                'http://our_test_domain:8001/challenge/openid',
+                method='POST',
+                body='openid=cdent.livejournal.com&tiddlyweb_redirect=http://www.example.com/',
+                redirections=0)
+    except httplib2.RedirectLimit, e:
+        raised = 1
+    assert raised
+    assert e.response['status'] == '303'
