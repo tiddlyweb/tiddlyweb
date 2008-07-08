@@ -68,10 +68,10 @@ class Serialization(HTMLSerialization):
 
     def tiddler_as(self, tiddler):
         if tiddler.recipe:
-            link = u'%srecipes/%s/tiddler/%s' % \
+            link = u'%srecipes/%s/tiddlers/%s' % \
                     (self._server_url(), urllib.quote(tiddler.recipe), urllib.quote(tiddler.title))
         else:
-            link = u'%sbags/%s/tiddler/%s' % \
+            link = u'%sbags/%s/tiddlers/%s' % \
                     (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
         feed = Atom1Feed(
                 title=u'%s' % tiddler.title,
@@ -85,11 +85,11 @@ class Serialization(HTMLSerialization):
     def _add_tiddler_to_feed(self, feed, tiddler):
         if tiddler.recipe:
             tiddler_link = 'recipes/%s/tiddlers' % tiddler.recipe
-            link = u'%srecipes/%s/tiddler/%s' % \
+            link = u'%srecipes/%s/tiddlers/%s' % \
                     (self._server_url(), urllib.quote(tiddler.recipe), urllib.quote(tiddler.title))
         else:
             tiddler_link = 'bags/%s/tiddlers' % tiddler.bag
-            link = u'%sbags/%s/tiddler/%s' % \
+            link = u'%sbags/%s/tiddlers/%s' % \
                     (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
         description = self._tiddler_to_html(self._server_url(), tiddler_link, tiddler)
