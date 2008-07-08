@@ -45,18 +45,23 @@ class Challenger(ChallengerInterface):
         parsed_return_to = cgi.parse_qs(request_info['openid.return_to'][0])
         openid_server = parsed_return_to['openid_server'][0]
         redirect = parsed_return_to['tiddlyweb_redirect'][0]
-        post_data = urllib.urlencode({
+        data = {
             'openid.mode': 'check_authentication',
+            'openid.sig': request_info['openid.sig'][0],
             'openid.signed': request_info['openid.signed'][0],
             'openid.assoc_handle': request_info['openid.assoc_handle'][0],
-            'openid.sig': request_info['openid.sig'][0],
-            'openid.identity': request_info['openid.identity'][0],
-            'openid.return_to': request_info['openid.return_to'][0],
-            })
+            }
+        for item in request_info['openid.signed'][0].split(','):
+            if item == 'mode' or item == 'sig' or item == 'signed' or item == 'assoc_handle':
+                continue
+            key = 'openid.%s' % item
+            data[key] = request_info[key][0]
+        post_data = urllib.urlencode(data)
+
         response = urllib.urlopen(openid_server, post_data).read()
 
         if 'is_valid:true' in response:
-            usersign = request_info['openid.identity'][0]
+            usersign = parsed_return_to['usersign'][0]
             if 'http' in usersign:
                 usersign = usersign.split('://', 2)[1]
             uri = '%s%s' % (web.server_base_url(environ), redirect)
@@ -70,8 +75,7 @@ class Challenger(ChallengerInterface):
                 ('Location', uri)
                 ])
             return [uri]
-        start_response('200 OK', [])
-        return [response]
+        return self._send_openid_form(environ, start_response, redirect, status='401 Unauthorized', message=response)
 
     def _send_openid_form(self, environ, start_response, redirect, status='200 OK', message=''):
         start_response(status, [
@@ -106,10 +110,16 @@ OpenID: <input name="openid" size="60" />
             return self._send_openid_form(
                     environ, start_response, redirect,
                     message='Unable to find openid server')
+        
+        original_openid = openid
+        try: 
+            openid = soup.find('link', rel='openid.delegate')['href']
+        except TypeError:
+            pass
 
         request_uri = '%s?openid.mode=checkid_setup&openid.identity=%s&openid.return_to=%s' \
                 % (link, urllib.quote(openid),
-                        urllib.quote(self._return_to(environ, redirect,link)))
+                        urllib.quote(self._return_to(environ, redirect, link, original_openid)))
         
         start_response('303 See Other', [
             ('Location', request_uri)
@@ -117,15 +127,9 @@ OpenID: <input name="openid" size="60" />
 
         return []
 
-    def _return_to(self, environ, redirect, link):
-        return '%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s&openid_server=%s' \
-                % (web.server_base_url(environ), self._nonce(), redirect, link)
+    def _return_to(self, environ, redirect, link, usersign):
+        return '%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s&openid_server=%s&usersign=%s' \
+                % (web.server_base_url(environ), self._nonce(), redirect, link, usersign)
 
     def _nonce(self):
         return ''.join([random.choice('ABCDEFGHIJHKLMNOPQRSTUVWXYZ') for x in xrange(8)])
-
-
-
-
-
-
