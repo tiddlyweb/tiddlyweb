@@ -9,6 +9,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Support unicode tiddler.title, recipe.name and bag.name. This is harder than it seemed at first glance.
 * Support merging config data from a file to overload tiddlyweb.config.
 * Support for skinny tiddlers and lazy loading.
 * Move filter query string processing into middleware that is up a stage, so it can be in the environment and used throughout the application (e.g the html serialzation can know if a filter string is present when it makes * URLs). This fixes the "these tiddlers as a wiki" links.
@@ -27,6 +28,7 @@ If you think there should be something on this list, contact ChrisDent.
 ** subversion store
 * Modification times and other metadata and header handling for bag and recipe entities.
 * py2app and py2exe versions for one click installation on OS X and Windows.
+* Maybe use mimeparse for accept and content-type header handling: http://code.google.com/p/mimeparse/
 
 !Tests and assurancs
 
