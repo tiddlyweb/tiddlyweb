@@ -9,6 +9,7 @@ import time
 import urllib
 
 from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.auth import PermissionsExceptor, ForbiddenError
 from tiddlyweb.web.http import HTTPExceptor
@@ -86,7 +87,7 @@ def default_app(hostname, port, filename):
     EncodeUTF8: encode internal unicode data as UTF-8 output.
     SimpleLog: write a log of activity
     """
-    return load_app(hostname, port, filename, [Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
+    return load_app(hostname, port, filename, [Negotiate, UserExtract, StoreSet, Query, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog])
 
 class Configurator(object):
     """

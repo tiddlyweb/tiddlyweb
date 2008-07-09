@@ -24,6 +24,7 @@
 from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract, Configurator, config
 from tiddlyweb.auth import PermissionsExceptor
 from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.query import Query
 from tiddlyweb.web.http import HTTPExceptor
 
 import wsgiref.handlers
@@ -52,7 +53,7 @@ def google_app():
     config['auth_systems'] = ['google_user_challenger']
 
     app = load_app(host, port, filename, [
-        Negotiate, UserExtract, StoreSet, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
+        Negotiate, UserExtract, StoreSet, Query, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
         ])
     return ScriptCleanup(app)
 

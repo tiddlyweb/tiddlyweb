@@ -12,6 +12,7 @@ from tiddlyweb.bag import Bag
 from tiddlyweb.store import Store, NoRecipeError
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
+from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 
@@ -32,8 +33,7 @@ def get(environ, start_response):
     return [content]
 
 def get_tiddlers(environ, start_response):
-    request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-    filter_string = request_info.get('filter', [''])[0]
+    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
@@ -66,7 +66,7 @@ def get_tiddlers(environ, start_response):
         tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
 
-    return web.send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tmp_bag)
 
 def list(environ, start_response):
     store = environ['tiddlyweb.store']

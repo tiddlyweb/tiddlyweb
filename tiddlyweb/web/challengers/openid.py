@@ -18,11 +18,10 @@ from tiddlyweb.web.challengers import ChallengerInterface
 class Challenger(ChallengerInterface):
 
     def challenge_get(self, environ, start_response):
-        request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-        redirect = request_info.get('tiddlyweb_redirect', ['/'])[0]
-        openid_mode = request_info.get('openid.mode', [''])[0]
+        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect',['/'])[0]
+        openid_mode = environ['tiddlyweb.query'].get('openid.mode',[None])[0]
 
-        if len(openid_mode):
+        if openid_mode:
             if openid_mode == 'id_res':
                 return self._handle_server_response(environ, start_response)
             if openid_mode == 'cancel':
@@ -41,7 +40,7 @@ class Challenger(ChallengerInterface):
             return self._send_openid_form(environ, start_response, redirect, 'Enter an OpenID')
 
     def _handle_server_response(self, environ, start_response):
-        request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
+        request_info = environ['tiddlyweb.query']
         parsed_return_to = cgi.parse_qs(request_info['openid.return_to'][0])
         openid_server = parsed_return_to['openid_server'][0]
         redirect = parsed_return_to['tiddlyweb_redirect'][0]

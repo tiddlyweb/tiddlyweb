@@ -14,6 +14,7 @@ from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
 from tiddlyweb.web import util as web
+from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
 def get(environ, start_response):
@@ -37,8 +38,7 @@ def get(environ, start_response):
     return [content]
 
 def get_tiddlers(environ, start_response):
-    request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-    filter_string = request_info.get('filter', [''])[0]
+    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
 
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag = _get_bag(environ, bag_name)
@@ -52,7 +52,7 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
 
-    return web.send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tmp_bag)
 
 def import_wiki(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']

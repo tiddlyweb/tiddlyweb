@@ -10,7 +10,7 @@ class Negotiate(object):
 
     def __call__(self, environ, start_response, exc_info=None):
         self.figure_type(environ)
-        return self.application(environ,start_response)
+        return self.application(environ, start_response)
 
     def figure_type(self, environ):
         """

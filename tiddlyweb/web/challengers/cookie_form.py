@@ -15,13 +15,12 @@ from sha import sha
 class Challenger(ChallengerInterface):
 
     def challenge_get(self, environ, start_response):
-        request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-        redirect = request_info.get('tiddlyweb_redirect', [''])[0]
+        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect',['/'])[0]
         return self._send_cookie_form(environ, start_response, redirect)
 
     def challenge_post(self, environ, start_response):
         request_info = cgi.parse_qs(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
-        redirect = request_info.get('tiddlyweb_redirect', [''])[0]
+        redirect = request_info.get('tiddlyweb_redirect', ['/'])[0]
         
         try:
             user = request_info['user'][0]

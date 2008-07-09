@@ -36,10 +36,8 @@ def test_post_wiki_to_bag():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.wiki',
             method='GET')
 
-    print content
     response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
-    print content
 
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/bags/wikibag/tiddlers'
@@ -49,6 +47,5 @@ def test_post_not_wiki_to_bag():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
-    print content
 
     assert response['status'] == '400'

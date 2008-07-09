@@ -11,6 +11,7 @@ from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP403, HTTP304
 from tiddlyweb import control
 from tiddlyweb.web import util as web
+from tiddlyweb.web.tiddlers import send_tiddlers
 
 def get(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
@@ -209,7 +210,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
         # If a tiddler is not present in the store.
         raise HTTP404, 'tiddler %s not found, %s' % (tiddler.title, e)
 
-    return web.send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tmp_bag)
 
 def _tiddler_etag(tiddler):
     return str('%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision))

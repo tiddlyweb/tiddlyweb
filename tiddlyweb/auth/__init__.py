@@ -5,6 +5,7 @@ Routines for managing the handling of authN and authZ.
 import urllib
 
 from tiddlyweb.web.http import HTTP403, HTTP302
+from tiddlyweb.web.util import server_base_url
 
 class ForbiddenError(Exception):
     pass
@@ -29,7 +30,7 @@ class PermissionsExceptor(object):
             request. Otherwise we're in for major confusion
             on dealing with redirects and the like in 
             scripts and javascript, where follow 
-            behavior is confused.
+            behavior is inconsistent.
             """
             if environ['REQUEST_METHOD'] == 'GET':
                 url = self._challenge_url(environ)
@@ -37,15 +38,10 @@ class PermissionsExceptor(object):
             raise HTTP403, e
 
     def _challenge_url(self, environ):
-        scheme = environ['wsgi.url_scheme']
-        host = environ.get('HTTP_HOST', '')
         script_name = environ.get('SCRIPT_NAME', '')
         query_string = environ.get('QUERY_STRING', None)
         redirect = script_name
         if query_string:
             redirect += '?%s' % query_string
         redirect = urllib.quote(redirect)
-        return '%s://%s/challenge?tiddlyweb_redirect=%s' % (scheme, host, redirect)
-
-
-
+        return '%s/challenge?tiddlyweb_redirect=%s' % (server_base_url(environ), redirect)

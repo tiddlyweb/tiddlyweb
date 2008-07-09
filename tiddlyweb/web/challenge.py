@@ -6,10 +6,7 @@ from tiddlyweb.web.http import HTTP401, HTTP404
 from tiddlyweb.web.util import server_base_url
 
 def _challenger_url(environ, system):
-    scheme = environ['wsgi.url_scheme']
-    host = environ.get('HTTP_HOST', '')
-    request_info = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-    redirect = request_info.get('tiddlyweb_redirect', [''])[0]
+    redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect',[''])[0]
     if len(redirect):
         redirect = '?tiddlyweb_redirect=%s' % redirect
     else:

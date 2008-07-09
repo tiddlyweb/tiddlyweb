@@ -8,14 +8,14 @@ from tiddlyweb.web.http import HTTP400
 from tiddlyweb.bag import Bag
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
 from tiddlyweb.web import util as web
+from tiddlyweb.web.tiddlers import send_tiddlers
 
 def get(environ, start_response):
     try:
-        request_info = cgi.parse_qs(environ['QUERY_STRING'])
-        search_query = request_info['q'][0]
-    except IndexError:
-        raise HTTP400, 'query string required'
+        search_query = environ['tiddlyweb.query']['q'][0]
     except KeyError:
+        raise HTTP400, 'query string required'
+    except IndexError:
         raise HTTP400, 'query string required'
     
     store = environ['tiddlyweb.store']
@@ -42,4 +42,4 @@ def get(environ, start_response):
         except UserRequiredError:
             pass
 
-    return web.send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tmp_bag)
