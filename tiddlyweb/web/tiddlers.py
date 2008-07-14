@@ -1,6 +1,6 @@
 
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp
+from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp, datetime_from_http_date
 from tiddlyweb.web.http import HTTP404, HTTP304
 
 def send_tiddlers(environ, start_response, bag):
