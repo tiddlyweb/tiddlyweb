@@ -25,4 +25,3 @@ class Query(object):
 
     def extract_query(self, environ):
         environ['tiddlyweb.query'] = cgi.parse_qs(environ.get('QUERY_STRING', ''))
-        print 'query ', environ['tiddlyweb.query']
