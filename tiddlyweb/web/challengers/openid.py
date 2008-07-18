@@ -2,7 +2,7 @@
 A very raw implementation of an openid
 challenger that does checkid_setup.
 
-Is OpenID 1. Does not support delegation.
+Is OpenID 1.
 """
 import cgi
 import Cookie

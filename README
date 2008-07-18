@@ -22,6 +22,7 @@ REQUIREMENTS:
 * Python 2.4 or 2.5
 * selector: http://lukearno.com/projects/selector/
 * simplejson: http://undefined.org/python/#simplejson
+* BeautifulSoup (for importing wikis): http://www.crummy.com/software/BeautifulSoup/
 
 OPTIONAL:
 
