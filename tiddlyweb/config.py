@@ -1,7 +1,9 @@
+"""
+The System's Configuration, to be carried
+around in the environ. Eventually this
+be in a userside actual file.
+"""
 
-# The System's Configuration, to be carried
-# around in the environ. Eventually this
-# be in an actual file.
 config = {
         'server_store': ['text', {'store_root': 'store'}],
         'server_host': {},

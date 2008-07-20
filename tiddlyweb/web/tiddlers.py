@@ -1,3 +1,11 @@
+"""
+Routines related to sending a list of tiddlers out
+to the web, including sending those tiddlers and
+validating cache headers for list of tiddlers.
+
+These are important because this is what sends
+a TiddlyWiki out.
+"""
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp, datetime_from_http_date

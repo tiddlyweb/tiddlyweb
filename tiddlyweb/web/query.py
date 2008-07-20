@@ -3,18 +3,19 @@ WSGI Middleware that extracts CGI parameters
 from the QUERY_STRING and puts them in 
 tiddlyweb.query in the same structure that
 cgi.py users (dictionary of lists).
-
-We do this for "future expansion" and to 
-remove some duplication throughout the 
-code.
-
-Possible future expansion includes things like
-parameter filtering and what not.
 """
 
 import cgi
 
 class Query(object):
+    """
+    We do this for "future expansion" and to 
+    remove some duplication throughout the 
+    code.
+
+    Possible future expansion includes things like
+    parameter filtering and what not.
+    """
 
     def __init__(self, application):
         self.application = application

@@ -5,7 +5,9 @@ A module containing the Tiddler class and related functions.
 from datetime import datetime
 
 def current_timestring():
-    """Translate 'now' into a TiddlyWiki conformat timestring."""
+    """
+    Translate (now) into a TiddlyWiki conformat timestring.
+    """
     dt = datetime.utcnow()
     return unicode(dt.strftime('%Y%m%d%H%M'))
 
