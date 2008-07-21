@@ -69,3 +69,13 @@ def test_http_date_from_timestamp_invalid():
 def test_http_date_from_timestamp_pre_1900():
     timestamp = '108502281010'
     py.test.raises(ValueError, 'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
+
+def test_datetime_from_http_date():
+    timestamp = '200805231010'
+    datestring = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
+    datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
+    new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
+    assert '2008' in datestring
+    assert 'May' in datestring
+    assert new_timestamp == timestamp
+

@@ -21,6 +21,7 @@ from tiddlyweb.user import User
 
 authorization = b64encode('cdent:cowpig')
 bad_authorization = b64encode('cdent:cdent')
+no_user_authorization = b64encode('foop:foop')
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -333,6 +334,13 @@ def test_tiddler_bag_constraints():
     _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % bad_authorization},
+            body=encoded_body)
+    assert response['status'] == '403'
+
+    # fail when bad user info
+    _put_policy('unreadable', dict(policy=dict(read=['NONE'],write=['NONE'],create=['cdent'])))
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
+            method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % no_user_authorization},
             body=encoded_body)
     assert response['status'] == '403'
 

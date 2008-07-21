@@ -41,3 +41,7 @@ def test_user_password():
     assert user.check_password('cowpig'), 'correct password returns true'
     assert not user.check_password('pigcow'), 'bad password returns false'
 
+def test_empty_password():
+    user = User('ape')
+    assert not user.check_password('xow'), 'no password on user returns false'
+
