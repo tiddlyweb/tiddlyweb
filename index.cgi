@@ -11,6 +11,8 @@ can rename it if you like. Make sure the file is executable.
 In the same directory as index.cgi, make a copy of or synlink
 to the lib directory available in the TiddlyWeb code repo.
 
+Place a copy of urls.map in the same directory as index.cgi.
+
 If you are using the text store (you probably are) follow
 the instructions in COOKBOOK to make a text store directory
 structure somewhere. The directory hierarchy must be writable 
