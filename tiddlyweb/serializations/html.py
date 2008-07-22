@@ -42,7 +42,7 @@ class Serialization(SerializationInterface):
             line = '<li><a href="'
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '/bags/%s/tiddlers' % urllib.quote(bag)
+            line += '%s/bags/%s/tiddlers' % (self._server_prefix(), urllib.quote(bag))
             if filter:
                 line += '?filter=%s' % urllib.quote(filter)
             line += '">bag: %s filter:%s</a></li>' % (bag, filter)
@@ -64,24 +64,37 @@ class Serialization(SerializationInterface):
         """
         List the tiddlers in a bag as html.
         """
+        server_prefix = self._server_prefix()
         lines = []
         for tiddler in bag.list_tiddlers():
             if tiddler.recipe:
                 base = 'recipes'
                 base_link = urllib.quote(tiddler.recipe)
-                wiki_link = '/recipes/%s/tiddlers' % base_link
+                wiki_link = '%s/recipes/%s/tiddlers' % (server_prefix, base_link)
                 title = 'Tiddlers in Recipe %s' % tiddler.recipe
             else:
                 base = 'bags'
                 base_link = urllib.quote(tiddler.bag)
-                wiki_link = '/bags/%s/tiddlers' % base_link
+                wiki_link = '%s/bags/%s/tiddlers' % (server_prefix, base_link)
                 title = 'Tiddlers in Bag %s' % tiddler.bag
             if bag.revbag:
-                line = '<li><a href="/%s/%s/tiddlers/%s/revisions/%s">%s:%s</a></li>' % (base, base_link, urllib.quote(tiddler.title), tiddler.revision, tiddler.title, tiddler.revision)
+                line = '<li><a href="%s/%s/%s/tiddlers/%s/revisions/%s">%s:%s</a></li>' % (
+                        server_prefix,
+                        base,
+                        base_link,
+                        urllib.quote(tiddler.title),
+                        tiddler.revision,
+                        tiddler.title,
+                        tiddler.revision)
                 wiki_link += '/%s/revisions' % urllib.quote(tiddler.title)
                 title = 'Revisions of Tiddler %s' % tiddler.title
             else:
-                line = '<li><a href="/%s/%s/tiddlers/%s">%s</a></li>' % (base, base_link, urllib.quote(tiddler.title), tiddler.title)
+                line = '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
+                        server_prefix,
+                        base,
+                        base_link,
+                        urllib.quote(tiddler.title),
+                        tiddler.title)
             lines.append(line)
         if bag.searchbag:
             title = 'Found Tiddlers'
@@ -95,6 +108,11 @@ class Serialization(SerializationInterface):
 </ul>
 </div>
 </body></html>""" % (self._tiddler_list_header(title, wiki_link), output)
+
+    def _server_prefix(self):
+        config = self.environ.get('tiddlyweb.config', {})
+        print config.get('server_prefix')
+        return config.get('server_prefix', '')
 
     def _tiddler_list_header(self, title, wiki_link):
         if wiki_link:
@@ -144,6 +162,7 @@ class Serialization(SerializationInterface):
         return html
 
     def _tiddler_to_wikklyhtml(self, tiddler):
+        server_prefix = self._server_prefix()
         if tiddler.recipe:
             list_link = 'recipes/%s/tiddlers' % tiddler.recipe
             list_title = 'Recent Changes in Recipe %s' % tiddler.recipe
@@ -151,7 +170,8 @@ class Serialization(SerializationInterface):
             list_link = 'bags/%s/tiddlers' % tiddler.bag
             list_title = 'Recent Changes in Bag %s' % tiddler.bag
 
-        html = self._tiddler_to_html('/', list_link, tiddler)
+        html = self._tiddler_to_html('%s/' % server_prefix,
+                list_link, tiddler)
         return """
 <html>
 <head><title>%s</title></head>
@@ -162,7 +182,11 @@ class Serialization(SerializationInterface):
 %s
 </div>
 </body></html>
-""" % (tiddler.title, urllib.quote('/%s?filter=[sort[-modified]]' % list_link, safe='/?'), list_title, self._tiddler_div(tiddler).encode('utf-8'), html)
+""" % (tiddler.title,
+        urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
+        list_title,
+        self._tiddler_div(tiddler).encode('utf-8'),
+        html)
 
 class PostHook(object):
     def __init__(self):

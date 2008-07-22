@@ -10,6 +10,7 @@ import simplejson
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.bag import Bag
+from tiddlyweb.config import config
 
 from fixtures import bagfour
 
@@ -25,6 +26,12 @@ expected_html_string = """<ul>
 <li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerTwo">TiddlerTwo</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerThree">TiddlerThree</a></li>
+</ul>"""
+
+prefix_expected_html_string = """<ul>
+<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
+<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerTwo">TiddlerTwo</a></li>
+<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerThree">TiddlerThree</a></li>
 </ul>"""
 
 expected_html_revbag_string = """<ul>
@@ -62,6 +69,16 @@ def test_generated_html():
     string = html_serializer.list_tiddlers(bagfour)
 
     assert expected_html_string in string
+
+def test_generated_html_with_prefix():
+
+    new_config = config.copy()
+    new_config['server_prefix'] = '/salacious'
+    environ = {'tiddlyweb.config': new_config}
+    html_serializer = Serializer('html', environ)
+    string = html_serializer.list_tiddlers(bagfour)
+
+    assert prefix_expected_html_string in string
 
 def test_generated_wiki():
     wiki_serializer = Serializer('wiki')

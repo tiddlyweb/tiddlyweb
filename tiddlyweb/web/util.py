@@ -54,8 +54,13 @@ def server_base_url(environ):
         port = ''
     else:
         port = ':%s' % port
-    host = '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
+    host = '%s://%s%s%s' % (server_host['scheme'], server_host['host'], port, _server_prefix(environ))
     return host
+
+def _server_prefix(environ):
+    config = environ.get('tiddlyweb.config', {})
+    print config.get('server_prefix')
+    return config.get('server_prefix', '')
 
 def tiddler_url(environ, tiddler):
     """

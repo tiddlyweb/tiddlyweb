@@ -7,6 +7,7 @@ be in a userside actual file.
 config = {
         'server_store': ['text', {'store_root': 'store'}],
         'server_host': {},
+        'server_prefix': '',
         'extension_types': {
             'txt': 'text/plain',
             'html': 'text/html',
