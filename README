@@ -41,8 +41,13 @@ TODO: For tasks that need to be done.
 RUN: To run this installation in place with some sample data.
 TESTING: Information about the tests located in the test directory.
 COOKBOOK: A guide to how to setup a TiddlyWeb server with your own content.
+atom/README: An example of how to extend the system so it presents Atom feeds.
+googleappengine/README: An example of how to modify the system it works under
+    Google App Engine.
+index.cgi: A sample of how to make TiddlyWeb run as a CGI with a web server
+    such as Apache.
 
-If you have questions or contributions to make to this work, 
+If you have questions or contributions on making this work
 please post the TiddlyWikiDev group at google groups:
 
   http://groups.google.com/group/TiddlyWikiDev
