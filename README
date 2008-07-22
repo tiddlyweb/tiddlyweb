@@ -36,11 +36,11 @@ or is part of setuptools which you can install.
 
 See also:
 
-NOTES: For some comments on the implementation.
-TODO: For tasks that need to be done.
-RUN: To run this installation in place with some sample data.
-TESTING: Information about the tests located in the test directory.
-COOKBOOK: A guide to how to setup a TiddlyWeb server with your own content.
+docs/NOTES: For some comments on the implementation.
+docs/TODO: For tasks that need to be done.
+docs/RUN: To run this installation in place with some sample data.
+docs/TESTING: Information about the tests located in the test directory.
+docs/COOKBOOK: A guide to how to setup a TiddlyWeb server with your own content.
 atom/README: An example of how to extend the system so it presents Atom feeds.
 googleappengine/README: An example of how to modify the system it works under
     Google App Engine.

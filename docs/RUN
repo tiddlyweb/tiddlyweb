@@ -5,8 +5,8 @@ from a code checkout. Meaning you can give it a try if you like.
 = Requirements =
 
 * Python 2.4 or 2.5.
-* selector and simplejson must be installed where python
-  can find them (see the README file).
+* selector, simplejson and BeautifulSoup must be installed where
+  Python can find them (see the README file).
 
 Run 
 
