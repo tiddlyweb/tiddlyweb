@@ -59,7 +59,6 @@ def server_base_url(environ):
 
 def _server_prefix(environ):
     config = environ.get('tiddlyweb.config', {})
-    print config.get('server_prefix')
     return config.get('server_prefix', '')
 
 def tiddler_url(environ, tiddler):

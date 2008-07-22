@@ -111,7 +111,6 @@ class Serialization(SerializationInterface):
 
     def _server_prefix(self):
         config = self.environ.get('tiddlyweb.config', {})
-        print config.get('server_prefix')
         return config.get('server_prefix', '')
 
     def _tiddler_list_header(self, title, wiki_link):
