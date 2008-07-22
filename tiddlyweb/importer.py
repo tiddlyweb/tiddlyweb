@@ -13,7 +13,7 @@ from tiddlyweb.store import Store
 from tiddlyweb.tiddler import Tiddler
 
 def import_wiki_file(filename='wiki', bagname='wiki'):
-    f = codecs.open(filename, encoding='utf-8')
+    f = codecs.open(filename, encoding='utf-8', errors='replace')
     wikitext = f.read()
     f.close()
     return import_wiki(wikitext, bagname)

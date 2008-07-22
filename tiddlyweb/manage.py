@@ -64,9 +64,11 @@ def imwiki(args):
     try:
         filename, bag_name = args[0:2]
         import_wiki_file(filename, bag_name)
-    except IndexError:
+    except IndexError, e:
+        print "index error: %s" % e
         help()
-    except ValueError:
+    except ValueError, e:
+        print "value error: %s" % e
         help()
 
 @_make_command('Create or update a recipe with the recipe text on stdin: <recipe name>')
