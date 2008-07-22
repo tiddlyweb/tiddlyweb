@@ -9,8 +9,8 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Roles/groups in the user system (notably for 'ADMIN' type or group).
 * Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
-* Include instructions and capabilities for running under Apache (and other web servers).
 * Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
 * Put the WSGI middleware stack in tiddlyweb.config.
 * Support unicode tiddler.title, recipe.name and bag.name. This is harder than it seemed at first glance.
