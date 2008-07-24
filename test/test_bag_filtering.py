@@ -1,3 +1,8 @@
+"""
+Test that things work correctly when attempting to filter
+the contents of a bag.
+"""
+
 import sys
 sys.path.append('.')
 from tiddlyweb import filter

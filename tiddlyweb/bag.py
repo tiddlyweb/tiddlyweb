@@ -59,9 +59,10 @@ class Bag(dict):
 
     default_policy = Policy()
 
-    def __init__(self, name, policy=default_policy, tmpbag=False, revbag=False, searchbag=False):
+    def __init__(self, name, desc='', policy=default_policy, tmpbag=False, revbag=False, searchbag=False):
         dict.__init__(self)
         self.name = name
+        self.desc = desc
         self.policy = policy
         self.tmpbag = tmpbag
         self.revbag = revbag

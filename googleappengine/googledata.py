@@ -1,6 +1,5 @@
 """
-Simple functions for storing stuff as textfiles
-on the filesystem.
+A StorageInterface that stores in Google Data.
 """
 
 import logging
@@ -21,6 +20,7 @@ class GDRecipe(db.Model):
 
 class GDBag(db.Model):
     name = db.StringProperty(required=True)
+    desc = db.StringProperty()
     tiddlers = db.ListProperty(unicode)
 
 class GDTiddler(db.Model):
@@ -72,6 +72,7 @@ class Store(StorageInterface):
             if mem_bag is not None:
                 for tiddler_title in mem_bag.tiddlers:
                     bag.add_tiddler(Tiddler(tiddler_title))
+                bag.desc = mem_bag.desc
                 return bag
             logging.info('memcache miss on bag %s' % bag.name)
         except KeyError:
@@ -86,6 +87,7 @@ class Store(StorageInterface):
         bag_tiddler_query.bind(bag.name)
         
         bags_tiddlers = []
+        bag.desc = gdbag.desc
         for gdtiddler in bag_tiddler_query:
             tiddler = Tiddler(gdtiddler.title)
             bag.add_tiddler(tiddler)

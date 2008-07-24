@@ -20,6 +20,7 @@ def setup_module(module):
 
 def test_simple_put():
     store = Store('text')
+    bagone.desc = 'I enjoy being stored'
     store.put(bagone)
 
     assert os.path.exists('store/bags/bagone'), \
@@ -28,6 +29,9 @@ def test_simple_put():
     assert os.path.exists('store/bags/bagone/policy'), \
             'path %s should be created' \
             % 'store/bags/bagone/policy'
+    assert os.path.exists('store/bags/bagone/description'), \
+            'path %s should be created' \
+            % 'store/bags/bagone/description'
     assert os.path.exists('store/bags/bagone/tiddlers'), \
             'path %s should be created' \
             % 'store/bags/bagone/tiddlers'
@@ -51,6 +55,7 @@ def test_simple_get():
     assert bag.policy.delete == bagone.policy.delete
     assert bag.policy.manage == bagone.policy.manage
     assert bag.policy.owner == bagone.policy.owner
+    assert bag.desc == 'I enjoy being stored'
     
     the_tiddler = bag.list_tiddlers()[0]
     store.get(the_tiddler)

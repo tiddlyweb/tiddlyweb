@@ -43,7 +43,7 @@ class Serialization(SerializationInterface):
         policy_dict = {}
         for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
             policy_dict[key] = getattr(policy, key)
-        info = dict(policy=policy_dict)
+        info = dict(policy=policy_dict, desc=bag.desc)
         return simplejson.dumps(info)
 
     def as_bag(self, bag, input):
@@ -55,6 +55,7 @@ class Serialization(SerializationInterface):
             bag.policy = Policy()
             for key, value in info['policy'].items():
                 bag.policy.__setattr__(key, value)
+        bag.desc = info.get('desc', '')
         return bag
 
     def tiddler_as(self, tiddler):

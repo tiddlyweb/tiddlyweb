@@ -55,6 +55,7 @@ class Store(StorageInterface):
         for tiddler in tiddlers:
             bag.add_tiddler(Tiddler(title=tiddler))
 
+        bag.desc = self._read_bag_description(bag_path)
         bag.policy = self._read_policy(bag_path)
 
         return bag
@@ -69,6 +70,7 @@ class Store(StorageInterface):
         if not os.path.exists(tiddlers_dir):
             os.mkdir(tiddlers_dir)
 
+        self._write_bag_description(bag.desc, bag_path)
         self._write_policy(bag.policy, bag_path)
 
     def tiddler_delete(self, tiddler):
@@ -280,6 +282,15 @@ class Store(StorageInterface):
         tiddler.revision = tiddler_revision
         return tiddler
 
+    def _read_bag_description(self, bag_path):
+        desc_filename = os.path.join(bag_path, 'description')
+        if not os.path.exists(desc_filename):
+            return ''
+        desc_file = codecs.open(desc_filename, encoding='utf-8')
+        desc = desc_file.read()
+        desc_file.close()
+        return desc
+
     def _read_policy(self, bag_path):
         policy_filename = os.path.join(bag_path, 'policy')
         policy_file = codecs.open(policy_filename, encoding='utf-8')
@@ -324,13 +335,20 @@ class Store(StorageInterface):
     def _user_path(self, user):
         return os.path.join(self._store_root(), 'users', user.usersign)
 
+    def _write_bag_description(self, desc, bag_path):
+        desc_filename = os.path.join(bag_path, 'description')
+        self._write_string_to_file(desc_filename, desc)
+
     def _write_policy(self, policy, bag_path):
         policy_dict = {}
         for key in ['read','write','create','delete','manage','owner']:
             policy_dict[key] = policy.__getattribute__(key)
         policy_string = simplejson.dumps(policy_dict)
         policy_filename = os.path.join(bag_path, 'policy')
-        policy_file = codecs.open(policy_filename, 'w', encoding='utf-8')
-        policy_file.write(policy_string)
-        policy_file.close()
+        self._write_string_to_file(policy_filename, policy_string)
+
+    def _write_string_to_file(self, filename, content):
+        dest_file = codecs.open(filename, 'w', encoding='utf-8')
+        dest_file.write(content)
+        dest_file.close()
 

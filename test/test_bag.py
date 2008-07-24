@@ -9,7 +9,7 @@ in this case.
 
 import sys
 sys.path.append('.')
-from tiddlyweb.bag import Bag
+from tiddlyweb.bag import Bag, Policy
 
 import py.test
 import copy
@@ -94,3 +94,27 @@ def test_bag_remove():
 
 # trying to remove a tiddler that's not there gives a KeyError
     py.test.raises(KeyError, "bag.remove_tiddler(tiddlers[2])")
+
+def test_bag_has_policy():
+    """
+    Confirm a create bag gets a policy.
+    """
+
+    bag = Bag('heartfelt')
+    
+    assert bag.name == 'heartfelt'
+    assert type(bag.policy) == Policy
+   
+def test_bag_has_description():
+    """
+    Confirm a bag can set and use a description.
+    """
+
+    bag = Bag('hasbeen', desc='monkey puzzle')
+
+    assert bag.name == 'hasbeen'
+    assert bag.desc == 'monkey puzzle'
+
+    bag.desc = 'collapsing sideburns'
+    assert bag.desc == 'collapsing sideburns'
+

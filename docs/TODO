@@ -9,6 +9,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Add support for description field on bags and recipes.
 * Roles/groups in the user system (notably for 'ADMIN' type or group).
 * Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
 * Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
