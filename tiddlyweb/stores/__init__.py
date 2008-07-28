@@ -34,6 +34,9 @@ class StorageInterface(object):
     def bag_put(self, recipe):
         pass
 
+    def tiddler_delete(self, tiddler):
+        pass
+
     def tiddler_get(self, tiddler):
         pass
 
