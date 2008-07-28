@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+"""
+A quick script to post a TiddlyWiki file on local disk to a
+bag on a (possibly) remote TiddlyWeb server.
+
+Arg 1 is the URL of the bag. Arg 2 is the path of the wiki file.
+"""
+
+import urllib
+import sys
+import codecs
+import httplib
+
+def run(url, filename):
+    f = codecs.open(filename, encoding='utf-8', errors='replace')
+    wikitext = f.read()
+    f.close()
+    host, path = urllib.splithost(urllib.splittype(url)[1])
+    print host, path
+    conn = httplib.HTTPConnection(host)
+    conn.request('POST', path, wikitext, {'Content-Type': 'text/x-tiddlywiki'})
+    response = conn.getresponse()
+    print response.status
+
+if __name__ == '__main__':
+    run(sys.argv[1], sys.argv[2])
+
