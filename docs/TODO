@@ -9,13 +9,15 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
-* Add support for description field on bags and recipes.
+* Modification times and other metadata and header handling for bag and recipe entities.
+* Proper auth handling on bags and recipes. Who may create and modify them?
 * Roles/groups in the user system (notably for 'ADMIN' type or group).
-* Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
-* Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
-* Put the WSGI middleware stack in tiddlyweb.config.
+* Add support for description field on recipes.
 * Support unicode tiddler.title, recipe.name and bag.name. This is harder than it seemed at first glance.
 * Support merging config data from a file to overload tiddlyweb.config.
+* Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
+* Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
+* Put the WSGI middleware stack in tiddlyweb.config.
 * Support for skinny tiddlers and lazy loading.
 * Move filter query string processing into middleware that is up a stage, so it can be in the environment and used throughout the application (e.g the html serialzation can know if a filter string is present when it makes * URLs). This fixes the "these tiddlers as a wiki" links.
 * Change outgoing wiki serialization so that it handles a few template variables for things like <title>, prehead, posthead, etc. (see: http://groups.google.com/group/TiddlyWikiDev/msg/4a3505c17caa81f4)
@@ -23,15 +25,8 @@ If you think there should be something on this list, contact ChrisDent.
 * Unify filter string syntax on Jon's research.
 * DELETEing resources besides tiddlers.
 * add name fragments to arguments in filters
-* Authentication
-** Policy decisions/flowchart of authentication handling.
-** User registration concerns.
-** Client interaction with challengers (surviving redirects).
-* Additional stores
-** S3 store
-** sqlite store
-** subversion store
-* Modification times and other metadata and header handling for bag and recipe entities.
+* User registration concerns.
+* Additional stores: S3, sqlite, subversion, etc.
 * py2app and py2exe versions for one click installation on OS X and Windows.
 * Maybe use mimeparse for accept and content-type header handling: http://code.google.com/p/mimeparse/
 
