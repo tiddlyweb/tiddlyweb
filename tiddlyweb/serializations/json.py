@@ -22,7 +22,7 @@ class Serialization(SerializationInterface):
         List the tiddlers in a bag as json.
         We will likely want to expand this someday.
         """
-        return simplejson.dumps([{'title':tiddler.title, 'revision':tiddler.revision, 'bag':tiddler.bag} for tiddler in bag.list_tiddlers()])
+        return simplejson.dumps([self._tiddler_dict(tiddler) for tiddler in bag.list_tiddlers()])
 
     def recipe_as(self, recipe):
         """
@@ -59,9 +59,8 @@ class Serialization(SerializationInterface):
         return bag
 
     def tiddler_as(self, tiddler):
-        tiddler_dict = {}
-        for key in ['title', 'revision', 'modifier', 'created', 'modified', 'tags', 'text', 'bag']:
-            tiddler_dict[key] = getattr(tiddler, key, None)
+        tiddler_dict = self._tiddler_dict(tiddler)
+        tiddler_dict['text'] = tiddler.text
 
         return simplejson.dumps(tiddler_dict)
 
@@ -72,4 +71,12 @@ class Serialization(SerializationInterface):
                 setattr(tiddler, key, value)
 
         return tiddler
+
+    def _tiddler_dict(self, tiddler):
+        unwanted_keys = ['text', 'recipe', 'store']
+        wanted_keys = [attribute for attribute in tiddler.__slots__ if attribute not in unwanted_keys]
+        wanted_info = {}
+        for attribute in wanted_keys:
+            wanted_info[attribute] = getattr(tiddler, attribute)
+        return dict(wanted_info)
 

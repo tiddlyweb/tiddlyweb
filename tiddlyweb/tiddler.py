@@ -50,7 +50,6 @@ class Tiddler(object):
             'created',
             'modifier',
             'tags',
-            'bag',
             'revision',
             'text',
             'bag',
