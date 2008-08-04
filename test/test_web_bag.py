@@ -249,7 +249,6 @@ def test_roundtrip_unicode_bag():
     body = simplejson.dumps(bag_content)
     response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,
             method='PUT', body=body, headers={'Content-Type': 'application/json'})
-    print content
     assert response['status'] == '204'
 
     bag = Bag(bag_name)
