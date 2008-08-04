@@ -97,6 +97,19 @@ def test_get_tiddlers_from_recipe():
 def test_get_tiddlers_from_bag():
     get_tiddlers_from_thing('bags')
 
+def test_filter_tiddlers():
+    http = httplib2.Http()
+
+    response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers.json?filter=[tag[%s]]' \
+            % (encoded_name, encoded_name),
+            method='GET')
+    assert response['status'] == '200'
+    info = simplejson.loads(content)
+    assert info[0]['tags'] == [name]
+    assert info[0]['title'] == name
+    assert info[0]['bag'] == name
+    assert len(info) == 1
+
 def get_tiddlers_from_thing(container):
     http = httplib2.Http()
 
