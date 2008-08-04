@@ -58,6 +58,7 @@ def get_tiddlers(environ, start_response):
 
 def import_wiki(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = urllib.unquote(bag_name)
     bag_name = unicode(bag_name, 'utf-8')
     bag = _get_bag(environ, bag_name)
     length = environ['CONTENT_LENGTH']
@@ -97,6 +98,7 @@ def list(environ, start_response):
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = urllib.unquote(bag_name)
     bag_name = unicode(bag_name, 'utf-8')
     bag_name = web.handle_extension(environ, bag_name)
 

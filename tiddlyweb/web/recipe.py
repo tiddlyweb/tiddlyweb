@@ -85,6 +85,7 @@ def list(environ, start_response):
 
 def put(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    recipe_name = urllib.unquote(recipe_name)
     recipe_name = unicode(recipe_name, 'utf-8')
     recipe_name = web.handle_extension(environ, recipe_name)
 
@@ -110,6 +111,7 @@ def put(environ, start_response):
 
 def _determine_recipe(environ):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    recipe_name = urllib.unquote(recipe_name)
     recipe_name = unicode(recipe_name, 'utf-8')
     recipe_name = web.handle_extension(environ, recipe_name)
     recipe = Recipe(recipe_name)

@@ -17,7 +17,7 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.bag import Bag
 
-encoded_name = 'aaa%E3%81%86%E3%81%8F%E3%81%99'
+encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
 name = unicode(urllib.unquote(encoded_name), 'utf-8')
 
 def setup_module(module):

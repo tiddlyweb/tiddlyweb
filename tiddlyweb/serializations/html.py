@@ -42,10 +42,6 @@ class Serialization(SerializationInterface):
             line = '<li><a href="'
             if not isinstance(bag, basestring):
                 bag = bag.name
-            print 'type bag: %s' % type(bag)
-            print 'bag: %s' % bag
-            print 'type recipe.name: %s' % type(recipe.name)
-            print 'recipe.name: %s' % recipe.name
             line += '%s/bags/%s/tiddlers' % (self._server_prefix(), urllib.quote(bag.encode('utf-8')))
             if filter:
                 line += '?filter=%s' % urllib.quote(filter.encode('utf-8'))
@@ -175,7 +171,6 @@ class Serialization(SerializationInterface):
 
         html = self._tiddler_to_html('%s/' % server_prefix,
                 list_link, tiddler)
-        print 'html type: %s' % type(html)
         # Have to be very careful in the following about UTF-8 handling
         # because wikklytext wants to encode its output.
         return """
