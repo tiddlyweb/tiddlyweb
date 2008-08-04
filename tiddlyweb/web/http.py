@@ -20,6 +20,8 @@ class HTTPException(Exception):
         return [('Content-Type', 'text/plain; charset=UTF-8')]
 
     def output(self):
+        if not hasattr(self, 'message'):
+            self.message = '%s' % self
         if isinstance(self.message, unicode):
             self.message = self.message.encode('utf-8')
         return ['%s: %s' % (self.status, self.message)]
