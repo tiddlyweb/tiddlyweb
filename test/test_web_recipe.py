@@ -8,11 +8,13 @@ sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
+import urllib
 import httplib2
 import simplejson
 
 from fixtures import muchdata, reset_textstore
 from tiddlyweb.store import Store
+from tiddlyweb.recipe import Recipe
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -212,6 +214,29 @@ def test_get_recipe_wiki_has_workspace_bag_does_not():
             method='GET')
     assert response['status'] == '200'
     assert 'workspace="long"' not in content
+
+def test_roundtrip_unicode_recipe():
+    http = httplib2.Http()
+    encoded_recipe_name = '%E3%81%86%E3%81%8F%E3%81%99'
+    recipe_name = unicode(urllib.unquote(encoded_recipe_name), 'utf-8')
+    print recipe_name.__class__
+    assert type(recipe_name) == unicode
+    recipe_list = [[recipe_name, '']]
+    body = simplejson.dumps(recipe_list)
+    print 'body: %s' % body
+    response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
+            method='PUT', body=body.encode('UTF-8'), headers={'Content-Type': 'application/json'})
+    print content
+    assert response['status'] == '204'
+
+    recipe = Recipe(recipe_name)
+    store.get(recipe)
+    assert recipe == recipe_list
+
+    response, content = http.request('http://our_test_domain:8001/recipes/%s.json' % encoded_recipe_name,
+            method='GET')
+    assert response['status'] == '200'
+    assert simplejson.loads(content) == recipe_list
 
 def _put_policy(bag_name, policy_dict):
     """

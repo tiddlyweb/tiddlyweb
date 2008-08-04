@@ -17,10 +17,12 @@ class HTTPException(Exception):
     status = ''
 
     def headers(self):
-        return [('Content-Type', 'text/plain')]
+        return [('Content-Type', 'text/plain; charset=UTF-8')]
 
     def output(self):
-        return ['%s: %s' % (self.status, self)]
+        if isinstance(self.message, unicode):
+            self.message = self.message.encode('utf-8')
+        return ['%s: %s' % (self.status, self.message)]
 
 class HTTP302(HTTPException):
     status = '302 Found'

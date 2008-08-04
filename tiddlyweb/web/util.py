@@ -65,17 +65,17 @@ def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
     """
-    return '%s/bags/%s/tiddlers/%s' % (server_base_url(environ), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
+    return '%s/bags/%s/tiddlers/%s' % (server_base_url(environ), urllib.quote(tiddler.bag.encode('utf-8')), urllib.quote(tiddler.title.encode('utf-8')))
 
 def recipe_url(environ, recipe):
     """
     Construct a URL for a recipe.
     """
-    return '%s/recipes/%s' % (server_base_url(environ), urllib.quote(recipe.name))
+    return '%s/recipes/%s' % (server_base_url(environ), urllib.quote(recipe.name.encode('utf-8')))
 
 def bag_url(environ, bag):
     """
     Construct a URL for a recipe.
     """
-    return '%s/bags/%s' % (server_base_url(environ), urllib.quote(bag.name))
+    return '%s/bags/%s' % (server_base_url(environ), urllib.quote(bag.name.encode('utf-8')))
 

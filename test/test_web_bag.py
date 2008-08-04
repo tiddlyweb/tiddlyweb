@@ -8,6 +8,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import urllib
 import simplejson
 
 from fixtures import muchdata, reset_textstore
@@ -239,6 +240,27 @@ def test_get_bag_tiddlers_constraints():
             method='GET')
     assert response['status'] == '403'
     assert 'may not read' in content
+
+def test_roundtrip_unicode_bag():
+    http = httplib2.Http()
+    encoded_bag_name = '%E3%81%86%E3%81%8F%E3%81%99'
+    bag_name = urllib.unquote(encoded_bag_name)
+    bag_content = {'policy':{'read':['a','b','c']}}
+    body = simplejson.dumps(bag_content)
+    response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,
+            method='PUT', body=body, headers={'Content-Type': 'application/json'})
+    print content
+    assert response['status'] == '204'
+
+    bag = Bag(bag_name)
+    store.get(bag)
+    assert bag.name == bag_name
+
+    response, content = http.request('http://our_test_domain:8001/bags/%s.json' % encoded_bag_name,
+            method='GET')
+    bag_data = simplejson.loads(content)
+    assert response['status'] == '200'
+    assert bag_data['policy']['read'] == ['a','b','c']
 
 def _put_policy(bag_name, policy_dict):
     """

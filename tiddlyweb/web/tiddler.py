@@ -3,6 +3,8 @@ Access to Tiddlers via the web. GET and PUT
 a Tiddler, GET a list of revisions of a Tiddler.
 """
 
+import urllib
+
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
@@ -55,6 +57,7 @@ def _delete_tiddler(environ, start_response, tiddler):
 
 def _determine_tiddler(environ, bag_finder):
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
+    tiddler_name = unicode(tiddler_name, 'utf-8')
     revision = environ['wsgiorg.routing_args'][1].get('revision', None)
     if revision:
         revision = web.handle_extension(environ, revision)
@@ -72,6 +75,7 @@ def _determine_tiddler(environ, bag_finder):
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
+        recipe_name = unicode(recipe_name, 'utf-8')
         recipe = Recipe(recipe_name)
         store = environ['tiddlyweb.store']
         store.get(recipe)
@@ -85,6 +89,7 @@ def _determine_tiddler(environ, bag_finder):
         bag_name = bag.name
     else:
         bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+        bag_name = unicode(bag_name, 'utf-8')
 
     tiddler.bag = bag_name
     return tiddler
@@ -213,5 +218,6 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     return send_tiddlers(environ, start_response, tmp_bag)
 
 def _tiddler_etag(tiddler):
-    return str('%s/%s/%s' % (tiddler.bag, tiddler.title, tiddler.revision))
+    return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8')),
+        urllib.quote(tiddler.title.encode('utf-8')), tiddler.revision))
 

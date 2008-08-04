@@ -26,9 +26,9 @@ class Serialization(SerializationInterface):
 # enable BagS in recipes
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '/bags/%s/tiddlers' % urllib.quote(bag)
+            line += '/bags/%s/tiddlers' % bag
             if filter:
-                line += '?filter=%s' % urllib.quote(filter)
+                line += '?filter=%s' % filter
             lines.append(line)
         return "\n".join(lines)
 

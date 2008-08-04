@@ -19,6 +19,7 @@ from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = unicode(bag_name, 'utf-8')
     bag_name = web.handle_extension(environ, bag_name)
 
     bag = _get_bag(environ, bag_name)
@@ -41,6 +42,7 @@ def get_tiddlers(environ, start_response):
     filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
 
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = unicode(bag_name, 'utf-8')
     bag = _get_bag(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
@@ -56,6 +58,7 @@ def get_tiddlers(environ, start_response):
 
 def import_wiki(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = unicode(bag_name, 'utf-8')
     bag = _get_bag(environ, bag_name)
     length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
@@ -94,6 +97,7 @@ def list(environ, start_response):
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = unicode(bag_name, 'utf-8')
     bag_name = web.handle_extension(environ, bag_name)
 
     bag = Bag(bag_name)

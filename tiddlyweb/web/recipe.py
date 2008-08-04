@@ -9,7 +9,7 @@ import cgi
 
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoRecipeError
+from tiddlyweb.store import Store, NoRecipeError, NoBagError
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
 from tiddlyweb.web.tiddlers import send_tiddlers
@@ -39,7 +39,10 @@ def get_tiddlers(environ, start_response):
     recipe = _determine_recipe(environ)
 
     # get the tiddlers from the recipe and uniquify them
-    tiddlers = control.get_tiddlers_from_recipe(recipe)
+    try:
+        tiddlers = control.get_tiddlers_from_recipe(recipe)
+    except NoBagError, e:
+        raise HTTP404, 'recipe %s lists an unknown bag: %s' % (recipe.name, e)
     tmp_bag = Bag('tmp_bag1', tmpbag=True)
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
@@ -82,6 +85,7 @@ def list(environ, start_response):
 
 def put(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    recipe_name = unicode(recipe_name, 'utf-8')
     recipe_name = web.handle_extension(environ, recipe_name)
 
     recipe = Recipe(recipe_name)
@@ -106,6 +110,7 @@ def put(environ, start_response):
 
 def _determine_recipe(environ):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
+    recipe_name = unicode(recipe_name, 'utf-8')
     recipe_name = web.handle_extension(environ, recipe_name)
     recipe = Recipe(recipe_name)
 

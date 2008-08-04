@@ -16,7 +16,7 @@ expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 
 expected_stored_content = """/bags/bagone/tiddlers?filter=TiddlerOne
 /bags/bagtwo/tiddlers?filter=TiddlerTwo
-/bags/bagthree/tiddlers?filter=%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D"""
+/bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
 
 def setup_module(module):
     """
