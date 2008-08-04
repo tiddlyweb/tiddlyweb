@@ -76,8 +76,8 @@ def _determine_tiddler(environ, bag_finder):
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
-        recipe_name = unicode(recipe_name, 'utf-8')
         recipe_name = urllib.unquote(recipe_name)
+        recipe_name = unicode(recipe_name, 'utf-8')
         recipe = Recipe(recipe_name)
         store = environ['tiddlyweb.store']
         store.get(recipe)
