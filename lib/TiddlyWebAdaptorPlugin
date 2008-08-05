@@ -334,10 +334,12 @@ TiddlyWebAdaptor.prototype.putTiddler = function(tiddler,context,userParams,call
             text: tiddler.text,
             modifier: tiddler.modifier,
             tags: tiddler.tags,
-            revision: tiddler['server.page.revision']
+            revision: tiddler.fields['server.page.revision']
         };
         payload = JSON.stringify(payload)
-        var req = TiddlyWebAdaptor.doHttpPUT(uri,TiddlyWebAdaptor.putTiddlerCallback,context,{},payload,TiddlyWebAdaptor.mimeType);
+        etag = encodeURIComponent(bag) + '/' + encodeURIComponent(tiddler.title)
+            + '/' + tiddler.fields['server.page.revision'];
+        var req = TiddlyWebAdaptor.doHttpPUT(uri,TiddlyWebAdaptor.putTiddlerCallback,context,{'If-Match': etag},payload,TiddlyWebAdaptor.mimeType);
         return typeof req == 'string' ? req : true;
 };
 
