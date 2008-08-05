@@ -9,6 +9,8 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
+* Redirect in challengers when using a prefix doesn't seem to work correctly.
+* Deal with / in Tiddler titles (as present in osworld).
 * Modification times and other metadata and header handling for bag and recipe entities.
 * Proper auth handling on bags and recipes. Who may create and modify them?
 * Roles/groups in the user system (notably for 'ADMIN' type or group).
@@ -45,6 +47,8 @@ If you think there should be something on this list, contact ChrisDent.
 !Client side issues and plugins
 
 * Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
+* There needs to be Etag handling in the TiddlyWebAdaptor
+* There needs to be a way in the client to do a refresh when a 412 comes along.
 * Bag security policy authoring
 * Client side recipe and bag construction sets.
 * Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)

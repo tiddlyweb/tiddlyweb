@@ -48,14 +48,21 @@ def server_base_url(environ):
     Using information in tiddlyweb.config, construct 
     the base URL of the server, sans the trailing /.
     """
+    url = '%s%s' % (server_host_url(environ), _server_prefix(environ))
+    return url
+
+def server_host_url(environ):
+    """
+    Generate the scheme and host portion of our server url.
+    """
     server_host = environ['tiddlyweb.config']['server_host']
     port = str(server_host['port'])
     if port == '80' or port == '443':
         port = ''
     else:
         port = ':%s' % port
-    host = '%s://%s%s%s' % (server_host['scheme'], server_host['host'], port, _server_prefix(environ))
-    return host
+    url = '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
+    return url
 
 def _server_prefix(environ):
     config = environ.get('tiddlyweb.config', {})

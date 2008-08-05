@@ -29,7 +29,11 @@ def import_wiki(wikitext, bagname='wiki'):
 def _do_tiddler(bagname, tiddler):
     new_tiddler = Tiddler(tiddler['title'], bag=bagname)
 
-    new_tiddler.text = _html_decode(tiddler.find('pre').contents[0])
+    try:
+    	new_tiddler.text = _html_decode(tiddler.find('pre').contents[0])
+    except IndexError:
+        # there are no contents in the tiddler
+        new_tiddler.text = ''
 
     for key in (['modifier', 'created', 'modified']):
         data = tiddler.get(key, None)
@@ -38,7 +42,13 @@ def _do_tiddler(bagname, tiddler):
     new_tiddler.tags = _tag_string_to_list(tiddler.get('tags', ''))
 
     store = Store(config['server_store'][0])
-    store.put(new_tiddler)
+    try:
+    	store.put(new_tiddler)
+    except OSError, e:
+        # This tiddler has a name that we can't yet write to the
+        # store. For now we just state the error and carry on.
+        import sys
+        print >> sys.stderr, 'Unable to write %s: %s' % (new_tiddler.title, e)
 
 def _tag_string_to_list(string):
     tags = []
