@@ -50,3 +50,13 @@ def test_json_search():
     assert 'json' in response['content-type']
     info = simplejson.loads(content)
     assert len(info) == 30
+
+def test_json_search():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;filter=[tag[tagtwo]]',
+            method='GET')
+
+    assert response['status'] == '200'
+    assert 'json' in response['content-type']
+    info = simplejson.loads(content)
+    assert len(info) < 30

@@ -4,6 +4,9 @@ tiddlers and list them in the interface.
 """
 
 import cgi
+import urllib
+
+from tiddlyweb import control
 from tiddlyweb.web.http import HTTP400
 from tiddlyweb.bag import Bag
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
@@ -13,10 +16,15 @@ from tiddlyweb.web.tiddlers import send_tiddlers
 def get(environ, start_response):
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
+        search_query = urllib.unquote(search_query)
+        search_query = unicode(search_query, 'utf-8')
     except KeyError:
         raise HTTP400, 'query string required'
     except IndexError:
         raise HTTP400, 'query string required'
+    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
+    filter_string = urllib.unquote(filter_string)
+    filter_string = unicode(filter_string, 'utf-8')
     
     store = environ['tiddlyweb.store']
     tiddlers = store.search(search_query)
@@ -41,5 +49,11 @@ def get(environ, start_response):
             pass
         except UserRequiredError:
             pass
+
+    if len(filter_string):
+        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
+        tmp_bag = Bag('tmp_bag', tmpbag=True)
+        for tiddler in tiddlers:
+            tmp_bag.add_tiddler(tiddler)
 
     return send_tiddlers(environ, start_response, tmp_bag)
