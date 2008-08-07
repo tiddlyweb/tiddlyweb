@@ -44,6 +44,12 @@ def compose_from_string(filter_string):
                 filters.append([negate(by_tag), argument])
             elif flag == '-tag':
                 filters.append([remove(by_tag), argument])
+            elif flag == 'bag':
+                filters.append([by_bag, argument])
+            elif flag == '!bag':
+                filters.append([negate(by_bag), argument])
+            elif flag == '-bag':
+                filters.append([remove(by_bag), argument])
             elif flag == 'sort':
                 filters.append([make_sort(), argument])
             elif flag == 'count':
@@ -61,6 +67,12 @@ def by_tag(tag, tiddlers):
     Return those tiddlers that have tag tag.
     """
     return [tiddler for tiddler in tiddlers if tag in tiddler.tags]
+
+def by_bag(bag, tiddlers):
+    """
+    Return those tiddlers that have bag bag.
+    """
+    return [tiddler for tiddler in tiddlers if tiddler.bag == bag]
 
 def by_composition(filters, tiddlers):
     """

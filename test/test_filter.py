@@ -10,8 +10,13 @@ sys.path.append('.')
 
 from tiddlyweb import filter
 from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.bag import Bag
 
 from fixtures import tiddlers
+
+# cook up some bagged tiddlers
+for tiddler in tiddlers:
+    tiddler.bag = tiddler.title
 
 def setup_module(module):
     pass
@@ -45,6 +50,18 @@ def test_filter_by_tag():
     assert len(found_tiddlers) == 1, 'one tiddlers in returned list'
 
     assert found_tiddlers[0].title == tiddlers[2].title, 'the found tiddler is the right one'
+
+def test_filter_by_bag():
+    """
+    Given a bag, find the tiddlers that are in that bag.
+    """
+
+    found_tiddlers = filter.by_bag('TiddlerThree', tiddlers)
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].bag == 'TiddlerThree'
+    
+    found_tiddlers = filter.by_bag('NoHit', tiddlers)
+    assert len(found_tiddlers) == 0
 
 def test_negate_fitler_by_title():
     """
@@ -117,6 +134,15 @@ def test_string_to_composed_filter_positive_tag():
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers], 'should get first tiddler'
     assert 'TiddlerThree' in [tiddler.title for tiddler in found_tiddlers], 'should get third tiddler'
 
+def test_string_to_composed_filter_positive_bag():
+    filter_string = '[bag[TiddlerThree]]'
+    filters = filter.compose_from_string(filter_string)
+
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].bag == 'TiddlerThree'
+    assert found_tiddlers[0].title == 'TiddlerThree'
+
 def test_string_to_composed_filter_negative_title():
     filter_string = '[tag[tagthree]] !TiddlerOne'
     filters = filter.compose_from_string(filter_string)
@@ -135,6 +161,23 @@ def test_string_to_composed_filter_negative_tag():
     assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers], 'should get first tiddler'
     assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers], 'should get third tiddler'
+
+def test_string_to_composed_filter_negative_bag():
+    filter_string = '[!bag[TiddlerThree]]'
+    filters = filter.compose_from_string(filter_string)
+
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert len(found_tiddlers) == 2
+    assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
+    assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers]
+
+def test_string_to_composed_filter_removal_bag():
+    filter_string = 'TiddlerThree TiddlerTwo [-bag[TiddlerThree]]'
+    filters = filter.compose_from_string(filter_string)
+
+    found_tiddlers = filter.by_composition(filters, tiddlers)
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].title == 'TiddlerTwo'
 
 def test_string_composed_filter_with_remove_by_title():
     """
