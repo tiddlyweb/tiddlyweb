@@ -34,6 +34,14 @@ def test_simple_search():
 
     assert response['status'] == '200'
 
+def test_title_search():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/search?q=tiddler0',
+            method='GET')
+
+    print content
+    assert response['status'] == '200'
+
 def test_malformed_search():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/search',
@@ -51,7 +59,7 @@ def test_json_search():
     info = simplejson.loads(content)
     assert len(info) == 30
 
-def test_json_search():
+def test_json_search_filtered():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;filter=[tag[tagtwo]]',
             method='GET')

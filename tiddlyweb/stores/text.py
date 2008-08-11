@@ -212,6 +212,9 @@ class Store(StorageInterface):
             for tiddler_name in tiddler_files:
                 tiddler = Tiddler(title=tiddler_name.decode('utf-8'),bag=bagname.decode('utf-8'))
                 revision_id = self.list_tiddler_revisions(tiddler)[0]
+                if query in tiddler.title.lower():
+                    found_tiddlers.append(tiddler)
+                    continue
                 try:
                     tiddler_file = open(os.path.join(tiddler_dir, tiddler_name, str(revision_id)))
                     for line in tiddler_file:
