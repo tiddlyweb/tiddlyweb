@@ -2,6 +2,10 @@
 
 # TiddlyWeb start for GoogleAppEngine.
 #
+# Note that TiddlyWeb itself is advancing at a faster rate
+# than the adaptation of TiddlyWeb to GoogleAppEngine. This
+# code may need adjustments.
+#
 # Based on example code that came from Google with the following
 # header:
 #
@@ -45,12 +49,6 @@ def google_app():
     #host = 'localhost'
     #port = 8000
     filename = 'urls.map'
-    config['server_store'] = ['googledata', {}]
-    config['extension_types']['atom'] = 'application/atom+xml'
-    config['serializers']['application/atom+xml'] = ['atom.atom', 'application/atom+xml; charset=UTF-8']
-    config['serializers']['text/html'] = ['atom.htmlatom', 'text/html; charset=UTF-8']
-    config['extractors'] = ['google_user_extractor']
-    config['auth_systems'] = ['google_user_challenger']
 
     app = load_app(host, port, filename, [
         Negotiate, UserExtract, StoreSet, Query, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8

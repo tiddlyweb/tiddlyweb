@@ -28,30 +28,62 @@ logging.
 The AppEngine SDK should create app.yaml and index.yaml files
 for you in a directory. The penultimate step is gathering the necessary
 libraries and files into that directory. This can be done by symlink 
-or copy. Here are the requirements:
+or copy. Don't forget the External requirements. Don't use eggs. 
 
-* lib from the TiddlyWeb source
-* tiddlyweb from the TiddlyWeb source
-* urls.map from the TiddlyWeb source
-* External requirements. Don't use eggs.
-** selector.py
-** resolver.py
-** simplejson
-** If you want server side wikitext to html rendering:
-*** wikklytext 
-*** ply
+Here's a list of external requirements:
 
-Finally, edit main.py such that the host and port information
+* selector.py
+* resolver.py
+* simplejson
+* If you want server side wikitext to html rendering:
+** wikklytext 
+** ply
+
+Here's an edited listing of my test directory:
+
+app.yaml
+index.yaml
+ply
+resolver.py
+selector.py
+
+simplejson -> ../src/python/simplejson-1.9.2/build/lib/simplejson
+wikklytext -> /Library/Python/2.5/site-packages/WikklyText-1.2.2-py2.5.egg/wikklytext
+
+atom -> ../src/osmo/TiddlyWeb/atom
+lib -> ../src/osmo/tiddlywiki/contributors/ChrisDent/experimental/TiddlyWeb/lib
+
+googledata.py -> ../src/osmo/TiddlyWeb/googleappengine/googledata.py
+google_user_challenger.py -> ../src/osmo/TiddlyWeb/googleappengine/google_user_challenger.py
+google_user_extractor.py -> ../src/osmo/TiddlyWeb/googleappengine/google_user_extractor.py
+main.py -> ../src/osmo/TiddlyWeb/googleappengine/main.py
+tiddlywebconfig.py -> ../src/osmo/TiddlyWeb/googleappengine/tiddlywebconfig.py
+
+tiddlyweb -> ../src/osmo/TiddlyWeb/tiddlyweb
+urls.map -> ../src/osmo/TiddlyWeb/urls.map
+
+When you have the directory set up in a reasonable fashion,
+edit main.py such that the host and port information
 contained therein is appropriate for your use.
 
-You will need to put something in your TiddlyWeb. Check out
-test/importer.py to see how to either:
+You will need to put something in your TiddlyWeb to be able
+to use it. There are a few different ways to do this. 
 
-* import an existing TiddlyWiki file
-* code samples on how to PUT recipes, bags and tiddlers
+* Check out test/importer.py to see how to either:
+** import an existing TiddlyWiki file
+** code samples on how to PUT recipes, bags and tiddlers
+
+* See tiddlywebweb, an experimental library for accessing
+  TiddlyWeb (and to be used as a tiddlyweb store) in 
+  http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/tiddlywebweb/
+  to create bags, recipes and tiddlers.
+
+* Write your own HTTP code to PUT bags, recipes and tiddlers to the 
+  server.
 
 If you want to be able to sync or autosave you will need
-plugins:
+these plugins, which can be found in 
+http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/TiddlyWeb/lib
 
 * TiddlyWebAdaptorPlugin
 * TiddlyWebAutoSavePlugin
