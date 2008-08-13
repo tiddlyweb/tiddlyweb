@@ -9,26 +9,44 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Functionality
 
-* Redirect in challengers when using a prefix doesn't seem to work correctly.
+!! Middleware and Starters
+
+* Remove logger from the index.cgi app configuration and make sure errors get sent to stderr.
+* Set REMOTE_USER in the real (os) environment so Apache can use that if we are in Apache and want its logging.
+* Put the WSGI middleware stack in tiddlyweb.config. (Maybe not?)
+
+!! Core
+
 * Deal with / in Tiddler titles (as present in osworld).
 * Modification times and other metadata and header handling for bag and recipe entities.
 * Proper auth handling on bags and recipes. Who may create and modify them?
 * Roles/groups in the user system (notably for 'ADMIN' type or group).
 * Add support for description field on recipes.
-* Support unicode tiddler.title, recipe.name and bag.name. This is harder than it seemed at first glance.
-* Support merging config data from a file to overload tiddlyweb.config.
-* Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
 * Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
-* Put the WSGI middleware stack in tiddlyweb.config.
+
+!! Serializations
+
 * Support for skinny tiddlers and lazy loading.
-* Move filter query string processing into middleware that is up a stage, so it can be in the environment and used throughout the application (e.g the html serialzation can know if a filter string is present when it makes * URLs). This fixes the "these tiddlers as a wiki" links.
 * Change outgoing wiki serialization so that it handles a few template variables for things like <title>, prehead, posthead, etc. (see: http://groups.google.com/group/TiddlyWikiDev/msg/4a3505c17caa81f4)
-* There are unicode issues in the GAE handling of html content. (via bentrem)
-* Unify filter string syntax on Jon's research.
-* DELETEing resources besides tiddlers.
-* add name fragments to arguments in filters
-* User registration concerns.
+
+!! Stores
+
 * Additional stores: S3, sqlite, subversion, etc.
+
+!! Filters
+
+* Unify filter string syntax on Jon's research.
+* Add name fragments to arguments in filters
+
+!! Web Handling
+
+* Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
+* There are unicode issues in the GAE handling of html content. (via bentrem)
+* DELETEing resources besides tiddlers.
+* User registration concerns.
+
+!! Miscellaneous
+
 * py2app and py2exe versions for one click installation on OS X and Windows.
 * Maybe use mimeparse for accept and content-type header handling: http://code.google.com/p/mimeparse/
 
@@ -36,7 +54,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 * Tests for '..', '/', etc in title and name fields w/ store handling.
 * Rhino and Selenium based testing.
-* Do some testing and fixing to enable Unicode Tiddler titles.
 
 !Cleanliness, Documentation and Protocol Behavior
 
@@ -47,14 +64,9 @@ If you think there should be something on this list, contact ChrisDent.
 !Client side issues and plugins
 
 * Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
-* There needs to be Etag handling in the TiddlyWebAdaptor
 * There needs to be a way in the client to do a refresh when a 412 comes along.
 * Bag security policy authoring
 * Client side recipe and bag construction sets.
-* Adjust TiddlyWebAdaptorPlugin so it is Etag aware (browser should take care of this for us?)
-* Change Tiddly core so server.bag is an inherited field?
-* In SyncMachine pay attention to response codes from the web server in onGetTiddlerList and onPutTiddler, handle appropriately
-* Create a command line tool for creating bags and recipes on remote servers.
 
 !Moonbeams from Ponies of the Future
 

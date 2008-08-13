@@ -31,7 +31,8 @@ Let's begin.
 1. Get Where You Need to Be
 
 The first step is to locate yourself in the directory 
-where you find this COOKBOOK file. It should also contain
+just above where you find this COOKBOOK file (that is, the base of
+the TiddlyWeb collection of files). It should also contain
 a file called 'manager'. We'll be using this file a lot in
 the next steps. If you run it without any arguments you should
 get a list of possible commands. Try it:
