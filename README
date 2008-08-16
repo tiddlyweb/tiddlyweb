@@ -30,9 +30,13 @@ OPTIONAL:
   install wikklytext. This is _highly_ recommended.
   See: http://wikklytext.com/wiki/InstallPythonPackage.html
 
-Both selector and simplejson can be installed with easy_install, which
-either comes with your python distribution and should be on your path,
-or is part of setuptools which you can install.
+Selector, simplejson and BeautifulSoup can be installed with easy_install,
+which either comes with your python distribution and should be on your path,
+or is part of setuptools which you can install. See
+
+  http://peak.telecommunity.com/DevCenter/EasyInstall
+
+for more information on easy_install if you are not familiar with it.
 
 See also:
 

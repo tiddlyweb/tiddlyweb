@@ -3,6 +3,9 @@ modified: 200806220000
 created: 200803280000
 tags: 
 
+Note: Some of these items have been moved to Trac, which will slowly become the canonical source of TiddlyWeb action items.
+See: http://trac.tiddlywiki.org/query?component=tiddlyweb&order=priority
+
 A place to note tasks that need to be done. This is not complete, and likely not up to date.
 
 If you think there should be something on this list, contact ChrisDent.
@@ -17,9 +20,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !! Core
 
-* Deal with / in Tiddler titles (as present in osworld).
 * Modification times and other metadata and header handling for bag and recipe entities.
-* Proper auth handling on bags and recipes. Who may create and modify them?
 * Roles/groups in the user system (notably for 'ADMIN' type or group).
 * Add support for description field on recipes.
 * Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
@@ -27,10 +28,10 @@ If you think there should be something on this list, contact ChrisDent.
 !! Serializations
 
 * Support for skinny tiddlers and lazy loading.
-* Change outgoing wiki serialization so that it handles a few template variables for things like <title>, prehead, posthead, etc. (see: http://groups.google.com/group/TiddlyWikiDev/msg/4a3505c17caa81f4)
 
 !! Stores
 
+* Implement support for deleting users, recipes, bags. In the store only for now.
 * Additional stores: S3, sqlite, subversion, etc.
 
 !! Filters
@@ -40,7 +41,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 !! Web Handling
 
-* Make it possible to construct a URL that causes a wiki to be downloaded to disk rather than displayed in the browser.
 * There are unicode issues in the GAE handling of html content. (via bentrem)
 * DELETEing resources besides tiddlers.
 * User registration concerns.
