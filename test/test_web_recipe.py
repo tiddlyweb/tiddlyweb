@@ -90,6 +90,14 @@ def test_get_recipe_tiddler_list():
     assert response['status'] == '200'
     assert content.count('<li>') == 10
 
+def test_get_recipe_tiddler_list_disposition():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki?download=long.html',
+            method='GET')
+
+    assert response['status'] == '200'
+    assert response['content-disposition'] == 'attachment; filename="long.html"'
+
 def test_get_recipe_tiddler_list_filtered_one():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=tiddler8',

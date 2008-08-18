@@ -15,6 +15,7 @@ def send_tiddlers(environ, start_response, bag):
     last_modified = None
     etag = None
     bags_tiddlers = bag.list_tiddlers()
+    download = environ['tiddlyweb.query'].get('download',[None])[0]
 
     if bags_tiddlers:
         last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)
@@ -30,6 +31,8 @@ def send_tiddlers(environ, start_response, bag):
 
     if serialize_type == 'wiki':
         response.append(('Set-Cookie', 'chkHttpReadOnly=false'))
+        if download:
+            response.append(('Content-Disposition', 'attachment; filename="%s"' % download))
     if last_modified:
         response.append(last_modified)
     if etag:
