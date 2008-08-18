@@ -31,11 +31,11 @@ def server(args):
         help()
 
     from tiddlyweb.web import serve
-    from test import fixtures
-    if not os.path.exists(fixtures.textstore.store_dirname):
-        fixtures.reset_textstore()
-        store = Store(config['server_store'][0])
-        fixtures.muchdata(store)
+#     from test import fixtures
+#     if not os.path.exists(fixtures.textstore.store_dirname):
+#         fixtures.reset_textstore()
+#         store = Store(config['server_store'][0])
+#         fixtures.muchdata(store)
     serve.start_cherrypy('./urls.map', hostname, int(port))
 
 @_make_command('Add or update a user to the database: <username> <password>')
