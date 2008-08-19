@@ -28,6 +28,9 @@ class StorageInterface(object):
     def recipe_put(self, recipe):
         pass
 
+    def bag_delete(self, bag):
+        pass
+
     def bag_get(self, bag):
         pass
 

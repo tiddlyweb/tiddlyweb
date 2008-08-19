@@ -79,6 +79,7 @@
 /bags/{bag_name:segment}[/]
     GET tiddlyweb.web.bag:get
     PUT tiddlyweb.web.bag:put
+    DELETE tiddlyweb.web.bag:delete
 
 # tiddlers in a bag, with option filter string in the query string
 # Supports GET:

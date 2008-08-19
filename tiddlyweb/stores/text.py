@@ -44,6 +44,25 @@ class Store(StorageInterface):
 
         recipe_file.close()
 
+    def bag_delete(self, bag):
+        bag_path = self._bag_path(bag.name)
+
+        try:
+            if not os.path.exists(bag_path):
+                raise NoBagError, '%s not present' % tiddler_base_filename
+            print 'bag_path to delete %s' % bag_path
+            shutil.rmtree(bag_path)
+            # XXX: We need to return a value so the caller knows
+            # that we did something otherwise it will choose
+            # to raise a 415. Not satisfied with this solution
+            # as it doesn't map to how the rest of the system behaves.
+            # Probably need to raise exceptions from the interface. 
+            return 1
+        except NoBagError:
+            raise
+        except Exception, e:
+            raise IOError, 'unable to delete bag %s: %s' % (bag.name, e)
+
     def bag_get(self, bag):
         bag_path = self._bag_path(bag.name)
         tiddlers_dir = self._tiddlers_dir(bag.name)

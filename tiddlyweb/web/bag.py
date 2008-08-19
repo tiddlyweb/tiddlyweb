@@ -17,6 +17,28 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
+def delete(environ, start_response):
+    # XXX refactor out a _determine_bag or _determine_bag_name
+    # lots of duplication going on here.
+    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = urllib.unquote(bag_name)
+    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = web.handle_extension(environ, bag_name)
+
+    usersign = environ['tiddlyweb.usersign']
+
+    bag = _get_bag(environ, bag_name)
+    bag.policy.allows(usersign, 'delete')
+    # reuse the store attribute that was set on the 
+    # bag when we "got" it.
+    # we don't need to check for existence here because
+    # the above get already did
+    if bag.store.delete(bag) is not None:
+        start_response("204 No Content", [])
+        return []
+
+    raise HTTP415, 'DELETE not supported'
+
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag_name = urllib.unquote(bag_name)

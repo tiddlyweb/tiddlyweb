@@ -208,6 +208,27 @@ def test_put_bag():
     info = simplejson.loads(content)
     assert info['policy']['delete'] == policy_dict['delete']
 
+def test_delete_bag():
+    """
+    PUT a new bag to the server and then DELETE it.
+    """
+    json_string = simplejson.dumps(dict(policy={}))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/deleteme',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json_string)
+    location = response['location']
+
+    assert response['status'] == '204'
+    assert location == 'http://our_test_domain:8001/bags/deleteme'
+
+    response, content = http.request(location, method='DELETE')
+    print content
+    assert response['status'] == '204'
+
+    response, content = http.request(location, method='GET', headers={'Accept':'application/json'})
+    assert response['status'] == '404'
+
 def test_put_bag_wrong_type():
     """
     PUT a new bag to the server.
