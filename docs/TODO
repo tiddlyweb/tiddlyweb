@@ -31,7 +31,8 @@ If you think there should be something on this list, contact ChrisDent.
 
 !! Stores
 
-* Implement support for deleting users, recipes, bags. In the store only for now.
+* Handle permissions for manipulating bags and recipes.
+* Implement support for deleting users from the store.
 * Additional stores: S3, sqlite, subversion, etc.
 
 !! Filters
@@ -42,7 +43,6 @@ If you think there should be something on this list, contact ChrisDent.
 !! Web Handling
 
 * There are unicode issues in the GAE handling of html content. (via bentrem)
-* DELETEing resources besides tiddlers.
 * User registration concerns.
 
 !! Miscellaneous
