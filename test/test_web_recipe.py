@@ -193,6 +193,25 @@ def test_put_recipe_415():
 
     assert response['status'] == '415'
 
+def test_delete_recipe():
+    """
+    DELETE the other recipe
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='DELETE')
+    print content
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='GET')
+    assert response['status'] == '404'
+
+    # what happens when we delete the same recipe again?
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='DELETE')
+    assert response['status'] == '404'
+
 def test_get_recipe_wiki_bag_constraints():
     """
     Make sure that when the constraints on a bag don't let read

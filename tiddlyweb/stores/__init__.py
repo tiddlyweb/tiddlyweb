@@ -4,6 +4,8 @@ use to get and put data into a storage
 system.
 """
 
+from tiddlyweb.store import StoreMethodNotImplemented
+
 class StorageInterface(object):
     """
     A Store is a collection of methods that 
@@ -22,44 +24,47 @@ class StorageInterface(object):
     def __init__(self, environ={}):
         self.environ = environ
 
+    def recipe_delete(self, recipe):
+        raise StoreMethodNotImplemented
+
     def recipe_get(self, recipe):
-        pass
+        raise StoreMethodNotImplemented
 
     def recipe_put(self, recipe):
-        pass
+        raise StoreMethodNotImplemented
 
     def bag_delete(self, bag):
-        pass
+        raise StoreMethodNotImplemented
 
     def bag_get(self, bag):
-        pass
+        raise StoreMethodNotImplemented
 
     def bag_put(self, recipe):
-        pass
+        raise StoreMethodNotImplemented
 
     def tiddler_delete(self, tiddler):
-        pass
+        raise StoreMethodNotImplemented
 
     def tiddler_get(self, tiddler):
-        pass
+        raise StoreMethodNotImplemented
 
     def tiddler_put(self, tiddler):
-        pass
+        raise StoreMethodNotImplemented
 
     def user_get(self, user):
-        pass
+        raise StoreMethodNotImplemented
 
     def user_put(self, user):
-        pass
+        raise StoreMethodNotImplemented
 
     def list_recipes(self):
-        pass
+        raise StoreMethodNotImplemented
 
     def list_bags(self):
-        pass
+        raise StoreMethodNotImplemented
 
     def list_tiddler_revisions(self, tiddler):
-        pass
+        raise StoreMethodNotImplemented
 
     def tiddler_written(self, tiddler):
         """
@@ -70,4 +75,4 @@ class StorageInterface(object):
         pass
 
     def search(self, search_query):
-        pass
+        raise StoreMethodNotImplemented

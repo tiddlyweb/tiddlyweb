@@ -9,12 +9,30 @@ import cgi
 
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoRecipeError, NoBagError
+from tiddlyweb.store import Store, NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
-from tiddlyweb.web.http import HTTP415, HTTP404, HTTP403
+from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404, HTTP403
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
+
+def delete(environ, start_response):
+    """
+    Delete a recipe, where what delete means
+    depends on the store used.
+
+    XXX: There are no permissions on this method.
+    There should be!
+    """
+    recipe = _determine_recipe(environ)
+
+    try:
+        recipe.store.delete(recipe)
+    except StoreMethodNotImplemented:
+        raise HTTP400, 'Recipe DELETE not supported'
+
+    start_response("204 No Content", [])
+    return []
 
 def get(environ, start_response):
     recipe = _determine_recipe(environ)

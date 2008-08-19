@@ -10,7 +10,7 @@ import urllib
 import cgi
 
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.store import Store, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
 from tiddlyweb.web import util as web
@@ -33,11 +33,13 @@ def delete(environ, start_response):
     # bag when we "got" it.
     # we don't need to check for existence here because
     # the above get already did
-    if bag.store.delete(bag) is not None:
-        start_response("204 No Content", [])
-        return []
+    try:
+        bag.store.delete(bag)
+    except StoreMethodNotImplemented:
+        raise HTTP400, 'Bag DELETE not supported'
 
-    raise HTTP415, 'DELETE not supported'
+    start_response("204 No Content", [])
+    return []
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']

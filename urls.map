@@ -32,6 +32,7 @@
 /recipes/{recipe_name:segment}
     GET tiddlyweb.web.recipe:get
     PUT tiddlyweb.web.recipe:put
+    DELETE tiddlyweb.web.recipe:delete
 
 # the tiddlers produced by this recipe
 # Supports GET:

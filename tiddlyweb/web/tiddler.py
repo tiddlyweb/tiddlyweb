@@ -8,7 +8,7 @@ import urllib
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoTiddlerError, NoBagError
+from tiddlyweb.store import Store, NoTiddlerError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP403, HTTP304
 from tiddlyweb import control
@@ -113,7 +113,7 @@ def _put_tiddler(environ, start_response, tiddler):
         try:
             try:
                 revision = store.list_tiddler_revisions(tiddler)[0]
-            except IndexError:
+            except StoreMethodNotImplemented:
                 revision = 1
             tiddler.revision = revision
             _check_bag_constraint(environ, bag, 'write')
@@ -217,6 +217,8 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     except NoTiddlerError, e:
         # If a tiddler is not present in the store.
         raise HTTP404, 'tiddler %s not found, %s' % (tiddler.title, e)
+    except StoreMethodNotImplemented:
+        raise HTTP400, 'no revision support'
 
     return send_tiddlers(environ, start_response, tmp_bag)
 

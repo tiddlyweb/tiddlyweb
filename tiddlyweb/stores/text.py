@@ -18,6 +18,18 @@ from tiddlyweb.stores import StorageInterface
 
 class Store(StorageInterface):
 
+    def recipe_delete(self, recipe):
+        recipe_path = self._recipe_path(recipe)
+
+        try:
+            if not os.path.exists(recipe_path):
+                raise NoRecipeError, '%s not present' % recipe_path
+            os.remove(recipe_path)
+        except NoRecipeError:
+            raise
+        except Exception, e:
+            raise IOError, 'unable to delete recipe %s: %s' % (recipe.name, e)
+
     def recipe_get(self, recipe):
         recipe_path = self._recipe_path(recipe)
 
@@ -49,15 +61,8 @@ class Store(StorageInterface):
 
         try:
             if not os.path.exists(bag_path):
-                raise NoBagError, '%s not present' % tiddler_base_filename
-            print 'bag_path to delete %s' % bag_path
+                raise NoBagError, '%s not present' % bag_path
             shutil.rmtree(bag_path)
-            # XXX: We need to return a value so the caller knows
-            # that we did something otherwise it will choose
-            # to raise a 415. Not satisfied with this solution
-            # as it doesn't map to how the rest of the system behaves.
-            # Probably need to raise exceptions from the interface. 
-            return 1
         except NoBagError:
             raise
         except Exception, e:

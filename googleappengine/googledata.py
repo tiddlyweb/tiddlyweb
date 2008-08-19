@@ -186,6 +186,3 @@ class Store(StorageInterface):
         except TypeError:
             return []
 
-    def list_tiddler_revisions(self, tiddler):
-        return []
-

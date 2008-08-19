@@ -10,6 +10,9 @@ from user import User
 
 from tiddlyweb.config import config
 
+class StoreMethodNotImplemented(IOError):
+    pass
+
 class NoBagError(IOError):
     pass
 

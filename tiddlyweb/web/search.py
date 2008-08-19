@@ -10,6 +10,7 @@ from tiddlyweb import control
 from tiddlyweb.web.http import HTTP400
 from tiddlyweb.bag import Bag
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
+from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
 
@@ -27,7 +28,10 @@ def get(environ, start_response):
     filter_string = unicode(filter_string, 'utf-8')
     
     store = environ['tiddlyweb.store']
-    tiddlers = store.search(search_query)
+    try:
+        tiddlers = store.search(search_query)
+    except StoreMethodNotImplemented:
+        raise HTTP400, 'Search system not implemented'
 
     usersign = environ['tiddlyweb.usersign']
 
