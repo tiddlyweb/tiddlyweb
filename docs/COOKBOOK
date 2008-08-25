@@ -123,6 +123,10 @@ locate the TiddlyWiki HTML files and note their path on the filesystem.
 If they are not on your system, download them using whatever method you
 prefer (your browser, wget, curl, lwp_request, whatever it takes).
 
+If you want to use the TiddlyWiki at tiddlyweb.com there are concrete
+instructions for that at the end of this section. If you want to use
+your own wiki file, carry on as follows:
+
 Create a bag for each TiddlyWiki you wish to import, replace <bag name>
 with a unique name for each TiddlyWiki. You can use spaces if you want.
 Remember which name goes with which TiddlyWiki.
@@ -142,6 +146,15 @@ confirm this by doing a directory list of the bag:
 
 If your system has the 'ls' command that should return a list of the
 tiddlers that were in the TiddlyWiki you have imported.
+
+To use the tiddlyweb.com TiddlyWiki and you have curl available try this:
+
+  $ curl http://www.tiddlywiki.com > tiddlywiki.html
+  $ ./manager bag tiddlywiki
+  $ ./manager imwiki tiddlywiki.html tiddlywiki
+  $ ls sotre/bags/tiddlywiki/tiddlers
+
+You should see a large number of directories.
 
 5. Create A Recipe
 
@@ -188,7 +201,11 @@ Once you have figured these bits out you can start the server:
   $ ./manager server <ip number> <port>
 
 You should see 'Starting CherryPy' and the $ prompt will not come
-back. It's time to go to your web browser. For the examples below
+back. If you get an 'Address already in use' error you may have left
+the demo server running and will need to kill it. It is also possible
+some other service is using the <port> you chose. Choose a different one.
+
+It's time to go to your web browser. For the examples below
 we'll use 0.0.0.0 and 8080 for ip number and port. Replace these
 with the information you chose. Go to:
 
