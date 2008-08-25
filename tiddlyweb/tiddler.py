@@ -30,10 +30,14 @@ class Tiddler(object):
     A Tiddler has several attributes:
 
     title: The name of the tiddler. Required.
-    modified: A string representing when this tiddler was
-             last changed. Defaults to now.
     created: A string representing when this tiddler was
             created.
+    modified: A string representing when this tiddler was
+             last changed. Defaults to now.
+    modifier: A string representing a personage that changed
+              this tiddler in some way. This doesn't necessarily
+              have any assocation with the tiddlyweb.usersign,
+              though it may.
     tags: A list of strings that describe the tiddler.
     text: The contents of the tiddler. A string.
     revision: The revision of this tiddler. An int.
@@ -46,12 +50,12 @@ class Tiddler(object):
     """
 
     __slots__ = ['title',
-            'modified',
             'created',
+            'modified',
             'modifier',
             'tags',
-            'revision',
             'text',
+            'revision',
             'bag',
             'recipe',
             'store']
@@ -72,14 +76,14 @@ class Tiddler(object):
         A title is required to ceate a tiddler.
         """
         self.title = title
-        self.modifier = modifier
-        self.modified = modified
         self.created = created
+        self.modified = modified
+        self.modifier = modifier
         self.tags = tags
-        self.bag = bag
-        self.recipe = recipe
         self.text = text
         self.revision = revision
+        self.bag = bag
+        self.recipe = recipe
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None
