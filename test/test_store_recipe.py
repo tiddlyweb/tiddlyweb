@@ -14,7 +14,9 @@ from tiddlyweb.store import Store
 
 expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 
-expected_stored_content = """/bags/bagone/tiddlers?filter=TiddlerOne
+expected_stored_content = """desc: I enjoy being stored
+
+/bags/bagone/tiddlers?filter=TiddlerOne
 /bags/bagtwo/tiddlers?filter=TiddlerTwo
 /bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
 
@@ -30,6 +32,7 @@ def test_recipe_put():
     """
 
     recipe = Recipe('testrecipe')
+    recipe.desc = 'I enjoy being stored'
     recipe.set_recipe(recipe_list_string)
     store = Store('text')
     store.put(recipe)

@@ -54,11 +54,12 @@ class Serialization(SerializationInterface):
 <html>
 <head><title>%s</title></head>
 <body>
+<p>%s</p>
 <ul>
 %s
 </ul>
 <div><a href="%s">Tiddlers in Recipe</a></div>
-</body></html>""" % (title, output, tiddler_link)
+</body></html>""" % (title, recipe.desc, output, tiddler_link)
 
     def list_tiddlers(self, bag):
         """

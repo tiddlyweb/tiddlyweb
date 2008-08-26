@@ -11,11 +11,18 @@ from tiddlyweb.serializer import Serializer
 
 from fixtures import recipe_list
 
-expected_string = """/bags/bagone/tiddlers?filter=TiddlerOne
+expected_string = """desc: 
+
+/bags/bagone/tiddlers?filter=TiddlerOne
 /bags/bagtwo/tiddlers?filter=TiddlerTwo
 /bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
 
-expected_html_string = """<ul>
+no_desc = """/bags/bagone/tiddlers?filter=TiddlerOne
+/bags/bagtwo/tiddlers?filter=TiddlerTwo
+/bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
+
+expected_html_string = """<p>Courage of Bags</p>
+<ul>
 <li><a href="/bags/bagone/tiddlers?filter=TiddlerOne">bag: bagone filter:TiddlerOne</a></li>
 <li><a href="/bags/bagtwo/tiddlers?filter=TiddlerTwo">bag: bagtwo filter:TiddlerTwo</a></li>
 <li><a href="/bags/bagthree/tiddlers?filter=%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D">bag: bagthree filter:[tag[tagone]] [tag[tagthree]]</a></li>
@@ -36,14 +43,6 @@ def test_generated_text():
 
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
-
-def test_generated_html():
-    serializer = Serializer('html')
-    serializer.object = recipe
-    string = serializer.to_string()
-
-    assert expected_html_string in string
-    assert expected_html_string in '%s' % serializer
 
 def test_simple_recipe():
     recipe = Recipe('other')
@@ -82,3 +81,27 @@ def test_json_recipe():
     other_string = serializer.to_string()
 
     assert string == other_string
+
+def test_old_text():
+    """
+    Send in text without a description
+    and make sure we are able to accept it.
+    """
+    recipe = Recipe('other')
+    serializer = Serializer('text')
+    serializer.object = recipe
+    serializer.from_string(no_desc)
+
+    output = serializer.to_string()
+
+    assert output == expected_string
+
+def test_generated_html():
+    serializer = Serializer('html')
+    recipe.desc = 'Courage of Bags'
+    serializer.object = recipe
+    string = serializer.to_string()
+
+    assert expected_html_string in string
+    assert expected_html_string in '%s' % serializer
+

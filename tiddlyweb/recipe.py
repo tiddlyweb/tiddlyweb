@@ -16,9 +16,10 @@ class Recipe(list):
     sake of easy testing, the bag argument can
     be a Bag.
     """
-    def __init__(self, name):
+    def __init__(self, name, desc=''):
         list.__init__(self)
         self.name = name
+        self.desc = desc
         self.store = None
 
     def set_recipe(self, recipe_list):

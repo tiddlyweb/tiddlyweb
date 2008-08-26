@@ -20,7 +20,7 @@ class Serialization(SerializationInterface):
         """
         Recipe as text.
         """
-        lines = []
+        lines = ['desc: %s' % recipe.desc, '']
         for bag, filter in recipe:
             line = ''
 # enable BagS in recipes
@@ -36,7 +36,15 @@ class Serialization(SerializationInterface):
         """
         Turn a string back into a recipe.
         """
-        lines = input.rstrip().split('\n')
+        try:
+            header, body = input.rstrip().split('\n\n', 1)
+            headers = header.split('\n')
+            for field, value in [x.split(': ') for x in headers]:
+                setattr(recipe, field, value)
+        except ValueError:
+            body = input.rstrip()
+
+        lines = body.rstrip().split('\n')
         recipe_lines = []
         for line in lines:
             if '?' in line:

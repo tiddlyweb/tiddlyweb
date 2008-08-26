@@ -29,6 +29,19 @@ def test_set_recipe():
     recipe.set_recipe(recipe_list)
     assert len(recipe) == 3, 'length of recipe should be 3 is %s' % len(recipe)
 
+def test_recipe_has_description():
+    """
+    Confirm a recipe can set and use a description.
+    """
+
+    recipe = Recipe('hasbeen', desc='monkey puzzle')
+
+    assert recipe.name == 'hasbeen'
+    assert recipe.desc == 'monkey puzzle'
+
+    recipe.desc = 'collapsing sideburns'
+    assert recipe.desc == 'collapsing sideburns'
+
 def test_get_recipe_list():
     """
     Get a representation of the recipe, a list of bag + filter URLs.
