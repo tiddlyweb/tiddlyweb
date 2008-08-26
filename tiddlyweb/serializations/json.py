@@ -28,14 +28,16 @@ class Serialization(SerializationInterface):
         """
         Recipe as json.
         """
-        return simplejson.dumps(recipe)
+        return simplejson.dumps(dict(desc=recipe.desc,recipe=recipe.get_recipe()))
 
     def as_recipe(self, recipe, input):
         """
         Turn a json string back into a recipe.
         """
         info = simplejson.loads(input)
-        recipe.set_recipe(info)
+        print 'info: %s' % info
+        recipe.set_recipe(info['recipe'])
+        recipe.desc = info['desc']
         return recipe
 
     def bag_as(self, bag):

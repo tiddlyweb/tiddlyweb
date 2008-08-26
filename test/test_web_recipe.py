@@ -177,6 +177,35 @@ def test_put_recipe():
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/recipes/other'
 
+def test_put_recipe_change_description():
+    """
+    Get a recipe as json then put it back with a different name.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.json',
+            method='GET')
+
+    assert response['status'] == '200'
+
+    info = simplejson.loads(content)
+    info['desc'] = 'new description'
+    json = simplejson.dumps(info)
+
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '204'
+    assert response['location'] == 'http://our_test_domain:8001/recipes/other'
+
+    response, content = http.request(response['location'],
+            headers={'Accept': 'application/json'},
+            method='GET')
+
+    assert response['status'] == '200'
+
+    info = simplejson.loads(content)
+    assert info['desc'] == 'new description'
+
 def test_put_recipe_415():
     """
     Get a recipe as text then fail to put it back as wiki.
@@ -249,7 +278,7 @@ def test_roundtrip_unicode_recipe():
     print recipe_name.__class__
     assert type(recipe_name) == unicode
     recipe_list = [[recipe_name, '']]
-    body = simplejson.dumps(recipe_list)
+    body = simplejson.dumps(dict(desc='',recipe=recipe_list))
     print 'body: %s' % body
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
             method='PUT', body=body.encode('UTF-8'), headers={'Content-Type': 'application/json'})
@@ -258,12 +287,12 @@ def test_roundtrip_unicode_recipe():
 
     recipe = Recipe(recipe_name)
     store.get(recipe)
-    assert recipe == recipe_list
+    assert recipe.get_recipe() == recipe_list
 
     response, content = http.request('http://our_test_domain:8001/recipes/%s.json' % encoded_recipe_name,
             method='GET')
     assert response['status'] == '200'
-    assert simplejson.loads(content) == recipe_list
+    assert simplejson.loads(content)['recipe'] == recipe_list
 
 def _put_policy(bag_name, policy_dict):
     """
