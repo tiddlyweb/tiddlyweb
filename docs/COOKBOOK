@@ -147,12 +147,13 @@ confirm this by doing a directory list of the bag:
 If your system has the 'ls' command that should return a list of the
 tiddlers that were in the TiddlyWiki you have imported.
 
-To use the tiddlyweb.com TiddlyWiki and you have curl available try this:
+To use the TiddlyWiki at tiddlywiki.com as your sample wiki do the following.
+You will need to have curl <http://curl.haxx.se/> available on your system.
 
   $ curl http://www.tiddlywiki.com > tiddlywiki.html
   $ ./manager bag tiddlywiki
   $ ./manager imwiki tiddlywiki.html tiddlywiki
-  $ ls sotre/bags/tiddlywiki/tiddlers
+  $ ls store/bags/tiddlywiki/tiddlers
 
 You should see a large number of directories.
 
