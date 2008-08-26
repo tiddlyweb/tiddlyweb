@@ -20,9 +20,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 !! Core
 
-* Modification times and other metadata and header handling for bag and recipe entities.
-* Roles/groups in the user system (notably for 'ADMIN' type or group).
-* Add support for description field on recipes.
 * Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
 
 !! Serializations
@@ -31,7 +28,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 !! Stores
 
-* Handle permissions for manipulating bags and recipes.
 * Implement support for deleting users from the store.
 * Additional stores: S3, sqlite, subversion, etc.
 
