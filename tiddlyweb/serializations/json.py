@@ -35,9 +35,11 @@ class Serialization(SerializationInterface):
         Turn a json string back into a recipe.
         """
         info = simplejson.loads(input)
-        print 'info: %s' % info
-        recipe.set_recipe(info['recipe'])
-        recipe.desc = info['desc']
+        try:
+            recipe.set_recipe(info['recipe'])
+            recipe.desc = info['desc']
+        except KeyError:
+            pass
         return recipe
 
     def bag_as(self, bag):

@@ -63,7 +63,6 @@ def test_put_unicode_tiddler():
     response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers/%s' \
             % (encoded_bag_name, encoded_tiddler_name),
             method='PUT', body=tiddler_json, headers={'Content-Type':'application/json'})
-    print content
 
     tiddler = Tiddler(tiddler_name, bag=bag_name)
     store.get(tiddler)
@@ -80,10 +79,9 @@ def test_put_unicode_recipe():
     bag_name = name
 
     recipe_list = [[bag_name, '[tag[%s]]' % name]]
-    json_recipe_list = simplejson.dumps(recipe_list)
+    json_recipe_list = simplejson.dumps(dict(recipe=recipe_list))
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
             method='PUT', body=json_recipe_list, headers={'Content-Type':'application/json'})
-    print content
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)
@@ -115,10 +113,8 @@ def get_tiddlers_from_thing(container):
 
     response, content = http.request('http://our_test_domain:8001/%s/%s/tiddlers.json' % (container, encoded_name),
             method='GET')
-    print content
     assert response['status'] == '200'
     tiddler_info = simplejson.loads(content)
-    print tiddler_info
     assert tiddler_info[0]['title'] == name
     assert tiddler_info[0]['modifier'] == name
     assert tiddler_info[0]['tags'] == [name]

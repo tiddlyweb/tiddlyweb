@@ -39,7 +39,6 @@ def test_title_search():
     response, content = http.request('http://our_test_domain:8001/search?q=tiddler0',
             method='GET')
 
-    print content
     assert response['status'] == '200'
 
 def test_malformed_search():

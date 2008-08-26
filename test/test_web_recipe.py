@@ -229,7 +229,6 @@ def test_delete_recipe():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/other',
             method='DELETE')
-    print content
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/recipes/other',
@@ -275,14 +274,11 @@ def test_roundtrip_unicode_recipe():
     http = httplib2.Http()
     encoded_recipe_name = '%E3%81%86%E3%81%8F%E3%81%99'
     recipe_name = unicode(urllib.unquote(encoded_recipe_name), 'utf-8')
-    print recipe_name.__class__
     assert type(recipe_name) == unicode
     recipe_list = [[recipe_name, '']]
     body = simplejson.dumps(dict(desc='',recipe=recipe_list))
-    print 'body: %s' % body
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
             method='PUT', body=body.encode('UTF-8'), headers={'Content-Type': 'application/json'})
-    print content
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)
