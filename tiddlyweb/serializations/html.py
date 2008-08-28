@@ -28,7 +28,7 @@ class Serialization(SerializationInterface):
         lines = []
         output = '<ul>\n'
         for bag in bags:
-            line = '<li><a href="bags/%s/tiddlers">%s</a></li>' % (urllib.quote(bag.name.encode('utf-8')), bag.name)
+            line = '<li><a href="bags/%s">%s</a></li>' % (urllib.quote(bag.name.encode('utf-8')), bag.name)
             lines.append(line)
         output += "\n".join(lines)
         return output + '\n</ul>'
@@ -60,6 +60,19 @@ class Serialization(SerializationInterface):
 </ul>
 <div><a href="%s">Tiddlers in Recipe</a></div>
 </body></html>""" % (title, recipe.desc, output, tiddler_link)
+
+    def bag_as(self, bag):
+        """
+        Bag as html.
+        """
+        tiddler_link = '%s/tiddlers' % urllib.quote(bag.name.encode('utf-8'))
+        return """
+<html>
+<head><title>Bag %s</title></head>
+<body>
+<p>Description: %s</p>
+<div><a href="%s">Tiddlers in Bag %s</a></div>
+</body></html>""" % (bag.name, bag.desc, tiddler_link, bag.name)
 
     def list_tiddlers(self, bag):
         """

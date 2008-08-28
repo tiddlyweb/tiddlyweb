@@ -15,8 +15,6 @@
 #   text/plain: list of recipe_name
 #   text/html: list of links to /recipes/{recipe_name}
 #   application/json: list of recipe_name
-#
-# TODO: POST a new recipe in text and JSON
 /recipes[.{format}]
     GET tiddlyweb.web.recipe:list
 
@@ -40,9 +38,6 @@
 #   text/html: a list of links to the tidderls _in their bag_
 #   application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 #   text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
-#
-# TODO: PUT a tiddler into this location and have the bag determined
-#       for us.
 /recipes/{recipe_name:segment}/tiddlers[.{format}]
     GET tiddlyweb.web.recipe:get_tiddlers
 
@@ -73,10 +68,12 @@
     GET tiddlyweb.web.bag:list
 
 # bag in various forms (rare)
+# Supports GET:
+#   application/json:
+#   text/html:
 # Supports PUT:
 #   application/json: 
-#
-# TODO: Some form of GET
+# Supports DELETE:
 /bags/{bag_name:segment}[/]
     GET tiddlyweb.web.bag:get
     PUT tiddlyweb.web.bag:put
