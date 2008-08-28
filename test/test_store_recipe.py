@@ -8,9 +8,8 @@ import sys
 import shutil
 sys.path.append('.')
 
-from fixtures import textstore, reset_textstore, recipe_list_string
+from fixtures import textstore, reset_textstore, recipe_list_string, teststore
 from tiddlyweb.recipe import Recipe
-from tiddlyweb.store import Store
 
 expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 
@@ -25,6 +24,7 @@ def setup_module(module):
     Need to clean up the store here.
     """
     reset_textstore()
+    module.store = teststore()
 
 def test_recipe_put():
     """
@@ -34,7 +34,6 @@ def test_recipe_put():
     recipe = Recipe('testrecipe')
     recipe.desc = 'I enjoy being stored'
     recipe.set_recipe(recipe_list_string)
-    store = Store('text')
     store.put(recipe)
 
     assert os.path.exists(expected_stored_filename), \
@@ -54,7 +53,6 @@ def test_recipe_get():
     """
 
     stored_recipe = Recipe('testrecipe')
-    store = Store('text')
     store.get(stored_recipe)
 
     assert stored_recipe == recipe_list_string

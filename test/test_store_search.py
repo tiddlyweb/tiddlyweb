@@ -2,18 +2,15 @@
 import sys
 sys.path.append('.')
 
-from fixtures import reset_textstore, muchdata
-from tiddlyweb.store import Store
+from fixtures import reset_textstore, muchdata, teststore
 from tiddlyweb.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()
-    store = Store('text')
+    module.store = teststore()
     muchdata(store)
 
 def test_simple_search():
-    store = Store('text')
-
     tiddlers = store.search('i am tiddler 0')
 
     assert len(tiddlers) > 0

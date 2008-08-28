@@ -10,16 +10,16 @@ sys.path.append('.')
 
 import py.test
 
-from fixtures import tiddlers, bagone, reset_textstore
-from tiddlyweb.store import Store, NoBagError
+from fixtures import tiddlers, bagone, reset_textstore, teststore
+from tiddlyweb.store import NoBagError
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()
+    module.store = teststore()
 
 def test_simple_put():
-    store = Store('text')
     bagone.desc = 'I enjoy being stored'
     store.put(bagone)
 
@@ -38,7 +38,6 @@ def test_simple_put():
 
 def test_simple_get():
 
-    store = Store('text')
     tiddler = tiddlers[0]
     tiddler.bag = 'bagone'
     store.put(tiddler)
@@ -63,7 +62,6 @@ def test_simple_get():
     assert sorted(the_tiddler.tags) == sorted(tiddler.tags)
 
 def test_failed_get():
-    store = Store('text')
     bag = Bag(name='bagnine')
     py.test.raises(NoBagError, 'store.get(bag)')
 

@@ -51,7 +51,7 @@ def start():
     config['server_store'] = ['text', {'store_root': file_store_location}]
     config['server_prefix'] = web_server_base
 
-    app = serve.default_app(hostname, port, 'urls.map')
+    app = serve.load_app(hostname, port, 'urls.map')
     BaseCGIHandler(sys.stdin, sys.stdout, sys.stderr, os.environ).run(app)
 
 if __name__ == '__main__':

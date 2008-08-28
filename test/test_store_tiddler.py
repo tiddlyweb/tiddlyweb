@@ -12,8 +12,8 @@ import os
 import sys
 sys.path.append('.')
 
-from fixtures import bagone, bagfour, textstore, reset_textstore
-from tiddlyweb.store import Store, StoreLockError, NoTiddlerError
+from fixtures import bagone, bagfour, textstore, reset_textstore, teststore
+from tiddlyweb.store import StoreLockError, NoTiddlerError
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
 import tiddlyweb.stores.text as texter
@@ -34,13 +34,13 @@ def setup_module(module):
     Need to clean up the store here.
     """
     reset_textstore()
+    module.store = teststore()
 
 def test_simple_put():
     """
     put a tiddler to disk and make sure it is there.
     """
 
-    store = Store('text')
     store.put(bagone)
     tiddler = bagone.list_tiddlers()[0]
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
@@ -66,7 +66,6 @@ def test_simple_get():
     stored_tiddler = Tiddler(title='TiddlerOne')
     stored_tiddler.bag = 'bagone'
     stored_tiddler.modified = '200803030303'
-    store = Store('text')
     store.get(stored_tiddler)
 
     assert stored_tiddler.title == 'TiddlerOne', 'retrieved tiddler has correct title'
@@ -80,7 +79,6 @@ def test_get_revision():
     Test we are able to retrieve a particular revision.
     """
 
-    store = Store('text')
     store.put(bagone)
     tiddler = Tiddler(title='RevisionTiddler', text='how now 1')
     tiddler.bag = 'bagone'
@@ -107,7 +105,6 @@ def test_get_revision():
     assert revisions[0] == 3
 
 def test_delete():
-    store = Store('text')
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
 
     assert os.path.exists(os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'RevisionTiddler'))
@@ -115,12 +112,10 @@ def test_delete():
     assert not os.path.exists(os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'RevisionTiddler'))
 
 def test_failed_delete_not_there():
-    store = Store('text')
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
     py.test.raises(NoTiddlerError, 'store.delete(tiddler)')
 
 def test_failed_delete_perms():
-    store = Store('text')
     tiddler = Tiddler(title='TiddlerOne', bag='bagone')
     path = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
     assert os.path.exists(path)
@@ -140,7 +135,6 @@ def test_store_lock():
     texter.write_lock(textstore.bag_store + '/bagone/tiddlers/foobar')
     tiddler = Tiddler('foobar', text='hello')
     tiddler.bag = 'bagone'
-    store = Store('text')
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 
 

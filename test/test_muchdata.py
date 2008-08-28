@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append('.')
 
-from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.store import NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
@@ -15,11 +15,11 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb import control
 from tiddlyweb import filter
 
-from fixtures import reset_textstore, muchdata
+from fixtures import reset_textstore, muchdata, teststore
 
 def setup_module(module):
     reset_textstore()
-    module.store = Store('text')
+    module.store = teststore()
     muchdata(module.store)
 
 def test_many_bags_and_tiddlers():

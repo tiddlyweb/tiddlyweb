@@ -12,8 +12,7 @@ import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore
-from tiddlyweb.store import Store
+from fixtures import muchdata, reset_textstore, teststore
 from tiddlyweb.recipe import Recipe
 
 def setup_module(module):
@@ -21,12 +20,12 @@ def setup_module(module):
     # we have to have a function that returns the callable,
     # Selector just _is_ the callable
     def app_fn():
-        return serve.default_app('our_test_domain', 8001, 'urls.map')
+        return serve.load_app('our_test_domain', 8001, 'urls.map')
     #wsgi_intercept.debuglevel = 1
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
-    module.store = Store('text')
+    module.store = teststore()
     reset_textstore()
     muchdata(module.store)
 

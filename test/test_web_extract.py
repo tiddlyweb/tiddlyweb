@@ -12,17 +12,16 @@ import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore
-from tiddlyweb.store import Store
+from fixtures import muchdata, reset_textstore, teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
     serve.config['extractors'].append('saliva')
     def app_fn():
-        return serve.default_app('our_test_domain', 8001, 'urls.map')
+        return serve.load_app('our_test_domain', 8001, 'urls.map')
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
-    module.store = Store('text')
+    module.store = teststore()
     reset_textstore()
     muchdata(module.store)
 

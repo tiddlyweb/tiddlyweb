@@ -21,19 +21,19 @@ import os
 import sys
 sys.path.append('.')
 
-from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.store import NoBagError
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb import control
 
-from fixtures import reset_textstore, recipe_list
+from fixtures import reset_textstore, recipe_list, teststore
 
 import py.test
 
 def setup_module(module):
     reset_textstore()
-    module.store = Store('text')
+    module.store = teststore()
 
 def test_no_bag_for_tiddler():
     tiddler = Tiddler(title='testnobag')

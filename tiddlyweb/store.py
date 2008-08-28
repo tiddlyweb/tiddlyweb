@@ -8,8 +8,6 @@ from bag import Bag
 from recipe import Recipe
 from user import User
 
-from tiddlyweb.config import config
-
 class StoreMethodNotImplemented(IOError):
     pass
 
@@ -30,7 +28,7 @@ class StoreLockError(IOError):
 
 class Store(object):
 
-    def __init__(self, format, environ={'tiddlyweb.config': config}):
+    def __init__(self, format, environ={}):
         self.format = format
         self.environ = environ
         self._import()

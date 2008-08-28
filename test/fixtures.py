@@ -11,6 +11,8 @@ import shutil
 from tiddlyweb.bag import Bag
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.config import config
+from tiddlyweb.store import Store
 
 tiddlers = [
         Tiddler(
@@ -61,6 +63,9 @@ class textstore:
     bag_store = os.path.join(store_dirname, 'bags')
     recipe_store = os.path.join(store_dirname, 'recipes')
     user_store = os.path.join(store_dirname, 'users')
+
+def teststore():
+    return Store('text', environ={'tiddlyweb.config': config})
 
 def reset_textstore():
     if os.path.exists(textstore.store_dirname):

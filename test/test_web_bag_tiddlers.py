@@ -9,22 +9,21 @@ from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
 
-from tiddlyweb.store import Store
 from tiddlyweb.bag import Bag
 
-from fixtures import muchdata, reset_textstore
+from fixtures import muchdata, reset_textstore, teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
     # Selector just _is_ the callable
     def app_fn():
-        return serve.default_app('our_test_domain', 8001, 'urls.map')
+        return serve.load_app('our_test_domain', 8001, 'urls.map')
     #wsgi_intercept.debuglevel = 1
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
-    module.store = Store('text')
+    module.store = teststore()
     reset_textstore()
     muchdata(module.store)
 

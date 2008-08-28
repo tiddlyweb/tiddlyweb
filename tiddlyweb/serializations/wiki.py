@@ -19,7 +19,7 @@ class Serialization(SerializationInterface):
         Turn a wiki into a bunch of tiddlers
         stored in the bag.
         """
-        return import_wiki(input_string, bag.name)
+        return import_wiki(self.environ['tiddlyweb.store'], input_string, bag.name)
 
     def list_tiddlers(self, bag):
         lines = ''
