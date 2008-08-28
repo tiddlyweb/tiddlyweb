@@ -25,14 +25,11 @@
 #
 
 
-from tiddlyweb.web.serve import load_app, StoreSet, EncodeUTF8, UserExtract, Configurator, config
-from tiddlyweb.auth import PermissionsExceptor
-from tiddlyweb.web.negotiate import Negotiate
-from tiddlyweb.web.query import Query
-from tiddlyweb.web.http import HTTPExceptor
 
 import wsgiref.handlers
 import urllib
+
+from tiddlyweb.web.serve import load_app, config
 
 class ScriptCleanup(object):
 
@@ -43,17 +40,27 @@ class ScriptCleanup(object):
         environ['PATH_INFO'] = urllib.unquote(environ['PATH_INFO'])
         return self.application(environ, start_response)
 
+app = None
 def google_app():
+    """
+    Only calculate the app once, otherwise we recalculate the
+    config settings with every request, which is not happy.
+    """
+    global app
+    if app:
+        return app
+
     host = 'tiddlyweb.appspot.com'
     port = 80
     #host = 'localhost'
     #port = 8000
     filename = 'urls.map'
 
-    app = load_app(host, port, filename, [
-        Negotiate, UserExtract, StoreSet, Query, Configurator, PermissionsExceptor, HTTPExceptor, EncodeUTF8
-        ])
-    return ScriptCleanup(app)
+    filters_in = config['server_request_filters']
+    filters_in.insert(0, ScriptCleanup)
+
+    app = load_app(host, port, filename)
+    return app
 
 def main():
   wsgiref.handlers.CGIHandler().run(google_app())
