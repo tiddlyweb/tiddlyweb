@@ -5,7 +5,6 @@ Serialize into a fullblown tiddlywiki wiki.
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
-from tiddlyweb.importer import import_wiki
 
 # this should come from config or even
 # from a url
@@ -19,7 +18,11 @@ class Serialization(SerializationInterface):
         Turn a wiki into a bunch of tiddlers
         stored in the bag.
         """
-        return import_wiki(self.environ['tiddlyweb.store'], input_string, bag.name)
+        try:
+            from tiddlyweb.importer import import_wiki
+            return import_wiki(self.environ['tiddlyweb.store'], input_string, bag.name)
+        except ImportError:
+            raise NoSerializationError
 
     def list_tiddlers(self, bag):
         lines = ''
