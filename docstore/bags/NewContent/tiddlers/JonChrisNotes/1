@@ -1,0 +1,9 @@
+modifier: YourName
+created: 
+modified: 200808291100
+tags: 
+
+* Might be useful to have a 'tiddlers' link on the HTML representation of a [[Recipe]]. ''done''
+* Would be useful to have a static file store for storing random stuff (and how do 'data:' schemes work with that).
+* Does [[Closet]] fit in here for a place to store stuff?
+* We need a test in the python code that demonstrates a complete run through of the API, as an instructional tool.
