@@ -120,7 +120,8 @@ def test_get_recipes_default():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 3, 'len recipe should be 3 is %s' % len(content.rstrip().split('\n'))
+    assert content.count('<li>') == 1
+    assert content.count('recipes/long') == 1
 
 def test_get_recipes_txt():
     http = httplib2.Http()

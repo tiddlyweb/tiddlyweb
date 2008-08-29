@@ -67,7 +67,7 @@ class Configurator(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response, exc_info=None):
+    def __call__(self, environ, start_response):
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
 

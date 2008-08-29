@@ -18,7 +18,7 @@ class PermissionsExceptor(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response, exc_info=None):
+    def __call__(self, environ, start_response):
         try:
             output = self.application(environ, start_response)
             return output

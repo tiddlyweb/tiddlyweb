@@ -9,10 +9,16 @@ from tiddlyweb.serializations import SerializationInterface
 
 class Serialization(SerializationInterface):
 
+    def __init__(self, environ={}):
+        self.environ = environ
+        self.environ['tiddlyweb.title'] = ''
+        self.environ['tiddlyweb.links'] = []
+
     def list_recipes(self, recipes):
         """
         List the recipes on the system as html.
         """
+        self.environ['tiddlyweb.title'] = 'Recipes'
         lines = []
         output = '<ul>\n'
         for recipe in recipes:
@@ -25,6 +31,7 @@ class Serialization(SerializationInterface):
         """
         List the bags on the system as html.
         """
+        self.environ['tiddlyweb.title'] = 'Bags'
         lines = []
         output = '<ul>\n'
         for bag in bags:
@@ -37,6 +44,7 @@ class Serialization(SerializationInterface):
         """
         Recipe as html.
         """
+        self.environ['tiddlyweb.title'] = 'Recipe %s' % recipe.name
         lines = []
         for bag, filter in recipe:
             line = '<li><a href="'
@@ -51,28 +59,23 @@ class Serialization(SerializationInterface):
         title = 'Bags in Recipe %s' % recipe.name
         tiddler_link = '%s/tiddlers' % urllib.quote(recipe.name.encode('utf-8'))
         return """
-<html>
-<head><title>%s</title></head>
-<body>
 <p>%s</p>
 <ul>
 %s
 </ul>
 <div><a href="%s">Tiddlers in Recipe</a></div>
-</body></html>""" % (title, recipe.desc, output, tiddler_link)
+""" % (recipe.desc, output, tiddler_link)
 
     def bag_as(self, bag):
         """
         Bag as html.
         """
+        self.environ['tiddlyweb.title'] = 'Bag %s' % bag.name
         tiddler_link = '%s/tiddlers' % urllib.quote(bag.name.encode('utf-8'))
         return """
-<html>
-<head><title>Bag %s</title></head>
-<body>
 <p>Description: %s</p>
 <div><a href="%s">Tiddlers in Bag %s</a></div>
-</body></html>""" % (bag.name, bag.desc, tiddler_link, bag.name)
+""" % (bag.desc, tiddler_link, bag.name)
 
     def list_tiddlers(self, bag):
         """
@@ -114,6 +117,7 @@ class Serialization(SerializationInterface):
             title = 'Found Tiddlers'
             wiki_link = None
         output = "\n".join(lines)
+        self.environ['tiddlyweb.title'] = title
         return """
 %s
 <hr>
@@ -121,25 +125,18 @@ class Serialization(SerializationInterface):
 %s
 </ul>
 </div>
-</body></html>""" % (self._tiddler_list_header(title, wiki_link), output)
+""" % (self._tiddler_list_header(wiki_link), output)
 
     def _server_prefix(self):
         config = self.environ.get('tiddlyweb.config', {})
         return config.get('server_prefix', '')
 
-    def _tiddler_list_header(self, title, wiki_link):
+    def _tiddler_list_header(self, wiki_link):
         if wiki_link:
-            return"""
-<html>
-<head><title>%s</title></head>
-<body>
+            return """
 <div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
-""" % (title, '%s.wiki' % wiki_link)
-        return"""
-<html>
-<head><title>%s</title></head>
-<body>
-""" % title
+""" % ('%s.wiki' % wiki_link)
+        return ''
 
     def tiddler_as(self, tiddler):
         try:
@@ -187,18 +184,14 @@ class Serialization(SerializationInterface):
                 list_link, tiddler)
         # Have to be very careful in the following about UTF-8 handling
         # because wikklytext wants to encode its output.
+        self.environ['tiddlyweb.title'] = tiddler.title
         return """
-<html>
-<head><title>%s</title></head>
-<body>
 <div><a href="%s" title="tiddler list">%s</a></div>
 <hr>
 %s
 %s
 </div>
-</body></html>
-""" % (tiddler.title.encode('utf-8'),
-        urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
+""" % ( urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
         list_title.encode('utf-8'),
         self._tiddler_div(tiddler).encode('utf-8'),
         html)

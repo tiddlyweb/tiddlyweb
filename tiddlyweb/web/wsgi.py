@@ -4,6 +4,43 @@ import time
 import urllib
 
 from tiddlyweb.store import Store
+from tiddlyweb.web.util import get_serialize_type
+
+class HTMLPresenter(object):
+    """
+    Take the core app output, see if it is text/html,
+    and if it is, add some framework.
+    """
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        output = self.application(environ, start_response)
+        output = ''.join(output)
+        if environ.has_key('tiddlyweb.title'):
+            return [self._header(environ), output, self._footer(environ)]
+        return output
+
+    def _header(self, environ):
+        links = '\n'.join(environ['tiddlyweb.links'])
+        return """
+<html>
+<head>
+<title>TiddlyWeb - %s</title>
+%s
+</head>
+<body>
+<div id="header"></div>
+""" % (environ['tiddlyweb.title'], links)
+
+    def _footer(self, environ):
+        return """
+<div id="footer">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
+</body>
+</html>
+"""
+
 
 class SimpleLog(object):
     """
@@ -19,7 +56,7 @@ class SimpleLog(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response, exc_info=None):
+    def __call__(self, environ, start_response):
         req_uri = urllib.quote(environ.get('SCRIPT_NAME', '')
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
@@ -62,7 +99,7 @@ class StoreSet(object):
     def __init__(self, application):
         self.application = application
 
-    def __call__(self, environ, start_response, exc_info=None):
+    def __call__(self, environ, start_response):
         db = Store(environ['tiddlyweb.config']['server_store'][0], environ)
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
@@ -81,5 +118,5 @@ class EncodeUTF8(object):
             string = string.encode('utf-8')
         return string
 
-    def __call__(self, environ, start_response, exc_info=None):
+    def __call__(self, environ, start_response):
         return [self._encoder(x) for x in self.application(environ, start_response)]

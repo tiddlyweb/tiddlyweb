@@ -106,7 +106,8 @@ def test_get_bags_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 32, 'len bags should be 33 is %s' % len(content.rstrip().split('\n'))
+    assert content.count('<li>') == 30
+    assert content.count('bags/') == 30
 
 def test_get_bags_txt():
     http = httplib2.Http()
@@ -124,7 +125,8 @@ def test_get_bags_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 32, 'len bags should be 33 is %s' % len(content.rstrip().split('\n'))
+    assert content.count('<li>') == 30
+    assert content.count('bags/') == 30
 
 def test_get_bags_unsupported_neg_format():
     http = httplib2.Http()

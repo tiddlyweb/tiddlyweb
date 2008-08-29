@@ -12,12 +12,12 @@ from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.auth import PermissionsExceptor
 from tiddlyweb.web.http import HTTPExceptor
-from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog
+from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter
 
 default_config = {
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [Query, StoreSet, UserExtract, Negotiate],
-        'server_response_filters': [PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog],
+        'server_response_filters': [HTMLPresenter, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog],
         'server_host': {},
         'server_prefix': '',
         'extension_types': {
