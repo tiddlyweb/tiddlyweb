@@ -17,8 +17,8 @@ class HTMLPresenter(object):
 
     def __call__(self, environ, start_response):
         output = self.application(environ, start_response)
-        output = ''.join(output)
         if environ.has_key('tiddlyweb.title'):
+            output = ''.join(output)
             return [self._header(environ), output, self._footer(environ)]
         return output
 
@@ -40,7 +40,6 @@ class HTMLPresenter(object):
 </body>
 </html>
 """
-
 
 class SimpleLog(object):
     """
@@ -118,5 +117,9 @@ class EncodeUTF8(object):
             string = string.encode('utf-8')
         return string
 
+    def _yielder(self, environ, start_response):
+        for output in self.application(environ, start_response):
+            yield self._encoder(output)
+
     def __call__(self, environ, start_response):
-        return [self._encoder(x) for x in self.application(environ, start_response)]
+        return self._yielder(environ, start_response)
