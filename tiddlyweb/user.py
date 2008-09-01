@@ -7,8 +7,9 @@ from crypt import crypt
 class User(object):
     """
     A simple representation of a user. For now
-    a user is simply a username, the name of their
-    authentication mechanism, and a note.
+    a user is simply a username, an optional
+    password, an optional list of roles,
+    and an optional note.
 
     This is all subject to change.
     """
@@ -17,6 +18,19 @@ class User(object):
         self.usersign = usersign
         self.note = note
         self._password = None
+        self.roles = set()
+
+    def has_role(self, role):
+        return role in self.roles
+
+    def add_role(self, role):
+        self.roles.add(role)
+
+    def del_role(self, role):
+        self.roles.discard(role)
+
+    def list_roles(self):
+        return list(self.roles)
 
     def set_password(self, password):
         password = password.strip()

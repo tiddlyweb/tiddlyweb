@@ -177,6 +177,9 @@ class Store(StorageInterface):
             user_file.close()
             user_data = simplejson.loads(user_info)
             for key, value in user_data.items():
+                if key == 'roles':
+                    user.roles = set(value)
+                    continue
                 if key == 'password':
                     key = '_password'
                 user.__setattr__(key, value)
@@ -189,8 +192,11 @@ class Store(StorageInterface):
 
         user_file = codecs.open(user_path, 'w', encoding='utf-8')
         user_dict = {}
-        for key in ['usersign', 'note', '_password']:
+        for key in ['usersign', 'note', '_password', 'roles']:
             value = user.__getattribute__(key)
+            if key == 'roles':
+                user_dict[key] = list(value)
+                continue
             if key == '_password':
                 key = 'password'
             user_dict[key] = value

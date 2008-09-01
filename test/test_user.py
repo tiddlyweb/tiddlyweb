@@ -45,3 +45,19 @@ def test_empty_password():
     user = User('ape')
     assert not user.check_password('xow'), 'no password on user returns false'
 
+def test_user_role():
+    user = User('paper')
+    assert user.list_roles() == []
+
+    user.add_role('ADMIN')
+    assert user.list_roles() == ['ADMIN']
+
+    user.del_role('ADMIN')
+    assert user.list_roles() == []
+
+# add twice to confirm set-ness
+    user.add_role('ADMIN')
+    user.add_role('ADMIN')
+
+    assert user.list_roles() == ['ADMIN']
+
