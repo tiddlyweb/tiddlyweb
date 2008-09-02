@@ -20,9 +20,6 @@ class User(object):
         self._password = None
         self.roles = set()
 
-    def has_role(self, role):
-        return role in self.roles
-
     def add_role(self, role):
         self.roles.add(role)
 

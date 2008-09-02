@@ -31,12 +31,10 @@ def server(args):
         help()
 
     from tiddlyweb.web import serve
-#     from test import fixtures
-#     if not os.path.exists(fixtures.textstore.store_dirname):
-#         fixtures.reset_textstore()
-#         store = Store(config['server_store'][0])
-#         fixtures.muchdata(store)
     serve.start_cherrypy('./urls.map', hostname, int(port))
+
+def _store():
+    return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
 @_make_command('Add or update a user to the database: <username> <password>')
 def adduser(args):
@@ -47,10 +45,18 @@ def adduser(args):
     except ValueError, e:
         help()
 
+    roles = []
     try:
-        store = Store(config['server_store'][0])
+        roles = args[2:]
+    except IndexError:
+        pass
+
+    try:
+        store = _store()
         user = User(username)
         user.set_password(password)
+        for role in roles:
+            user.add_role(role)
         store.put(user)
     except Exception, e:
         print 'unable to create or update user: %s' % e
@@ -61,9 +67,8 @@ def adduser(args):
 @_make_command('Import a Tiddlywiki html file into a bag: <filename> <bag name>')
 def imwiki(args):
     from tiddlyweb.importer import import_wiki_file
-    from tiddlyweb.store import Store
 
-    store = Store(config['server_store'][0])
+    store = _store()
 
     try:
         filename, bag_name = args[0:2]
@@ -84,7 +89,6 @@ def recipe(args):
 
     from tiddlyweb.recipe import Recipe
     from tiddlyweb.serializer import Serializer
-    from tiddlyweb.store import Store
 
     recipe = Recipe(recipe_name)
 
@@ -92,7 +96,7 @@ def recipe(args):
     serializer = Serializer('text')
     serializer.object = recipe
     serializer.from_string(content)
-    store = Store(config['server_store'][0])
+    store = _store()
     store.put(recipe)
 
 @_make_command('Create or update a bag with the json text on stdin: <bag name>')
@@ -104,7 +108,6 @@ def bag(args):
 
     from tiddlyweb.bag import Bag
     from tiddlyweb.serializer import Serializer
-    from tiddlyweb.store import Store
 
     bag = Bag(bag_name)
 
@@ -114,7 +117,7 @@ def bag(args):
     serializer = Serializer('json')
     serializer.object = bag
     serializer.from_string(content)
-    store = Store(config['server_store'][0])
+    store = _store()
     store.put(bag)
 
 @_make_command('Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>')
@@ -128,7 +131,6 @@ def tiddler(args):
 
     from tiddlyweb.tiddler import Tiddler
     from tiddlyweb.serializer import Serializer
-    from tiddlyweb.store import Store
 
     tiddler = Tiddler(tiddler_name)
     tiddler.bag = bag_name
@@ -137,7 +139,7 @@ def tiddler(args):
     serializer = Serializer('text')
     serializer.object = tiddler
     serializer.from_string(content)
-    store = Store(config['server_store'][0])
+    store = _store()
     store.put(tiddler)
 
 @_make_command('List this help')
