@@ -32,14 +32,17 @@ class HTMLPresenter(object):
 </head>
 <body>
 <div id="header"></div>
+<hr />
 """ % (environ['tiddlyweb.title'], links)
 
     def _footer(self, environ):
         return """
+<hr />
 <div id="footer">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
+<div>User %s.</div>
 </body>
 </html>
-"""
+""" % environ['tiddlyweb.usersign']['name']
 
 class SimpleLog(object):
     """
@@ -70,7 +73,11 @@ class SimpleLog(object):
         return self.application(environ, replacement_start_response)
 
     def write_log(self, environ, req_uri, status, bytes):
-        environ['REMOTE_USER'] = environ.get('tiddlyweb.usersign', '')
+        environ['REMOTE_USER'] = None
+        try:
+            environ['REMOTE_USER'] = environ['tiddlyweb.usersign']['name']
+        except KeyError:
+            pass
         if bytes is None:
             bytes = '-'
         d = {

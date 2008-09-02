@@ -36,7 +36,7 @@ def server(args):
 def _store():
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
-@_make_command('Add or update a user to the database: <username> <password>')
+@_make_command('Add or update a user to the database: <username> <password> [[role] [role] ...]')
 def adduser(args):
     try:
         username, password = args[0:2]
