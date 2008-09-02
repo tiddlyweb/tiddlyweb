@@ -10,6 +10,14 @@ from tiddlyweb.bag import Policy, Bag
 import py.test
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
 
+jeremy_info = {'name':'jeremy'}
+chris_info = {'name':'chris','roles':['R:ADMIN']}
+none_info = {'name':'NONE'}
+barnabas_info = {'name':'barnabas'}
+randomer_info = {'name':'randomer'}
+boom_info = {'name':'boom'}
+guest_info = {'name':'GUEST'}
+
 def setup_module(module):
     pass
 
@@ -44,33 +52,32 @@ def test_policy_post_set():
     assert 'tall' in policy.read
 
 def test_policy_allows():
-    policy = Policy(read=['chris','jeremy'],write=['NONE'],manage=['chris'])
+    policy = Policy(read=['chris','jeremy'],write=['NONE'],delete=['R:ADMIN'],manage=['chris'])
 
-    assert policy.allows('chris', 'read')
-    assert policy.allows('jeremy', 'read')
-    py.test.raises(ForbiddenError, 'policy.allows("jeremy", "write")')
-    assert policy.allows('chris', 'manage')
-    py.test.raises(ForbiddenError, 'policy.allows("jeremy", "manage")')
-    assert policy.allows('chris', 'create')
-    py.test.raises(ForbiddenError, 'policy.allows("NONE", "write")')
-    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "read")')
-    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "write")')
-    assert policy.allows('barnabas', 'create')
-    assert policy.allows('barnabas', 'delete')
-    py.test.raises(ForbiddenError, 'policy.allows("barnabas", "manage")')
+    assert policy.allows(chris_info, 'read')
+    assert policy.allows(jeremy_info, 'read')
+    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "write")')
+    assert policy.allows(chris_info, 'manage')
+    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "manage")')
+    assert policy.allows(chris_info, 'create')
+    py.test.raises(ForbiddenError, 'policy.allows(none_info, "write")')
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "read")')
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "write")')
+    assert policy.allows(barnabas_info, 'create')
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "manage")')
 
 def test_policy_any():
     policy = Policy(read=['ANY'],write=['ANY'])
-    assert policy.allows('randomer', 'read')
-    assert policy.allows('boom', 'write')
-    py.test.raises(UserRequiredError, 'policy.allows("GUEST", "read")')
+    assert policy.allows(randomer_info, 'read')
+    assert policy.allows(boom_info, 'write')
+    py.test.raises(UserRequiredError, 'policy.allows(guest_info, "read")')
 
 def test_bag_policy():
 
     bag = Bag('policy_tester')
     bag.policy = Policy(read=['chris','jeremy'])
 
-    assert bag.policy.allows('chris', 'read')
-    py.test.raises(ForbiddenError, 'bag.policy.allows("chris", "manage")')
-    py.test.raises(UserRequiredError, 'bag.policy.allows("GUEST", "read")')
+    assert bag.policy.allows(chris_info, 'read')
+    py.test.raises(ForbiddenError, 'bag.policy.allows(chris_info, "manage")')
+    py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read")')
 

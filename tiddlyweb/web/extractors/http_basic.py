@@ -7,7 +7,7 @@ from base64 import b64decode
 
 from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.user import User
-from tiddlyweb.store import NoUserError
+from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
 class Extractor(ExtractorInterface):
 
@@ -23,8 +23,8 @@ class Extractor(ExtractorInterface):
                 user = User(candidate_username)
                 store.get(user)
                 if user.check_password(password):
-                    return candidate_username
-            except NoUserError:
+                    return {"name": user.usersign, "roles": user.list_roles()}
+            except (NoUserError, StoreMethodNotImplemented):
                 pass
         return False
 

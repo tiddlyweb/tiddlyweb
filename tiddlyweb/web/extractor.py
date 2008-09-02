@@ -16,13 +16,13 @@ class UserExtract(object):
         self.application = application
 
     def __call__(self, environ, start_response, exc_info=None):
-        username = 'GUEST'
+        userinfo = {"name":'GUEST'}
 
-        candidate_username = self._try_extractors(environ, start_response)
+        candidate_userinfo = self._try_extractors(environ, start_response)
 
-        if candidate_username:
-            username = candidate_username
-        environ['tiddlyweb.usersign'] = username
+        if candidate_userinfo:
+            userinfo = candidate_userinfo
+        environ['tiddlyweb.usersign'] = userinfo
 
         return self.application(environ, start_response)
 
