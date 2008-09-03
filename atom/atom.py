@@ -30,6 +30,9 @@ from tiddlyweb.serializations.html import Serialization as HTMLSerialization
 
 class Serialization(HTMLSerialization):
 
+    def __init__(self, environ={}):
+        self.environ = environ
+
     def list_recipes(self, recipes):
         pass
 
