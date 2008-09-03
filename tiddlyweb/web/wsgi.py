@@ -23,23 +23,30 @@ class HTMLPresenter(object):
         return output
 
     def _header(self, environ):
-        links = '\n'.join(environ['tiddlyweb.links'])
+        css = ''
+        if environ['tiddlyweb.config'].has_key('css_uri'):
+            css = '<link rel="stylesheet" href="%s" type="text/css" />' % environ['tiddlyweb.config']['css_uri']
+        try:
+            links = '\n'.join(environ['tiddlyweb.links'])
+        except KeyError:
+            links = ''
         return """
 <html>
 <head>
 <title>TiddlyWeb - %s</title>
 %s
+%s
 </head>
 <body>
 <div id="header"></div>
-<hr />
-""" % (environ['tiddlyweb.title'], links)
+""" % (environ['tiddlyweb.title'], css, links)
 
     def _footer(self, environ):
         return """
-<hr />
-<div id="footer">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
-<div>User %s.</div>
+<div id="footer">
+<div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
+<div id="usergreet">User %s.</div>
+</div>
 </body>
 </html>
 """ % environ['tiddlyweb.usersign']['name']

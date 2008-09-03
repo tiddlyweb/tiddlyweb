@@ -27,7 +27,7 @@ class Serialization(HTMLSerialization):
                             % '%s.atom' % wiki_link
                     ]
             return"""
-<div><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+<div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
 """ % ('%s.wiki' % wiki_link)
         return ''
 

@@ -5,16 +5,10 @@ for this.
 """
 
 root_page = """<html>
-<head>
-<title>TiddlyWeb</title>
-</head>
-<body>
-<ul>
+<ul id="root" class="entitylist">
 <li><a href="recipes">recipes</a></li>
 <li><a href="bags">bags</a></li>
-</ul>
-<body>
-</html>"""
+</ul>"""
 
 def root(environ, start_response):
     """
@@ -22,4 +16,5 @@ def root(environ, start_response):
     """
 
     start_response("200 OK", [('Content-Type', 'text/html; charset=UTF-8')])
+    environ['tiddlyweb.title'] = 'Home'
     return [root_page]
