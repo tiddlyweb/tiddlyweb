@@ -30,7 +30,6 @@ def test_get_wiki():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
             method='GET')
 
-    #print content
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert '<title>\nTiddlyWeb Loading\n</title>' in content

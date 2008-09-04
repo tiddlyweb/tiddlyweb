@@ -6,7 +6,6 @@ import re
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.serializations.html import Serialization as Html_maker
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url
 
@@ -74,19 +73,12 @@ class Serialization(SerializationInterface):
             # If the HTML serialization doesn't have wikklytext
             # we will get back wikitext inside the div classed
             # 'tiddler' instead of HTML
-            #
-            # We need to make modify the environment because
-            # the HTML serialization may change it and we don't
-            # want that.
-            serializer = Html_maker(environ=self.environ)
-            del(self.environ['tiddlyweb.title'])
-            del(self.environ['tiddlyweb.links'])
-            output = serializer.tiddler_as(tiddler)
+            from tiddlyweb.wikklyhtml import tiddler_to_wikklyhtml
+            output = tiddler_to_wikklyhtml('', '', tiddler)
 
             from BeautifulSoup import BeautifulSoup
             soup = BeautifulSoup(output)
-            tiddler_div = soup.find('div', {'class': 'tiddler'})
-            title = tiddler_div.findAll(text=True)
+            title = soup.findAll(text=True)
             return ''.join(title).rstrip().lstrip()
         except ImportError:
             # If we have been unable to load BeautifilSoup then
