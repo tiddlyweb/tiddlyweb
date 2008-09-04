@@ -93,6 +93,7 @@ def test_get_tiddler_wiki():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
+    assert '<title>\ntiddler8\n</title>' in content
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
 def test_get_tiddler_revision_wiki():

@@ -2,6 +2,8 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
+import re
+
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
@@ -25,12 +27,12 @@ class Serialization(SerializationInterface):
             raise NoSerializationError
 
     def list_tiddlers(self, bag):
-        return self._put_tiddlers_in_tiddlywiki(bag.list_tiddlers(), title=bag.name)
+        return self._put_tiddlers_in_tiddlywiki(bag.list_tiddlers())
 
     def tiddler_as(self, tiddler):
         return self._put_tiddlers_in_tiddlywiki([tiddler], title=tiddler.title)
 
-    def _put_tiddlers_in_tiddlywiki(self, tiddlers, title=''):
+    def _put_tiddlers_in_tiddlywiki(self, tiddlers, title='TiddlyWeb Loading'):
 # read in empty.html from somewhere (prefer url)
 # replace <title> with the right stuff
 ## get SiteTitle tiddler
@@ -43,15 +45,24 @@ class Serialization(SerializationInterface):
         lines = ''
         for tiddler in tiddlers:
             lines += self._tiddler_as_div(tiddler)
-        tiddlystart, tiddlyfinish = self._split_empty_html()
+        wiki = self._get_wiki()
+        wiki = self._inject_title(wiki, title)
+        tiddlystart, tiddlyfinish = self._split_wiki(wiki)
         return tiddlystart + lines + splitter + tiddlyfinish
 
-    def _split_empty_html(self):
+    def _inject_title(self, wiki, title):
+        title = '\n<title>\n%s\n</title>\n' % title
+        return re.sub('\n<title>\n[^\n]*\n</title>\n', title, wiki, count=0)
+
+    def _get_wiki(self):
 # this could throw, which is just fine, 
 # that's what we want
         f = open(empty_html)
         wiki = f.read()
         wiki = unicode(wiki, 'utf-8')
+        return wiki
+
+    def _split_wiki(self, wiki):
         return wiki.split(splitter)
 
     def _tiddler_as_div(self, tiddler):
