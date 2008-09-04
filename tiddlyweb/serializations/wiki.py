@@ -25,18 +25,24 @@ class Serialization(SerializationInterface):
             raise NoSerializationError
 
     def list_tiddlers(self, bag):
-        lines = ''
-        for tiddler in bag.list_tiddlers():
-            lines += self._tiddler_as_div(tiddler)
-
-        return self._put_string_in_tiddlywiki(lines)
+        return self._put_tiddlers_in_tiddlywiki(bag.list_tiddlers(), title=bag.name)
 
     def tiddler_as(self, tiddler):
-        tiddler_div = self._tiddler_as_div(tiddler)
+        return self._put_tiddlers_in_tiddlywiki([tiddler], title=tiddler.title)
 
-        return self._put_string_in_tiddlywiki(tiddler_div)
-
-    def _put_string_in_tiddlywiki(self, lines):
+    def _put_tiddlers_in_tiddlywiki(self, tiddlers, title=''):
+# read in empty.html from somewhere (prefer url)
+# replace <title> with the right stuff
+## get SiteTitle tiddler
+## get SiteSubTitle tiddler
+## use one or both, if both ' - ' in the middel
+## turn into HTML, pull plain text out of HTML
+## put plain text into <title></title> of doc
+# replace markup etc with the right stuff
+# hork in the stuff
+        lines = ''
+        for tiddler in tiddlers:
+            lines += self._tiddler_as_div(tiddler)
         tiddlystart, tiddlyfinish = self._split_empty_html()
         return tiddlystart + lines + splitter + tiddlyfinish
 
