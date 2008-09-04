@@ -6,7 +6,6 @@ import re
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url
 
 # this should come from config or even
@@ -68,13 +67,11 @@ class Serialization(SerializationInterface):
 
     def _plain_textify_string(self, title):
         try:
-            tiddler = Tiddler('tmp', bag='tmp')
-            tiddler.text = unicode(title)
             # If the HTML serialization doesn't have wikklytext
             # we will get back wikitext inside the div classed
             # 'tiddler' instead of HTML
-            from tiddlyweb.wikklyhtml import tiddler_to_wikklyhtml
-            output = tiddler_to_wikklyhtml('', '', tiddler)
+            from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
+            output = wikitext_to_wikklyhtml('', '', unicode(title))
 
             from BeautifulSoup import BeautifulSoup
             soup = BeautifulSoup(output)

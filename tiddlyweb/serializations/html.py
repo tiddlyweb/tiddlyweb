@@ -155,9 +155,9 @@ class Serialization(SerializationInterface):
             list_link = 'bags/%s/tiddlers' % tiddler.bag.encode('utf-8')
             list_title = 'Recent Changes in Bag %s' % tiddler.bag
 
-        from tiddlyweb.wikklyhtml import tiddler_to_wikklyhtml
-        html = tiddler_to_wikklyhtml('%s/' % server_prefix,
-                list_link, tiddler)
+        from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
+        html = wikitext_to_wikklyhtml('%s/' % server_prefix,
+                list_link, tiddler.text)
         # Have to be very careful in the following about UTF-8 handling
         # because wikklytext wants to encode its output.
         self.environ['tiddlyweb.title'] = tiddler.title

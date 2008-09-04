@@ -2,11 +2,11 @@
 import wikklytext
 import urllib
 
-def tiddler_to_wikklyhtml(base_url, path_url, tiddler):
+def wikitext_to_wikklyhtml(base_url, path_url, wikitext):
     """
-    Turn a tiddler into HTML.
-    base_url: starting url for links in the tiddler (e.g. '/')
-    path_url: path from base to tiddler (e.g. 'recipes/foorecipe/tiddlers')
+    Turn a wikitext into HTML.
+    base_url: starting url for links in the wikitext (e.g. '/')
+    path_url: path from base to wikitext (e.g. 'recipes/foorecipe/tiddlers')
     """
     
     def our_resolver(url_fragment, base_url, site_url):
@@ -21,7 +21,7 @@ def tiddler_to_wikklyhtml(base_url, path_url, tiddler):
             '$REFLOW': 0
             } 
     html, context = wikklytext.WikklyText_to_InnerHTML(
-            text=tiddler.text,
+            text=wikitext,
             setvars=link_context,
             encoding='utf-8',
             safe_mode=True,
