@@ -15,17 +15,10 @@ import tiddlyweb.web.util
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
 
-expected_content="""<html>
-<head>
-<title>TiddlyWeb</title>
-</head>
-<body>
-<ul>
+expected_content="""<ul id="root" class="entitylist">
 <li><a href="recipes">recipes</a></li>
 <li><a href="bags">bags</a></li>
-</ul>
-<body>
-</html>"""
+</ul>"""
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -44,7 +37,7 @@ def test_get_root():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content == expected_content
+    assert expected_content in content
 
 def test_recipe_url():
     environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
