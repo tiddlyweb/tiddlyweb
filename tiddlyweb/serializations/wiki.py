@@ -6,6 +6,8 @@ import re
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.serializations.html import Serialization as Html_maker
+from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url
 
 # this should come from config or even
@@ -35,28 +37,76 @@ class Serialization(SerializationInterface):
     def _put_tiddlers_in_tiddlywiki(self, tiddlers, title='TiddlyWeb Loading'):
 # read in empty.html from somewhere (prefer url)
 # replace <title> with the right stuff
-## get SiteTitle tiddler
-## get SiteSubTitle tiddler
-## use one or both, if both ' - ' in the middel
-## turn into HTML, pull plain text out of HTML
-## put plain text into <title></title> of doc
 # replace markup etc with the right stuff
 # hork in the stuff
+
+        # figure out the content to be pushed into the
+        # wiki and calculate the title
         lines = ''
+        candidate_title = None
+        candidate_subtitle = None
         for tiddler in tiddlers:
             lines += self._tiddler_as_div(tiddler)
+            if tiddler.title == 'SiteTitle':
+                candidate_title = tiddler.text
+            if tiddler.title == 'SiteSubtitle':
+                candidate_subtitle = tiddler.text
+
+        # Turn the title into HTML and then turn it into
+        # plain text so it is of a form satisfactory to <title>
+        title = self._determine_title(title, candidate_title, candidate_subtitle)
+        title = self._plain_textify_string(title)
+
+        # load the wiki
         wiki = self._get_wiki()
+        # put the title in place
         wiki = self._inject_title(wiki, title)
+
+        # split the wiki into the before store and after store
+        # sections, put our content in the middle
         tiddlystart, tiddlyfinish = self._split_wiki(wiki)
         return tiddlystart + lines + splitter + tiddlyfinish
+
+    def _plain_textify_string(self, title):
+        try:
+            tiddler = Tiddler('tmp', bag='tmp')
+            tiddler.text = unicode(title)
+            # If the HTML serialization doesn't have wikklytext
+            # we will get back wikitext inside the div classed
+            # 'tiddler' instead of HTML
+            #
+            # We need to make modify the environment because
+            # the HTML serialization may change it and we don't
+            # want that.
+            serializer = Html_maker(environ=self.environ)
+            del(self.environ['tiddlyweb.title'])
+            del(self.environ['tiddlyweb.links'])
+            output = serializer.tiddler_as(tiddler)
+
+            from BeautifulSoup import BeautifulSoup
+            soup = BeautifulSoup(output)
+            tiddler_div = soup.find('div', {'class': 'tiddler'})
+            title = tiddler_div.findAll(text=True)
+            return ''.join(title).rstrip().lstrip()
+        except ImportError:
+            # If we have been unable to load BeautifilSoup then
+            # fall back to the original wikitext
+            return title
+
+    def _determine_title(self, title, candidate_title, candidate_subtitle):
+        if candidate_title and candidate_subtitle:
+            return '%s - %s' % (candidate_title, candidate_subtitle)
+        if candidate_title:
+            return candidate_title
+        if candidate_subtitle:
+            return candidate_subtitle
+        return title
 
     def _inject_title(self, wiki, title):
         title = '\n<title>\n%s\n</title>\n' % title
         return re.sub('\n<title>\n[^\n]*\n</title>\n', title, wiki, count=0)
 
     def _get_wiki(self):
-# this could throw, which is just fine, 
-# that's what we want
         f = open(empty_html)
         wiki = f.read()
         wiki = unicode(wiki, 'utf-8')
