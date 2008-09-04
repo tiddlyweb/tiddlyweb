@@ -146,29 +146,6 @@ class Serialization(SerializationInterface):
         return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">' % \
     (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags))
 
-    def _tiddler_to_html(self, base_url, list_link, tiddler):
-        import wikklytext
-        def our_resolver(url_fragment, base_url, site_url):
-            if '/' in url_fragment:
-                return url_fragment, True
-            return '%s%s' % (base_url, urllib.quote(url_fragment)), False
-
-        posthook = PostHook()
-
-        link_context = {
-                '$BASE_URL': '%s%s' % (base_url, list_link),
-                '$REFLOW': 0
-                } 
-        html, context = wikklytext.WikklyText_to_InnerHTML(
-                text=tiddler.text,
-                setvars=link_context,
-                encoding='utf-8',
-                safe_mode=True,
-                url_resolver=our_resolver,
-                tree_posthook=posthook.treehook
-                )
-        return html
-
     def _tiddler_to_wikklyhtml(self, tiddler):
         server_prefix = self._server_prefix()
         if tiddler.recipe:
@@ -178,7 +155,8 @@ class Serialization(SerializationInterface):
             list_link = 'bags/%s/tiddlers' % tiddler.bag.encode('utf-8')
             list_title = 'Recent Changes in Bag %s' % tiddler.bag
 
-        html = self._tiddler_to_html('%s/' % server_prefix,
+        from tiddlyweb.wikklyhtml import tiddler_to_wikklyhtml
+        html = tiddler_to_wikklyhtml('%s/' % server_prefix,
                 list_link, tiddler)
         # Have to be very careful in the following about UTF-8 handling
         # because wikklytext wants to encode its output.
@@ -192,21 +170,4 @@ class Serialization(SerializationInterface):
         list_title.encode('utf-8'),
         self._tiddler_div(tiddler).encode('utf-8'),
         html)
-
-class PostHook(object):
-    def __init__(self):
-        # make map of wikiwords
-        self.wikiwords = InfiniteDict()
-            
-    def treehook(self, rootnode, context):
-        from wikklytext.wikwords import wikiwordify
-        # add links to any wikiword
-        wikiwordify(rootnode, context, self.wikiwords)
-
-class InfiniteDict(dict):
-    def __getitem__(self, name):
-        return name
-
-    def has_key(self, name):
-        return True
 
