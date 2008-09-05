@@ -15,7 +15,7 @@ class Tiddler(object):
     """
     The universal content object in the TiddlyWiki
     universe, corresponding to a Page in other wiki
-    systems. A Tiddler has text and some associated 
+    systems. A Tiddler has text and some associated
     metadata. The text can be anything, but is usually
     wikitext in some form, or Javascript code to be
     used as a plugin.
@@ -26,7 +26,7 @@ class Tiddler(object):
     Changing the attributes is done by directly changing
     the attributes. This is done to make the Tiddler
     easier to store and serialize in a diversity of ways.
-    
+
     A Tiddler has several attributes:
 
     title: The name of the tiddler. Required.
@@ -62,14 +62,14 @@ class Tiddler(object):
 
     def __init__(self,
             title=None,
-            modified=current_timestring(),
             created='',
+            modified=current_timestring(),
             modifier=None,
             tags=[],
-            bag=None,
-            recipe=None,
+            text=None,
             revision=None,
-            text=None):
+            bag=None,
+            recipe=None):
         """
         Create a new Tiddler object.
 
