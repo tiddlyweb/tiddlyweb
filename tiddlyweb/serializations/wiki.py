@@ -2,8 +2,6 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
-import re
-
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
