@@ -33,11 +33,9 @@ class Challenger(ChallengerInterface):
         start_response(status, [
             ('Content-Type', 'text/html')
             ])
+        environ['tiddlyweb.title'] = 'Cookie Based Login'
         return [
 """
-<html>
-<head><title>Log In</title></head>
-<body>
 <pre>
 %s
 <form action="" method="POST">
@@ -47,8 +45,6 @@ Password <input type="password" name="password" size="40" />
 <input type="submit" value="submit" />
 </form>
 </pre>
-</body>
-</html>
 """ % (message, redirect)]
 
     def _validate_and_redirect(self, environ, start_response, username, password, redirect):

@@ -80,11 +80,9 @@ class Challenger(ChallengerInterface):
         start_response(status, [
             ('Content-Type', 'text/html')
             ])
+        environ['tiddlyweb.title'] = 'OpenID Login'
         return [
 """
-<html>
-<head><title>OpenID Log In</title></head>
-<body>
 <pre>
 %s
 <form action="" method="POST">
@@ -93,8 +91,6 @@ OpenID: <input name="openid" size="60" />
 <input type="submit" value="submit" />
 </form>
 </pre>
-</body>
-</html>
 """ % (message, redirect)]
 
     def _find_speak_to_server(self, environ, start_response, redirect, openid):

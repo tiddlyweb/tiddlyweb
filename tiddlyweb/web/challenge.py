@@ -18,6 +18,7 @@ def base(environ, start_response):
     start_response('401 Unauthorized', [
         ('Content-Type', 'text/html')
         ])
+    environ['tiddlyweb.title'] = 'Login Challengers'
     return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in \
             [_challenger_url(environ, system)  for system in auth_systems]]
 

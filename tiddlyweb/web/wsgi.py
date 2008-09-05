@@ -17,7 +17,7 @@ class HTMLPresenter(object):
 
     def __call__(self, environ, start_response):
         output = self.application(environ, start_response)
-        if environ.has_key('tiddlyweb.title'):
+        if environ.has_key('tiddlyweb.title') and 'Mozilla' in environ['HTTP_USER_AGENT']:
             output = ''.join(output)
             return [self._header(environ), output, self._footer(environ)]
         return output
