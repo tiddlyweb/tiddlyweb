@@ -13,6 +13,13 @@ from tiddlyweb.web.util import server_base_url
 empty_html = 'lib/empty.html'
 splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
+markups = {
+        'MarkupPreHead': 'PRE-HEAD',
+        'MarkupPostHead': 'POST-HEAD',
+        'MarkupPreBody': 'PRE-BODY',
+        'MarkupPostBody': 'POST-SCRIPT',
+        }
+
 class Serialization(SerializationInterface):
 
     def as_bag(self, bag, input_string):
@@ -43,12 +50,16 @@ class Serialization(SerializationInterface):
         lines = ''
         candidate_title = None
         candidate_subtitle = None
+        markup_tiddlers = markups.keys()
+        found_markup_tiddlers = {}
         for tiddler in tiddlers:
             lines += self._tiddler_as_div(tiddler)
             if tiddler.title == 'SiteTitle':
                 candidate_title = tiddler.text
             if tiddler.title == 'SiteSubtitle':
                 candidate_subtitle = tiddler.text
+            if tiddler.title in markup_tiddlers:
+                found_markup_tiddlers[tiddler.title] = tiddler.text
 
         # Turn the title into HTML and then turn it into
         # plain text so it is of a form satisfactory to <title>
@@ -59,6 +70,15 @@ class Serialization(SerializationInterface):
         wiki = self._get_wiki()
         # put the title in place
         wiki = self._inject_title(wiki, title)
+
+        # replace the markup bits
+        if len(found_markup_tiddlers):
+            for title in found_markup_tiddlers:
+                print 'got tiddler %s' % title
+                start = '\n<!--%s-START-->\n' % markups[title] 
+                finish = '\n<!--%s-END-->\n' % markups[title]
+                print '%s:%s:%s' % (start, found_markup_tiddlers[title], finish)
+                wiki = self._replace_chunk(wiki, start, finish, found_markup_tiddlers[title])
 
         # split the wiki into the before store and after store
         # sections, put our content in the middle
@@ -92,8 +112,15 @@ class Serialization(SerializationInterface):
         return title
 
     def _inject_title(self, wiki, title):
-        title = '\n<title>\n%s\n</title>\n' % title
-        return re.sub('\n<title>\n[^\n]*\n</title>\n', title, wiki, count=0)
+        return self._replace_chunk(wiki, '\n<title>\n', '\n</title>\n', title)
+
+    def _replace_chunk(self, wiki, start, finish, replace):
+        try:
+            sindex = wiki.index(start)
+            findex = wiki.index(finish) + len(finish)
+            return wiki[0:sindex] + start + replace + finish + wiki[findex:]
+        except ValueError:
+            return wiki
 
     def _get_wiki(self):
         f = open(empty_html)
