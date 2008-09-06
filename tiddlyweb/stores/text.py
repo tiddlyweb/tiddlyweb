@@ -13,7 +13,8 @@ from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, NoUserError, StoreLockError
+from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
+        NoUserError, StoreLockError
 from tiddlyweb.stores import StorageInterface
 
 class Store(StorageInterface):
@@ -27,8 +28,8 @@ class Store(StorageInterface):
             os.remove(recipe_path)
         except NoRecipeError:
             raise
-        except Exception, e:
-            raise IOError, 'unable to delete recipe %s: %s' % (recipe.name, e)
+        except Exception, exc:
+            raise IOError, 'unable to delete recipe %s: %s' % (recipe.name, exc)
 
     def recipe_get(self, recipe):
         recipe_path = self._recipe_path(recipe)
@@ -39,8 +40,9 @@ class Store(StorageInterface):
             serializer.object = recipe
             recipe_string = recipe_file.read()
             recipe_file.close()
-        except IOError, e:
-            raise NoRecipeError, 'unable to get recipe %s: %s' % (recipe.name, e)
+        except IOError, exc:
+            raise NoRecipeError, \
+                    'unable to get recipe %s: %s' % (recipe.name, exc)
 
         return serializer.from_string(recipe_string)
 
@@ -65,8 +67,8 @@ class Store(StorageInterface):
             shutil.rmtree(bag_path)
         except NoBagError:
             raise
-        except Exception, e:
-            raise IOError, 'unable to delete bag %s: %s' % (bag.name, e)
+        except Exception, exc:
+            raise IOError, 'unable to delete bag %s: %s' % (bag.name, exc)
 
     def bag_get(self, bag):
         bag_path = self._bag_path(bag.name)
@@ -74,8 +76,8 @@ class Store(StorageInterface):
 
         try:
             tiddlers = self._files_in_dir(tiddlers_dir)
-        except OSError, e:
-            raise NoBagError, 'unable to list tiddlers in bag: %s' % e
+        except OSError, exc:
+            raise NoBagError, 'unable to list tiddlers in bag: %s' % exc
         for title in tiddlers:
             bag.add_tiddler(Tiddler(title))
 
@@ -108,8 +110,8 @@ class Store(StorageInterface):
             shutil.rmtree(tiddler_base_filename)
         except NoTiddlerError:
             raise
-        except Exception, e:
-            raise IOError, 'unable to delete %s: %s' % (tiddler.title, e)
+        except Exception, exc:
+            raise IOError, 'unable to delete %s: %s' % (tiddler.title, exc)
 
     def tiddler_get(self, tiddler):
         """
@@ -123,12 +125,14 @@ class Store(StorageInterface):
             # base_tiddler is the head of the revision stack
             base_tiddler = Tiddler(tiddler.title)
             base_tiddler.bag = tiddler.bag
-            base_tiddler = self._read_tiddler_revision(base_tiddler, index=-1)
-            # set created on new tiddler from modified on base_tiddler (might be the same)
+            base_tiddler = \
+                    self._read_tiddler_revision(base_tiddler, index=-1)
+            # set created on new tiddler from modified on base_tiddler
+            # (might be the same)
             tiddler.created = base_tiddler.modified
             return tiddler
-        except IOError, e:
-            raise NoTiddlerError, 'no tiddler for %s: %s' % (tiddler.title, e)
+        except IOError, exc:
+            raise NoTiddlerError, 'no tiddler for %s: %s' % (tiddler.title, exc)
 
     def tiddler_put(self, tiddler):
         """
@@ -149,9 +153,9 @@ class Store(StorageInterface):
                 lock_attempts = lock_attempts + 1
                 self.write_lock(tiddler_base_filename)
                 locked = 1
-            except StoreLockError, e:
+            except StoreLockError, exc:
                 if lock_attempts > 4:
-                    raise StoreLockError, e
+                    raise StoreLockError, exc
                 time.sleep(.1)
 
         revision = self._tiddler_revision_filename(tiddler) + 1
@@ -184,8 +188,9 @@ class Store(StorageInterface):
                     key = '_password'
                 user.__setattr__(key, value)
             return user
-        except IOError, e:
-            raise NoUserError, 'unable to get user %s: %s' % (user.usersign, e)
+        except IOError, exc:
+            raise NoUserError, \
+                    'unable to get user %s: %s' % (user.usersign, exc)
 
     def user_put(self, user):
         user_path = self._user_path(user)
@@ -219,9 +224,12 @@ class Store(StorageInterface):
     def list_tiddler_revisions(self, tiddler):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try: 
-            revisions = sorted([int(x) for x in self._files_in_dir(tiddler_base_filename)])
-        except OSError, e:
-            raise NoTiddlerError, 'unable to list revisions in tiddler: %s' % e
+            revisions = sorted([
+                int(x) for x in self._files_in_dir(tiddler_base_filename)
+                ])
+        except OSError, exc:
+            raise NoTiddlerError, \
+                    'unable to list revisions in tiddler: %s' % exc
         revisions.reverse()
         return revisions
 
@@ -237,22 +245,27 @@ class Store(StorageInterface):
         query = search_query.lower()
 
         for bagname in bags:
-            tiddler_dir = os.path.join(self._store_root(), 'bags', bagname, 'tiddlers')
+            tiddler_dir = os.path.join(self._store_root(),
+                    'bags', bagname, 'tiddlers')
             tiddler_files = self._files_in_dir(tiddler_dir)
             for tiddler_name in tiddler_files:
-                tiddler = Tiddler(title=tiddler_name.decode('utf-8'),bag=bagname.decode('utf-8'))
+                tiddler = Tiddler(title=tiddler_name.decode('utf-8'),
+                        bag=bagname.decode('utf-8'))
                 revision_id = self.list_tiddler_revisions(tiddler)[0]
                 if query in tiddler.title.lower():
                     found_tiddlers.append(tiddler)
                     continue
                 try:
-                    tiddler_file = open(os.path.join(tiddler_dir, tiddler_name, str(revision_id)))
+                    tiddler_file = open(os.path.join(
+                        tiddler_dir, tiddler_name, str(revision_id)
+                        ))
                     for line in tiddler_file:
                         if query in line.lower():
                             found_tiddlers.append(tiddler)
                             break
-                except OSError, e:
-                    raise NoTiddlerError, 'unable to list revisions in tiddler: %s' % e
+                except OSError, exc:
+                    raise NoTiddlerError, \
+                            'unable to list revisions in tiddler: %s' % exc
         return found_tiddlers
 
     def write_lock(self, filename):
@@ -264,12 +277,13 @@ class Store(StorageInterface):
 
         if os.path.exists(lock_filename):
             pid = self._read_lock_file(lock_filename)
-            raise StoreLockError, 'write lock for %s taken by %s' % (filename, pid)
+            raise StoreLockError, 'write lock for %s taken by %s' % \
+                    (filename, pid)
 
         lock = open(lock_filename, 'w')
         pid = os.getpid()
         lock.write(str(pid))
-        lock.close
+        lock.close()
 
     def write_unlock(self, filename):
         """
@@ -281,11 +295,11 @@ class Store(StorageInterface):
     def _bag_path(self, bag_name):
         try:
             return os.path.join(self._store_root(), 'bags', bag_name)
-        except AttributeError, e:
-            raise NoBagError, 'No bag name: %s' % e
+        except AttributeError, exc:
+            raise NoBagError, 'No bag name: %s' % exc
 
     def _files_in_dir(self, path):
-        return filter(lambda x: not x.startswith('.'), os.listdir(path))
+        return [x for x in os.listdir(path) if not x.startswith('.')]
 
     def _lock_filename(self, filename):
         pathname, basename = os.path.split(filename)
@@ -310,7 +324,8 @@ class Store(StorageInterface):
     def _read_tiddler_revision(self, tiddler, index=0):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         tiddler_revision = self._tiddler_revision_filename(tiddler, index=index)
-        tiddler_filename = os.path.join(tiddler_base_filename, str(tiddler_revision))
+        tiddler_filename = os.path.join(tiddler_base_filename,
+                str(tiddler_revision))
         tiddler = self._read_tiddler_file(tiddler, tiddler_filename)
         tiddler.revision = tiddler_revision
         return tiddler
@@ -374,7 +389,7 @@ class Store(StorageInterface):
 
     def _write_policy(self, policy, bag_path):
         policy_dict = {}
-        for key in ['read','write','create','delete','manage','owner']:
+        for key in ['read', 'write', 'create', 'delete', 'manage', 'owner']:
             policy_dict[key] = policy.__getattribute__(key)
         policy_string = simplejson.dumps(policy_dict)
         policy_filename = os.path.join(bag_path, 'policy')
