@@ -27,6 +27,7 @@ from xml.sax.saxutils import XMLGenerator
 
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.serializations.html import Serialization as HTMLSerialization
+from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
 
 class Serialization(HTMLSerialization):
 
@@ -95,7 +96,7 @@ class Serialization(HTMLSerialization):
             link = u'%sbags/%s/tiddlers/%s' % \
                     (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
 
-        description = self._tiddler_to_html(self._server_url(), tiddler_link, tiddler)
+        description = wikitext_to_wikklyhtml(self._server_url(), tiddler_link, tiddler.text)
         feed.add_item(title=tiddler.title,
                 link=link,
                 description=description,
