@@ -1,3 +1,7 @@
+"""
+A module containing the Bag class and the Policy class
+which describes access controls for a Bag.
+"""
 import copy
 
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
@@ -17,7 +21,9 @@ class Policy(object):
     installation as open-ish, or closed-ish.
     """
 
-    def __init__(self, owner=None, read=[], write=[], create=[], delete=[], manage=['NONE']):
+    def __init__(self, owner=None,
+            read=[], write=[], create=[], delete=[],
+            manage=['NONE']):
         self.owner = owner
         self.read = read
         self.write = write
@@ -26,6 +32,11 @@ class Policy(object):
         self.manage = manage
 
     def allows(self, user, constraint):
+        """
+        Is user allowed to perform the action described
+        by constraint. The user has a name and some roles,
+        either may match in the constraint.
+        """
         try:
             roles = user['roles']
         except KeyError:
@@ -86,7 +97,9 @@ class Bag(dict):
 
     default_policy = Policy()
 
-    def __init__(self, name, desc='', policy=default_policy, tmpbag=False, revbag=False, searchbag=False):
+    def __init__(self, name, desc='',
+            policy=default_policy,
+            tmpbag=False, revbag=False, searchbag=False):
         dict.__init__(self)
         self.name = name
         self.desc = desc
@@ -98,6 +111,13 @@ class Bag(dict):
         self.store = None
 
     def _tiddler_key(self, tiddler):
+        """
+        Calculate the dict key for indexing this tiddler
+        in the bag. If we are a searchbag we need to include bag.
+        If we are a revbag we need to include revision. Otherwise
+        we just want to use the tiddler.title (so that clobbering
+        happens).
+        """
         if self.searchbag:
             return '%s.%s.%s' % (tiddler.bag, tiddler.title, tiddler.revision)
         if self.revbag:
@@ -105,6 +125,12 @@ class Bag(dict):
         return '%s' % (tiddler.title)
 
     def _tiddler_copy(self, tiddler):
+        """
+        If a bag is not a tmpbag, when we put a tiddler in 
+        it, we need to copy the tiddler, otherwise operations
+        that happen to the tiddler in the bag may impact a
+        tiddler somewhere else in the process space.
+        """
         if self.tmpbag:
             pass
         else:
@@ -123,6 +149,11 @@ class Bag(dict):
         dict.__delitem__(self, self._tiddler_key(tiddler))
 
     def add_tiddler(self, tiddler):
+        """
+        Inject a tiddler into the bag. Depending on the
+        type of bag in use, this may or may not clobber
+        a tiddler of the same name in the bag.
+        """
         tiddler = self._tiddler_copy(tiddler)
         if self._tiddler_key(tiddler) in self.order:
             self.order.remove(self._tiddler_key(tiddler))
@@ -130,10 +161,17 @@ class Bag(dict):
         self.__setitem__(tiddler)
 
     def remove_tiddler(self, tiddler):
+        """
+        Remove the provided tiddler from the bag.
+        """
         if self._tiddler_key(tiddler) in self.order:
             self.order.remove(self._tiddler_key(tiddler))
         self.__delitem__(tiddler)
 
     def list_tiddlers(self):
+        """
+        List all the tiddlers in the bag, in the order
+        they were added.
+        """
         return [self.get(keyword, None) for keyword in self.order]
 
