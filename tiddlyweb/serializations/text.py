@@ -9,11 +9,22 @@ from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 
 class Serialization(SerializationInterface):
+    """
+    Serialize entities and collections to and from
+    textual representations. This is primarily used
+    by the text Store.
+    """
 
     def list_recipes(self, recipes):
+        """
+        Return a linefeed separated list of recipe names.
+        """
         return "\n".join([recipe.name for recipe in recipes])
 
     def list_bags(self, bags):
+        """
+        Return a linefeed separated list of recipe names.
+        """
         return "\n".join([bag.name for bag in bags])
 
     def recipe_as(self, recipe):
@@ -44,6 +55,58 @@ class Serialization(SerializationInterface):
         except ValueError:
             body = input.rstrip()
 
+        recipe_lines = self._recipe_lines(body)
+        recipe.set_recipe(recipe_lines)
+        return recipe
+
+    def list_tiddlers(self, bag):
+        """
+        List the tiddlers in a bag as text.
+        """
+        if bag.revbag:
+            return "\n".join([
+                "%s:%s" % (tiddler.title, tiddler.revision)
+                for tiddler in bag.list_tiddlers()
+                ])
+        else:
+            return "\n".join([
+                tiddler.title for tiddler in bag.list_tiddlers()])
+
+    def tiddler_as(self, tiddler):
+        """
+        Represent a tiddler as a text string: headers, blank line, text.
+        """
+        return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s\n' \
+                % (tiddler.modifier, tiddler.created, tiddler.modified, \
+                self.tags_as(tiddler.tags), tiddler.text)
+
+    def as_tiddler(self, tiddler, input):
+        """
+        Transform a text representation of a tiddler into
+        tiddler attributes.
+        """
+        try:
+            header, text = input.split('\n\n', 1)
+            tiddler.text = text.rstrip()
+            headers = header.split('\n')
+
+            for field, value in [x.split(': ') for x in headers]:
+                setattr(tiddler, field, value)
+        except AttributeError, exc:
+            raise TiddlerFormatError, 'malformed tiddler string: %s' % exc
+
+        tag_string = tiddler.tags
+        if tag_string:
+            tiddler.tags = self.as_tags(tag_string)
+
+        return tiddler
+
+    def _recipe_lines(self, body):
+        """
+        Given text containing a list of recipes, calculate
+        the recipe information they hold and return
+        as a list of bagname, filter lists.
+        """
         lines = body.rstrip().split('\n')
         recipe_lines = []
         for line in lines:
@@ -56,37 +119,4 @@ class Serialization(SerializationInterface):
                 filter = ''
             bagname = urllib.unquote(bag.split('/')[2])
             recipe_lines.append([bagname, filter])
-        recipe.set_recipe(recipe_lines)
-        return recipe
-
-    def list_tiddlers(self, bag):
-        """
-        List the tiddlers in a bag as text.
-        """
-        if bag.revbag:
-            return "\n".join(["%s:%s" % (tiddler.title, tiddler.revision) for tiddler in bag.list_tiddlers()])
-        else:
-            return "\n".join([tiddler.title for tiddler in bag.list_tiddlers()])
-
-    def tiddler_as(self, tiddler):
-        return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s\n' \
-                % (tiddler.modifier, tiddler.created, tiddler.modified, \
-                self.tags_as(tiddler.tags), tiddler.text)
-
-    def as_tiddler(self, tiddler, input):
-        try:
-            header, text = input.split('\n\n', 1)
-            tiddler.text = text.rstrip()
-            headers = header.split('\n')
-
-            for field, value in [x.split(': ') for x in headers]:
-                setattr(tiddler, field, value)
-        except AttributeError, e:
-            raise TiddlerFormatError, 'malformed tiddler string: %s' % e
-
-        tag_string = tiddler.tags
-        if tag_string:
-            tiddler.tags = self.as_tags(tag_string)
-
-        return tiddler
-
+        return recipe_lines
