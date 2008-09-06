@@ -14,10 +14,25 @@ from tiddlyweb.auth import PermissionsExceptor
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter
 
-default_config = {
+
+# A dict explaining the scheme, host and port of our server.
+# FIXME: a hack to get the server.host set properly in outgoing
+# wikis.
+DEFAULT_CONFIG = {
         'server_store': ['text', {'store_root': 'store'}],
-        'server_request_filters': [Query, StoreSet, UserExtract, Negotiate],
-        'server_response_filters': [HTMLPresenter, PermissionsExceptor, HTTPExceptor, EncodeUTF8, SimpleLog],
+        'server_request_filters': [
+            Query,
+            StoreSet,
+            UserExtract,
+            Negotiate
+            ],
+        'server_response_filters': [
+            HTMLPresenter,
+            PermissionsExceptor,
+            HTTPExceptor,
+            EncodeUTF8,
+            SimpleLog
+            ],
         'server_host': {},
         'server_prefix': '',
         'extension_types': {
@@ -45,13 +60,8 @@ default_config = {
         'secret': 'this should come from a file',
 
         }
-"""
-A dict explaining the scheme, host and port of our server.
-FIXME: a hack to get the server.host set properly in outgoing
-wikis.
-"""
 
-if os.path.exists('tiddlywebconfig.py'):
+def read_config():
     """
     Read in a local configuration override, but only
     from the current working directory (for now). If the
@@ -62,14 +72,20 @@ if os.path.exists('tiddlywebconfig.py'):
     name config.
     """
     from tiddlywebconfig import config as custom_config
-    config = default_config
+    global config
+    config = DEFAULT_CONFIG
     for key in custom_config:
+        print 'k: %s' % key
         try:
-            keys = custom_config[key].keys()
-            for deep_key in keys:
-                config[key].update(custom_config[key])
+            # If this config item is a dict, update to update it
+            # XXX: using exceptions for conditionals, a bit squiffy?
+            custom_config[key].keys()
+            config[key].update(custom_config[key])
         except AttributeError:
             config[key] = custom_config[key]
+
+if os.path.exists('tiddlywebconfig.py'):
+    read_config()
 else:
-    config = default_config
+    config = DEFAULT_CONFIG
 
