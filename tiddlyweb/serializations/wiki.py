@@ -72,10 +72,8 @@ class Serialization(SerializationInterface):
         # replace the markup bits
         if len(found_markup_tiddlers):
             for title in found_markup_tiddlers:
-                print 'got tiddler %s' % title
                 start = '\n<!--%s-START-->\n' % markups[title] 
                 finish = '\n<!--%s-END-->\n' % markups[title]
-                print '%s:%s:%s' % (start, found_markup_tiddlers[title], finish)
                 wiki = self._replace_chunk(wiki, start, finish, found_markup_tiddlers[title])
 
         # split the wiki into the before store and after store

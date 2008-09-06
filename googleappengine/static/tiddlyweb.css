@@ -1,0 +1,33 @@
+
+body {
+    font-family: sans-serif;
+    margin: 1em;
+    padding: 1em;
+}
+
+#header {
+    border-bottom: thin solid black;
+    margin-bottom: 1em;
+}
+
+#footer {
+    font-size: 75%;
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: thin solid black;
+}
+
+.description {
+}
+
+.tiddlerslink {
+    padding: .25em;
+}
+
+#tiddlersheader {
+    padding: .25em;
+}
+
+.tiddler {
+    margin: 2em;
+}

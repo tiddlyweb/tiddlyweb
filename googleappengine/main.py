@@ -30,6 +30,7 @@ import wsgiref.handlers
 import urllib
 
 from tiddlyweb.web.serve import load_app, config
+from tiddlyweb.web.wsgi import SimpleLog
 
 class ScriptCleanup(object):
 
@@ -58,6 +59,9 @@ def google_app():
 
     filters_in = config['server_request_filters']
     filters_in.insert(0, ScriptCleanup)
+
+    filters_out = config['server_response_filters']
+    filters_out.remove(SimpleLog)
 
     app = load_app(host, port, filename)
     return app
