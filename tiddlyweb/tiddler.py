@@ -62,8 +62,7 @@ class Tiddler(object):
 
     def __init__(self,
             title=None,
-            bag=None,
-            modified=current_timestring()):
+            bag=None):
         """
         Create a new Tiddler object.
 
@@ -71,9 +70,9 @@ class Tiddler(object):
         """
         self.title = title
         self.bag = bag
-        self.modified = modified
 
         self.created = ''
+        self.modified = current_timestring()
         self.modifier = None
         self.tags = []
         self.text = None
