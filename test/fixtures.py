@@ -14,25 +14,21 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.config import config
 from tiddlyweb.store import Store
 
-tiddlers = [
-        Tiddler(
-            title='TiddlerOne',
-            modifier='AuthorOne',
-            text='c tiddler one content',
-            tags=['tagone', 'tagtwo']
-        ),
-        Tiddler(
-            title='TiddlerTwo',
-            modifier='AuthorTwo',
-            text='b tiddler two content',
-        ),
-        Tiddler(
-            title='TiddlerThree',
-            modifier='AuthorThree',
-            text='a tiddler three content',
-            tags=['tagone', 'tagthree']
-        )
-]
+TiddlerOne = Tiddler('TiddlerOne')
+TiddlerOne.modifier = 'AuthorOne'
+TiddlerOne.text = 'c tiddler one content'
+TiddlerOne.tags = ['tagone', 'tagtwo']
+
+TiddlerTwo = Tiddler('TiddlerTwo')
+TiddlerTwo.modifier = 'AuthorTwo'
+TiddlerTwo.text = 'b tiddler two content'
+
+TiddlerThree = Tiddler('TiddlerThree')
+TiddlerThree.modifier = 'AuthorThree'
+TiddlerThree.text = 'a tiddler three content'
+TiddlerThree.tags = ['tagone', 'tagthree']
+
+tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree]
 
 bagone = Bag(name='bagone')
 bagone.add_tiddler(tiddlers[0])

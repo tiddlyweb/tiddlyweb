@@ -8,8 +8,8 @@ def current_timestring():
     """
     Translate (now) into a TiddlyWiki conformat timestring.
     """
-    dt = datetime.utcnow()
-    return unicode(dt.strftime('%Y%m%d%H%M'))
+    time_object = datetime.utcnow()
+    return unicode(time_object.strftime('%Y%m%d%H%M'))
 
 class Tiddler(object):
     """
@@ -62,28 +62,23 @@ class Tiddler(object):
 
     def __init__(self,
             title=None,
-            created='',
-            modified=current_timestring(),
-            modifier=None,
-            tags=[],
-            text=None,
-            revision=None,
             bag=None,
-            recipe=None):
+            modified=current_timestring()):
         """
         Create a new Tiddler object.
 
         A title is required to ceate a tiddler.
         """
         self.title = title
-        self.created = created
-        self.modified = modified
-        self.modifier = modifier
-        self.tags = tags
-        self.text = text
-        self.revision = revision
         self.bag = bag
-        self.recipe = recipe
+        self.modified = modified
+
+        self.created = ''
+        self.modifier = None
+        self.tags = []
+        self.text = None
+        self.revision = None
+        self.recipe = None
         # reference to the store which 'got' us
         # this is can be used in serialization
         self.store = None

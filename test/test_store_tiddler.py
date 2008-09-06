@@ -80,7 +80,8 @@ def test_get_revision():
     """
 
     store.put(bagone)
-    tiddler = Tiddler(title='RevisionTiddler', text='how now 1')
+    tiddler = Tiddler('RevisionTiddler')
+    tiddler.text='how now 1'
     tiddler.bag = 'bagone'
     store.put(tiddler)
     tiddler.text = 'how now 2'
@@ -94,7 +95,8 @@ def test_get_revision():
     assert tiddler.text == 'how now 3'
     assert tiddler.revision == 3
 
-    tiddler = Tiddler(title='RevisionTiddler', bag='bagone', revision=2)
+    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    tiddler.revision = 2
     store.get(tiddler)
 
     assert tiddler.text == 'how now 2'
@@ -133,7 +135,8 @@ def test_store_lock():
     py.test.raises(StoreLockError, 'texter.write_lock(textstore.bag_store)')
 
     texter.write_lock(textstore.bag_store + '/bagone/tiddlers/foobar')
-    tiddler = Tiddler('foobar', text='hello')
+    tiddler = Tiddler('foobar')
+    tiddler.text='hello'
     tiddler.bag = 'bagone'
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 

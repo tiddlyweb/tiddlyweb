@@ -207,7 +207,8 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
     try:
         for revision in store.list_tiddler_revisions(tiddler):
-            tmp_tiddler = Tiddler(title=tiddler.title, revision=revision, bag=tiddler.bag)
+            tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
+            tmp_tiddler.revision = revision
             try:
                 store.get(tmp_tiddler)
             except NoTiddlerError, e:

@@ -36,13 +36,11 @@ Hello, I'm the content.
 
 expected_json_string = '{"created": "", "text": "Hello, I\'m the content.", "modifier": "test@example.com", "modified": "200803030303", "tags": ["foobar", "foo bar"]}'
 
-tiddler = Tiddler(
-        title = 'test tiddler',
-        modifier = 'test@example.com',
-        tags = ['foobar', 'foo bar'],
-        text = "Hello, I'm the content.",
-        modified = '200803030303'
-        )
+tiddler = Tiddler('test tiddler')
+tiddler.modifier = 'test@example.com'
+tiddler.tags = ['foobar', 'foo bar']
+tiddler.text = "Hello, I'm the content."
+tiddler.modified = '200803030303'
 
 def setup_module(module):
     pass

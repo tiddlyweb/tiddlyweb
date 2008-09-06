@@ -76,8 +76,8 @@ class Store(StorageInterface):
             tiddlers = self._files_in_dir(tiddlers_dir)
         except OSError, e:
             raise NoBagError, 'unable to list tiddlers in bag: %s' % e
-        for tiddler in tiddlers:
-            bag.add_tiddler(Tiddler(title=tiddler))
+        for title in tiddlers:
+            bag.add_tiddler(Tiddler(title))
 
         bag.desc = self._read_bag_description(bag_path)
         bag.policy = self._read_policy(bag_path)

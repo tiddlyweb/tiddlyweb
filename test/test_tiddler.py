@@ -24,13 +24,11 @@ def test_tiddler_full_create():
     Confirm we can populate a tiddler at create time.
     """
 
-    tiddler = Tiddler(
-            title = 'test tiddler',
-            modifier = 'test@example.com',
-            text = test_tiddler_text,
-            tags = ['foo', 'bar'],
-            bag = 'bagone'
-            )
+    tiddler = Tiddler('test tiddler')
+    tiddler.modifier = 'test@example.com'
+    tiddler.text = test_tiddler_text
+    tiddler.tags = ['foo', 'bar']
+    tiddler.bag = 'bagone'
 
     assert type(tiddler) == Tiddler, \
             'Tiddler returns a Tiddler'
@@ -55,11 +53,9 @@ def test_tiddler_revision_create():
     we are able to retrieve that attribute.
     """
 
-    tiddler = Tiddler(
-            title = 'test tiddler r',
-            text = 'revision test',
-            revision = 5,
-            )
+    tiddler = Tiddler('test tiddler r')
+    tiddler.text = 'revision test'
+    tiddler.revision = 5
 
     assert type(tiddler) == Tiddler, \
             'Tiddler returns a Tiddler'
