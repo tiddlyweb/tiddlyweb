@@ -4,7 +4,6 @@ import time
 import urllib
 
 from tiddlyweb.store import Store
-from tiddlyweb.web.util import get_serialize_type
 
 class HTMLPresenter(object):
     """

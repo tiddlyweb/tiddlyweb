@@ -4,7 +4,6 @@ HTML based serializers.
 
 import urllib
 
-from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 
 class Serialization(SerializationInterface):

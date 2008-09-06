@@ -2,10 +2,8 @@
 Text based serializers.
 """
 
-import urllib
 import simplejson
 
-from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.bag import Policy
 

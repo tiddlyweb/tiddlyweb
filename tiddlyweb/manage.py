@@ -5,7 +5,6 @@ importing a wiki, etc.
 """
 
 import sys
-import os
 
 from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store

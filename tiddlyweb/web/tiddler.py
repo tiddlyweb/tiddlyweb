@@ -8,9 +8,9 @@ import urllib
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoTiddlerError, NoBagError, StoreMethodNotImplemented
+from tiddlyweb.store import NoTiddlerError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP403, HTTP304
+from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
@@ -117,7 +117,7 @@ def _put_tiddler(environ, start_response, tiddler):
                 revision = 1
             tiddler.revision = revision
             _check_bag_constraint(environ, bag, 'write')
-            last_modfied, etag = _validate_tiddler(environ, tiddler)
+            last_modified, etag = _validate_tiddler(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
 

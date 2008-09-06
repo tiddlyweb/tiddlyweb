@@ -3,11 +3,6 @@ Put and Get TiddlyWeb things to and from some store.
 """
 
 
-from tiddler import Tiddler
-from bag import Bag
-from recipe import Recipe
-from user import User
-
 class StoreMethodNotImplemented(IOError):
     pass
 

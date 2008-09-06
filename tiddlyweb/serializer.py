@@ -2,10 +2,6 @@
 Serialize TiddlyWeb things for the sake of storage and the like.
 """
 
-from recipe import Recipe
-from tiddler import Tiddler
-from bag import Bag
-
 class TiddlerFormatError(Exception):
     pass
 
