@@ -75,7 +75,6 @@ def read_config():
     global config
     config = DEFAULT_CONFIG
     for key in custom_config:
-        print 'k: %s' % key
         try:
             # If this config item is a dict, update to update it
             # XXX: using exceptions for conditionals, a bit squiffy?

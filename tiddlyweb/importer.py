@@ -14,10 +14,11 @@ def import_wiki_file(store, filename='wiki', bagname='wiki'):
     f = codecs.open(filename, encoding='utf-8', errors='replace')
     wikitext = f.read()
     f.close()
-    return import_wiki(wikitext, bagname, store)
+    return import_wiki(store, wikitext, bagname)
 
 def import_wiki(store, wikitext, bagname='wiki'):
     soup = BeautifulSoup(wikitext)
+    print soup
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
