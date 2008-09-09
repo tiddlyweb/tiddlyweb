@@ -18,7 +18,6 @@ def import_wiki_file(store, filename='wiki', bagname='wiki'):
 
 def import_wiki(store, wikitext, bagname='wiki'):
     soup = BeautifulSoup(wikitext)
-    print soup
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
