@@ -78,8 +78,8 @@ class Serialization(SerializationInterface):
 
         # split the wiki into the before store and after store
         # sections, put our content in the middle
-        tiddlystart, splitted, tiddlyfinish = wiki.partition(splitter)
-        return tiddlystart + lines + splitted + tiddlyfinish
+        tiddlystart, tiddlyfinish = wiki.split(splitter, 2)
+        return tiddlystart + lines + splitter + tiddlyfinish
 
     def _plain_textify_string(self, title):
         try:
