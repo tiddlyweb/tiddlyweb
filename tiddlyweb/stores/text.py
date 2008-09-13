@@ -256,9 +256,9 @@ class Store(StorageInterface):
                     found_tiddlers.append(tiddler)
                     continue
                 try:
-                    tiddler_file = open(os.path.join(
+                    tiddler_file = codecs.open(os.path.join(
                         tiddler_dir, tiddler_name, str(revision_id)
-                        ))
+                        ), encoding='utf-8')
                     for line in tiddler_file:
                         if query in line.lower():
                             found_tiddlers.append(tiddler)
