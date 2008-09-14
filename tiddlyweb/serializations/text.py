@@ -5,7 +5,6 @@ Text based serializers.
 import urllib
 import cgi
 
-from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 
 class Serialization(SerializationInterface):
@@ -76,24 +75,34 @@ class Serialization(SerializationInterface):
         """
         Represent a tiddler as a text string: headers, blank line, text.
         """
-        return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s\n\n%s\n' \
+        return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s%s\n%s\n' \
                 % (tiddler.modifier, tiddler.created, tiddler.modified, \
-                self.tags_as(tiddler.tags), tiddler.text)
+                self.tags_as(tiddler.tags), self.fields_as(tiddler), tiddler.text)
+
+    def fields_as(self, tiddler):
+        info = '\n'
+        for key in tiddler.fields:
+            info += '%s: %s\n' % (key, tiddler.fields[key])
+        return info
 
     def as_tiddler(self, tiddler, input):
         """
         Transform a text representation of a tiddler into
         tiddler attributes.
         """
-        try:
-            header, text = input.split('\n\n', 1)
-            tiddler.text = text.rstrip()
-            headers = header.split('\n')
+        header, text = input.split('\n\n', 1)
+        tiddler.text = text.rstrip()
+        headers = header.split('\n')
 
-            for field, value in [x.split(': ') for x in headers]:
+        for field, value in [x.split(': ') for x in headers]:
+            try:
                 setattr(tiddler, field, value)
-        except AttributeError, exc:
-            raise TiddlerFormatError, 'malformed tiddler string: %s' % exc
+            except AttributeError:
+                if not field.startswith('server.'):
+                    tiddler.fields[field] = value
+
+        # we used to raise TiddlerFormatError but there are
+        # currently no rules for that...
 
         tag_string = tiddler.tags
         if tag_string:

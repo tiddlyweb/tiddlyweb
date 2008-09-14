@@ -28,5 +28,3 @@ def test_unicode_search():
     tiddlers = store.search(name)
 
     assert len(tiddlers) == 1
-    print tiddlers[0].title
-

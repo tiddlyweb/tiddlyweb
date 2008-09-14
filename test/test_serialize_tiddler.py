@@ -57,12 +57,14 @@ def test_generated_txt_string():
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
 
-def test_bad_string_raises():
-    serializer = Serializer('text')
-    foobar = Tiddler('foobar')
-    serializer.object = foobar
-
-    py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
+# For the time being there is no malformed tiddler, so no
+# TiddlerFormatError.
+# def test_bad_string_raises():
+#     serializer = Serializer('text')
+#     foobar = Tiddler('foobar')
+#     serializer.object = foobar
+# 
+#     py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
 
 def test_generated_json_string():
     serializer = Serializer('json')

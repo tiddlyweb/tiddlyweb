@@ -39,6 +39,7 @@ class Tiddler(object):
               have any assocation with the tiddlyweb.usersign,
               though it may.
     tags: A list of strings that describe the tiddler.
+    fields: An arbitrary dictionary of extended fields on the tiddler.
     text: The contents of the tiddler. A string.
     revision: The revision of this tiddler. An int.
     bag: The name of the bag in which this tiddler exists,
@@ -54,6 +55,7 @@ class Tiddler(object):
             'modified',
             'modifier',
             'tags',
+            'fields',
             'text',
             'revision',
             'bag',
@@ -75,6 +77,7 @@ class Tiddler(object):
         self.modified = current_timestring()
         self.modifier = None
         self.tags = []
+        self.fields = {}
         self.text = None
         self.revision = None
         self.recipe = None
