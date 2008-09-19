@@ -82,7 +82,8 @@ class Serialization(SerializationInterface):
     def fields_as(self, tiddler):
         info = '\n'
         for key in tiddler.fields:
-            info += '%s: %s\n' % (key, tiddler.fields[key])
+            if not key.startswith('server.'):
+                info += '%s: %s\n' % (key, tiddler.fields[key])
         return info
 
     def as_tiddler(self, tiddler, input):
@@ -98,8 +99,7 @@ class Serialization(SerializationInterface):
             try:
                 setattr(tiddler, field, value)
             except AttributeError:
-                if not field.startswith('server.'):
-                    tiddler.fields[field] = value
+                tiddler.fields[field] = value
 
         # we used to raise TiddlerFormatError but there are
         # currently no rules for that...
