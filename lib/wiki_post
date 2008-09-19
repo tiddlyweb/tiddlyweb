@@ -7,22 +7,20 @@ bag on a (possibly) remote TiddlyWeb server.
 Arg 1 is the URL of the bag. Arg 2 is the path of the wiki file.
 """
 
-import urllib
 import sys
 import codecs
-import httplib
+import httplib2
 
 def run(url, filename):
     f = codecs.open(filename, encoding='utf-8', errors='replace')
     wikitext = f.read()
     f.close()
-    host, path = urllib.splithost(urllib.splittype(url)[1])
-    print host, path
     wikitext = wikitext.encode('utf-8')
-    conn = httplib.HTTPConnection(host)
-    conn.request('POST', path, wikitext, {'Content-Type': 'text/x-tiddlywiki'})
-    response = conn.getresponse()
-    print response.status
+    http = httplib2.Http()
+    response, content = http.request(url, method='POST',
+            body=wikitext, headers={'Content-Type': 'text/x-tiddlywiki'})
+    print response['status']
+    print content
 
 if __name__ == '__main__':
     run(sys.argv[1], sys.argv[2])

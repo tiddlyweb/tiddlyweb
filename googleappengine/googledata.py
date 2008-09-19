@@ -130,8 +130,11 @@ class Store(StorageInterface):
             if mem_tiddler is not None:
                 for item in tiddler_properties:
                     tiddler.__setattr__(item, mem_tiddler.__getattribute__(item))
-                for item in mem_tiddler._dynamic_properties:
-                    tiddler.fields[item] = mem_tiddler.__getattr__(item)
+                try:
+                    for item in mem_tiddler._dynamic_properties:
+                        tiddler.fields[item] = mem_tiddler.__getattr__(item)
+                except TypeError:
+                    pass
                 return tiddler
         except KeyError:
             pass
