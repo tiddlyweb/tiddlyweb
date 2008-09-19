@@ -23,7 +23,7 @@ class GDBag(db.Model):
     desc = db.StringProperty()
     tiddlers = db.ListProperty(unicode)
 
-class GDTiddler(db.Model):
+class GDTiddler(db.Expando):
     title = db.StringProperty(required=True)
     modifier = db.StringProperty()
     modified = db.StringProperty()
@@ -116,12 +116,22 @@ class Store(StorageInterface):
         memcache.delete(self._tiddler_key(tiddler))
         gdtiddler.delete()
 
+    title = db.StringProperty(required=True)
+    modifier = db.StringProperty()
+    modified = db.StringProperty()
+    created = db.StringProperty()
+    tags = db.ListProperty(unicode)
+    text = db.TextProperty()
+    bag = db.StringProperty()
     def tiddler_get(self, tiddler):
+        tiddler_properties = ['text', 'bag', 'modifier', 'modified', 'created', 'tags']
         try:
             mem_tiddler = memcache.get(self._tiddler_key(tiddler))
             if mem_tiddler is not None:
-                for item in ['text', 'bag', 'modifier', 'modified', 'created', 'tags']:
+                for item in tiddler_properties:
                     tiddler.__setattr__(item, mem_tiddler.__getattribute__(item))
+                for item in mem_tiddler._dynamic_properties:
+                    tiddler.fields[item] = mem_tiddler.__getattr__(item)
                 return tiddler
         except KeyError:
             pass
@@ -133,12 +143,10 @@ class Store(StorageInterface):
             raise NoTiddlerError, 'tiddler %s not found' % (tiddler.title)
 
         # be explicit for now
-        tiddler.modifier = gdtiddler.modifier
-        tiddler.modified = gdtiddler.modified
-        tiddler.created = gdtiddler.created
-        tiddler.text = gdtiddler.text
-        tiddler.tags = gdtiddler.tags
-        tiddler.bag = gdtiddler.bag
+        for item in tiddler_properties:
+            tiddler.__setattr__(item, gdtiddler.__getattribute__(item))
+        for item in gdtiddler.dynamic_properties():
+            tiddler.fields[item] = gdtiddler.__getattr__(item)
 
         memcache.add(self._tiddler_key(tiddler), gdtiddler)
         return tiddler
@@ -150,6 +158,10 @@ class Store(StorageInterface):
         gdtiddler.created = tiddler.created
         gdtiddler.text = tiddler.text
         gdtiddler.tags = tiddler.tags
+        for key in tiddler.fields:
+            if not key.startswith('server.') and key != 'title':
+                logging.warning('attempting to set key %s' % key)
+                gdtiddler.__setattr__(key, db.Text(tiddler.fields[key]))
         gdtiddler.put()
         memcache.delete(self._bag_key(tiddler.bag))
         memcache.delete(self._tiddler_key(tiddler))

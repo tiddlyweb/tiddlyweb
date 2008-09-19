@@ -18,6 +18,7 @@ def run(url, filename):
     f.close()
     host, path = urllib.splithost(urllib.splittype(url)[1])
     print host, path
+    wikitext = wikitext.encode('utf-8')
     conn = httplib.HTTPConnection(host)
     conn.request('POST', path, wikitext, {'Content-Type': 'text/x-tiddlywiki'})
     response = conn.getresponse()
