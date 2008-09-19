@@ -9,6 +9,8 @@ to do what TiddlyWiki does: have a fields field.
 import sys
 sys.path.append('.')
 
+import simplejson
+
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.bag import Bag
@@ -68,6 +70,46 @@ def test_tiddler_fields_as_text():
     assert 'field1: value1\n' in text_of_tiddler
     assert 'field2: value2\n' in text_of_tiddler
 
-#def test_tiddler_fields_as_json():
+def test_tiddler_fields_as_json():
+    tiddler = Tiddler('feebles', bag='bag0')
+    store.get(tiddler)
+    serializer = Serializer('json')
+    serializer.object = tiddler
+    json_string = serializer.to_string()
+    tiddler_info = simplejson.loads(json_string)
+    assert tiddler_info['fields']['field1'] == 'value1'
+    assert tiddler_info['fields']['field2'] == 'value2'
+    assert tiddler_info['bag'] == 'bag0'
+
+    tiddler = Tiddler('new feebles', bag='bag0')
+    serializer.object = tiddler
+    serializer.from_string(json_string)
+
+    assert tiddler.fields['field1'] == 'value1'
+    assert tiddler.fields['field2'] == 'value2'
+    assert tiddler.bag == 'bag0'
+
+def test_tiddler_fields_as_wiki():
+    tiddler = Tiddler('feebles', bag='bag0')
+    store.get(tiddler)
+    serializer = Serializer('wiki')
+    serializer.object = tiddler
+    wiki_string = serializer.to_string()
+
+    assert 'field1="value1"' in wiki_string
+    assert 'field2="value2"' in wiki_string
+    assert 'server.bag="bag0"' in wiki_string
+
+def test_tiddler_fields_as_html():
+    tiddler = Tiddler('feebles', bag='bag0')
+    store.get(tiddler)
+    serializer = Serializer('html')
+    serializer.object = tiddler
+    wiki_string = serializer.to_string()
+
+    assert 'field1="value1"' in wiki_string
+    assert 'field2="value2"' in wiki_string
+    assert 'title="feebles"' in wiki_string
+
 #def test_fields_in_tiddler_put():
 #def test_fields_in_tiddler_get():

@@ -33,10 +33,13 @@ def _do_tiddler(bagname, tiddler, store):
         # there are no contents in the tiddler
         new_tiddler.text = ''
 
-    for key in (['modifier', 'created', 'modified']):
-        data = tiddler.get(key, None)
-        if data:
-            new_tiddler.__setattr__(key, data)
+    for attr, value in tiddler.attrs:
+        data = tiddler.get(attr, None)
+        if data and attr != 'tags':
+            if attr in (['modifier', 'created', 'modified']):
+                new_tiddler.__setattr__(attr, data)
+            else:
+                new_tiddler.fields[attr] = data
     new_tiddler.tags = _tag_string_to_list(tiddler.get('tags', ''))
 
     try:

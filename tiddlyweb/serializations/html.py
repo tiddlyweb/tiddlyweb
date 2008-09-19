@@ -142,8 +142,16 @@ class Serialization(SerializationInterface):
             return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
 
     def _tiddler_div(self, tiddler):
-        return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s">' % \
-    (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified, tiddler.created, self.tags_as(tiddler.tags))
+        return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s"%s>' % \
+        (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified,
+        tiddler.created, self.tags_as(tiddler.tags),
+        self._tiddler_fields(tiddler.fields))
+
+    def _tiddler_fields(self, fields):
+        output = []
+        for key in fields:
+            output.append('%s="%s"' % (key, fields[key]))
+        return ' '.join(output)
 
     def _tiddler_to_wikklyhtml(self, tiddler):
         server_prefix = self._server_prefix()
