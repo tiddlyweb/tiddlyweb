@@ -96,6 +96,8 @@ class Serialization(SerializationInterface):
         headers = header.split('\n')
 
         for field, value in [x.split(': ') for x in headers]:
+            if value == '':
+                continue
             try:
                 setattr(tiddler, field, value)
             except AttributeError:
