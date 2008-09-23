@@ -4,12 +4,14 @@ A module containing the Tiddler class and related functions.
 
 from datetime import datetime
 
+
 def current_timestring():
     """
     Translate (now) into a TiddlyWiki conformat timestring.
     """
     time_object = datetime.utcnow()
     return unicode(time_object.strftime('%Y%m%d%H%M'))
+
 
 class Tiddler(object):
     """
@@ -91,4 +93,3 @@ class Tiddler(object):
         can distinguish between them while debugging.
         """
         return self.title + object.__repr__(self)
-

@@ -2,9 +2,10 @@
 The Recipe class.
 """
 
+
 class Recipe(list):
     """
-    A Recipe is an ordered list that represents 
+    A Recipe is an ordered list that represents
     a program for creating a collection of tiddlers.
 
     Each line in the recipe is the combination of a
@@ -12,10 +13,11 @@ class Recipe(list):
     we have a list of lists.
 
     In common usage a recipe contains only strings
-    representing bags and filters, but for the 
+    representing bags and filters, but for the
     sake of easy testing, the bag argument can
     be a Bag.
     """
+
     def __init__(self, name, desc=''):
         list.__init__(self)
         self.name = name
@@ -33,4 +35,3 @@ class Recipe(list):
         Return the recipe list, as a list.
         """
         return self
-

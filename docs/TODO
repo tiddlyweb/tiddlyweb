@@ -16,7 +16,6 @@ If you think there should be something on this list, contact ChrisDent.
 
 * Remove logger from the index.cgi app configuration and make sure errors get sent to stderr.
 * Set REMOTE_USER in the real (os) environment so Apache can use that if we are in Apache and want its logging.
-* Put the WSGI middleware stack in tiddlyweb.config. (Maybe not?)
 
 !! Core
 
@@ -48,7 +47,7 @@ If you think there should be something on this list, contact ChrisDent.
 
 !Tests and assurancs
 
-* Tests for '..', '/', etc in title and name fields w/ store handling.
+* Tests for '..', '/', etc in title and name fields w/ store handling. !!
 * Rhino and Selenium based testing.
 
 !Cleanliness, Documentation and Protocol Behavior

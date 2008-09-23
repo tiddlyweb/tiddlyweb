@@ -6,9 +6,10 @@ import copy
 
 from tiddlyweb.auth import ForbiddenError, UserRequiredError
 
+
 class Policy(object):
     """
-    A container for information about the 
+    A container for information about the
     contraints on a bag. A bag is something that
     contains tiddlers. We need to be able to say
     who can do what to do those tiddlers. We also
@@ -16,7 +17,7 @@ class Policy(object):
     constraints.
 
     The init parameters represent a default policy.
-    The default policy should really come from 
+    The default policy should really come from
     server configuration. Then we can declare this
     installation as open-ish, or closed-ish.
     """
@@ -78,6 +79,7 @@ class Policy(object):
         # we've fallen through, the user we have matches nothing
         raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
 
+
 class Bag(dict):
     """
     XXX: We should subclass for tmpbag and revbag.
@@ -126,7 +128,7 @@ class Bag(dict):
 
     def _tiddler_copy(self, tiddler):
         """
-        If a bag is not a tmpbag, when we put a tiddler in 
+        If a bag is not a tmpbag, when we put a tiddler in
         it, we need to copy the tiddler, otherwise operations
         that happen to the tiddler in the bag may impact a
         tiddler somewhere else in the process space.
@@ -140,7 +142,7 @@ class Bag(dict):
         return tiddler
 
     def __getitem__(self, tiddler):
-        return dict.__getitem__(self, self._tiddler_key(tiddler) )
+        return dict.__getitem__(self, self._tiddler_key(tiddler))
 
     def __setitem__(self, tiddler):
         dict.__setitem__(self, self._tiddler_key(tiddler), tiddler)
@@ -174,4 +176,3 @@ class Bag(dict):
         they were added.
         """
         return [self.get(keyword, None) for keyword in self.order]
-
