@@ -11,12 +11,19 @@ from BeautifulSoup import BeautifulSoup
 from tiddlyweb.tiddler import Tiddler
 
 def import_wiki_file(store, filename='wiki', bagname='wiki'):
-    f = codecs.open(filename, encoding='utf-8', errors='replace')
-    wikitext = f.read()
-    f.close()
+    """
+    Read a wiki in a file and import all the tiddlers into a bag.
+    """
+    wikifile = codecs.open(filename, encoding='utf-8', errors='replace')
+    wikitext = wikifile.read()
+    wikifile.close()
     return import_wiki(store, wikitext, bagname)
 
 def import_wiki(store, wikitext, bagname='wiki'):
+    """
+    Import the wiki provided as a string and import all the tiddlers 
+    into a bag.
+    """
     soup = BeautifulSoup(wikitext)
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
@@ -25,10 +32,13 @@ def import_wiki(store, wikitext, bagname='wiki'):
         _do_tiddler(bagname, tiddler, store)
 
 def _do_tiddler(bagname, tiddler, store):
+    """
+    Create a new Tiddler from a tiddler div.
+    """
     new_tiddler = Tiddler(tiddler['title'], bag=bagname)
 
     try:
-    	new_tiddler.text = _html_decode(tiddler.find('pre').contents[0])
+        new_tiddler.text = _html_decode(tiddler.find('pre').contents[0])
     except IndexError:
         # there are no contents in the tiddler
         new_tiddler.text = ''
@@ -43,14 +53,17 @@ def _do_tiddler(bagname, tiddler, store):
     new_tiddler.tags = _tag_string_to_list(tiddler.get('tags', ''))
 
     try:
-    	store.put(new_tiddler)
-    except OSError, e:
+        store.put(new_tiddler)
+    except OSError, exc:
         # This tiddler has a name that we can't yet write to the
         # store. For now we just state the error and carry on.
         import sys
-        print >> sys.stderr, 'Unable to write %s: %s' % (new_tiddler.title, e)
+        print >> sys.stderr, 'Unable to write %s: %s' % (new_tiddler.title, exc)
 
 def _tag_string_to_list(string):
+    """
+    Turn a string of tags in TiddlyWiki format into a list.
+    """
     tags = []
     tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
     for match in tag_matcher.finditer(string):
@@ -62,5 +75,7 @@ def _tag_string_to_list(string):
     return tags
 
 def _html_decode(text):
+    """
+    Decode HTML entities used in TiddlyWiki content into the 'real' things.
+    """
     return text.replace('&gt;', '>').replace('&lt;', '<').replace('&amp;', '&').replace('&quot;', '"')
-

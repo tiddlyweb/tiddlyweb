@@ -89,31 +89,27 @@ def by_composition(filters, tiddlers):
     found_tiddlers_list = []
     for filter in filters:
         if filter[0].__dict__.has_key('removal'):
-            """
-            If the filter has been tagged as a removal filter,
-            remove the tiddlers which match the filter.
-            """
+            # If the filter has been tagged as a removal filter,
+            # remove the tiddlers which match the filter.
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
                 if tiddler.title in found_tiddlers:
                     del found_tiddlers[tiddler.title]
                     found_tiddlers_list.remove(tiddler.title)
         elif filter[0].__dict__.has_key('totaller'):
-            """
-            A totaller doesn't change the items in the
-            list of tiddlers. It either sorts them or
-            limits them to a certain number.
+            # A totaller doesn't change the items in the
+            # list of tiddlers. It either sorts them or
+            # limits them to a certain number.
 
-            This turns out to be quite complicated, so we
-            do some pretty hairy manipulations on the
-            found_tiddlers and found_tiddlers_lists data.
-            I'm sure there is a better way.
+            # This turns out to be quite complicated, so we
+            # do some pretty hairy manipulations on the
+            # found_tiddlers and found_tiddlers_lists data.
+            # I'm sure there is a better way.
 
-            A sorter must recreate the entire found_tiddlers_list
-            while a counter does nothing with the list.
-            """
+            # A sorter must recreate the entire found_tiddlers_list
+            # while a counter does nothing with the list.
             if len(found_tiddlers) == 0:
                 for tiddler in tiddlers:
-                    found_tiddlers[tiddler.title]=tiddler
+                    found_tiddlers[tiddler.title] = tiddler
                     found_tiddlers_list.append(tiddler.title)
             the_tiddlers = {}
             for tiddler in filter[0](filter[1], [found_tiddlers[title] for title in found_tiddlers_list]):
