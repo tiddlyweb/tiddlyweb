@@ -10,39 +10,47 @@ from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
 from tiddlyweb.user import User
 
-commands = {}
+COMMANDS = {}
 
-def _make_command(description):
+def _make_command():
+    """
+    A decorator that marks the decorated method
+    as a member of the commands dictionary, with
+    associated help.
+    """
     def decorate(f):
-        global commands
-        f.description = description
-        commands[f.__name__] = f
+        global COMMANDS
+        f.description = f.__doc__
+        COMMANDS[f.__name__] = f
         return f
     return decorate
 
-@_make_command('Start the server: <hostname or ip number> <port>')
+@_make_command()
 def server(args):
+    """Start the server: <hostname or ip number> <port>"""
     try:
         hostname, port = args[0:2]
     except IndexError:
-        help()
+        usage()
     except ValueError:
-        help()
+        usage()
 
     from tiddlyweb.web import serve
     serve.start_cherrypy('./urls.map', hostname, int(port))
 
 def _store():
+    """Get our Store from config."""
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
-@_make_command('Add or update a user to the database: <username> <password> [[role] [role] ...]')
+@_make_command()
 def adduser(args):
+    """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
     try:
         username, password = args[0:2]
     except IndexError, e:
-        help()
+        usage()
     except ValueError, e:
-        help()
+        usage()
 
     roles = []
     try:
@@ -63,8 +71,9 @@ def adduser(args):
 
     return True
 
-@_make_command('Import a Tiddlywiki html file into a bag: <filename> <bag name>')
+@_make_command()
 def imwiki(args):
+    """Import a Tiddlywiki html file into a bag: <filename> <bag name>"""
     from tiddlyweb.importer import import_wiki_file
 
     store = _store()
@@ -74,17 +83,18 @@ def imwiki(args):
         import_wiki_file(store, filename, bag_name)
     except IndexError, e:
         print "index error: %s" % e
-        help()
+        usage()
     except ValueError, e:
         print "value error: %s" % e
-        help()
+        usage()
 
-@_make_command('Create or update a recipe with the recipe text on stdin: <recipe name>')
+@_make_command()
 def recipe(args):
+    """Create or update a recipe with the recipe text on stdin: <recipe name>"""
     try:
         recipe_name = args[0]
     except IndexError:
-        help()
+        usage()
 
     from tiddlyweb.recipe import Recipe
     from tiddlyweb.serializer import Serializer
@@ -98,12 +108,13 @@ def recipe(args):
     store = _store()
     store.put(recipe)
 
-@_make_command('Create or update a bag with the json text on stdin: <bag name>')
+@_make_command()
 def bag(args):
+    """Create or update a bag with the json text on stdin: <bag name>"""
     try:
         bag_name = args[0]
     except IndexError:
-        help()
+        usage()
 
     from tiddlyweb.bag import Bag
     from tiddlyweb.serializer import Serializer
@@ -119,14 +130,15 @@ def bag(args):
     store = _store()
     store.put(bag)
 
-@_make_command('Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>')
+@_make_command()
 def tiddler(args):
+    """Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>"""
     try:
         tiddler_name, bag_name = args[0:3]
     except IndexError:
-        help()
+        usage()
     except ValueError:
-        help()
+        usage()
 
     from tiddlyweb.tiddler import Tiddler
     from tiddlyweb.serializer import Serializer
@@ -141,27 +153,28 @@ def tiddler(args):
     store = _store()
     store.put(tiddler)
 
-@_make_command('List this help')
-def help(*args):
-    for key in sorted(commands):
-        print "%s\t\t%s" % (key, commands[key].description)
+@_make_command()
+def usage(*args):
+    """List this help"""
+    for key in sorted(COMMANDS):
+        print "%s\t\t%s" % (key, COMMANDS[key].description)
     sys.exit(0)
 
 def handle(args):
     try:
         candidate_command = args[1]
     except IndexError:
-        help([])
+        usage([])
 
     try:
         args = args[2:]
     except IndexError:
         args = []
 
-    if candidate_command in commands:
-        commands[candidate_command](args)
+    if candidate_command in COMMANDS:
+        COMMANDS[candidate_command](args)
     else:
-        help(args)
+        usage(args)
 
 def _read_stdin():
     return sys.stdin.read()
