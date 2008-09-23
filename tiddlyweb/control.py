@@ -69,7 +69,6 @@ def determine_bag_for_tiddler(recipe, tiddler):
     if the tiddler is a part of the bag + filter. If bag+filter
     is true, return that bag.
     """
-    store = recipe.store
     for bag, filter_string in reversed(recipe):
         # ignore the bag and make a new bag
         tmpbag = Bag(filter_string, tmpbag=True)
@@ -96,7 +95,7 @@ def get_tiddlers_from_bag(bag):
                 # but the filtering architecture isn't up for it     
                 #yield tiddler
             except TiddlerFormatError:
-                # XXX do more here
+                # XXX do more here?
                 pass
     return tiddlers
 

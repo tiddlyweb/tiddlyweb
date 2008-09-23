@@ -18,11 +18,14 @@ def _make_command():
     as a member of the commands dictionary, with
     associated help.
     """
-    def decorate(f):
+    def decorate(func):
+        """
+        Add the function to the commands dictionary.
+        """
         global COMMANDS
-        f.description = f.__doc__
-        COMMANDS[f.__name__] = f
-        return f
+        func.description = func.__doc__
+        COMMANDS[func.__name__] = func
+        return func
     return decorate
 
 @_make_command()
@@ -47,9 +50,7 @@ def adduser(args):
     """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
     try:
         username, password = args[0:2]
-    except IndexError, e:
-        usage()
-    except ValueError, e:
+    except (IndexError, ValueError), exc:
         usage()
 
     roles = []
@@ -65,8 +66,8 @@ def adduser(args):
         for role in roles:
             user.add_role(role)
         store.put(user)
-    except Exception, e:
-        print 'unable to create or update user: %s' % e
+    except Exception, exc:
+        print 'unable to create or update user: %s' % exc
         raise
 
     return True
@@ -81,11 +82,11 @@ def imwiki(args):
     try:
         filename, bag_name = args[0:2]
         import_wiki_file(store, filename, bag_name)
-    except IndexError, e:
-        print "index error: %s" % e
+    except IndexError, exc:
+        print "index error: %s" % exc
         usage()
-    except ValueError, e:
-        print "value error: %s" % e
+    except ValueError, exc:
+        print "value error: %s" % exc
         usage()
 
 @_make_command()
@@ -101,7 +102,7 @@ def recipe(args):
 
     recipe = Recipe(recipe_name)
 
-    content = _read_stdin()
+    content = sys.stdin.read()
     serializer = Serializer('text')
     serializer.object = recipe
     serializer.from_string(content)
@@ -121,7 +122,7 @@ def bag(args):
 
     bag = Bag(bag_name)
 
-    content = _read_stdin()
+    content = sys.stdin.read()
     if not len(content):
         content = '{"policy":{}}'
     serializer = Serializer('json')
@@ -135,9 +136,7 @@ def tiddler(args):
     """Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>"""
     try:
         tiddler_name, bag_name = args[0:3]
-    except IndexError:
-        usage()
-    except ValueError:
+    except (IndexError, ValueError):
         usage()
 
     from tiddlyweb.tiddler import Tiddler
@@ -146,7 +145,7 @@ def tiddler(args):
     tiddler = Tiddler(tiddler_name)
     tiddler.bag = bag_name
 
-    content = _read_stdin()
+    content = sys.stdin.read()
     serializer = Serializer('text')
     serializer.object = tiddler
     serializer.from_string(content)
@@ -161,6 +160,10 @@ def usage(*args):
     sys.exit(0)
 
 def handle(args):
+    """
+    Dispatch to the proper function for the command
+    given in a args[1].
+    """
     try:
         candidate_command = args[1]
     except IndexError:
@@ -175,7 +178,3 @@ def handle(args):
         COMMANDS[candidate_command](args)
     else:
         usage(args)
-
-def _read_stdin():
-    return sys.stdin.read()
-
