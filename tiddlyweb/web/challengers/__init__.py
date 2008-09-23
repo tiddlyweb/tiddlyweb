@@ -21,7 +21,13 @@ class ChallengerInterface(object):
     """
 
     def challenge_get(self, environ, start_response):
+        """
+        Respond to a GET request.
+        """
         pass
 
     def challenge_post(self, environ, start_response):
+        """
+        Respond to a POST request.
+        """
         pass
