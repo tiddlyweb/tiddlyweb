@@ -10,8 +10,17 @@ from tiddlyweb.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
 class Extractor(ExtractorInterface):
+    """
+    An extractor for HTTP Basic Authentication. If there
+    is an Authorization header attempt to get a username and 
+    password out of it. If the password is valid, return the
+    user information.
+    """
 
     def extract(self, environ, start_response):
+        """
+        Look in the request for an Authorization header.
+        """
         user_info = environ.get('HTTP_AUTHORIZATION', None)
         if user_info is None:
             return False
@@ -27,4 +36,3 @@ class Extractor(ExtractorInterface):
             except (NoUserError, StoreMethodNotImplemented):
                 pass
         return False
-

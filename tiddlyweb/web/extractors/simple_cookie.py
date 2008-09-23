@@ -11,8 +11,17 @@ from tiddlyweb.web.extractors import ExtractorInterface
 from sha import sha
 
 class Extractor(ExtractorInterface):
+    """
+    Look in the headers for a cookie named 'tiddlyweb_user'.
+    If it is there and the secret is valid, return the
+    indicated user.
+    """
 
     def extract(self, environ, start_response):
+        """
+        Extract the cookie, if there, from the headers
+        and attempt to validate its contents.
+        """
         try:
             user_cookie = environ['HTTP_COOKIE']
             cookie = Cookie.SimpleCookie()
@@ -32,4 +41,3 @@ class Extractor(ExtractorInterface):
         except KeyError:
             pass
         return False
-
