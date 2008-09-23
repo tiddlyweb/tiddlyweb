@@ -21,19 +21,36 @@ class User(object):
         self.roles = set()
 
     def add_role(self, role):
+        """
+        Add the named role (a string) to this user.
+        """
         self.roles.add(role)
 
     def del_role(self, role):
+        """
+        Remove the named role (a string) from this user.
+        If it is not there, do nothing.
+        """
         self.roles.discard(role)
 
     def list_roles(self):
+        """
+        List (as a list of strings) the roles that this
+        user has.
+        """
         return list(self.roles)
 
     def set_password(self, password):
+        """
+        Set the password for this user.
+        """
         password = password.strip()
         self._password = crypt(password.strip(), 'salty')
 
     def check_password(self, candidate_password):
+        """
+        Check the password for this user. Return true if correct.
+        """
         if self._password is None:
             return False
         crypted_thing = crypt(candidate_password.strip(), self._password)
