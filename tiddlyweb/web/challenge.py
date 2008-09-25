@@ -2,7 +2,7 @@ import urllib
 import cgi
 from Cookie import SimpleCookie
 
-from tiddlyweb.web.http import HTTP401, HTTP404
+from tiddlyweb.web.http import HTTP302, HTTP401, HTTP404
 from tiddlyweb.web.util import server_base_url
 
 def _challenger_url(environ, system):
@@ -15,6 +15,8 @@ def _challenger_url(environ, system):
 
 def base(environ, start_response):
     auth_systems = environ['tiddlyweb.config']['auth_systems']
+    if len(auth_systems) == 1:
+        raise HTTP302, _challenger_url(environ, auth_systems[0])
     start_response('401 Unauthorized', [
         ('Content-Type', 'text/html')
         ])

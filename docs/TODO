@@ -43,7 +43,6 @@ If you think there should be something on this list, contact ChrisDent.
 !! Miscellaneous
 
 * py2app and py2exe versions for one click installation on OS X and Windows.
-* Maybe use mimeparse for accept and content-type header handling: http://code.google.com/p/mimeparse/
 
 !Tests and assurancs
 
