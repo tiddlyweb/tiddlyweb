@@ -24,7 +24,7 @@ class Policy(object):
 
     def __init__(self, owner=None,
             read=[], write=[], create=[], delete=[],
-            manage=['NONE']):
+            manage=[u'NONE']):
         self.owner = owner
         self.read = read
         self.write = write

@@ -22,6 +22,12 @@ class GDBag(db.Model):
     name = db.StringProperty(required=True)
     desc = db.StringProperty()
     tiddlers = db.ListProperty(unicode)
+    owner = db.StringProperty()
+    read = db.ListProperty(unicode)
+    write = db.ListProperty(unicode)
+    create = db.ListProperty(unicode)
+    delete_ = db.ListProperty(unicode)
+    manage = db.ListProperty(unicode)
 
 class GDTiddler(db.Expando):
     title = db.StringProperty(required=True)
@@ -73,6 +79,8 @@ class Store(StorageInterface):
                 for tiddler_title in mem_bag.tiddlers:
                     bag.add_tiddler(Tiddler(tiddler_title))
                 bag.desc = mem_bag.desc
+                policy = Policy(owner=mem_bag.owner, read=mem_bag.read, write=mem_bag.write, create=mem_bag.create, delete=mem_bag.delete_, manage=mem_bag.manage)
+                bag.policy = policy
                 return bag
             logging.info('memcache miss on bag %s' % bag.name)
         except KeyError:
@@ -88,6 +96,8 @@ class Store(StorageInterface):
         
         bags_tiddlers = []
         bag.desc = gdbag.desc
+        policy = Policy(owner=gdbag.owner, read=gdbag.read, write=gdbag.write, create=gdbag.create, delete=gdbag.delete_, manage=gdbag.manage)
+        bag.policy = policy
         for gdtiddler in bag_tiddler_query:
             tiddler = Tiddler(gdtiddler.title)
             bag.add_tiddler(tiddler)
@@ -102,6 +112,12 @@ class Store(StorageInterface):
     def bag_put(self, bag):
         gdbag = GDBag(key_name=self._bag_key(bag.name), name=bag.name)
         gdbag.tiddlers = [tiddler.title for tiddler in bag.list_tiddlers()]
+        gdbag.read = bag.policy.read
+        gdbag.write = bag.policy.write
+        gdbag.create = bag.policy.create
+        gdbag.delete_ = bag.policy.delete
+        gdbag.manage = bag.policy.manage
+        gdbag.owner = bag.policy.owner
         gdbag.put()
         memcache.set(self._bag_key(bag.name), gdbag)
 
