@@ -15,7 +15,7 @@ class Extractor(ExtractorInterface):
         logging.info('user gathered: %s' % user)
 
         if user:
-            return user.nickname()
+            return {'name': user.nickname(), 'roles': []}
         return False
 
 

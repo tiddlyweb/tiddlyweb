@@ -141,7 +141,7 @@ def put(environ, start_response):
         content = environ['wsgi.input'].read(int(length))
         serializer.from_string(content.decode('UTF-8'))
 
-        bag.policy.owner = environ['tiddlyweb.usersign']
+        bag.policy.owner = environ['tiddlyweb.usersign']['name']
 
         store.put(bag)
     except NoSerializationError:
