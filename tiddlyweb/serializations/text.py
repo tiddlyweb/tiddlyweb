@@ -95,7 +95,7 @@ class Serialization(SerializationInterface):
         tiddler.text = text.rstrip()
         headers = header.split('\n')
 
-        for field, value in [x.split(': ') for x in headers]:
+        for field, value in [x.split(': ', 1) for x in headers]:
             if value == '':
                 continue
             try:
