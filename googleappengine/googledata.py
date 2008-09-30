@@ -17,6 +17,7 @@ from tiddlyweb.stores import StorageInterface
 class GDRecipe(db.Model):
     name = db.StringProperty(required=True)
     recipe = db.ListProperty(unicode)
+    desc = db.StringProperty()
 
 class GDBag(db.Model):
     name = db.StringProperty(required=True)
@@ -61,6 +62,7 @@ class Store(StorageInterface):
             recipe_list.append([bag, filter])
 
         recipe.set_recipe(recipe_list)
+        recipe.desc = gdrecipe.desc
         return recipe
 
     def recipe_put(self, recipe):
@@ -70,6 +72,7 @@ class Store(StorageInterface):
             line = '%s?%s' % (bag, filter)
             recipe_list.append(line)
         gdrecipe.recipe = recipe_list
+        gdrecipe.desc = recipe.desc
         gdrecipe.put()
 
     def bag_get(self, bag):
