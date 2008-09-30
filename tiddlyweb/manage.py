@@ -39,7 +39,7 @@ def server(args):
         usage()
 
     from tiddlyweb.web import serve
-    serve.start_cherrypy('./urls.map', hostname, int(port))
+    serve.start_cherrypy(config['urls_map'], hostname, int(port))
 
 def _store():
     """Get our Store from config."""

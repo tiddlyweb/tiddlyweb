@@ -27,7 +27,10 @@ the path to it would need to be changed.
 
 If this script is not running out of the same directory
 that contains lib and urls.map, those will need to be 
-symlinked into the same directory as the script.
+symlinked into the same directory as the script OR
+tiddlywebconfig.py will need to be updated to set
+urls_map and base_tiddlywiki to point to the correct
+locations.
 
 Instead of setting config items in this script a
 tiddlywebconfig.py could be used instead.
@@ -66,7 +69,7 @@ def start():
     config['server_store'] = ['text', {'store_root': file_store_location}]
     config['server_prefix'] = server_prefix
 
-    app = serve.load_app(hostname, port, 'urls.map')
+    app = serve.load_app(hostname, port, config['urls_map'])
     return app
 
 # chdir to the location of this running script so we have access 

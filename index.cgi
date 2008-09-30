@@ -11,7 +11,9 @@ can rename it if you like. Make sure the file is executable.
 In the same directory as index.cgi, make a copy of or synlink
 to the lib directory available in the TiddlyWeb code repo.
 
-Place a copy of urls.map in the same directory as index.cgi.
+Place a copy of urls.map in the same directory as index.cgi
+or adjust the tiddlywebconfig.py urls_map key to point to
+wherever you have it.
 
 If you are using the text store (you probably are) follow
 the instructions in COOKBOOK to make a text store directory
@@ -51,7 +53,7 @@ def start():
     config['server_store'] = ['text', {'store_root': file_store_location}]
     config['server_prefix'] = web_server_base
 
-    app = serve.load_app(hostname, port, 'urls.map')
+    app = serve.load_app(hostname, port, config['urls_map'])
     BaseCGIHandler(sys.stdin, sys.stdout, sys.stderr, os.environ).run(app)
 
 if __name__ == '__main__':

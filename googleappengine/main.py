@@ -57,7 +57,7 @@ def google_app():
     port = 80
     #host = 'localhost'
     #port = 8000
-    filename = 'urls.map'
+    filename = config['urls_map']
 
     filters_in = config['server_request_filters']
     filters_in.insert(0, ScriptCleanup)
