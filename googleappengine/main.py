@@ -25,12 +25,12 @@
 #
 
 
-
 import wsgiref.handlers
 import urllib
 
 from tiddlyweb.web.serve import load_app, config
 from tiddlyweb.web.wsgi import SimpleLog
+
 
 class ScriptCleanup(object):
 
@@ -42,6 +42,8 @@ class ScriptCleanup(object):
         return self.application(environ, start_response)
 
 app = None
+
+
 def google_app():
     """
     Only calculate the app once, otherwise we recalculate the
@@ -66,9 +68,9 @@ def google_app():
     app = load_app(host, port, filename)
     return app
 
+
 def main():
-  wsgiref.handlers.CGIHandler().run(google_app())
+    wsgiref.handlers.CGIHandler().run(google_app())
 
 if __name__ == '__main__':
-  main()
-
+    main()
