@@ -225,7 +225,7 @@ class Store(StorageInterface):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try: 
             revisions = sorted([
-                int(x) for x in self._files_in_dir(tiddler_base_filename)
+                int(x) for x in self._numeric_files_in_dir(tiddler_base_filename)
                 ])
         except OSError, exc:
             raise NoTiddlerError, \
@@ -305,6 +305,9 @@ class Store(StorageInterface):
         pathname, basename = os.path.split(filename)
         lock_filename = os.path.join(pathname, '.%s' % basename)
         return lock_filename
+
+    def _numeric_files_in_dir(self, path):
+        return [x for x in self._files_in_dir(path) if x.isdigit()]
 
     def _read_lock_file(self, lockfile):
         lock = open(lockfile, 'r')
