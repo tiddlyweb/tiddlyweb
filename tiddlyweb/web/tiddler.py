@@ -8,7 +8,7 @@ import urllib
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import NoTiddlerError, NoBagError, StoreMethodNotImplemented
+from tiddlyweb.store import NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
@@ -79,9 +79,12 @@ def _determine_tiddler(environ, bag_finder):
         recipe_name = urllib.unquote(recipe_name)
         recipe_name = unicode(recipe_name, 'utf-8')
         recipe = Recipe(recipe_name)
-        store = environ['tiddlyweb.store']
-        store.get(recipe)
-        tiddler.recipe = recipe_name
+        try:
+            store = environ['tiddlyweb.store']
+            store.get(recipe)
+            tiddler.recipe = recipe_name
+        except NoRecipeError, exc:
+            raise HTTP404, '%s not found, %s' % (tiddler.title, exc)
 
         try:
             bag = bag_finder(recipe, tiddler)

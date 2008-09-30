@@ -457,3 +457,9 @@ def test_delete_tiddler_in_bag_perms():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0',
             method='DELETE', headers={'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '404'
+
+def test_tiddler_no_recipe():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/short/tiddlers/tiddler8',
+            method='GET')
+    assert response['status'] == '404'
