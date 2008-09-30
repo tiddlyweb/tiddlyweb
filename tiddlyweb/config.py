@@ -61,7 +61,7 @@ DEFAULT_CONFIG = {
         # XXX this should allow a URL, but not doing that
         # yet because of google app engine
         'base_tiddlywiki': 'lib/empty.html',
-        'urls_map': 'urls.map',
+        'urls_map': './urls.map',
         }
 
 def read_config():
