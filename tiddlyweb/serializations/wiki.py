@@ -6,9 +6,6 @@ from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
 
-# this should come from config or even
-# from a url
-empty_html = 'lib/empty.html'
 splitter = '</div>\n<!--POST-STOREAREA-->\n'
 
 markups = {
@@ -119,7 +116,7 @@ class Serialization(SerializationInterface):
             return wiki
 
     def _get_wiki(self):
-        f = open(empty_html)
+        f = open(self.environ['tiddlyweb.config']['base_tiddlywiki'])
         wiki = f.read()
         wiki = unicode(wiki, 'utf-8')
         return wiki

@@ -11,6 +11,7 @@ sys.path.append('.')
 
 import simplejson
 
+from tiddlyweb.config import config
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.bag import Bag
@@ -92,7 +93,8 @@ def test_tiddler_fields_as_json():
 def test_tiddler_fields_as_wiki():
     tiddler = Tiddler('feebles', bag='bag0')
     store.get(tiddler)
-    serializer = Serializer('wiki')
+    environ = {'tiddlyweb.config': config}
+    serializer = Serializer('wiki', environ)
     serializer.object = tiddler
     wiki_string = serializer.to_string()
 

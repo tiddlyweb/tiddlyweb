@@ -58,6 +58,9 @@ DEFAULT_CONFIG = {
             ],
         # XXX this should come from a file
         'secret': 'this should come from a file',
+        # XXX this should allow a URL, but not doing that
+        # yet because of google app engine
+        'base_tiddlywiki': 'lib/empty.html',
 
         }
 

@@ -73,7 +73,6 @@ def test_generated_html():
     assert expected_html_string in string
 
 def test_generated_html_with_prefix():
-
     new_config = config.copy()
     new_config['server_prefix'] = '/salacious'
     environ = {'tiddlyweb.config': new_config}
@@ -83,7 +82,8 @@ def test_generated_html_with_prefix():
     assert prefix_expected_html_string in string
 
 def test_generated_wiki():
-    wiki_serializer = Serializer('wiki')
+    environ = {'tiddlyweb.config': config}
+    wiki_serializer = Serializer('wiki', environ)
     # work around a limitation in the serializations
     # when store is not set, we assume the bag has not been reified
     string = wiki_serializer.list_tiddlers(bagfour)
