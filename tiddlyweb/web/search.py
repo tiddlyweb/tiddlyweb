@@ -23,9 +23,7 @@ def get(environ, start_response):
         raise HTTP400, 'query string required'
     except IndexError:
         raise HTTP400, 'query string required'
-    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
-    filter_string = urllib.unquote(filter_string)
-    filter_string = unicode(filter_string, 'utf-8')
+    filter_string = web.filter_query_string(environ)
     
     store = environ['tiddlyweb.store']
     try:
