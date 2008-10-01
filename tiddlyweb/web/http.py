@@ -1,6 +1,3 @@
-import sys
-import traceback
-
 """
 A group of exception classes representating HTTP error 
 statuses, along with a WSGI middleware to turn the
@@ -12,6 +9,10 @@ we don't need all the code in HTTPExceptor.
 XXX: The Exceptor should log errors for each of
 these exceptions as in the finall except clause.
 """
+
+import sys
+import traceback
+
 
 class HTTPException(Exception):
     status = ''

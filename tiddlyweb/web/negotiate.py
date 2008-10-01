@@ -40,13 +40,13 @@ class Negotiate(object):
         if path_info:
             extension = path_info.rsplit('.', 1)
             if len(extension) == 2:
-                    ext = extension[-1]
-                    environ['tiddlyweb.extension'] = ext
-                    try:
-                        our_type = extension_types[ext]
-                        our_types.append(our_type)
-                    except KeyError:
-                        pass
+                ext = extension[-1]
+                environ['tiddlyweb.extension'] = ext
+                try:
+                    our_type = extension_types[ext]
+                    our_types.append(our_type)
+                except KeyError:
+                    pass
 
         if accept_header:
             our_types.extend(self._parse_accept_header(accept_header))

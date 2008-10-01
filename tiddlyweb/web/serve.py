@@ -3,14 +3,11 @@ Functions and Classes for running the TiddlyWeb
 web server.
 """
 import os
-import sys
 import selector
-import time
-import urllib
 
 from tiddlyweb.config import config
 
-def load_app(host, port, map):
+def load_app(host, port, map_filename):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
@@ -22,7 +19,7 @@ def load_app(host, port, map):
     wrappers.extend(reversed(config['server_request_filters']))
     wrappers.append(Configurator) # required as the first app
     wrappers.extend(config['server_response_filters'])
-    app = selector.Selector(mapfile=map)
+    app = selector.Selector(mapfile=map_filename)
     if wrappers:
         for wrapper in wrappers:
             app = wrapper(app)
