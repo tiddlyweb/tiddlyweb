@@ -1,16 +1,17 @@
 """
 WSGI Middleware that extracts CGI parameters
-from the QUERY_STRING and puts them in 
+from the QUERY_STRING and puts them in
 tiddlyweb.query in the same structure that
 cgi.py users (dictionary of lists).
 """
 
 import cgi
 
+
 class Query(object):
     """
-    We do this for "future expansion" and to 
-    remove some duplication throughout the 
+    We do this for "future expansion" and to
+    remove some duplication throughout the
     code.
 
     Possible future expansion includes things like

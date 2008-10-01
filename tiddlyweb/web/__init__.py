@@ -9,6 +9,7 @@ ROOT_PAGE = """<ul id="root" class="entitylist">
 <li><a href="bags">bags</a></li>
 </ul>"""
 
+
 def root(environ, start_response):
     """
     Convenience method to provide an entry point at root.

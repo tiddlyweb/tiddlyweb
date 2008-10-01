@@ -6,6 +6,7 @@ import urllib
 
 from tiddlyweb.serializations import SerializationInterface
 
+
 class Serialization(SerializationInterface):
 
     def __init__(self, environ={}):
@@ -173,8 +174,7 @@ class Serialization(SerializationInterface):
 %s
 %s
 </div>
-""" % ( urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
+""" % (urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
         list_title.encode('utf-8'),
         self._tiddler_div(tiddler).encode('utf-8'),
         html)
-

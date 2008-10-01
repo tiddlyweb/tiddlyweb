@@ -1,9 +1,9 @@
 """
-A group of exception classes representating HTTP error 
+A group of exception classes representating HTTP error
 statuses, along with a WSGI middleware to turn the
 exceptions into proper HTTP headers.
 
-These exception need messages and a base class so 
+These exception need messages and a base class so
 we don't need all the code in HTTPExceptor.
 
 XXX: The Exceptor should log errors for each of
@@ -27,6 +27,7 @@ class HTTPException(Exception):
             self.message = self.message.encode('utf-8')
         return ['%s: %s' % (self.status, self.message)]
 
+
 class HTTP302(HTTPException):
     status = '302 Found'
 
@@ -35,6 +36,7 @@ class HTTP302(HTTPException):
 
     def output(self):
         return ['']
+
 
 class HTTP304(HTTPException):
     status = '304 Not Modified'
@@ -45,8 +47,10 @@ class HTTP304(HTTPException):
     def output(self):
         return ['']
 
+
 class HTTP400(HTTPException):
     status = '400 Bad Request'
+
 
 class HTTP401(HTTPException):
     status = '401 Unauthorized'
@@ -57,20 +61,26 @@ class HTTP401(HTTPException):
     def output(self):
         return ['']
 
+
 class HTTP403(HTTPException):
     status = '403 Forbidden'
+
 
 class HTTP404(HTTPException):
     status = '404 Not Found'
 
+
 class HTTP409(HTTPException):
     status = '409 Conflict'
+
 
 class HTTP412(HTTPException):
     status = '412 Precondition Failed'
 
+
 class HTTP415(HTTPException):
     status = '415 Unsupported'
+
 
 class HTTPExceptor(object):
 

@@ -1,21 +1,22 @@
 """
 The base Class and interface for Classes
-use to get and put data into a storage 
+use to get and put data into a storage
 system.
 """
 
 from tiddlyweb.store import StoreMethodNotImplemented
 
+
 class StorageInterface(object):
     """
-    A Store is a collection of methods that 
+    A Store is a collection of methods that
     either store an object or retrieve an object.
 
-    The interface is fairly simple: For the data 
+    The interface is fairly simple: For the data
     entities that exist in the TiddlyWeb system there
     (optionally) exists <entity_put and <entity>_get methods
     in each Store.
-    
+
     There are also three supporting methods, list_recipes(),
     list_bags() and list_tiddler_revisions() that provide
     methods for presenting a collection.

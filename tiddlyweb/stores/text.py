@@ -17,6 +17,7 @@ from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError
 from tiddlyweb.stores import StorageInterface
 
+
 class Store(StorageInterface):
 
     def recipe_delete(self, recipe):
@@ -114,13 +115,13 @@ class Store(StorageInterface):
 
     def tiddler_get(self, tiddler):
         """
-        Get a tiddler as string from a bag and deserialize it into 
+        Get a tiddler as string from a bag and deserialize it into
         object.
         """
         try:
             # read in the desired tiddler
             tiddler = self._read_tiddler_revision(tiddler)
-            # now make another tiddler to get created time 
+            # now make another tiddler to get created time
             # base_tiddler is the head of the revision stack
             base_tiddler = Tiddler(tiddler.title)
             base_tiddler.bag = tiddler.bag
@@ -136,7 +137,7 @@ class Store(StorageInterface):
     def tiddler_put(self, tiddler):
         """
         Write a tiddler into the store. We only write if
-        the bag already exists. Bag creation is a 
+        the bag already exists. Bag creation is a
         separate action from writing to a bag.
 
         XXX: This should be in a try with a finally?
@@ -221,7 +222,7 @@ class Store(StorageInterface):
 
     def list_tiddler_revisions(self, tiddler):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
-        try: 
+        try:
             revisions = sorted([
                 int(x) for x in self._numeric_files_in_dir(tiddler_base_filename)
                 ])
@@ -397,4 +398,3 @@ class Store(StorageInterface):
         dest_file = codecs.open(filename, 'w', encoding='utf-8')
         dest_file.write(content)
         dest_file.close()
-

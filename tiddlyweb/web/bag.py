@@ -16,6 +16,7 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
+
 def delete(environ, start_response):
     # XXX refactor out a _determine_bag or _determine_bag_name
     # lots of duplication going on here.
@@ -28,7 +29,7 @@ def delete(environ, start_response):
 
     bag = _get_bag(environ, bag_name)
     bag.policy.allows(usersign, 'delete')
-    # reuse the store attribute that was set on the 
+    # reuse the store attribute that was set on the
     # bag when we "got" it.
     # we don't need to check for existence here because
     # the above get already did
@@ -39,6 +40,7 @@ def delete(environ, start_response):
 
     start_response("204 No Content", [])
     return []
+
 
 def get(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -62,6 +64,7 @@ def get(environ, start_response):
 
     return [content]
 
+
 def get_tiddlers(environ, start_response):
     filter_string = web.filter_query_string(environ)
 
@@ -80,6 +83,7 @@ def get_tiddlers(environ, start_response):
         tmp_bag.add_tiddler(tiddler)
 
     return send_tiddlers(environ, start_response, tmp_bag)
+
 
 def import_wiki(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -103,6 +107,7 @@ def import_wiki(environ, start_response):
             [('Location', '%s/tiddlers' % web.bag_url(environ, bag))])
     return ['']
 
+
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
@@ -120,6 +125,7 @@ def list(environ, start_response):
             [('Content-Type', mime_type)])
 
     return [content]
+
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -148,6 +154,7 @@ def put(environ, start_response):
             [('Location', web.bag_url(environ, bag))])
 
     return []
+
 
 def _get_bag(environ, bag_name):
     bag = Bag(bag_name)

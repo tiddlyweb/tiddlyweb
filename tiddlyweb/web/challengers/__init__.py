@@ -2,11 +2,12 @@
 The ChallengerInterface class.
 """
 
+
 class ChallengerInterface(object):
     """
     An interface for challenging users for login
     purposes. The chalenger basically does whatever
-    it wants and _may_ result in doing something to 
+    it wants and _may_ result in doing something to
     a response that causes the user's next request
     to pass an extractor.
 

@@ -1,12 +1,12 @@
 """
 TiddlyWeb is a web service for managing and manipulating
 resources useful in the creation of dynamic wikis. The
-model of the data is especially useful for creating 
+model of the data is especially useful for creating
 custom TiddlyWiki implementation, where the content of the
 TiddlyWiki can be saved to the server, and shared among
 multiple users.
 
-TiddlyWeb presents a REST API for the management of the 
+TiddlyWeb presents a REST API for the management of the
 resources. The URLs for this interface are kept in a
 file called urls.map found in the same directory from
 which a TiddlyWeb server is started. urls.map dispatches

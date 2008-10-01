@@ -7,6 +7,7 @@ import simplejson
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.bag import Policy
 
+
 class Serialization(SerializationInterface):
 
     def list_recipes(self, recipes):
@@ -81,4 +82,3 @@ class Serialization(SerializationInterface):
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute)
         return dict(wanted_info)
-

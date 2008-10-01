@@ -6,6 +6,7 @@ import re
 
 from datetime import datetime
 
+
 def current_timestring():
     """
     Translate (now) into a TiddlyWiki conformat timestring.

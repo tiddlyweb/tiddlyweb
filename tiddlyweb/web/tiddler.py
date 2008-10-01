@@ -15,21 +15,26 @@ from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
 
+
 def get(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _send_tiddler(environ, start_response, tiddler)
+
 
 def get_revisions(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
+
 def delete(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _delete_tiddler(environ, start_response, tiddler)
 
+
 def put(environ, start_response):
     tiddler = _determine_tiddler(environ, control.determine_bag_for_tiddler)
     return _put_tiddler(environ, start_response, tiddler)
+
 
 def _check_bag_constraint(environ, bag, constraint):
     store = environ['tiddlyweb.store']
@@ -39,6 +44,7 @@ def _check_bag_constraint(environ, bag, constraint):
         bag.policy.allows(usersign, constraint)
     except NoBagError, e:
         raise HTTP404('bag %s not found, %s' % (bag.name, e))
+
 
 def _delete_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
@@ -54,6 +60,7 @@ def _delete_tiddler(environ, start_response, tiddler):
 
     start_response("204 No Content", [])
     return []
+
 
 def _determine_tiddler(environ, bag_finder):
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
@@ -100,6 +107,7 @@ def _determine_tiddler(environ, bag_finder):
     tiddler.bag = bag_name
     return tiddler
 
+
 def _put_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
@@ -143,6 +151,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
     return []
 
+
 def _validate_tiddler(environ, tiddler):
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
@@ -167,6 +176,7 @@ def _validate_tiddler(environ, tiddler):
     etag = ('Etag', tiddler_etag)
     return last_modified, etag
 
+
 def _send_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
 
@@ -187,7 +197,7 @@ def _send_tiddler(environ, start_response, tiddler):
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
     serializer.object = tiddler
-    
+
     try:
         content = serializer.to_string()
     except TiddlerFormatError, exc:
@@ -203,6 +213,7 @@ def _send_tiddler(environ, start_response, tiddler):
     start_response("200 OK", response)
 
     return [content]
+
 
 def _send_tiddler_revisions(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
@@ -226,7 +237,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
 
     return send_tiddlers(environ, start_response, tmp_bag)
 
+
 def _tiddler_etag(tiddler):
     return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8')),
         urllib.quote(tiddler.title.encode('utf-8')), tiddler.revision))
-

@@ -12,12 +12,14 @@ from tiddlyweb.user import User
 
 COMMANDS = {}
 
+
 def _make_command():
     """
     A decorator that marks the decorated method
     as a member of the commands dictionary, with
     associated help.
     """
+
     def decorate(func):
         """
         Add the function to the commands dictionary.
@@ -27,6 +29,7 @@ def _make_command():
         COMMANDS[func.__name__] = func
         return func
     return decorate
+
 
 @_make_command()
 def server(args):
@@ -41,9 +44,11 @@ def server(args):
     from tiddlyweb.web import serve
     serve.start_cherrypy(config['urls_map'], hostname, int(port))
 
+
 def _store():
     """Get our Store from config."""
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
+
 
 @_make_command()
 def adduser(args):
@@ -72,6 +77,7 @@ def adduser(args):
 
     return True
 
+
 @_make_command()
 def imwiki(args):
     """Import a Tiddlywiki html file into a bag: <filename> <bag name>"""
@@ -88,6 +94,7 @@ def imwiki(args):
     except ValueError, exc:
         print "value error: %s" % exc
         usage()
+
 
 @_make_command()
 def recipe(args):
@@ -108,6 +115,7 @@ def recipe(args):
     serializer.from_string(content)
     store = _store()
     store.put(recipe)
+
 
 @_make_command()
 def bag(args):
@@ -131,6 +139,7 @@ def bag(args):
     store = _store()
     store.put(bag)
 
+
 @_make_command()
 def tiddler(args):
     """Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>"""
@@ -152,12 +161,14 @@ def tiddler(args):
     store = _store()
     store.put(tiddler)
 
+
 @_make_command()
 def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
         print "%s\t\t%s" % (key, COMMANDS[key].description)
     sys.exit(0)
+
 
 def handle(args):
     """

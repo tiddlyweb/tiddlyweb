@@ -11,6 +11,7 @@ coming in here.
 
 import re
 
+
 def compose_from_string(filter_string):
     """
     Borrowed from filterTiddlers in the TiddlyWiki javascript.
@@ -56,11 +57,13 @@ def compose_from_string(filter_string):
                 filters.append([make_count(), argument])
     return filters
 
+
 def by_title(title, tiddlers):
     """
     Return those tiddlers that match title.
     """
     return [tiddler for tiddler in tiddlers if tiddler.title == title]
+
 
 def by_tag(tag, tiddlers):
     """
@@ -68,11 +71,13 @@ def by_tag(tag, tiddlers):
     """
     return [tiddler for tiddler in tiddlers if tag in tiddler.tags]
 
+
 def by_bag(bag, tiddlers):
     """
     Return those tiddlers that have bag bag.
     """
     return [tiddler for tiddler in tiddlers if tiddler.bag == bag]
+
 
 def by_composition(filters, tiddlers):
     """
@@ -88,14 +93,14 @@ def by_composition(filters, tiddlers):
     # keep the collection ordered
     found_tiddlers_list = []
     for filter in filters:
-        if filter[0].__dict__.has_key('removal'):
+        if 'removal' in filter[0].__dict__:
             # If the filter has been tagged as a removal filter,
             # remove the tiddlers which match the filter.
             for tiddler in filter[0](filter[1], found_tiddlers.values()):
                 if tiddler.title in found_tiddlers:
                     del found_tiddlers[tiddler.title]
                     found_tiddlers_list.remove(tiddler.title)
-        elif filter[0].__dict__.has_key('totaller'):
+        elif 'totaller' in filter[0].__dict__:
             # A totaller doesn't change the items in the
             # list of tiddlers. It either sorts them or
             # limits them to a certain number.
@@ -113,7 +118,7 @@ def by_composition(filters, tiddlers):
                     found_tiddlers_list.append(tiddler.title)
             the_tiddlers = {}
             for tiddler in filter[0](filter[1], [found_tiddlers[title] for title in found_tiddlers_list]):
-                if filter[0].__dict__.has_key('sorter'):
+                if 'sorter' in filter[0].__dict__:
                     found_tiddlers_list.remove(tiddler.title)
                     found_tiddlers_list.append(tiddler.title)
                 the_tiddlers[tiddler.title] = tiddler
@@ -128,6 +133,7 @@ def by_composition(filters, tiddlers):
     return [found_tiddlers[title] for title in found_tiddlers_list \
             if title in found_tiddlers]
 
+
 def remove(filter):
     """
     Return a function which returns filter.
@@ -136,6 +142,7 @@ def remove(filter):
     there must already be a built up list of tiddlers
     from which removal will be done.
     """
+
     def remove_filter(argument, tiddlers):
         return filter(argument, tiddlers)
 
@@ -143,32 +150,38 @@ def remove(filter):
 
     return remove_filter
 
+
 def negate(filter):
     """
     Return a function which returns filter, negated.
     That is, the reults are the opposite of what they
     would be if filter were called by itself.
     """
+
     def negated_filter(argument, tiddlers):
         filtered_tiddlers = filter(argument, tiddlers)
         return [tiddler for tiddler in tiddlers if tiddler not in filtered_tiddlers]
 
     return negated_filter
 
+
 def make_count():
     """
     Limit the number of tiddlers by the argument.
     """
+
     def count_filter(count, tiddlers):
         return tiddlers[0:int(count)]
 
     count_filter.totaller = 1
     return count_filter
 
+
 def make_sort():
     """
     Sort the tiddlers we have so far
     """
+
     def sort_filter(field, tiddlers):
         reverse = False
         if field.find('-') == 0:
@@ -176,7 +189,7 @@ def make_sort():
             field = field[1:]
         elif field.find('+') == 0:
             field = field[1:]
-        
+
         new_tiddlers = sorted(tiddlers, key=lambda x: str(getattr(x, field)).lower(), reverse=reverse)
         return new_tiddlers
 

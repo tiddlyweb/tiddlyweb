@@ -2,17 +2,20 @@
 Serialize TiddlyWeb things for the sake of storage and the like.
 """
 
+
 class TiddlerFormatError(Exception):
     """
     The provided input is insufficient to form a valid Tiddler.
     """
     pass
 
+
 class NoSerializationError(Exception):
     """
     There is a NoSerialization of this type for the entity.
     """
     pass
+
 
 class Serializer(object):
     """

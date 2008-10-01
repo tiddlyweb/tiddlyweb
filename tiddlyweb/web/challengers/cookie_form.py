@@ -1,9 +1,9 @@
 """
-Present or validate a form for getting a username 
+Present or validate a form for getting a username
 and password.
 """
 
-import cgi 
+import cgi
 import Cookie
 
 from tiddlyweb.web.challengers import ChallengerInterface
@@ -11,6 +11,7 @@ from tiddlyweb.web.util import server_host_url
 from tiddlyweb.user import User
 from tiddlyweb.store import NoUserError
 from sha import sha
+
 
 class Challenger(ChallengerInterface):
     """
@@ -30,13 +31,13 @@ class Challenger(ChallengerInterface):
     def challenge_post(self, environ, start_response):
         """
         Respond to a POST by processing data sent from a form.
-        The form should include a username and password. If it 
+        The form should include a username and password. If it
         does not, send the form aagain. If it does, validate
         the data.
         """
         request_info = cgi.parse_qs(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         redirect = request_info.get('tiddlyweb_redirect', ['/'])[0]
-        
+
         try:
             user = request_info['user'][0]
             password = request_info['password'][0]
@@ -44,7 +45,7 @@ class Challenger(ChallengerInterface):
         except KeyError:
             return self._send_cookie_form(environ, start_response, redirect, '401 Unauthorized')
 
-    def _send_cookie_form(self, environ, start_response, redirect, status='200 OK',  message=''):
+    def _send_cookie_form(self, environ, start_response, redirect, status='200 OK', message=''):
         """
         Send a simple form to the client asking for a username
         and password.

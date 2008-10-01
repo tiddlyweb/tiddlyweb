@@ -15,6 +15,7 @@ MARKUPS = {
         'MarkupPostBody': 'POST-SCRIPT',
         }
 
+
 class Serialization(SerializationInterface):
 
     def as_bag(self, bag, input_string):
@@ -69,7 +70,7 @@ class Serialization(SerializationInterface):
         # replace the markup bits
         if len(found_markup_tiddlers):
             for title in found_markup_tiddlers:
-                start = '\n<!--%s-START-->\n' % MARKUPS[title] 
+                start = '\n<!--%s-START-->\n' % MARKUPS[title]
                 finish = '\n<!--%s-END-->\n' % MARKUPS[title]
                 wiki = self._replace_chunk(wiki, start, finish, found_markup_tiddlers[title])
 
@@ -129,7 +130,7 @@ class Serialization(SerializationInterface):
         recipe_name = ''
         if tiddler.recipe:
             recipe_name = tiddler.recipe
-        try: 
+        try:
             host = server_base_url(self.environ)
         except KeyError:
             host = ''
@@ -146,5 +147,3 @@ class Serialization(SerializationInterface):
         for key in fields:
             output.append('%s="%s"' % (key, fields[key]))
         return ' '.join(output)
-
-

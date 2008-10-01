@@ -13,6 +13,7 @@ from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers
 
+
 def get(environ, start_response):
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
@@ -23,7 +24,7 @@ def get(environ, start_response):
     except IndexError:
         raise HTTP400('query string required')
     filter_string = web.filter_query_string(environ)
-    
+
     store = environ['tiddlyweb.store']
     try:
         tiddlers = store.search(search_query)

@@ -15,6 +15,7 @@ from sha import sha
 import tiddlyweb.web.util as web
 from tiddlyweb.web.challengers import ChallengerInterface
 
+
 class Challenger(ChallengerInterface):
     """
     An OpenID challenger that asks the client for
@@ -65,7 +66,7 @@ class Challenger(ChallengerInterface):
         The user has gone to their OpenID server and confirmed we can
         have accesss. We need to send a signed copy of the data we've
         recieved in a second request to the server, to confirm. If the
-        response is 'is_valid: true' then we passed and we can send a 
+        response is 'is_valid: true' then we passed and we can send a
         cookie to the user.
         """
         request_info = environ['tiddlyweb.query']
@@ -141,9 +142,9 @@ OpenID: <input name="openid" size="60" />
             return self._send_openid_form(
                     environ, start_response, redirect,
                     message='Unable to find openid server')
-        
+
         original_openid = openid
-        try: 
+        try:
             openid = soup.find('link', rel='openid.delegate')['href']
         except TypeError:
             pass
@@ -151,7 +152,7 @@ OpenID: <input name="openid" size="60" />
         request_uri = '%s?openid.mode=checkid_setup&openid.identity=%s&openid.return_to=%s' \
                 % (link, urllib.quote(openid),
                         urllib.quote(self._return_to(environ, redirect, link, original_openid)))
-        
+
         start_response('303 See Other', [
             ('Location', request_uri)
             ])

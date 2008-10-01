@@ -11,6 +11,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp, datetime_from_http_date
 from tiddlyweb.web.http import HTTP404, HTTP304
 
+
 def send_tiddlers(environ, start_response, bag):
     last_modified = None
     etag = None
@@ -42,6 +43,7 @@ def send_tiddlers(environ, start_response, bag):
     start_response("200 OK", response)
     return [output]
 
+
 def validate_tiddler_list(environ, tiddlers):
     last_modified_number = _last_modified_tiddler(tiddlers)
     last_modified_string = http_date_from_timestamp(last_modified_number)
@@ -61,6 +63,6 @@ def validate_tiddler_list(environ, tiddlers):
 
     return last_modified, etag
 
+
 def _last_modified_tiddler(tiddlers):
     return str(max([int(tiddler.modified) for tiddler in tiddlers]))
-

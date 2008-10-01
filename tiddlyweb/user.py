@@ -4,6 +4,7 @@ A class representing a simple user entity.
 
 from crypt import crypt
 
+
 class User(object):
     """
     A simple representation of a user. For now
@@ -58,4 +59,3 @@ class User(object):
 
     def __repr__(self):
         return self.usersign + ' ' + object.__repr__(self)
-

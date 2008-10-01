@@ -4,6 +4,7 @@ from datetime import datetime
 
 from tiddlyweb.web.http import HTTP415
 
+
 def get_serialize_type(environ):
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
@@ -25,36 +26,42 @@ def get_serialize_type(environ):
         serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type
 
+
 def handle_extension(environ, resource_name):
     extension = environ.get('tiddlyweb.extension')
     if extension:
         try:
-            resource_name = resource_name[0 : resource_name.rindex('.' + extension)]
+            resource_name = resource_name[0:resource_name.rindex('.' + extension)]
         except ValueError:
             pass
 
     return resource_name
+
 
 def filter_query_string(environ):
     filter_string = environ['tiddlyweb.query'].get('filter', [''])[0]
     filter_string = urllib.unquote(filter_string)
     return unicode(filter_string, 'utf-8')
 
+
 def http_date_from_timestamp(timestamp):
     timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
+
 
 def datetime_from_http_date(http_datestring):
     http_datetime = datetime(*(time.strptime(http_datestring, '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime
 
+
 def server_base_url(environ):
     """
-    Using information in tiddlyweb.config, construct 
+    Using information in tiddlyweb.config, construct
     the base URL of the server, sans the trailing /.
     """
     url = '%s%s' % (server_host_url(environ), _server_prefix(environ))
     return url
+
 
 def server_host_url(environ):
     """
@@ -69,9 +76,11 @@ def server_host_url(environ):
     url = '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
     return url
 
+
 def _server_prefix(environ):
     config = environ.get('tiddlyweb.config', {})
     return config.get('server_prefix', '')
+
 
 def tiddler_url(environ, tiddler):
     """
@@ -85,15 +94,16 @@ def tiddler_url(environ, tiddler):
                 % (tiddler.bag.encode('utf-8'), urllib.quote(tiddler.title.encode('utf-8')))
     return '%s/%s' % (server_base_url(environ), tiddler_link)
 
+
 def recipe_url(environ, recipe):
     """
     Construct a URL for a recipe.
     """
     return '%s/recipes/%s' % (server_base_url(environ), urllib.quote(recipe.name.encode('utf-8')))
 
+
 def bag_url(environ, bag):
     """
     Construct a URL for a recipe.
     """
     return '%s/bags/%s' % (server_base_url(environ), urllib.quote(bag.name.encode('utf-8')))
-

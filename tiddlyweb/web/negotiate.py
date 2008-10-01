@@ -3,6 +3,7 @@ WSGI Middleware to do pseudo-content negotiation
 and put the type in tiddlyweb.type.
 """
 
+
 class Negotiate(object):
 
     def __init__(self, application):
@@ -53,7 +54,7 @@ class Negotiate(object):
 
         environ['tiddlyweb.type'] = our_types
 
-        return 
+        return
 
     def _parse_accept_header(self, header):
 # copied from REST::Application

@@ -5,7 +5,7 @@ Things like loading up all the tiddlers in a recipe,
 listing tiddlers in a bag, and filtering tiddlers.
 
 These are kept in here to avoid a having store
-and serialize objects in filters and recipes and the 
+and serialize objects in filters and recipes and the
 like.
 """
 
@@ -20,7 +20,7 @@ def get_tiddlers_from_recipe(recipe):
     Return the list of tiddlers that result
     from processing the recipe.
 
-    This list of tiddlers is unique by title with 
+    This list of tiddlers is unique by title with
     tiddlers later in the recipe taking precedence
     over those earlier in the recipe.
     """
@@ -35,9 +35,10 @@ def get_tiddlers_from_recipe(recipe):
             uniquifier[tiddler.title] = tiddler
     return uniquifier.values()
 
+
 def determine_tiddler_bag_from_recipe(recipe, tiddler):
     """
-    We have a recipe and a tiddler name. We need to 
+    We have a recipe and a tiddler name. We need to
     know the bag in which this tiddler can be found.
     This is different from determine_bag_for_tiddler().
     That one finds the bag the tiddler _could_ be in.
@@ -59,9 +60,10 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
+
 def determine_bag_for_tiddler(recipe, tiddler):
     """
-    Return the bag which this tiddler would be in if we 
+    Return the bag which this tiddler would be in if we
     were to save it to the recipe rather than to a default
     bag.
 
@@ -81,6 +83,7 @@ def determine_bag_for_tiddler(recipe, tiddler):
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
+
 def get_tiddlers_from_bag(bag):
     """
     Return the list of tiddlers that are in a bag.
@@ -92,17 +95,18 @@ def get_tiddlers_from_bag(bag):
             try:
                 bag.store.get(tiddler)
                 # would be great to be a generator here
-                # but the filtering architecture isn't up for it     
-                #yield tiddler
+                # but the filtering architecture isn't up for it
+                # yield tiddler
             except TiddlerFormatError:
                 # XXX do more here?
                 pass
     return tiddlers
 
+
 def filter_tiddlers_from_bag(bag, filter, filterargs=None):
     """
     Return the list of tiddlers resulting from filtering
-    bag by filter. filter may be a filter function, in 
+    bag by filter. filter may be a filter function, in
     which case filterags may need to be set, or may be
     a filter string.
 
@@ -118,5 +122,3 @@ def filter_tiddlers_from_bag(bag, filter, filterargs=None):
         if store:
             return fl.by_composition(filters, get_tiddlers_from_bag(bag))
         return fl.by_composition(filters, bag.list_tiddlers())
-
-

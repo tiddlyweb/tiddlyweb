@@ -7,11 +7,12 @@ import selector
 
 from tiddlyweb.config import config
 
+
 def load_app(host, port, map_filename):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
-    is surround by wrappers, which either set something in the 
+    is surround by wrappers, which either set something in the
     environment or modify the request, or transform output.
     """
     config['server_host'] = dict(scheme='http', host=host, port=port)
@@ -24,6 +25,7 @@ def load_app(host, port, map_filename):
         for wrapper in wrappers:
             app = wrapper(app)
     return app
+
 
 def start_simple(filename, hostname, port):
     """
@@ -39,10 +41,11 @@ def start_simple(filename, hostname, port):
     print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
+
 def start_cherrypy(filename, hostname, port):
     """
     Start a cherrypy webserver to run our app.
-    
+
     Here for sake of testing %2F handling as well as
     seeing what happens in a threaded environment.
     """
@@ -56,15 +59,16 @@ def start_cherrypy(filename, hostname, port):
     except KeyboardInterrupt:
         server.stop()
 
+
 class Configurator(object):
     """
     WSGI Middleware to handle setting a config dict
     for every request.
     """
+
     def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
-

@@ -1,6 +1,6 @@
 """
 The base Class and interface for Classes
-use to get and put data into a storage 
+use to get and put data into a storage
 system.
 """
 
@@ -9,18 +9,19 @@ import re
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.tiddler import string_to_tags_list
 
+
 class SerializationInterface(object):
     """
-    A Serialization is a collection of methods that 
+    A Serialization is a collection of methods that
     either turn an input string into the object named
     by the method, or turn the object into a string
     form.
 
-    The interface is fairly simple: For the data 
+    The interface is fairly simple: For the data
     entities that exist in the TiddlyWeb system there
     (optionally) exists <entity>_as and as_<entity> methods
     in each Serialization.
-    
+
     *_as returns a string form of the entity, perhaps as
     HTML, Text, YAML, Atom, whatever the Serialzation does.
 
@@ -119,7 +120,7 @@ class SerializationInterface(object):
 
     def _html_encode(self, text):
         """
-        Take some text and "protect" it for send out over the 
+        Take some text and "protect" it for send out over the
         wire as something like HTML.
         """
         return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')

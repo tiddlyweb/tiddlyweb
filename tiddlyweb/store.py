@@ -9,11 +9,13 @@ class StoreMethodNotImplemented(IOError):
     """
     pass
 
+
 class NoBagError(IOError):
     """
     No Bag was found.
     """
     pass
+
 
 class NoRecipeError(IOError):
     """
@@ -21,11 +23,13 @@ class NoRecipeError(IOError):
     """
     pass
 
+
 class NoTiddlerError(IOError):
     """
     No Tiddler was found.
     """
     pass
+
 
 class NoUserError(IOError):
     """
@@ -33,11 +37,13 @@ class NoUserError(IOError):
     """
     pass
 
+
 class StoreLockError(IOError):
     """
     This process was unable to get a lock on the store.
     """
     pass
+
 
 class Store(object):
     """
@@ -135,4 +141,3 @@ class Store(object):
         """
         list_func = getattr(self.storage, 'search')
         return list_func(search_query)
-

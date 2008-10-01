@@ -64,6 +64,7 @@ DEFAULT_CONFIG = {
         'urls_map': './urls.map',
         }
 
+
 def read_config():
     """
     Read in a local configuration override, but only
@@ -90,4 +91,3 @@ if os.path.exists('tiddlywebconfig.py'):
     read_config()
 else:
     config = DEFAULT_CONFIG
-

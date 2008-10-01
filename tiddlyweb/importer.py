@@ -9,6 +9,7 @@ from BeautifulSoup import BeautifulSoup
 
 from tiddlyweb.tiddler import Tiddler, string_to_tags_list
 
+
 def import_wiki_file(store, filename='wiki', bagname='wiki'):
     """
     Read a wiki in a file and import all the tiddlers into a bag.
@@ -18,9 +19,10 @@ def import_wiki_file(store, filename='wiki', bagname='wiki'):
     wikifile.close()
     return import_wiki(store, wikitext, bagname)
 
+
 def import_wiki(store, wikitext, bagname='wiki'):
     """
-    Import the wiki provided as a string and import all the tiddlers 
+    Import the wiki provided as a string and import all the tiddlers
     into a bag.
     """
     soup = BeautifulSoup(wikitext)
@@ -29,6 +31,7 @@ def import_wiki(store, wikitext, bagname='wiki'):
 
     for tiddler in divs:
         _do_tiddler(bagname, tiddler, store)
+
 
 def _do_tiddler(bagname, tiddler, store):
     """
@@ -59,11 +62,13 @@ def _do_tiddler(bagname, tiddler, store):
         import sys
         print >> sys.stderr, 'Unable to write %s: %s' % (new_tiddler.title, exc)
 
+
 def _tag_string_to_list(string):
     """
     Turn a string of tags in TiddlyWiki format into a list.
     """
     return string_to_tags_list(string)
+
 
 def _html_decode(text):
     """

@@ -1,6 +1,6 @@
 """
 Access to Recipe objects via the web. List recipes,
-GET a recipe, PUT a recipe, GET the tiddlers 
+GET a recipe, PUT a recipe, GET the tiddlers
 produced by a recipe.
 """
 
@@ -14,6 +14,7 @@ from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
+
 
 def delete(environ, start_response):
     """
@@ -33,6 +34,7 @@ def delete(environ, start_response):
     start_response("204 No Content", [])
     return []
 
+
 def get(environ, start_response):
     recipe = _determine_recipe(environ)
 
@@ -48,6 +50,7 @@ def get(environ, start_response):
     start_response("200 OK",
             [('Content-Type', mime_type)])
     return [content]
+
 
 def get_tiddlers(environ, start_response):
     filter_string = web.filter_query_string(environ)
@@ -88,6 +91,7 @@ def get_tiddlers(environ, start_response):
 
     return send_tiddlers(environ, start_response, tmp_bag)
 
+
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     recipes = store.list_recipes()
@@ -98,7 +102,8 @@ def list(environ, start_response):
     start_response("200 OK",
             [('Content-Type', mime_type)])
 
-    return [ serializer.list_recipes(recipes) ]
+    return [serializer.list_recipes(recipes)]
+
 
 def put(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
@@ -126,6 +131,7 @@ def put(environ, start_response):
 
     return []
 
+
 def _determine_recipe(environ):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     recipe_name = urllib.unquote(recipe_name)
@@ -141,4 +147,3 @@ def _determine_recipe(environ):
         raise HTTP404('%s not found, %s' % (recipe.name, e))
 
     return recipe
-

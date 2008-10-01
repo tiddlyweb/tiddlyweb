@@ -7,17 +7,20 @@ import urllib
 from tiddlyweb.web.http import HTTP403, HTTP302
 from tiddlyweb.web.util import server_base_url
 
+
 class ForbiddenError(Exception):
     """
     The provided user cannot do this action.
     """
     pass
 
+
 class UserRequiredError(Exception):
     """
     To do this action a user is required.
     """
     pass
+
 
 class PermissionsExceptor(object):
     """
@@ -36,10 +39,10 @@ class PermissionsExceptor(object):
         except ForbiddenError, exc:
             raise HTTP403(exc)
         except UserRequiredError, exc:
-            # We only send to the challenger on a GET 
+            # We only send to the challenger on a GET
             # request. Otherwise we're in for major confusion
-            # on dealing with redirects and the like in 
-            # scripts and javascript, where follow 
+            # on dealing with redirects and the like in
+            # scripts and javascript, where follow
             # behavior is inconsistent.
             if environ['REQUEST_METHOD'] == 'GET':
                 url = self._challenge_url(environ)

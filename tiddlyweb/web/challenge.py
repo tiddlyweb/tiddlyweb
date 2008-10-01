@@ -3,6 +3,7 @@ import urllib
 from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url
 
+
 def _challenger_url(environ, system):
     redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [''])[0]
     if len(redirect):
@@ -10,6 +11,7 @@ def _challenger_url(environ, system):
     else:
         redirect = ''
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
+
 
 def base(environ, start_response):
     auth_systems = environ['tiddlyweb.config']['auth_systems']
@@ -22,13 +24,16 @@ def base(environ, start_response):
     return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in \
             [_challenger_url(environ, system)  for system in auth_systems]]
 
+
 def challenge_get(environ, start_response):
     challenger = _determine_challenger(environ, start_response)
     return challenger.challenge_get(environ, start_response)
 
+
 def challenge_post(environ, start_response):
     challenger = _determine_challenger(environ, start_response)
     return challenger.challenge_post(environ, start_response)
+
 
 def _determine_challenger(environ, start_response):
     challenger_name = environ['wsgiorg.routing_args'][1]['challenger']

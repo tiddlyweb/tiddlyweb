@@ -9,10 +9,11 @@ from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
+
 class Extractor(ExtractorInterface):
     """
     An extractor for HTTP Basic Authentication. If there
-    is an Authorization header attempt to get a username and 
+    is an Authorization header attempt to get a username and
     password out of it. If the password is valid, return the
     user information.
     """

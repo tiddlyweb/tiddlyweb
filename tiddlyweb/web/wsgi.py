@@ -5,6 +5,7 @@ import urllib
 
 from tiddlyweb.store import Store
 
+
 class HTMLPresenter(object):
     """
     Take the core app output, see if it is text/html,
@@ -16,14 +17,14 @@ class HTMLPresenter(object):
 
     def __call__(self, environ, start_response):
         output = self.application(environ, start_response)
-        if environ.has_key('tiddlyweb.title') and 'Mozilla' in environ['HTTP_USER_AGENT']:
+        if 'tiddlyweb.title' in environ and 'Mozilla' in environ['HTTP_USER_AGENT']:
             output = ''.join(output)
             return [self._header(environ), output, self._footer(environ)]
         return output
 
     def _header(self, environ):
         css = ''
-        if environ['tiddlyweb.config'].has_key('css_uri'):
+        if 'css_uri' in environ['tiddlyweb.config']:
             css = '<link rel="stylesheet" href="%s" type="text/css" />' % environ['tiddlyweb.config']['css_uri']
         try:
             links = '\n'.join(environ['tiddlyweb.links'])
@@ -50,6 +51,7 @@ class HTMLPresenter(object):
 </html>
 """ % environ['tiddlyweb.usersign']['name']
 
+
 class SimpleLog(object):
     """
     WSGI Middleware to write a very simple log to stdout.
@@ -69,6 +71,7 @@ class SimpleLog(object):
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
             req_uri += '?'+environ['QUERY_STRING']
+
         def replacement_start_response(status, headers, exc_info=None):
             bytes = None
             for name, value in headers:
@@ -76,6 +79,7 @@ class SimpleLog(object):
                     bytes = value
             self.write_log(environ, req_uri, status, bytes)
             return start_response(status, headers, exc_info)
+
         return self.application(environ, replacement_start_response)
 
     def write_log(self, environ, req_uri, status, bytes):
@@ -102,6 +106,7 @@ class SimpleLog(object):
         print message
         sys.stdout.flush()
 
+
 class StoreSet(object):
     """
     WSGI Middleware that sets our choice of Store (tiddlyweb.store) in the environment.
@@ -116,11 +121,13 @@ class StoreSet(object):
         environ['tiddlyweb.store'] = db
         return self.application(environ, start_response)
 
+
 class EncodeUTF8(object):
     """
     WSGI Middleware to ensure that the content we send out the pipe is encoded
     as UTF-8. Within the application content is _unicode_ (i.e. not encoded).
     """
+
     def __init__(self, application):
         self.application = application
 

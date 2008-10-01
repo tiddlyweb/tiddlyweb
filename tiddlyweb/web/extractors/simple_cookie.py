@@ -10,6 +10,7 @@ from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 from tiddlyweb.web.extractors import ExtractorInterface
 from sha import sha
 
+
 class Extractor(ExtractorInterface):
     """
     Look in the headers for a cookie named 'tiddlyweb_user'.

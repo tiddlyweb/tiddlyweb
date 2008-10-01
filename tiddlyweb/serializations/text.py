@@ -7,6 +7,7 @@ import cgi
 
 from tiddlyweb.serializations import SerializationInterface
 
+
 class Serialization(SerializationInterface):
     """
     Serialize entities and collections to and from
