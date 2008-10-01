@@ -53,14 +53,14 @@ class Serialization(HTMLSerialization):
         if recipe:
             feed = Atom1Feed(
                     title=u'Tiddlers in Recipe %s' % recipe,
-                    link=u'%srecipes/%s/tiddlers' % (self._server_url(), urllib.quote(recipe)),
+                    link=u'%srecipes/%s/tiddlers' % (self._server_url(), iri_to_uri(recipe)),
                     language=u'en',
                     description=u'the tiddlers of recipe %s' % recipe
                     )
         else:
             feed = Atom1Feed(
                     title=u'Tiddlers in Bag %s' % bag.name,
-                    link=u'%sbags/%s/tiddlers' % (self._server_url(), urllib.quote(bag.name)),
+                    link=u'%sbags/%s/tiddlers' % (self._server_url(), iri_to_uri(bag.name)),
                     language=u'en',
                     description=u'the tiddlers of bag %s' % bag.name
                     )
@@ -73,10 +73,10 @@ class Serialization(HTMLSerialization):
     def tiddler_as(self, tiddler):
         if tiddler.recipe:
             link = u'%srecipes/%s/tiddlers/%s' % \
-                    (self._server_url(), urllib.quote(tiddler.recipe), urllib.quote(tiddler.title))
+                    (self._server_url(), iri_to_uri(tiddler.recipe), iri_to_uri(tiddler.title))
         else:
             link = u'%sbags/%s/tiddlers/%s' % \
-                    (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
+                    (self._server_url(), iri_to_uri(tiddler.bag), iri_to_uri(tiddler.title))
         feed = Atom1Feed(
                 title=u'%s' % tiddler.title,
                 link=link,
@@ -90,11 +90,11 @@ class Serialization(HTMLSerialization):
         if tiddler.recipe:
             tiddler_link = 'recipes/%s/tiddlers' % tiddler.recipe
             link = u'%srecipes/%s/tiddlers/%s' % \
-                    (self._server_url(), urllib.quote(tiddler.recipe), urllib.quote(tiddler.title))
+                    (self._server_url(), iri_to_uri(tiddler.recipe), iri_to_uri(tiddler.title))
         else:
             tiddler_link = 'bags/%s/tiddlers' % tiddler.bag
             link = u'%sbags/%s/tiddlers/%s' % \
-                    (self._server_url(), urllib.quote(tiddler.bag), urllib.quote(tiddler.title))
+                    (self._server_url(), iri_to_uri(tiddler.bag), iri_to_uri(tiddler.title))
 
         description = wikitext_to_wikklyhtml(self._server_url(), tiddler_link, tiddler.text)
         feed.add_item(title=tiddler.title,
