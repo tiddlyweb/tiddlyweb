@@ -4,7 +4,7 @@ the web server. There are probably better places
 for this.
 """
 
-root_page = """<ul id="root" class="entitylist">
+ROOT_PAGE = """<ul id="root" class="entitylist">
 <li><a href="recipes">recipes</a></li>
 <li><a href="bags">bags</a></li>
 </ul>"""
@@ -16,4 +16,4 @@ def root(environ, start_response):
 
     start_response("200 OK", [('Content-Type', 'text/html; charset=UTF-8')])
     environ['tiddlyweb.title'] = 'Home'
-    return [root_page]
+    return [ROOT_PAGE]

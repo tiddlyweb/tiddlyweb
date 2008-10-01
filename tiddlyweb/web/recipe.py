@@ -5,13 +5,12 @@ produced by a recipe.
 """
 
 import urllib
-import cgi
 
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoRecipeError, NoBagError, StoreMethodNotImplemented
+from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
-from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404, HTTP403
+from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web

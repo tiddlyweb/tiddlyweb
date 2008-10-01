@@ -7,10 +7,9 @@ These need some refactoring.
 """
 
 import urllib
-import cgi
 
 from tiddlyweb.bag import Bag
-from tiddlyweb.store import Store, NoBagError, StoreMethodNotImplemented
+from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
 from tiddlyweb.web import util as web

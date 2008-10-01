@@ -36,13 +36,11 @@ class PermissionsExceptor(object):
         except ForbiddenError, exc:
             raise HTTP403, exc
         except UserRequiredError, exc:
-            """
-            We only send to the challenger on a GET 
-            request. Otherwise we're in for major confusion
-            on dealing with redirects and the like in 
-            scripts and javascript, where follow 
-            behavior is inconsistent.
-            """
+            # We only send to the challenger on a GET 
+            # request. Otherwise we're in for major confusion
+            # on dealing with redirects and the like in 
+            # scripts and javascript, where follow 
+            # behavior is inconsistent.
             if environ['REQUEST_METHOD'] == 'GET':
                 url = self._challenge_url(environ)
                 raise HTTP302, url

@@ -6,9 +6,9 @@ from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
 
-splitter = '</div>\n<!--POST-STOREAREA-->\n'
+SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
 
-markups = {
+MARKUPS = {
         'MarkupPreHead': 'PRE-HEAD',
         'MarkupPostHead': 'POST-HEAD',
         'MarkupPreBody': 'PRE-BODY',
@@ -45,7 +45,7 @@ class Serialization(SerializationInterface):
         lines = ''
         candidate_title = None
         candidate_subtitle = None
-        markup_tiddlers = markups.keys()
+        markup_tiddlers = MARKUPS.keys()
         found_markup_tiddlers = {}
         for tiddler in tiddlers:
             lines += self._tiddler_as_div(tiddler)
@@ -69,14 +69,14 @@ class Serialization(SerializationInterface):
         # replace the markup bits
         if len(found_markup_tiddlers):
             for title in found_markup_tiddlers:
-                start = '\n<!--%s-START-->\n' % markups[title] 
-                finish = '\n<!--%s-END-->\n' % markups[title]
+                start = '\n<!--%s-START-->\n' % MARKUPS[title] 
+                finish = '\n<!--%s-END-->\n' % MARKUPS[title]
                 wiki = self._replace_chunk(wiki, start, finish, found_markup_tiddlers[title])
 
         # split the wiki into the before store and after store
         # sections, put our content in the middle
-        tiddlystart, tiddlyfinish = wiki.split(splitter, 2)
-        return tiddlystart + lines + splitter + tiddlyfinish
+        tiddlystart, tiddlyfinish = wiki.split(SPLITTER, 2)
+        return tiddlystart + lines + SPLITTER + tiddlyfinish
 
     def _plain_textify_string(self, title):
         try:
@@ -116,8 +116,9 @@ class Serialization(SerializationInterface):
             return wiki
 
     def _get_wiki(self):
-        f = open(self.environ['tiddlyweb.config']['base_tiddlywiki'])
-        wiki = f.read()
+        base_tiddlywiki = open(self.environ['tiddlyweb.config']['base_tiddlywiki'])
+        wiki = base_tiddlywiki.read()
+        base_tiddlywiki.close()
         wiki = unicode(wiki, 'utf-8')
         return wiki
 

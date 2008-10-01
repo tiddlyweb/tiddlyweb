@@ -3,7 +3,6 @@ Make a query into the store to find some
 tiddlers and list them in the interface.
 """
 
-import cgi
 import urllib
 
 from tiddlyweb import control

@@ -1,12 +1,10 @@
 import urllib
-import cgi
-from Cookie import SimpleCookie
 
-from tiddlyweb.web.http import HTTP302, HTTP401, HTTP404
+from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url
 
 def _challenger_url(environ, system):
-    redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect',[''])[0]
+    redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [''])[0]
     if len(redirect):
         redirect = '?tiddlyweb_redirect=%s' % redirect
     else:

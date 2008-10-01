@@ -4,7 +4,6 @@ work to import it into a named bag.
 """
 
 import codecs
-import re
 
 from BeautifulSoup import BeautifulSoup
 

@@ -26,13 +26,13 @@ class Serialization(SerializationInterface):
         """
         Recipe as json.
         """
-        return simplejson.dumps(dict(desc=recipe.desc,recipe=recipe.get_recipe()))
+        return simplejson.dumps(dict(desc=recipe.desc, recipe=recipe.get_recipe()))
 
-    def as_recipe(self, recipe, input):
+    def as_recipe(self, recipe, input_string):
         """
         Turn a json string back into a recipe.
         """
-        info = simplejson.loads(input)
+        info = simplejson.loads(input_string)
         try:
             recipe.set_recipe(info['recipe'])
             recipe.desc = info['desc']
@@ -48,11 +48,11 @@ class Serialization(SerializationInterface):
         info = dict(policy=policy_dict, desc=bag.desc)
         return simplejson.dumps(info)
 
-    def as_bag(self, bag, input):
+    def as_bag(self, bag, input_string):
         """
         Turn a JSON string into a bag.
         """
-        info = simplejson.loads(input)
+        info = simplejson.loads(input_string)
         if info['policy']:
             bag.policy = Policy()
             for key, value in info['policy'].items():
@@ -66,8 +66,8 @@ class Serialization(SerializationInterface):
 
         return simplejson.dumps(tiddler_dict)
 
-    def as_tiddler(self, tiddler, input):
-        dict_from_input = simplejson.loads(input)
+    def as_tiddler(self, tiddler, input_string):
+        dict_from_input = simplejson.loads(input_string)
         for key, value in dict_from_input.iteritems():
             if value:
                 setattr(tiddler, key, value)

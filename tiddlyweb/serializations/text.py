@@ -31,28 +31,28 @@ class Serialization(SerializationInterface):
         Recipe as text.
         """
         lines = ['desc: %s' % recipe.desc, '']
-        for bag, filter in recipe:
+        for bag, filter_string in recipe:
             line = ''
 # enable BagS in recipes
             if not isinstance(bag, basestring):
                 bag = bag.name
             line += '/bags/%s/tiddlers' % bag
-            if filter:
-                line += '?filter=%s' % filter
+            if filter_string:
+                line += '?filter=%s' % filter_string
             lines.append(line)
         return "\n".join(lines)
 
-    def as_recipe(self, recipe, input):
+    def as_recipe(self, recipe, input_string):
         """
         Turn a string back into a recipe.
         """
         try:
-            header, body = input.rstrip().split('\n\n', 1)
+            header, body = input_string.rstrip().split('\n\n', 1)
             headers = header.split('\n')
             for field, value in [x.split(': ') for x in headers]:
                 setattr(recipe, field, value)
         except ValueError:
-            body = input.rstrip()
+            body = input_string.rstrip()
 
         recipe_lines = self._recipe_lines(body)
         recipe.set_recipe(recipe_lines)
@@ -86,12 +86,12 @@ class Serialization(SerializationInterface):
                 info += '%s: %s\n' % (key, tiddler.fields[key])
         return info
 
-    def as_tiddler(self, tiddler, input):
+    def as_tiddler(self, tiddler, input_string):
         """
         Transform a text representation of a tiddler into
         tiddler attributes.
         """
-        header, text = input.split('\n\n', 1)
+        header, text = input_string.split('\n\n', 1)
         tiddler.text = text.rstrip()
         headers = header.split('\n')
 
@@ -124,10 +124,10 @@ class Serialization(SerializationInterface):
             if '?' in line:
                 bag, query_string = line.split('?')
                 request_info = cgi.parse_qs(query_string)
-                filter = request_info.get('filter', [''])[0]
+                filter_string = request_info.get('filter', [''])[0]
             else:
                 bag = line
-                filter = ''
+                filter_string = ''
             bagname = urllib.unquote(bag.split('/')[2])
-            recipe_lines.append([bagname, filter])
+            recipe_lines.append([bagname, filter_string])
         return recipe_lines

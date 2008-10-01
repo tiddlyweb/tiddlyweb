@@ -15,7 +15,7 @@ def send_tiddlers(environ, start_response, bag):
     last_modified = None
     etag = None
     bags_tiddlers = bag.list_tiddlers()
-    download = environ['tiddlyweb.query'].get('download',[None])[0]
+    download = environ['tiddlyweb.query'].get('download', [None])[0]
 
     if bags_tiddlers:
         last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)

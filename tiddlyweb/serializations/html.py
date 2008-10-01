@@ -45,14 +45,14 @@ class Serialization(SerializationInterface):
         """
         self.environ['tiddlyweb.title'] = 'Recipe %s' % recipe.name
         lines = []
-        for bag, filter in recipe:
+        for bag, filter_string in recipe:
             line = '<li><a href="'
             if not isinstance(bag, basestring):
                 bag = bag.name
             line += '%s/bags/%s/tiddlers' % (self._server_prefix(), urllib.quote(bag.encode('utf-8')))
-            if filter:
-                line += '?filter=%s' % urllib.quote(filter.encode('utf-8'))
-            line += '">bag: %s filter:%s</a></li>' % (bag, filter)
+            if filter_string:
+                line += '?filter=%s' % urllib.quote(filter_string.encode('utf-8'))
+            line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)
         output = "\n".join(lines)
         title = 'Bags in Recipe %s' % recipe.name
