@@ -64,9 +64,7 @@ def get(environ, start_response):
     return [content]
 
 def get_tiddlers(environ, start_response):
-    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
-    filter_string = urllib.unquote(filter_string)
-    filter_string = unicode(filter_string, 'utf-8')
+    filter_string = web.filter_query_string(environ)
 
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag_name = urllib.unquote(bag_name)

@@ -35,6 +35,11 @@ def handle_extension(environ, resource_name):
 
     return resource_name
 
+def filter_query_string(environ):
+    filter_string = environ['tiddlyweb.query'].get('filter',[''])[0]
+    filter_string = urllib.unquote(filter_string)
+    return unicode(filter_string, 'utf-8')
+
 def http_date_from_timestamp(timestamp):
     timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
