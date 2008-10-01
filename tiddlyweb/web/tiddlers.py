@@ -20,7 +20,7 @@ def send_tiddlers(environ, start_response, bag):
     if bags_tiddlers:
         last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)
     else:
-        raise HTTP404, 'No tiddlers in container'
+        raise HTTP404('No tiddlers in container')
 
     serialize_type, mime_type = get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
@@ -52,12 +52,12 @@ def validate_tiddler_list(environ, tiddlers):
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
     if incoming_etag == etag_string:
-        raise HTTP304, incoming_etag
+        raise HTTP304(incoming_etag)
 
     incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
     if incoming_modified and \
             (datetime_from_http_date(incoming_modified) >= datetime_from_http_date(last_modified_string)):
-        raise HTTP304, ''
+        raise HTTP304('')
 
     return last_modified, etag
 

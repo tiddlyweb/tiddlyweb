@@ -38,7 +38,7 @@ def _check_bag_constraint(environ, bag, constraint):
         store.get(bag)
         bag.policy.allows(usersign, constraint)
     except NoBagError, e:
-        raise HTTP404, 'bag %s not found, %s' % (bag.name, e)
+        raise HTTP404('bag %s not found, %s' % (bag.name, e))
 
 def _delete_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
@@ -50,7 +50,7 @@ def _delete_tiddler(environ, start_response, tiddler):
     try:
         store.delete(tiddler)
     except NoTiddlerError, e:
-        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+        raise HTTP404('%s not found, %s' % (tiddler.title, e))
 
     start_response("204 No Content", [])
     return []
@@ -69,7 +69,7 @@ def _determine_tiddler(environ, bag_finder):
         try:
             revision = int(revision)
         except ValueError, e:
-            raise HTTP404, '%s not a revision of %s: %s' % (revision, tiddler_name, e)
+            raise HTTP404('%s not a revision of %s: %s' % (revision, tiddler_name, e))
 
     tiddler = Tiddler(tiddler_name)
     tiddler.revision = revision
@@ -84,12 +84,12 @@ def _determine_tiddler(environ, bag_finder):
             store.get(recipe)
             tiddler.recipe = recipe_name
         except NoRecipeError, exc:
-            raise HTTP404, '%s not found, %s' % (tiddler.title, exc)
+            raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
         try:
             bag = bag_finder(recipe, tiddler)
         except NoBagError, e:
-            raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+            raise HTTP404('%s not found, %s' % (tiddler.title, e))
 
         bag_name = bag.name
     else:
@@ -107,7 +107,7 @@ def _put_tiddler(environ, start_response, tiddler):
     content_type = environ['tiddlyweb.type']
 
     if content_type != 'text/plain' and content_type != 'application/json':
-        raise HTTP415, '%s not supported ' % content_type
+        raise HTTP415('%s not supported ' % content_type)
 
     last_modified = None
     etag = None
@@ -132,8 +132,8 @@ def _put_tiddler(environ, start_response, tiddler):
 
         store.put(tiddler)
     except NoBagError, e:
-        raise HTTP409, "Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." % \
-                (tiddler.title, tiddler.bag, e)
+        raise HTTP409("Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." %
+                (tiddler.title, tiddler.bag, e))
 
     etag = ('Etag', _tiddler_etag(tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]
@@ -152,18 +152,18 @@ def _validate_tiddler(environ, tiddler):
     if request_method == 'GET':
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
         if incoming_etag == tiddler_etag:
-            raise HTTP304, incoming_etag
+            raise HTTP304(incoming_etag)
         last_modified_string = web.http_date_from_timestamp(tiddler.modified)
         last_modified = ('Last-Modified', last_modified_string)
         incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
         if incoming_modified and \
                 (web.datetime_from_http_date(incoming_modified) >= web.datetime_from_http_date(last_modified_string)):
-            raise HTTP304, ''
+            raise HTTP304('')
 
     elif request_method == 'PUT':
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         if incoming_etag and incoming_etag != tiddler_etag:
-            raise HTTP412, 'Etag no match'
+            raise HTTP412('Etag no match')
     etag = ('Etag', tiddler_etag)
     return last_modified, etag
 
@@ -177,7 +177,7 @@ def _send_tiddler(environ, start_response, tiddler):
     try:
         store.get(tiddler)
     except NoTiddlerError, e:
-        raise HTTP404, '%s not found, %s' % (tiddler.title, e)
+        raise HTTP404('%s not found, %s' % (tiddler.title, e))
 
     # this will raise 304
     # have to do this check after we read from the store because
@@ -190,8 +190,8 @@ def _send_tiddler(environ, start_response, tiddler):
     
     try:
         content = serializer.to_string()
-    except TiddlerFormatError, e:
-        raise HTTP415, e
+    except TiddlerFormatError, exc:
+        raise HTTP415(exc)
 
     cache_header = ('Cache-Control', 'no-cache')
     content_header = ('Content-Type', mime_type)
@@ -216,13 +216,13 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
                 store.get(tmp_tiddler)
             except NoTiddlerError, e:
                 # If a particular revision is not present in the store.
-                raise HTTP404, 'tiddler %s at revision % not found, %s' % (tiddler.title, revision, e)
+                raise HTTP404('tiddler %s at revision % not found, %s' % (tiddler.title, revision, e))
             tmp_bag.add_tiddler(tmp_tiddler)
     except NoTiddlerError, e:
         # If a tiddler is not present in the store.
-        raise HTTP404, 'tiddler %s not found, %s' % (tiddler.title, e)
+        raise HTTP404('tiddler %s not found, %s' % (tiddler.title, e))
     except StoreMethodNotImplemented:
-        raise HTTP400, 'no revision support'
+        raise HTTP400('no revision support')
 
     return send_tiddlers(environ, start_response, tmp_bag)
 

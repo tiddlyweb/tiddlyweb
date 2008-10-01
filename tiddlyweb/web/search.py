@@ -19,16 +19,16 @@ def get(environ, start_response):
         search_query = urllib.unquote(search_query)
         search_query = unicode(search_query, 'utf-8')
     except KeyError:
-        raise HTTP400, 'query string required'
+        raise HTTP400('query string required')
     except IndexError:
-        raise HTTP400, 'query string required'
+        raise HTTP400('query string required')
     filter_string = web.filter_query_string(environ)
     
     store = environ['tiddlyweb.store']
     try:
         tiddlers = store.search(search_query)
     except StoreMethodNotImplemented:
-        raise HTTP400, 'Search system not implemented'
+        raise HTTP400('Search system not implemented')
 
     usersign = environ['tiddlyweb.usersign']
 

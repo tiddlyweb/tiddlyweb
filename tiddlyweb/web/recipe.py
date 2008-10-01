@@ -28,7 +28,7 @@ def delete(environ, start_response):
     try:
         recipe.store.delete(recipe)
     except StoreMethodNotImplemented:
-        raise HTTP400, 'Recipe DELETE not supported'
+        raise HTTP400('Recipe DELETE not supported')
 
     start_response("204 No Content", [])
     return []
@@ -42,7 +42,7 @@ def get(environ, start_response):
         serializer.object = recipe
         content = serializer.to_string()
     except NoSerializationError:
-        raise HTTP415, 'Content type %s not supported' % mime_type
+        raise HTTP415('Content type %s not supported' % mime_type)
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",
@@ -59,7 +59,7 @@ def get_tiddlers(environ, start_response):
     try:
         tiddlers = control.get_tiddlers_from_recipe(recipe)
     except NoBagError, e:
-        raise HTTP404, 'recipe %s lists an unknown bag: %s' % (recipe.name, e)
+        raise HTTP404('recipe %s lists an unknown bag: %s' % (recipe.name, e))
     tmp_bag = Bag('tmp_bag1', tmpbag=True)
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
@@ -119,7 +119,7 @@ def put(environ, start_response):
 
         store.put(recipe)
     except NoSerializationError:
-        raise HTTP415, 'Content type %s not supported' % serialize_type
+        raise HTTP415('Content type %s not supported' % serialize_type)
 
     start_response("204 No Content",
             [('Location', web.recipe_url(environ, recipe))])
@@ -138,7 +138,7 @@ def _determine_recipe(environ):
     try:
         store.get(recipe)
     except NoRecipeError, e:
-        raise HTTP404, '%s not found, %s' % (recipe.name, e)
+        raise HTTP404('%s not found, %s' % (recipe.name, e))
 
     return recipe
 

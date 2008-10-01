@@ -55,7 +55,7 @@ class Policy(object):
 
         # always reject if the constraint is NONE
         if len(user_list) == 1 and user_list[0] == 'NONE':
-            raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
+            raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
         # always allow if the constraint is ANY
         if len(user_list) == 1 and user_list[0] == 'ANY':
@@ -74,10 +74,10 @@ class Policy(object):
         # if the user is set to GUEST (meaning nobody in credentials)
         # then we don't pass, and we need a user
         if user_sign == 'GUEST':
-            raise UserRequiredError, 'real user required to %s' % constraint
+            raise UserRequiredError('real user required to %s' % constraint)
 
         # we've fallen through, the user we have matches nothing
-        raise ForbiddenError, '%s may not %s' % (user_sign, constraint)
+        raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
 
 class Bag(dict):

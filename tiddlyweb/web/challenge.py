@@ -14,7 +14,7 @@ def _challenger_url(environ, system):
 def base(environ, start_response):
     auth_systems = environ['tiddlyweb.config']['auth_systems']
     if len(auth_systems) == 1:
-        raise HTTP302, _challenger_url(environ, auth_systems[0])
+        raise HTTP302(_challenger_url(environ, auth_systems[0]))
     start_response('401 Unauthorized', [
         ('Content-Type', 'text/html')
         ])
@@ -35,7 +35,7 @@ def _determine_challenger(environ, start_response):
     # If the challenger is not in config, do a 404, we don't want
     # to import any old code.
     if challenger_name not in environ['tiddlyweb.config']['auth_systems']:
-        raise HTTP404, 'Challenger Not Found'
+        raise HTTP404('Challenger Not Found')
     try:
         imported_module = __import__('tiddlyweb.web.challengers.%s' % challenger_name,
                 {}, {}, ['Challenger'])
@@ -43,5 +43,5 @@ def _determine_challenger(environ, start_response):
         try:
             imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
         except ImportError, e:
-            raise HTTP404, 'Unable to import challenger %s: %s' % (challenger_name, e)
+            raise HTTP404('Unable to import challenger %s: %s' % (challenger_name, e))
     return imported_module.Challenger()

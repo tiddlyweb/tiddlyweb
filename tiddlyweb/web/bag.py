@@ -35,7 +35,7 @@ def delete(environ, start_response):
     try:
         bag.store.delete(bag)
     except StoreMethodNotImplemented:
-        raise HTTP400, 'Bag DELETE not supported'
+        raise HTTP400('Bag DELETE not supported')
 
     start_response("204 No Content", [])
     return []
@@ -55,7 +55,7 @@ def get(environ, start_response):
 
         content = serializer.to_string()
     except NoSerializationError:
-        raise HTTP415, 'Content type not supported: %s' % mime_type
+        raise HTTP415('Content type not supported: %s' % mime_type)
 
     start_response("200 Ok",
             [('Content-Type', mime_type)])
@@ -95,9 +95,9 @@ def import_wiki(environ, start_response):
 
         serializer.from_string(content)
     except NoSerializationError:
-        raise HTTP415, 'Content type not supported: %s' % mime_type
+        raise HTTP415('Content type not supported: %s' % mime_type)
     except AttributeError, e:
-        raise HTTP400, 'Content malformed: %s' % e
+        raise HTTP400('Content malformed: %s' % e)
 
     start_response("204 No Content",
             [('Location', '%s/tiddlers' % web.bag_url(environ, bag))])
@@ -114,7 +114,7 @@ def list(environ, start_response):
         content = serializer.list_bags(bags)
 
     except NoSerializationError:
-        raise HTTP415, 'Content type not supported: %s' % mime_type
+        raise HTTP415('Content type not supported: %s' % mime_type)
 
     start_response("200 OK",
             [('Content-Type', mime_type)])
@@ -142,7 +142,7 @@ def put(environ, start_response):
 
         store.put(bag)
     except NoSerializationError:
-        raise HTTP415, 'Content type not supported: %s' % serialize_type
+        raise HTTP415('Content type not supported: %s' % serialize_type)
 
     start_response("204 No Content",
             [('Location', web.bag_url(environ, bag))])
@@ -155,5 +155,5 @@ def _get_bag(environ, bag_name):
     try:
         store.get(bag)
     except NoBagError, e:
-        raise HTTP404, '%s not found, %s' % (bag.name, e)
+        raise HTTP404('%s not found, %s' % (bag.name, e))
     return bag

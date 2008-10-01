@@ -57,7 +57,7 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
             if tiddler.title == candidate_tiddler.title:
                 return bag
 
-    raise NoBagError, 'no suitable bag for %s' % tiddler.title
+    raise NoBagError('no suitable bag for %s' % tiddler.title)
 
 def determine_bag_for_tiddler(recipe, tiddler):
     """
@@ -79,7 +79,7 @@ def determine_bag_for_tiddler(recipe, tiddler):
                     bag = Bag(name=bag)
                 return bag
 
-    raise NoBagError, 'no suitable bag for %s' % tiddler.title
+    raise NoBagError('no suitable bag for %s' % tiddler.title)
 
 def get_tiddlers_from_bag(bag):
     """
