@@ -2,8 +2,9 @@
 A module containing the Tiddler class and related functions.
 """
 
-from datetime import datetime
+import re
 
+from datetime import datetime
 
 def current_timestring():
     """
@@ -11,6 +12,18 @@ def current_timestring():
     """
     time_object = datetime.utcnow()
     return unicode(time_object.strftime('%Y%m%d%H%M'))
+
+
+def string_to_tags_list(string):
+    tags = []
+    tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
+    for match in tag_matcher.finditer(string):
+        if match.group(2):
+            tags.append(match.group(2))
+        elif match.group(1):
+            tags.append(match.group(1))
+
+    return tags
 
 
 class Tiddler(object):

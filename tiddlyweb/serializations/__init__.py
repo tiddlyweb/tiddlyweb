@@ -7,6 +7,7 @@ system.
 import re
 
 from tiddlyweb.serializer import NoSerializationError
+from tiddlyweb.tiddler import string_to_tags_list
 
 class SerializationInterface(object):
     """
@@ -102,15 +103,7 @@ class SerializationInterface(object):
         Not called directly, put made public for future
         use. Turn a string into a list of tags.
         """
-        tags = []
-        tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
-        for match in tag_matcher.finditer(string):
-            if match.group(2):
-                tags.append(match.group(2))
-            elif match.group(1):
-                tags.append(match.group(1))
-
-        return tags
+        return string_to_tags_list(string)
 
     def tags_as(self, tags):
         """

@@ -8,7 +8,7 @@ import re
 
 from BeautifulSoup import BeautifulSoup
 
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.tiddler import Tiddler, string_to_tags_list
 
 def import_wiki_file(store, filename='wiki', bagname='wiki'):
     """
@@ -64,15 +64,7 @@ def _tag_string_to_list(string):
     """
     Turn a string of tags in TiddlyWiki format into a list.
     """
-    tags = []
-    tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
-    for match in tag_matcher.finditer(string):
-        if match.group(2):
-            tags.append(match.group(2))
-        elif match.group(1):
-            tags.append(match.group(1))
-
-    return tags
+    return string_to_tags_list(string)
 
 def _html_decode(text):
     """
