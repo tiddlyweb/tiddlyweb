@@ -80,3 +80,35 @@ class Policy(object):
 
         # we've fallen through, the user we have matches nothing
         raise ForbiddenError('%s may not %s' % (user_sign, constraint))
+
+
+def create_policy_check(environ, entity, usersign):
+    """
+    Determine if the user in usersign can create entity
+    type.
+    """
+    try:
+        entity_policy = '%s_create_policy' % entity
+        policy = environ['tiddlyweb.config'][entity_policy]
+    except KeyError:
+        raise ForbiddenError('create policy not set for %s' % entity)
+
+    if policy == '':
+        return True
+
+    if policy == 'ANY':
+        if usersign['name'] != 'GUEST':
+            return True
+        else:
+            raise UserRequiredError('authenticated user required to create')
+
+    if policy == 'ADMIN':
+        try:
+            if 'ADMIN' in usersign['roles']:
+                return True
+            else:
+                raise ForbiddenError('admin role required to create')
+        except KeyError:
+            raise ForbiddenError('admin role required to create, user has no roles')
+
+    raise ForbiddenError('create access denied')

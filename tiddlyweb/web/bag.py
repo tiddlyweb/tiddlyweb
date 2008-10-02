@@ -10,6 +10,7 @@ import urllib
 
 from tiddlyweb.auth import UserRequiredError, ForbiddenError
 from tiddlyweb.bag import Bag
+from tiddlyweb.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
@@ -140,11 +141,6 @@ def list(environ, start_response):
 
     return [content]
 
-def bag_createp(environ, usersign):
-    return True;
-    # raise UserRequiredError
-    # raise ForbiddenError
-
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag_name = urllib.unquote(bag_name)
@@ -161,7 +157,7 @@ def put(environ, start_response):
         store.get(bag)
         bag.policy.allows(usersign, 'manage')
     except NoBagError:
-        bag_createp(environ, usersign)
+        create_policy_check(environ, 'bag', usersign)
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)

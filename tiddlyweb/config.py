@@ -62,6 +62,8 @@ DEFAULT_CONFIG = {
         # yet because of google app engine
         'base_tiddlywiki': 'lib/empty.html',
         'urls_map': './urls.map',
+        'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
+        'recipe_create_policy': '', # ANY or ADMIN or ''
         }
 
 

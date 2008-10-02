@@ -8,6 +8,7 @@ import urllib
 
 from tiddlyweb.recipe import Recipe
 from tiddlyweb.bag import Bag
+from tiddlyweb.policy import create_policy_check
 from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
@@ -139,7 +140,7 @@ def put(environ, start_response):
         store.get(recipe)
         recipe.policy.allows(usersign, 'manage')
     except NoRecipeError:
-        recipe_createp(environ, usersign)
+        create_policy_check(environ, 'recipe', usersign)
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
