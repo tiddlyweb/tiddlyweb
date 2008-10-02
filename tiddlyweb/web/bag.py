@@ -29,7 +29,7 @@ def delete(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     bag = _get_bag(environ, bag_name)
-    bag.policy.allows(usersign, 'delete')
+    bag.policy.allows(usersign, 'manage')
     # reuse the store attribute that was set on the
     # bag when we "got" it.
     # we don't need to check for existence here because

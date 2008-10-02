@@ -4,8 +4,10 @@ Text based serializers.
 
 import urllib
 import cgi
+import simplejson
 
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.policy import Policy
 
 
 class Serialization(SerializationInterface):
@@ -31,7 +33,11 @@ class Serialization(SerializationInterface):
         """
         Recipe as text.
         """
-        lines = ['desc: %s' % recipe.desc, '']
+        policy = recipe.policy
+        policy_dict = {}
+        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+            policy_dict[key] = getattr(policy, key)
+        lines = ['desc: %s' % recipe.desc, 'policy: %s' % simplejson.dumps(policy_dict), '']
         for bag, filter_string in recipe:
             line = ''
 # enable BagS in recipes
@@ -50,8 +56,14 @@ class Serialization(SerializationInterface):
         try:
             header, body = input_string.rstrip().split('\n\n', 1)
             headers = header.split('\n')
-            for field, value in [x.split(': ') for x in headers]:
-                setattr(recipe, field, value)
+            for field, value in [x.split(': ', 1) for x in headers]:
+                if field == 'policy':
+                    recipe.policy = Policy()
+                    info = simplejson.loads(value)
+                    for key, value in info.items():
+                        recipe.policy.__setattr__(key, value)
+                else:
+                    setattr(recipe, field, value)
         except ValueError:
             body = input_string.rstrip()
 

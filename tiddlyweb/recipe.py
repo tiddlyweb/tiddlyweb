@@ -2,6 +2,7 @@
 The Recipe class.
 """
 
+from tiddlyweb.policy import Policy
 
 class Recipe(list):
     """
@@ -23,6 +24,7 @@ class Recipe(list):
         self.name = name
         self.desc = desc
         self.store = None
+        self.policy = Policy()
 
     def set_recipe(self, recipe_list):
         """

@@ -27,7 +27,11 @@ class Serialization(SerializationInterface):
         """
         Recipe as json.
         """
-        return simplejson.dumps(dict(desc=recipe.desc, recipe=recipe.get_recipe()))
+        policy = recipe.policy
+        policy_dict = {}
+        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+            policy_dict[key] = getattr(policy, key)
+        return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict, recipe=recipe.get_recipe()))
 
     def as_recipe(self, recipe, input_string):
         """
@@ -37,6 +41,10 @@ class Serialization(SerializationInterface):
         try:
             recipe.set_recipe(info['recipe'])
             recipe.desc = info['desc']
+            if info['policy']:
+                recipe.policy = Policy()
+                for key, value in info['policy'].items():
+                    recipe.policy.__setattr__(key, value)
         except KeyError:
             pass
         return recipe

@@ -7,6 +7,7 @@ import sys
 sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
+from base64 import b64encode
 import wsgi_intercept
 import urllib
 import httplib2
@@ -14,6 +15,9 @@ import simplejson
 
 from fixtures import muchdata, reset_textstore, teststore
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.user import User
+
+authorization = b64encode('cdent:cowpig')
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -28,6 +32,10 @@ def setup_module(module):
     module.store = teststore()
     reset_textstore()
     muchdata(module.store)
+
+    user = User('cdent')
+    user.set_password('cowpig')
+    module.store.put(user)
 
 def test_get_recipe_wiki_fail():
     """
@@ -250,7 +258,7 @@ def test_get_recipe_wiki_bag_constraints():
             method='GET')
     assert response['status'] == '200'
 
-    _put_policy('bag28', dict(policy=dict(read=['NONE'])))
+    _put_bag_policy('bag28', dict(policy=dict(read=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
             method='GET')
     assert response['status'] == '403'
@@ -258,7 +266,7 @@ def test_get_recipe_wiki_bag_constraints():
 
 
 def test_get_recipe_wiki_has_workspace_bag_does_not():
-    _put_policy('bag28', dict(policy=dict(read=[])))
+    _put_bag_policy('bag28', dict(policy=dict(read=[])))
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
             method='GET')
@@ -290,7 +298,60 @@ def test_roundtrip_unicode_recipe():
     assert response['status'] == '200'
     assert simplejson.loads(content)['recipe'] == recipe_list
 
-def _put_policy(bag_name, policy_dict):
+def test_recipe_policy():
+    http = httplib2.Http()
+    recipe_dict = {
+            'desc': 'hello',
+            'policy': {'manage':['cdent'],'read':[]},
+            'recipe': [['bag0','']],
+            }
+    recipe_json = simplejson.dumps(recipe_dict)
+
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='PUT',
+            headers={'Content-Type': 'application/json'}, body=recipe_json)
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='GET')
+    assert response['status'] == '200'
+
+    recipe_dict = {
+            'desc': 'hello',
+            'policy': {'manage':['cdent'],'read':['NONE']},
+            'recipe': [['bag0','']],
+            }
+    recipe_json = simplejson.dumps(recipe_dict)
+
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='PUT',
+            headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
+            body=recipe_json)
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='GET')
+    assert response['status'] == '403'
+
+    recipe_dict = {
+            'desc': 'hello',
+            'policy': {'manage':['NONE'],'read':['NONE']},
+            'recipe': [['bag0','']],
+            }
+    recipe_json = simplejson.dumps(recipe_dict)
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='PUT',
+            headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
+            body=recipe_json)
+    assert response['status'] == '204'
+
+    recipe_dict = {
+            'desc': 'hello',
+            'policy': {'manage':['cdent'],'read':['NONE']},
+            'recipe': [['bag0','']],
+            }
+    recipe_json = simplejson.dumps(recipe_dict)
+    response, content = http.request('http://our_test_domain:8001/recipes/boom', method='PUT',
+            headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
+            body=recipe_json)
+    assert response['status'] == '403'
+
+def _put_bag_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!
     """

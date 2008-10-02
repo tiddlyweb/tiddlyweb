@@ -26,6 +26,8 @@ def delete(environ, start_response):
     """
     recipe = _determine_recipe(environ)
 
+    recipe.policy.allows(environ['tiddlyweb.usersign'], 'manage')
+
     try:
         recipe.store.delete(recipe)
     except StoreMethodNotImplemented:
@@ -37,6 +39,7 @@ def delete(environ, start_response):
 
 def get(environ, start_response):
     recipe = _determine_recipe(environ)
+    recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
@@ -57,6 +60,8 @@ def get_tiddlers(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
+
+    recipe.policy.allows(usersign, 'read')
 
     # get the tiddlers from the recipe and uniquify them
     try:
@@ -95,6 +100,14 @@ def get_tiddlers(environ, start_response):
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     recipes = store.list_recipes()
+    kept_recipes = []
+    for recipe in recipes:
+        try:
+            store.get(recipe)
+            recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
+            kept_recipes.append(recipe)
+        except(UserRequiredError, ForbiddenError):
+            pass
 
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
@@ -102,8 +115,13 @@ def list(environ, start_response):
     start_response("200 OK",
             [('Content-Type', mime_type)])
 
-    return [serializer.list_recipes(recipes)]
+    return [serializer.list_recipes(kept_recipes)]
 
+
+def recipe_createp(environ, usersign):
+    return True
+    # raise UserRequiredError
+    # raise ForbiddenError
 
 def put(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
@@ -114,6 +132,14 @@ def put(environ, start_response):
     recipe = Recipe(recipe_name)
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
+
+    usersign = environ['tiddlyweb.usersign']
+
+    try:
+        store.get(recipe)
+        recipe.policy.allows(usersign, 'manage')
+    except NoRecipeError:
+        recipe_createp(environ, usersign)
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)

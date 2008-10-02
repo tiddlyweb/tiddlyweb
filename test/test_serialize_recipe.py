@@ -12,6 +12,7 @@ from tiddlyweb.serializer import Serializer
 from fixtures import recipe_list
 
 expected_string = """desc: 
+policy: {"read": [], "create": [], "manage": [], "write": [], "owner": null, "delete": []}
 
 /bags/bagone/tiddlers?filter=TiddlerOne
 /bags/bagtwo/tiddlers?filter=TiddlerTwo
@@ -47,9 +48,15 @@ def test_generated_text():
 def test_simple_recipe():
     recipe = Recipe('other')
     recipe.set_recipe([['bagbuzz', '']])
+    recipe.policy.manage = ['a']
+    recipe.policy.read = ['b']
+    recipe.policy.create = ['c']
+    recipe.policy.delete = ['d']
+    recipe.policy.owner = 'e'
     serializer = Serializer('text')
     serializer.object = recipe
     string = serializer.to_string()
+    print string
 
     new_recipe = Recipe('other')
     serializer.object = new_recipe
@@ -67,9 +74,15 @@ def test_json_recipe():
     """
     recipe = Recipe('other')
     recipe.set_recipe([['bagbuzz', '']])
+    recipe.policy.manage = ['a']
+    recipe.policy.read = ['b']
+    recipe.policy.create = ['c']
+    recipe.policy.delete = ['d']
+    recipe.policy.owner = 'e'
     serializer = Serializer('json')
     serializer.object = recipe
     string = serializer.to_string()
+    print string
 
     other_recipe = Recipe('other')
     serializer.object = other_recipe
@@ -79,6 +92,7 @@ def test_json_recipe():
 
     serializer.object = other_recipe
     other_string = serializer.to_string()
+    print other_string
 
     assert string == other_string
 

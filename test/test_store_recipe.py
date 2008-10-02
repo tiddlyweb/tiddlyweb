@@ -14,6 +14,7 @@ from tiddlyweb.recipe import Recipe
 expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 
 expected_stored_content = """desc: I enjoy being stored
+policy: {"read": [], "create": [], "manage": [], "write": [], "owner": null, "delete": []}
 
 /bags/bagone/tiddlers?filter=TiddlerOne
 /bags/bagtwo/tiddlers?filter=TiddlerTwo

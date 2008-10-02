@@ -145,3 +145,20 @@ def test_determine_bag_fail():
         ])
     py.test.raises(NoBagError,
             'bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)')
+
+def test_recipe_policy():
+    policy_recipe = Recipe(name='policed')
+    # test them all even though only manage is really used
+    policy_recipe.policy.manage = ['a']
+    policy_recipe.policy.read = ['b']
+    policy_recipe.policy.create = ['c']
+    policy_recipe.policy.delete = ['d']
+    policy_recipe.policy.owner = 'e'
+
+    assert policy_recipe.policy.manage == ['a']
+    assert policy_recipe.policy.read == ['b']
+    assert policy_recipe.policy.create == ['c']
+    assert policy_recipe.policy.delete == ['d']
+    assert policy_recipe.policy.owner == 'e'
+
+
