@@ -47,7 +47,11 @@ class Policy(object):
         info_list = self.__getattribute__(constraint)
 
         # no constraints then all pass
-        if len(info_list) == 0:
+        try:
+            if len(info_list) == 0:
+                return True
+        except TypeError:
+            # constraint not set (weirdness in DB)
             return True
 
         user_list = [x for x in info_list if not x.startswith('R:')]
