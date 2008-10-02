@@ -8,6 +8,7 @@ These need some refactoring.
 
 import urllib
 
+from tiddlyweb.auth import UserRequiredError, ForbiddenError
 from tiddlyweb.bag import Bag
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
@@ -116,14 +117,20 @@ def import_wiki(environ, start_response):
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
-    bags = [bag for bag in bags
-            if bag.policy.allows(environ['tiddlyweb.usersign'], 'read')]
+    kept_bags = []
+    for bag in bags:
+        try:
+            store.get(bag)
+            bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
+            kept_bags.append(bag)
+        except(UserRequiredError, ForbiddenError):
+            pass
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)
 
-        content = serializer.list_bags(bags)
+        content = serializer.list_bags(kept_bags)
 
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
