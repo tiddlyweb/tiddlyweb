@@ -24,7 +24,7 @@ class Policy(object):
 
     def __init__(self, owner=None,
             read=[], write=[], create=[], delete=[],
-            manage=[u'NONE']):
+            manage=[]):
         self.owner = owner
         self.read = read
         self.write = write
@@ -101,15 +101,12 @@ class Bag(dict):
     add and remove will throw permissions exceptions. TBD.
     """
 
-    default_policy = Policy()
-
     def __init__(self, name, desc='',
-            policy=default_policy,
             tmpbag=False, revbag=False, searchbag=False):
         dict.__init__(self)
         self.name = name
         self.desc = desc
-        self.policy = policy
+        self.policy = Policy() # set to default policy
         self.tmpbag = tmpbag
         self.revbag = revbag
         self.searchbag = searchbag
