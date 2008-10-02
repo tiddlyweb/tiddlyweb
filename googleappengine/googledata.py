@@ -18,6 +18,12 @@ class GDRecipe(db.Model):
     name = db.StringProperty(required=True)
     recipe = db.ListProperty(unicode)
     desc = db.StringProperty()
+    owner = db.StringProperty()
+    read = db.ListProperty(unicode)
+    write = db.ListProperty(unicode)
+    create = db.ListProperty(unicode)
+    delete_ = db.ListProperty(unicode)
+    manage = db.ListProperty(unicode)
 
 class GDBag(db.Model):
     name = db.StringProperty(required=True)
@@ -63,6 +69,8 @@ class Store(StorageInterface):
 
         recipe.set_recipe(recipe_list)
         recipe.desc = gdrecipe.desc
+        policy = Policy(owner=gdrecipe.owner, read=gdrecipe.read, write=gdrecipe.write, create=gdrecipe.create, delete=gdrecipe.delete_, manage=gdrecipe.manage)
+        recipe.policy = policy
         return recipe
 
     def recipe_put(self, recipe):
@@ -73,6 +81,12 @@ class Store(StorageInterface):
             recipe_list.append(line)
         gdrecipe.recipe = recipe_list
         gdrecipe.desc = recipe.desc
+        gdrecipe.read = recipe.policy.read
+        gdrecipe.write = recipe.policy.write
+        gdrecipe.create = recipe.policy.create
+        gdrecipe.delete_ = recipe.policy.delete
+        gdrecipe.manage = recipe.policy.manage
+        gdrecipe.owner = recipe.policy.owner
         gdrecipe.put()
 
     def bag_get(self, bag):
