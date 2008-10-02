@@ -50,6 +50,8 @@ def get(environ, start_response):
 
     bag = _get_bag(environ, bag_name)
 
+    bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
+
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)
@@ -92,6 +94,9 @@ def import_wiki(environ, start_response):
     bag = _get_bag(environ, bag_name)
     length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
+
+    bag.policy.allows(environ['tiddlyweb.usersign'], 'create')
+
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)
@@ -111,6 +116,8 @@ def import_wiki(environ, start_response):
 def list(environ, start_response):
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
+    bags = [bag for bag in bags
+            if bag.policy.allows(environ['tiddlyweb.usersign'], 'read')]
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
