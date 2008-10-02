@@ -46,6 +46,7 @@ def setup_module(module):
 def test_generate_json():
     serializer = Serializer('json')
     bagfour.desc = 'a tasty little bag'
+    bagfour.policy.manage = ['NONE']
     serializer.object = bagfour
     string = serializer.to_string()
 
@@ -103,7 +104,7 @@ def test_generated_html_with_revbag():
 def test_json_to_bag():
     serializer = Serializer('json')
 
-    json_string = simplejson.dumps(dict(policy=dict(read=['user1']), desc='simply the best'))
+    json_string = simplejson.dumps(dict(policy=dict(read=['user1'], manage=['NONE']), desc='simply the best'))
     newbag = Bag('bagho')
     serializer.object = newbag
     serializer.from_string(json_string)
@@ -112,4 +113,3 @@ def test_json_to_bag():
     assert newbag.policy.read == ['user1']
     assert newbag.policy.manage == ['NONE']
     assert newbag.desc == 'simply the best'
-

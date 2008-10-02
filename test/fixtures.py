@@ -110,5 +110,3 @@ def create_bag(store, numeral):
     bag = Bag('bag%s' % numeral)
     store.put(bag)
     return bag
-
-

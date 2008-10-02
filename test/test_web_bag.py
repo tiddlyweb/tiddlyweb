@@ -20,7 +20,7 @@ policy_dict = dict(
         write=['chris','jeremy'],
         create=['chris','jeremy'],
         delete=['chris'],
-        manage=['chris'],
+        manage=[],
         owner='chris')
 
 def setup_module(module):

@@ -126,6 +126,10 @@ def list(environ, start_response):
 
     return [content]
 
+def bag_createp(environ, usersign):
+    return True;
+    # raise UserRequiredError
+    # raise ForbiddenError
 
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
@@ -137,6 +141,14 @@ def put(environ, start_response):
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
+    usersign = environ['tiddlyweb.usersign']
+
+    try:
+        store.get(bag)
+        bag.policy.allows(usersign, 'manage')
+    except NoBagError:
+        bag_createp(environ, usersign)
+
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)
@@ -144,7 +156,7 @@ def put(environ, start_response):
         content = environ['wsgi.input'].read(int(length))
         serializer.from_string(content.decode('UTF-8'))
 
-        bag.policy.owner = environ['tiddlyweb.usersign']['name']
+        bag.policy.owner = usersign['name']
 
         store.put(bag)
     except NoSerializationError:

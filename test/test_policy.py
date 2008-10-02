@@ -29,7 +29,7 @@ def test_policy_create():
     assert policy.write == []
     assert policy.create == []
     assert policy.delete == []
-    assert policy.manage == ['NONE']
+    assert policy.manage == []
 
 def test_policy_init_set():
     policy = Policy(read=['chris','jeremy'],write=['NONE'],manage=['chris'])
@@ -78,6 +78,5 @@ def test_bag_policy():
     bag.policy = Policy(read=['chris','jeremy'])
 
     assert bag.policy.allows(chris_info, 'read')
-    py.test.raises(ForbiddenError, 'bag.policy.allows(chris_info, "manage")')
     py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read")')
 
