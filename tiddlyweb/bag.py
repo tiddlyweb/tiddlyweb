@@ -20,8 +20,10 @@ class Bag(dict):
     from. This makes it possible to later lazily load the
     tiddlers that are in the bag.
 
-    At some point the bag will have a security policy and
-    add and remove will throw permissions exceptions. TBD.
+    A Bag has a Policy (see tiddlyweb.policy) which may be used
+    to control access to both the Bag and the tiddlers within.
+    These controls are optional and are primarily designed
+    for use within the web handlers.
     """
 
     def __init__(self, name, desc='',

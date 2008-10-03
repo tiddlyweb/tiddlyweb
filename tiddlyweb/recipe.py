@@ -17,6 +17,11 @@ class Recipe(list):
     representing bags and filters, but for the
     sake of easy testing, the bag argument can
     be a Bag.
+
+    A Recipe has a Policy (see tiddlyweb.policy) which may be
+    used to control access to the Recipe. These controls are
+    optional and are primarily designed for use within the
+    web handlers.
     """
 
     def __init__(self, name, desc=''):
