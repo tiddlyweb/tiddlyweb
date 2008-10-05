@@ -265,7 +265,7 @@ def test_get_bag_tiddlers_constraints():
 def test_roundtrip_unicode_bag():
     http = httplib2.Http()
     encoded_bag_name = '%E3%81%86%E3%81%8F%E3%81%99'
-    bag_name = urllib.unquote(encoded_bag_name)
+    bag_name = urllib.unquote(encoded_bag_name).decode('utf-8')
     bag_content = {'policy':{'read':['a','b','c','GUEST']}}
     body = simplejson.dumps(bag_content)
     response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,

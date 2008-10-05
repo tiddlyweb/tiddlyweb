@@ -8,6 +8,7 @@ import codecs
 import time
 import simplejson
 import shutil
+import urllib
 
 from tiddlyweb.bag import Bag, Policy
 from tiddlyweb.recipe import Recipe
@@ -79,7 +80,7 @@ class Store(StorageInterface):
         except OSError, exc:
             raise NoBagError('unable to list tiddlers in bag: %s' % exc)
         for title in tiddlers:
-            bag.add_tiddler(Tiddler(title))
+            bag.add_tiddler(Tiddler(urllib.unquote(title).decode('utf-8')))
 
         bag.desc = self._read_bag_description(bag_path)
         bag.policy = self._read_policy(bag_path)
@@ -247,8 +248,8 @@ class Store(StorageInterface):
                     'bags', bagname, 'tiddlers')
             tiddler_files = self._files_in_dir(tiddler_dir)
             for tiddler_name in tiddler_files:
-                tiddler = Tiddler(title=tiddler_name.decode('utf-8'),
-                        bag=bagname.decode('utf-8'))
+                tiddler = Tiddler(title=urllib.unquote(tiddler_name).decode('utf-8'),
+                        bag=urllib.unquote(bagname).decode('utf-8'))
                 revision_id = self.list_tiddler_revisions(tiddler)[0]
                 if query in tiddler.title.lower():
                     found_tiddlers.append(tiddler)
@@ -290,7 +291,7 @@ class Store(StorageInterface):
 
     def _bag_path(self, bag_name):
         try:
-            return os.path.join(self._store_root(), 'bags', bag_name)
+            return os.path.join(self._store_root(), 'bags', _encode_filename(bag_name))
         except AttributeError, exc:
             raise NoBagError('No bag name: %s' % exc)
 
@@ -364,7 +365,7 @@ class Store(StorageInterface):
         if not os.path.exists(store_dir):
             raise NoBagError('%s does not exist' % store_dir)
 
-        return os.path.join(store_dir, tiddler.title)
+        return os.path.join(store_dir, _encode_filename(tiddler.title))
 
     def _tiddlers_dir(self, bag_name):
         return os.path.join(self._bag_path(bag_name), 'tiddlers')
@@ -398,3 +399,6 @@ class Store(StorageInterface):
         dest_file = codecs.open(filename, 'w', encoding='utf-8')
         dest_file.write(content)
         dest_file.close()
+
+def _encode_filename(filename):
+    return urllib.quote(filename.encode('utf-8'), safe='')
