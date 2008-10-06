@@ -139,9 +139,11 @@ def _put_tiddler(environ, start_response, tiddler):
         serializer.from_string(content.decode('UTF-8'))
 
         store.put(tiddler)
-    except NoBagError, e:
+    except NoBagError, exc:
         raise HTTP409("Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." %
-                (tiddler.title, tiddler.bag, e))
+                (tiddler.title, tiddler.bag, exc))
+    except NoTiddlerError, exc:
+        raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
 
     etag = ('Etag', _tiddler_etag(tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]

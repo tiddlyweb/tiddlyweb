@@ -15,49 +15,54 @@ from tiddlyweb.recipe import Recipe
 from tiddlyweb.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
-        NoUserError, StoreLockError
+        NoUserError, StoreLockError, StoreEncodingError
 from tiddlyweb.stores import StorageInterface
 
 
 class Store(StorageInterface):
 
     def recipe_delete(self, recipe):
-        recipe_path = self._recipe_path(recipe)
 
         try:
+            recipe_path = self._recipe_path(recipe)
             if not os.path.exists(recipe_path):
                 raise NoRecipeError('%s not present' % recipe_path)
             os.remove(recipe_path)
-        except NoRecipeError:
-            raise
+        except (NoRecipeError, StoreEncodingError), exc:
+            raise NoRecipeError(exc)
         except Exception, exc:
             raise IOError('unable to delete recipe %s: %s' % (recipe.name, exc))
 
     def recipe_get(self, recipe):
-        recipe_path = self._recipe_path(recipe)
 
         try:
+            recipe_path = self._recipe_path(recipe)
             recipe_file = codecs.open(recipe_path, encoding='utf-8')
             serializer = Serializer('text')
             serializer.object = recipe
             recipe_string = recipe_file.read()
             recipe_file.close()
+        except StoreEncodingError, exc:
+            raise NoRecipeError(exc)
         except IOError, exc:
             raise NoRecipeError('unable to get recipe %s: %s' % (recipe.name, exc))
 
         return serializer.from_string(recipe_string)
 
     def recipe_put(self, recipe):
-        recipe_path = self._recipe_path(recipe)
+        try:
+            recipe_path = self._recipe_path(recipe)
 
-        recipe_file = codecs.open(recipe_path, 'w', encoding='utf-8')
+            recipe_file = codecs.open(recipe_path, 'w', encoding='utf-8')
 
-        serializer = Serializer('text')
-        serializer.object = recipe
+            serializer = Serializer('text')
+            serializer.object = recipe
 
-        recipe_file.write(serializer.to_string())
+            recipe_file.write(serializer.to_string())
 
-        recipe_file.close()
+            recipe_file.close()
+        except StoreEncodingError, exc:
+            raise NoRecipeError(exc)
 
     def bag_delete(self, bag):
         bag_path = self._bag_path(bag.name)
@@ -292,7 +297,7 @@ class Store(StorageInterface):
     def _bag_path(self, bag_name):
         try:
             return os.path.join(self._store_root(), 'bags', _encode_filename(bag_name))
-        except AttributeError, exc:
+        except (AttributeError, StoreEncodingError), exc:
             raise NoBagError('No bag name: %s' % exc)
 
     def _files_in_dir(self, path):
@@ -351,7 +356,7 @@ class Store(StorageInterface):
         return policy
 
     def _recipe_path(self, recipe):
-        return os.path.join(self._store_root(), 'recipes', recipe.name)
+        return os.path.join(self._store_root(), 'recipes', _encode_filename(recipe.name))
 
     def _store_root(self):
         return self.environ['tiddlyweb.config']['server_store'][1]['store_root']
@@ -365,7 +370,10 @@ class Store(StorageInterface):
         if not os.path.exists(store_dir):
             raise NoBagError('%s does not exist' % store_dir)
 
-        return os.path.join(store_dir, _encode_filename(tiddler.title))
+        try:
+            return os.path.join(store_dir, _encode_filename(tiddler.title))
+        except StoreEncodingError, exc:
+            raise NoTiddlerError(exc)
 
     def _tiddlers_dir(self, bag_name):
         return os.path.join(self._bag_path(bag_name), 'tiddlers')
@@ -401,4 +409,6 @@ class Store(StorageInterface):
         dest_file.close()
 
 def _encode_filename(filename):
+    if '../' in filename:
+        raise StoreEncodingError('invalid name for entity')
     return urllib.quote(filename.encode('utf-8'), safe='')

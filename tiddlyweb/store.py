@@ -45,6 +45,14 @@ class StoreLockError(IOError):
     pass
 
 
+class StoreEncodingError(IOError):
+    """
+    Something about an entity made it impossible to be 
+    encoded to the form require by the store.
+    """
+    pass
+
+
 class Store(object):
     """
     Provide a facade around implementations of StorageInterface
