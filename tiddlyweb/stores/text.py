@@ -255,11 +255,11 @@ class Store(StorageInterface):
             for tiddler_name in tiddler_files:
                 tiddler = Tiddler(title=urllib.unquote(tiddler_name).decode('utf-8'),
                         bag=urllib.unquote(bagname).decode('utf-8'))
-                revision_id = self.list_tiddler_revisions(tiddler)[0]
-                if query in tiddler.title.lower():
-                    found_tiddlers.append(tiddler)
-                    continue
                 try:
+                    revision_id = self.list_tiddler_revisions(tiddler)[0]
+                    if query in tiddler.title.lower():
+                        found_tiddlers.append(tiddler)
+                        continue
                     tiddler_file = codecs.open(os.path.join(
                         tiddler_dir, tiddler_name, str(revision_id)
                         ), encoding='utf-8')
@@ -267,8 +267,8 @@ class Store(StorageInterface):
                         if query in line.lower():
                             found_tiddlers.append(tiddler)
                             break
-                except OSError, exc:
-                    raise NoTiddlerError('unable to list revisions in tiddler: %s' % exc)
+                except (OSError, NoTiddlerError), exc:
+                    pass # ignore malformed or weird tiddlers
         return found_tiddlers
 
     def write_lock(self, filename):
