@@ -42,14 +42,30 @@ class HTMLPresenter(object):
 """ % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'])
 
     def _footer(self, environ):
+        edit_link = self._edit_link(environ)
         return """
 <div id="footer">
+%s
 <div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
 <div id="usergreet">User %s.</div>
 </div>
 </body>
 </html>
-""" % environ['tiddlyweb.usersign']['name']
+""" % (edit_link, environ['tiddlyweb.usersign']['name'])
+
+    def _edit_link(self, environ):
+
+        if 'editor_tiddlers' in environ['tiddlyweb.config']:
+            tiddler_name = environ['wsgiorg.routing_args'][1].get('tiddler_name', None)
+            recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', '')
+            bag_name = environ['wsgiorg.routing_args'][1].get('bag_name', '')
+            revision = environ['wsgiorg.routing_args'][1].get('revision', None)
+
+            if tiddler_name and not revision:
+                return '<div id="edit"><a href="/edit?tiddler=%s;bag=%s;recipe=%s">Edit</a></div>' \
+                        % (tiddler_name, bag_name, recipe_name)
+
+        return ''
 
 
 class SimpleLog(object):
