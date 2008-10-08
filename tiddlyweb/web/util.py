@@ -88,10 +88,10 @@ def tiddler_url(environ, tiddler):
     """
     if tiddler.recipe:
         tiddler_link = 'recipes/%s/tiddlers/%s' \
-                % (tiddler.recipe.encode('utf-8'), urllib.quote(tiddler.title.encode('utf-8')))
+                % (urllib.quote(tiddler.recipe.encode('utf-8')), urllib.quote(tiddler.title.encode('utf-8')))
     else:
         tiddler_link = 'bags/%s/tiddlers/%s' \
-                % (tiddler.bag.encode('utf-8'), urllib.quote(tiddler.title.encode('utf-8')))
+                % (urllib.quote(tiddler.bag.encode('utf-8')), urllib.quote(tiddler.title.encode('utf-8')))
     return '%s/%s' % (server_base_url(environ), tiddler_link)
 
 
