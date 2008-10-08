@@ -45,6 +45,12 @@ def compose_from_string(filter_string):
                 filters.append([negate(by_tag), argument])
             elif flag == '-tag':
                 filters.append([remove(by_tag), argument])
+            elif flag == 'text':
+                filters.append([by_text, argument])
+            elif flag == '!text':
+                filters.append([negate(by_text), argument])
+            elif flag == '-text':
+                filters.append([remove(by_text), argument])
             elif flag == 'bag':
                 filters.append([by_bag, argument])
             elif flag == '!bag':
@@ -63,6 +69,13 @@ def by_title(title, tiddlers):
     Return those tiddlers that match title.
     """
     return [tiddler for tiddler in tiddlers if tiddler.title == title]
+
+
+def by_text(text, tiddlers):
+    """
+    Return those tiddlers that contain text.
+    """
+    return [tiddler for tiddler in tiddlers if text in tiddler.text]
 
 
 def by_tag(tag, tiddlers):
