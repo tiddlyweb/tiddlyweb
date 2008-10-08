@@ -218,13 +218,13 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
 
-        return [Recipe(recipe.decode('utf-8')) for recipe in recipes]
+        return [Recipe(urllib.unquote(recipe).decode('utf-8')) for recipe in recipes]
 
     def list_bags(self):
         path = os.path.join(self._store_root(), 'bags')
         bags = self._files_in_dir(path)
 
-        return [Bag(bag.decode('utf-8')) for bag in bags]
+        return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
 
     def list_tiddler_revisions(self, tiddler):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)

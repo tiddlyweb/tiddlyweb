@@ -7,6 +7,7 @@ produced by a recipe.
 import urllib
 
 from tiddlyweb.recipe import Recipe
+from tiddlyweb.auth import UserRequiredError, ForbiddenError
 from tiddlyweb.bag import Bag
 from tiddlyweb.policy import create_policy_check
 from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
