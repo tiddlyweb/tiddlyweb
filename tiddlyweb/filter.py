@@ -39,28 +39,7 @@ def compose_from_string(filter_string):
         elif match.group(2):
             flag = match.group(2)
             argument = match.group(3)
-            if flag == 'tag':
-                filters.append([by_tag, argument])
-            elif flag == '!tag':
-                filters.append([negate(by_tag), argument])
-            elif flag == '-tag':
-                filters.append([remove(by_tag), argument])
-            elif flag == 'text':
-                filters.append([by_text, argument])
-            elif flag == '!text':
-                filters.append([negate(by_text), argument])
-            elif flag == '-text':
-                filters.append([remove(by_text), argument])
-            elif flag == 'bag':
-                filters.append([by_bag, argument])
-            elif flag == '!bag':
-                filters.append([negate(by_bag), argument])
-            elif flag == '-bag':
-                filters.append([remove(by_bag), argument])
-            elif flag == 'sort':
-                filters.append([make_sort(), argument])
-            elif flag == 'count':
-                filters.append([make_count(), argument])
+            filters.append([FILTER_MAP[flag], argument])
     return filters
 
 
@@ -210,3 +189,20 @@ def make_sort():
     sort_filter.sorter = 1
 
     return sort_filter
+
+FILTER_MAP = {
+        'tag': by_tag,
+        '!tag': negate(by_tag),
+        '-tag': remove(by_tag),
+
+        'text': by_text,
+        '!text': negate(by_text),
+        '-text': remove(by_text),
+
+        'bag': by_bag,
+        '!bag': negate(by_bag),
+        '-bag': remove(by_bag),
+
+        'sort': make_sort(),
+        'count': make_count(),
+}
