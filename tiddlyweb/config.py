@@ -19,6 +19,7 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter
 # FIXME: a hack to get the server.host set properly in outgoing
 # wikis.
 DEFAULT_CONFIG = {
+        'system_plugins': ['tiddlyweb.debugplugin'],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,

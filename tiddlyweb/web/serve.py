@@ -15,6 +15,13 @@ def load_app(host, port, map_filename):
     is surround by wrappers, which either set something in the
     environment or modify the request, or transform output.
     """
+
+    plugins = config['system_plugins']
+    for plugin in plugins:
+        # let the import fail with error if it does
+        imported_module = __import__(plugin, {}, {}, ['init'])
+        imported_module.init(config)
+
     config['server_host'] = dict(scheme='http', host=host, port=port)
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
