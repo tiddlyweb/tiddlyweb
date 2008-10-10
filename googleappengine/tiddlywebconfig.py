@@ -11,4 +11,5 @@ config = {
         'extractors': ['google_user_extractor'],
         'auth_systems': ['google_user_challenger'],
         'css_uri': '/static/tiddlyweb.css',
+        'system_plugins': ['twoter'],
         }
