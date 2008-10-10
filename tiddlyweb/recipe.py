@@ -4,6 +4,7 @@ The Recipe class.
 
 from tiddlyweb.policy import Policy
 
+
 class Recipe(list):
     """
     A Recipe is an ordered list that represents

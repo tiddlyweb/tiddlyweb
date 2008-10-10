@@ -408,6 +408,7 @@ class Store(StorageInterface):
         dest_file.write(content)
         dest_file.close()
 
+
 def _encode_filename(filename):
     if '../' in filename:
         raise StoreEncodingError('invalid name for entity')

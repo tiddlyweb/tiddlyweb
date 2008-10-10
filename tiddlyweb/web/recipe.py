@@ -120,11 +120,6 @@ def list(environ, start_response):
     return [serializer.list_recipes(kept_recipes)]
 
 
-def recipe_createp(environ, usersign):
-    return True
-    # raise UserRequiredError
-    # raise ForbiddenError
-
 def put(environ, start_response):
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     recipe_name = urllib.unquote(recipe_name)

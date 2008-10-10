@@ -141,6 +141,7 @@ def list(environ, start_response):
 
     return [content]
 
+
 def put(environ, start_response):
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag_name = urllib.unquote(bag_name)

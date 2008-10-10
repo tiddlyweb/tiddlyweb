@@ -17,7 +17,7 @@ from tiddlyweb.web.util import tiddler_url
 
 def get(environ, start_response):
     """
-    Using query parameters, determine the 
+    Using query parameters, determine the
     tiddler we are currently working with
     and produce an editor for it.
     """

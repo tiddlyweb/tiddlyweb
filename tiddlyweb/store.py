@@ -47,7 +47,7 @@ class StoreLockError(IOError):
 
 class StoreEncodingError(IOError):
     """
-    Something about an entity made it impossible to be 
+    Something about an entity made it impossible to be
     encoded to the form require by the store.
     """
     pass
