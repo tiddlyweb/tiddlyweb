@@ -1,6 +1,0 @@
-modifier: ChrisDent
-created: 
-modified: 200808291100
-tags: 
-
-In the [[WSGI]] world, middleware is a WSGI application that transforms either an incoming request or an outgoing response in some way, for example changing the headers or the environment in some way.
