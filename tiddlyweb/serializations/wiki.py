@@ -17,6 +17,13 @@ MARKUPS = {
 
 
 class Serialization(SerializationInterface):
+    """
+    Serialize entities and collections to and from
+    TiddlyWiki representations. This is primarily
+    used to create TiddlyWikis from bags, recipes
+    and tiddlers. It can also be used to import
+    TiddlyWikis into the system.
+    """
 
     def as_bag(self, bag, input_string):
         """
@@ -30,9 +37,17 @@ class Serialization(SerializationInterface):
             raise NoSerializationError
 
     def list_tiddlers(self, bag):
+        """
+        Take the tiddlers from the given bag and inject
+        them into a TiddlyWiki.
+        """
         return self._put_tiddlers_in_tiddlywiki(bag.list_tiddlers())
 
     def tiddler_as(self, tiddler):
+        """
+        Take the single tiddler provided and inject it into
+        a TiddlyWiki.
+        """
         return self._put_tiddlers_in_tiddlywiki([tiddler], title=tiddler.title)
 
     def _put_tiddlers_in_tiddlywiki(self, tiddlers, title='TiddlyWeb Loading'):

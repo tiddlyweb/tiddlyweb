@@ -42,8 +42,8 @@ def _check_bag_constraint(environ, bag, constraint):
     try:
         store.get(bag)
         bag.policy.allows(usersign, constraint)
-    except NoBagError, e:
-        raise HTTP404('bag %s not found, %s' % (bag.name, e))
+    except NoBagError, exc:
+        raise HTTP404('bag %s not found, %s' % (bag.name, exc))
 
 
 def _delete_tiddler(environ, start_response, tiddler):
@@ -55,8 +55,8 @@ def _delete_tiddler(environ, start_response, tiddler):
 
     try:
         store.delete(tiddler)
-    except NoTiddlerError, e:
-        raise HTTP404('%s not found, %s' % (tiddler.title, e))
+    except NoTiddlerError, exc:
+        raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
     start_response("204 No Content", [])
     return []
@@ -75,8 +75,8 @@ def _determine_tiddler(environ, bag_finder):
     if revision:
         try:
             revision = int(revision)
-        except ValueError, e:
-            raise HTTP404('%s not a revision of %s: %s' % (revision, tiddler_name, e))
+        except ValueError, exc:
+            raise HTTP404('%s not a revision of %s: %s' % (revision, tiddler_name, exc))
 
     tiddler = Tiddler(tiddler_name)
     tiddler.revision = revision
@@ -95,8 +95,8 @@ def _determine_tiddler(environ, bag_finder):
 
         try:
             bag = bag_finder(recipe, tiddler)
-        except NoBagError, e:
-            raise HTTP404('%s not found, %s' % (tiddler.title, e))
+        except NoBagError, exc:
+            raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
         bag_name = bag.name
     else:
@@ -188,8 +188,8 @@ def _send_tiddler(environ, start_response, tiddler):
 
     try:
         store.get(tiddler)
-    except NoTiddlerError, e:
-        raise HTTP404('%s not found, %s' % (tiddler.title, e))
+    except NoTiddlerError, exc:
+        raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
     # this will raise 304
     # have to do this check after we read from the store because
@@ -227,13 +227,13 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
             tmp_tiddler.revision = revision
             try:
                 store.get(tmp_tiddler)
-            except NoTiddlerError, e:
+            except NoTiddlerError, exc:
                 # If a particular revision is not present in the store.
-                raise HTTP404('tiddler %s at revision % not found, %s' % (tiddler.title, revision, e))
+                raise HTTP404('tiddler %s at revision % not found, %s' % (tiddler.title, revision, exc))
             tmp_bag.add_tiddler(tmp_tiddler)
-    except NoTiddlerError, e:
+    except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
-        raise HTTP404('tiddler %s not found, %s' % (tiddler.title, e))
+        raise HTTP404('tiddler %s not found, %s' % (tiddler.title, exc))
     except StoreMethodNotImplemented:
         raise HTTP400('no revision support')
 

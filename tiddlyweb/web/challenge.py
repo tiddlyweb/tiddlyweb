@@ -1,4 +1,10 @@
-import urllib
+"""
+WSGI App for running the base challenge
+system, which lists and links the available
+challengers. If there is only one, redirect
+to it.
+"""
+
 
 from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url
@@ -47,6 +53,6 @@ def _determine_challenger(environ, start_response):
     except ImportError:
         try:
             imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
-        except ImportError, e:
-            raise HTTP404('Unable to import challenger %s: %s' % (challenger_name, e))
+        except ImportError, exc:
+            raise HTTP404('Unable to import challenger %s: %s' % (challenger_name, exc))
     return imported_module.Challenger()

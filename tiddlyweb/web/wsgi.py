@@ -106,7 +106,7 @@ class SimpleLog(object):
             pass
         if bytes is None:
             bytes = '-'
-        d = {
+        log_format = {
                 'REMOTE_ADDR': environ.get('REMOTE_ADDR') or '-',
                 'REMOTE_USER': environ.get('REMOTE_USER') or '-',
                 'REQUEST_METHOD': environ['REQUEST_METHOD'],
@@ -118,7 +118,7 @@ class SimpleLog(object):
                 'HTTP_REFERER': environ.get('HTTP_REFERER', '-'),
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
                 }
-        message = self.format % d
+        message = self.format % log_format
         print message
         sys.stdout.flush()
 
@@ -133,8 +133,8 @@ class StoreSet(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        db = Store(environ['tiddlyweb.config']['server_store'][0], environ)
-        environ['tiddlyweb.store'] = db
+        database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
+        environ['tiddlyweb.store'] = database
         return self.application(environ, start_response)
 
 

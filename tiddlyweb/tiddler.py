@@ -16,6 +16,10 @@ def current_timestring():
 
 
 def string_to_tags_list(string):
+    """
+    Given a string representing tags in TiddlyWiki
+    format parse them into a list of tag strings.
+    """
     tags = []
     tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
     for match in tag_matcher.finditer(string):

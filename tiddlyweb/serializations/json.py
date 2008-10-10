@@ -11,21 +11,30 @@ from tiddlyweb.bag import Policy
 class Serialization(SerializationInterface):
 
     def list_recipes(self, recipes):
+        """
+        Create a JSON list of recipe names from
+        the provided recipes.
+        """
         return simplejson.dumps([recipe.name for recipe in recipes])
 
     def list_bags(self, bags):
+        """
+        Create a JSON list of bag names from the
+        provided bags.
+        """
         return simplejson.dumps([bag.name for bag in bags])
 
     def list_tiddlers(self, bag):
         """
-        List the tiddlers in a bag as json.
-        We will likely want to expand this someday.
+        List the tiddlers in a bag as JSON.
+        The format is a list of dicts in
+        the form described by self._tiddler_dict.
         """
         return simplejson.dumps([self._tiddler_dict(tiddler) for tiddler in bag.list_tiddlers()])
 
     def recipe_as(self, recipe):
         """
-        Recipe as json.
+        A recipe as a JSON dictionary.
         """
         policy = recipe.policy
         policy_dict = {}
@@ -35,7 +44,9 @@ class Serialization(SerializationInterface):
 
     def as_recipe(self, recipe, input_string):
         """
-        Turn a json string back into a recipe.
+        Turn a JSON dictionary into a Recipe
+        if it is in the proper form. Include
+        the policy.
         """
         info = simplejson.loads(input_string)
         try:
@@ -50,6 +61,10 @@ class Serialization(SerializationInterface):
         return recipe
 
     def bag_as(self, bag):
+        """
+        Create a JSON dictionary representing
+        a Bag and Policy.
+        """
         policy = bag.policy
         policy_dict = {}
         for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
@@ -70,12 +85,20 @@ class Serialization(SerializationInterface):
         return bag
 
     def tiddler_as(self, tiddler):
+        """
+        Create a JSON dictionary representing
+        a tiddler, as described by _tiddler_dict
+        plus the text of the tiddler.
+        """
         tiddler_dict = self._tiddler_dict(tiddler)
         tiddler_dict['text'] = tiddler.text
 
         return simplejson.dumps(tiddler_dict)
 
     def as_tiddler(self, tiddler, input_string):
+        """
+        Turn a JSON dictionary into a Tiddler.
+        """
         dict_from_input = simplejson.loads(input_string)
         for key, value in dict_from_input.iteritems():
             if value:
@@ -84,6 +107,10 @@ class Serialization(SerializationInterface):
         return tiddler
 
     def _tiddler_dict(self, tiddler):
+        """
+        Select fields from a tiddler to create
+        a dictonary.
+        """
         unwanted_keys = ['text', 'recipe', 'store']
         wanted_keys = [attribute for attribute in tiddler.__slots__ if attribute not in unwanted_keys]
         wanted_info = {}

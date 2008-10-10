@@ -93,6 +93,10 @@ class Serialization(SerializationInterface):
                 self.tags_as(tiddler.tags), self.fields_as(tiddler), tiddler.text)
 
     def fields_as(self, tiddler):
+        """
+        Turn tiddler fields into strings in
+        sort of a RFC 822 header form.
+        """
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):

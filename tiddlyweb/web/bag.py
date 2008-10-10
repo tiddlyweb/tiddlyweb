@@ -107,8 +107,8 @@ def import_wiki(environ, start_response):
         serializer.from_string(content)
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
-    except AttributeError, e:
-        raise HTTP400('Content malformed: %s' % e)
+    except AttributeError, exc:
+        raise HTTP400('Content malformed: %s' % exc)
 
     start_response("204 No Content",
             [('Location', '%s/tiddlers' % web.bag_url(environ, bag))])
@@ -184,6 +184,6 @@ def _get_bag(environ, bag_name):
     store = environ['tiddlyweb.store']
     try:
         store.get(bag)
-    except NoBagError, e:
-        raise HTTP404('%s not found, %s' % (bag.name, e))
+    except NoBagError, exc:
+        raise HTTP404('%s not found, %s' % (bag.name, exc))
     return bag

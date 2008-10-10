@@ -26,45 +26,99 @@ class StorageInterface(object):
         self.environ = environ
 
     def recipe_delete(self, recipe):
+        """
+        Remove the recipe from the store,
+        with no impact on the tiddlers.
+        """
         raise StoreMethodNotImplemented
 
     def recipe_get(self, recipe):
+        """
+        Get a recipe from the store,
+        populating the provided recipe
+        object.
+        """
         raise StoreMethodNotImplemented
 
     def recipe_put(self, recipe):
+        """
+        Put a recipe into the store.
+        """
         raise StoreMethodNotImplemented
 
     def bag_delete(self, bag):
+        """
+        Remove the bag from the store,
+        including the tiddlers within
+        the bag.
+        """
         raise StoreMethodNotImplemented
 
     def bag_get(self, bag):
+        """
+        Get a bag from the store,
+        populating the provided bag
+        object.
+        """
         raise StoreMethodNotImplemented
 
     def bag_put(self, recipe):
+        """
+        Put a bag into the store.
+        """
         raise StoreMethodNotImplemented
 
     def tiddler_delete(self, tiddler):
+        """
+        Delete a tiddler from the store.
+        """
         raise StoreMethodNotImplemented
 
     def tiddler_get(self, tiddler):
+        """
+        Get a tiddler from the store,
+        populating the provided tiddler
+        object.
+        """
         raise StoreMethodNotImplemented
 
     def tiddler_put(self, tiddler):
+        """
+        Put a tiddler into the store.
+        """
         raise StoreMethodNotImplemented
 
     def user_get(self, user):
+        """
+        Get a user from the store,
+        populating the provided user
+        object.
+        """
         raise StoreMethodNotImplemented
 
     def user_put(self, user):
+        """
+        Put a user into the store.
+        """
         raise StoreMethodNotImplemented
 
     def list_recipes(self):
+        """
+        Retrieve a list of all recipe objects in the system.
+        """
         raise StoreMethodNotImplemented
 
     def list_bags(self):
+        """
+        Retrieve a list of all bag objects in the system.
+        """
         raise StoreMethodNotImplemented
 
     def list_tiddler_revisions(self, tiddler):
+        """
+        Retrieve a list of all the revision identifiers
+        for one tiddler.
+        """
         raise StoreMethodNotImplemented
 
     def tiddler_written(self, tiddler):
@@ -76,4 +130,8 @@ class StorageInterface(object):
         pass
 
     def search(self, search_query):
+        """
+        Search the entire tiddler store for
+        search_query.
+        """
         raise StoreMethodNotImplemented

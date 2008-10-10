@@ -8,6 +8,11 @@ from tiddlyweb.serializations import SerializationInterface
 
 
 class Serialization(SerializationInterface):
+    """
+    Serialize entities and collections to and from
+    HTML representations. This is primarily used
+    to create browser based presentations.
+    """
 
     def __init__(self, environ={}):
         self.environ = environ
@@ -125,6 +130,20 @@ class Serialization(SerializationInterface):
 </ul>
 """ % (self._tiddler_list_header(wiki_link), output)
 
+
+    def tiddler_as(self, tiddler):
+        """
+        Transform the provided tiddler into an HTML
+        representation of the tiddler packaged in a
+        DIV. If wikklytext is available the wikitext
+        will be rendered into formatted HTML.
+        """
+        try:
+            return self._tiddler_to_wikklyhtml(tiddler)
+        except ImportError:
+            return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
+
+
     def _server_prefix(self):
         config = self.environ.get('tiddlyweb.config', {})
         return config.get('server_prefix', '')
@@ -135,12 +154,6 @@ class Serialization(SerializationInterface):
 <div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
 """ % ('%s.wiki' % wiki_link)
         return ''
-
-    def tiddler_as(self, tiddler):
-        try:
-            return self._tiddler_to_wikklyhtml(tiddler)
-        except ImportError:
-            return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
 
     def _tiddler_div(self, tiddler):
         return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \

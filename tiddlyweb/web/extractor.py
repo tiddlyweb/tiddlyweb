@@ -36,8 +36,8 @@ class UserExtract(object):
             except ImportError:
                 try:
                     imported_module = __import__(extractor_name, {}, {}, ['Extractor'])
-                except ImportError, e:
-                    raise ImportError('could not load extractor %s: %s' % (extractor_name, e))
+                except ImportError, exc:
+                    raise ImportError('could not load extractor %s: %s' % (extractor_name, exc))
             extractor = imported_module.Extractor()
             extracted_user = extractor.extract(environ, start_response)
             if extracted_user:

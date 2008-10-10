@@ -68,8 +68,8 @@ def get_tiddlers(environ, start_response):
     # get the tiddlers from the recipe and uniquify them
     try:
         tiddlers = control.get_tiddlers_from_recipe(recipe)
-    except NoBagError, e:
-        raise HTTP404('recipe %s lists an unknown bag: %s' % (recipe.name, e))
+    except NoBagError, exc:
+        raise HTTP404('recipe %s lists an unknown bag: %s' % (recipe.name, exc))
     tmp_bag = Bag('tmp_bag1', tmpbag=True)
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)
@@ -85,13 +85,13 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         bag_name = tiddler.bag
         try:
-            policies['bag_name'].allows(usersign, 'read')
+            policies[bag_name].allows(usersign, 'read')
         except KeyError:
             bag = Bag(tiddler.bag)
             store.get(bag)
             policy = bag.policy
-            policies['bag_name'] = policy
-            policies['bag_name'].allows(usersign, 'read')
+            policies[bag_name] = policy
+            policies[bag_name].allows(usersign, 'read')
 
         tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
@@ -166,7 +166,7 @@ def _determine_recipe(environ):
 
     try:
         store.get(recipe)
-    except NoRecipeError, e:
-        raise HTTP404('%s not found, %s' % (recipe.name, e))
+    except NoRecipeError, exc:
+        raise HTTP404('%s not found, %s' % (recipe.name, exc))
 
     return recipe
