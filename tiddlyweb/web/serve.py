@@ -16,6 +16,9 @@ def load_app(host, port, map_filename):
     environment or modify the request, or transform output.
     """
 
+    app = selector.Selector(mapfile=map_filename)
+    config['selector'] = app
+
     plugins = config['system_plugins']
     for plugin in plugins:
         # let the import fail with error if it does
@@ -27,7 +30,6 @@ def load_app(host, port, map_filename):
     wrappers.extend(reversed(config['server_request_filters']))
     wrappers.append(Configurator) # required as the first app
     wrappers.extend(config['server_response_filters'])
-    app = selector.Selector(mapfile=map_filename)
     if wrappers:
         for wrapper in wrappers:
             app = wrapper(app)
