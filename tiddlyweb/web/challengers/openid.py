@@ -134,6 +134,9 @@ OpenID: <input name="openid" size="60" />
         if not openid.startswith('http://'):
             openid = 'http://%s' % openid
 
+        if openid.endswith('/'):
+            openid = openid.rstrip('/')
+
         htmlpage = urllib.urlopen(openid).read()
         soup = BeautifulSoup(htmlpage)
         try:
