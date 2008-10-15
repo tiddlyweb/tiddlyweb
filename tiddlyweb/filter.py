@@ -54,7 +54,8 @@ def by_text(text, tiddlers):
     """
     Return those tiddlers that contain text.
     """
-    return [tiddler for tiddler in tiddlers if text in tiddler.text]
+    text = text.lower()
+    return [tiddler for tiddler in tiddlers if text in tiddler.text.lower()]
 
 
 def by_tag(tag, tiddlers):
