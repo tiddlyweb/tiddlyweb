@@ -19,7 +19,7 @@ def send_tiddlers(environ, start_response, bag):
     download = environ['tiddlyweb.query'].get('download', [None])[0]
 
     if bags_tiddlers:
-        last_modified, etag = validate_tiddler_list(environ, bags_tiddlers)
+        last_modified, etag = _validate_tiddler_list(environ, bags_tiddlers)
     else:
         raise HTTP404('No tiddlers in container')
 
@@ -44,7 +44,7 @@ def send_tiddlers(environ, start_response, bag):
     return [output]
 
 
-def validate_tiddler_list(environ, tiddlers):
+def _validate_tiddler_list(environ, tiddlers):
     last_modified_number = _last_modified_tiddler(tiddlers)
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
