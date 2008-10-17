@@ -5,9 +5,9 @@ a Tiddler, GET a list of revisions of a Tiddler.
 
 import urllib
 
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304

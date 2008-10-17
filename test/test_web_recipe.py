@@ -14,8 +14,8 @@ import httplib2
 import simplejson
 
 from fixtures import muchdata, reset_textstore, teststore
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.user import User
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.user import User
 
 authorization = b64encode('cdent:cowpig')
 

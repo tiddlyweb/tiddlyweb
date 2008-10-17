@@ -12,9 +12,9 @@ import httplib2
 import simplejson
 
 from fixtures import muchdata, reset_textstore, teststore
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
 
 encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
 name = urllib.unquote(encoded_name).decode('utf-8')

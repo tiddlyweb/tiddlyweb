@@ -8,9 +8,9 @@ sys.path.append('.')
 import os
 import shutil
 
-from tiddlyweb.bag import Bag
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.recipe import Recipe
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.config import config
 from tiddlyweb.store import Store
 

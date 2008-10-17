@@ -7,9 +7,9 @@ import urllib
 
 from tiddlyweb import control
 from tiddlyweb.web.http import HTTP400, HTTP404
-from tiddlyweb.bag import Bag
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError, NoBagError, NoRecipeError
 from tiddlyweb.web.tiddlers import send_tiddlers
 from tiddlyweb.web.util import tiddler_url

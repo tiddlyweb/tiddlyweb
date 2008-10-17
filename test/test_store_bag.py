@@ -12,8 +12,8 @@ import py.test
 
 from fixtures import tiddlers, bagone, reset_textstore, teststore
 from tiddlyweb.store import NoBagError
-from tiddlyweb.bag import Bag
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()

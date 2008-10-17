@@ -5,8 +5,8 @@ Test the creation and data handling of policies.
 
 import sys
 sys.path.append('.')
-from tiddlyweb.bag import Bag
-from tiddlyweb.policy import Policy, ForbiddenError, UserRequiredError
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import Policy, ForbiddenError, UserRequiredError
 
 import py.test
 

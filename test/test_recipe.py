@@ -9,8 +9,8 @@ sys.path.append('.')
 
 import py.test
 
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoBagError
 from tiddlyweb import control
 

@@ -3,7 +3,7 @@ import sys
 import time
 import urllib
 
-from tiddlyweb.policy import UserRequiredError, ForbiddenError
+from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
 from tiddlyweb.web.http import HTTP403, HTTP302
 from tiddlyweb.web.util import server_base_url

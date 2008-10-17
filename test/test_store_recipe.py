@@ -9,7 +9,7 @@ import shutil
 sys.path.append('.')
 
 from fixtures import textstore, reset_textstore, recipe_list_string, teststore
-from tiddlyweb.recipe import Recipe
+from tiddlyweb.model.recipe import Recipe
 
 expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
 

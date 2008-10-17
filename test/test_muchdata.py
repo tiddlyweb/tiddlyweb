@@ -9,9 +9,9 @@ sys.path.append('.')
 
 from tiddlyweb.store import NoBagError
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.bag import Bag
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.recipe import Recipe
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
 from tiddlyweb import filter
 

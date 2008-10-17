@@ -14,7 +14,7 @@ sys.path.append('.')
 import simplejson
 import py.test
 
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 
 expected_string = """modifier: test@example.com

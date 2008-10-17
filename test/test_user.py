@@ -7,7 +7,7 @@ sys.path.append('.')
 
 import py.test
 
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 
 usersign = 'cdent'
 note = 'for future expansion'

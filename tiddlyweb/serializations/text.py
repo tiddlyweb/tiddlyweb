@@ -7,7 +7,7 @@ import cgi
 import simplejson
 
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.policy import Policy
+from tiddlyweb.model.policy import Policy
 
 
 class Serialization(SerializationInterface):

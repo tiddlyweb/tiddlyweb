@@ -7,8 +7,8 @@ sys.path.append('.')
 
 from tiddlyweb import control
 from tiddlyweb import filter
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
 
 from fixtures import muchdata, reset_textstore, teststore
 

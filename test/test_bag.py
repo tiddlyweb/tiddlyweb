@@ -9,7 +9,7 @@ in this case.
 
 import sys
 sys.path.append('.')
-from tiddlyweb.bag import Bag, Policy
+from tiddlyweb.model.bag import Bag, Policy
 
 import py.test
 import copy

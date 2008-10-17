@@ -8,7 +8,7 @@ import sys
 
 from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 
 COMMANDS = {}
 
@@ -104,7 +104,7 @@ def recipe(args):
     except IndexError:
         usage()
 
-    from tiddlyweb.recipe import Recipe
+    from tiddlyweb.model.recipe import Recipe
     from tiddlyweb.serializer import Serializer
 
     recipe = Recipe(recipe_name)
@@ -125,7 +125,7 @@ def bag(args):
     except IndexError:
         usage()
 
-    from tiddlyweb.bag import Bag
+    from tiddlyweb.model.bag import Bag
     from tiddlyweb.serializer import Serializer
 
     bag = Bag(bag_name)
@@ -148,7 +148,7 @@ def tiddler(args):
     except (IndexError, ValueError):
         usage()
 
-    from tiddlyweb.tiddler import Tiddler
+    from tiddlyweb.model.tiddler import Tiddler
     from tiddlyweb.serializer import Serializer
 
     tiddler = Tiddler(tiddler_name)

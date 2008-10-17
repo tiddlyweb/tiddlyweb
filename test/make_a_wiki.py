@@ -1,7 +1,7 @@
 
 import sys
 sys.path.append('.')
-from tiddlyweb.recipe import Recipe
+from tiddlyweb..model.recipe import Recipe
 from tiddlyweb.serializer import Serializer
 
 from fixtures import recipe_list

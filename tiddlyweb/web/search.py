@@ -7,8 +7,8 @@ import urllib
 
 from tiddlyweb import control
 from tiddlyweb.web.http import HTTP400
-from tiddlyweb.bag import Bag
-from tiddlyweb.policy import ForbiddenError, UserRequiredError
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.web import util as web
 from tiddlyweb.web.tiddlers import send_tiddlers

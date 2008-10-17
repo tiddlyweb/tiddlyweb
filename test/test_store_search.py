@@ -3,7 +3,7 @@ import sys
 sys.path.append('.')
 
 from fixtures import reset_textstore, muchdata, teststore
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.tiddler import Tiddler
 
 name = u'boom\u00BB\u00BBboom'
 

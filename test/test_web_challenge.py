@@ -13,7 +13,7 @@ import simplejson
 from base64 import b64encode
 
 from fixtures import muchdata, reset_textstore, teststore
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 
 def setup_module(module):
     from tiddlyweb.web import serve

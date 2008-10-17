@@ -9,7 +9,7 @@ from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
 
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.bag import Bag
 
 from fixtures import muchdata, reset_textstore, teststore
 

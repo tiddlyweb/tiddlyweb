@@ -9,7 +9,7 @@ and serialize objects in filters and recipes and the
 like.
 """
 
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.bag import Bag
 from tiddlyweb import filter as fl
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.store import NoBagError

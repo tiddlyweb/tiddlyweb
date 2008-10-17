@@ -6,9 +6,9 @@ produced by a recipe.
 
 import urllib
 
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.bag import Bag
-from tiddlyweb.policy import create_policy_check, UserRequiredError, ForbiddenError
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.policy import create_policy_check, UserRequiredError, ForbiddenError
 from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404

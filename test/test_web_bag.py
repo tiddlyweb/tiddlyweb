@@ -13,7 +13,7 @@ import simplejson
 
 from fixtures import muchdata, reset_textstore, teststore
 
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.bag import Bag
 
 policy_dict = dict(
         read=['chris','jeremy','GUEST'],

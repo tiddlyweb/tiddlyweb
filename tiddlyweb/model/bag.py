@@ -4,7 +4,7 @@ A module containing the Bag class.
 
 import copy
 
-from tiddlyweb.policy import Policy
+from tiddlyweb.model.policy import Policy
 
 
 class Bag(dict):

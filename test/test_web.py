@@ -12,8 +12,8 @@ import py.test
 
 import tiddlyweb.web
 import tiddlyweb.web.util
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.bag import Bag
 
 expected_content="""<ul id="root" class="entitylist">
 <li><a href="recipes">recipes</a></li>

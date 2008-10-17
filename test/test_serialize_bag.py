@@ -9,7 +9,7 @@ sys.path.append('.')
 import simplejson
 
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.config import config
 
 from fixtures import bagfour

@@ -14,7 +14,7 @@ sys.path.append('.')
 
 from fixtures import bagone, bagfour, textstore, reset_textstore, teststore
 from tiddlyweb.store import StoreLockError, NoTiddlerError
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
 import tiddlyweb.stores.text as texter
 import py.test

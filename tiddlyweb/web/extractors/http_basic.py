@@ -6,7 +6,7 @@ header and looks for Basic auth information therein.
 from base64 import b64decode
 
 from tiddlyweb.web.extractors import ExtractorInterface
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
 

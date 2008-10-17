@@ -2,7 +2,7 @@
 The Recipe class.
 """
 
-from tiddlyweb.policy import Policy
+from tiddlyweb.model.policy import Policy
 
 
 class Recipe(list):

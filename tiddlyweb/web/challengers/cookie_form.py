@@ -8,7 +8,7 @@ import Cookie
 
 from tiddlyweb.web.challengers import ChallengerInterface
 from tiddlyweb.web.util import server_host_url
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError
 from sha import sha
 

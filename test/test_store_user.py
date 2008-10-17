@@ -7,7 +7,7 @@ import py.test
 
 from fixtures import textstore, reset_textstore, teststore
 from tiddlyweb.store import NoUserError
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 
 expected_stored_filename = os.path.join(textstore.user_store, 'cdent')
 

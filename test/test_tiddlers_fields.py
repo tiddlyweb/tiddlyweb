@@ -13,8 +13,8 @@ import simplejson
 
 from tiddlyweb.config import config
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.tiddler import Tiddler
-from tiddlyweb.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
 
 from fixtures import reset_textstore, teststore
 

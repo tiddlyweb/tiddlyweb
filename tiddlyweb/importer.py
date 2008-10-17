@@ -7,7 +7,7 @@ import codecs
 
 from BeautifulSoup import BeautifulSoup
 
-from tiddlyweb.tiddler import Tiddler, string_to_tags_list
+from tiddlyweb.model.tiddler import Tiddler, string_to_tags_list
 
 
 def import_wiki_file(store, filename='wiki', bagname='wiki'):

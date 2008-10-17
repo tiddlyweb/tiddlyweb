@@ -5,7 +5,7 @@ system.
 """
 
 from tiddlyweb.serializer import NoSerializationError
-from tiddlyweb.tiddler import string_to_tags_list
+from tiddlyweb.model.tiddler import string_to_tags_list
 
 
 class SerializationInterface(object):

@@ -7,7 +7,7 @@ from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
 
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.tiddler import Tiddler
 
 from fixtures import muchdata, reset_textstore, teststore
 

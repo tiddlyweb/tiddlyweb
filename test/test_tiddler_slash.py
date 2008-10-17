@@ -9,8 +9,8 @@ sys.path.append('.')
 
 from fixtures import reset_textstore, teststore
 
-from tiddlyweb.bag import Bag
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()

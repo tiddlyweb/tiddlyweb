@@ -16,7 +16,7 @@ from re import match
 
 from fixtures import muchdata, reset_textstore, teststore
 
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 
 authorization = b64encode('cdent:cowpig')
 bad_authorization = b64encode('cdent:cdent')

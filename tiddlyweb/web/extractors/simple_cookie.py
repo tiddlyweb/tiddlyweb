@@ -5,7 +5,7 @@ named 'tiddlyweb_user'.
 
 import Cookie
 
-from tiddlyweb.user import User
+from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 from tiddlyweb.web.extractors import ExtractorInterface
 from sha import sha
