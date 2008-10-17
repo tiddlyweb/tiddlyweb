@@ -1,6 +1,6 @@
 # This file is the URL map for TiddlyWeb. URL paths
 # dispatch, by REQUEST_METHOD, to WSGI style callables
-# in the tiddlyweb.web package in the TiddlyWeb code. 
+# in the tiddlyweb.web.handler package in the TiddlyWeb code. 
 #
 # The map is automatically loaded at run time and 
 # processed by Selector. Fields within { } are
@@ -30,13 +30,13 @@
 # filter query_string to filter the results.
 
 /
-    GET tiddlyweb.web:root
+    GET tiddlyweb.web.handler:root
 # A root page for the system pointing to /bags and /recipes.
 # Supports GET:  text/html
 
 
 /recipes[.{format}]
-    GET tiddlyweb.web.recipe:list
+    GET tiddlyweb.web.handler.recipe:list
 # List of recipes in a variety of formats.
 # Supports GET: text/plain: list of recipe_name
 #               text/html: list of links to /recipes/{recipe_name}
@@ -44,9 +44,9 @@
 
 
 /recipes/{recipe_name:segment}[/]
-    GET tiddlyweb.web.recipe:get
-    PUT tiddlyweb.web.recipe:put
-    DELETE tiddlyweb.web.recipe:delete
+    GET tiddlyweb.web.handler.recipe:get
+    PUT tiddlyweb.web.handler.recipe:put
+    DELETE tiddlyweb.web.handler.recipe:delete
 # Representation of a Recipe resource, an ordered list of bag+filter
 # Supports GET: text/plain: text representation of list of bags+filters
 #               text/html: links to bag with filter query string
@@ -57,7 +57,7 @@
 
 
 /recipes/{recipe_name:segment}/tiddlers[.{format}]
-    GET tiddlyweb.web.recipe:get_tiddlers
+    GET tiddlyweb.web.handler.recipe:get_tiddlers
 # The collection of Tiddlers created by this Recipe.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers _in their bag_
@@ -66,9 +66,9 @@
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
-    GET tiddlyweb.web.tiddler:get
-    PUT tiddlyweb.web.tiddler:put
-    DELETE tiddlyweb.web.tiddler:delete
+    GET tiddlyweb.web.handler.tiddler:get
+    PUT tiddlyweb.web.handler.tiddler:put
+    DELETE tiddlyweb.web.handler.tiddler:delete
 # A single Tiddler produced by this Recipe.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
@@ -82,7 +82,7 @@
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
-    GET tiddlyweb.web.tiddler:get
+    GET tiddlyweb.web.handler.tiddler:get
 # A single revision of a Tiddler produced by this Recipe.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
@@ -91,7 +91,7 @@
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
-    GET tiddlyweb.web.tiddler:get_revisions
+    GET tiddlyweb.web.handler.tiddler:get_revisions
 # The collection of revisions of a single Tiddler produced by this Recipe.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers _in their bag_
@@ -100,7 +100,7 @@
 
 
 /bags[.{format}]
-    GET tiddlyweb.web.bag:list
+    GET tiddlyweb.web.handler.bag:list
 # The list of bags available on the system (to the current user)
 # Supports GET: text/plain: a list of bag names
 #               text/html: a list of bag names linking to the the list of tidders in the bag
@@ -108,9 +108,9 @@
 
 
 /bags/{bag_name:segment}[/]
-    GET tiddlyweb.web.bag:get
-    PUT tiddlyweb.web.bag:put
-    DELETE tiddlyweb.web.bag:delete
+    GET tiddlyweb.web.handler.bag:get
+    PUT tiddlyweb.web.handler.bag:put
+    DELETE tiddlyweb.web.handler.bag:delete
 # A representation of a single Bag.
 # Supports GET: application/json: The Bag description and Policy.
 #               text/html: The bag description and link to tiddlers.
@@ -119,8 +119,8 @@
 
 
 /bags/{bag_name:segment}/tiddlers[.{format}]
-    GET tiddlyweb.web.bag:get_tiddlers
-    POST tiddlyweb.web.bag:import_wiki
+    GET tiddlyweb.web.handler.bag:get_tiddlers
+    POST tiddlyweb.web.handler.bag:import_wiki
 # The collection of Tiddlers in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers 
@@ -130,9 +130,9 @@
 #                                   in the Bag
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
-    GET tiddlyweb.web.tiddler:get
-    PUT tiddlyweb.web.tiddler:put
-    DELETE tiddlyweb.web.tiddler:delete
+    GET tiddlyweb.web.handler.tiddler:get
+    PUT tiddlyweb.web.handler.tiddler:put
+    DELETE tiddlyweb.web.handler.tiddler:delete
 # A single Tiddler located in this Bag.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
@@ -146,7 +146,7 @@
 
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
-    GET tiddlyweb.web.tiddler:get
+    GET tiddlyweb.web.handler.tiddler:get
 # A single revision of a Tiddler in this Bag.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
@@ -155,7 +155,7 @@
 
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
-    GET tiddlyweb.web.tiddler:get_revisions
+    GET tiddlyweb.web.handler.tiddler:get_revisions
 # The collection of revisions of a single Tiddler in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers
@@ -164,7 +164,7 @@
 
 
 /search[.{format}]
-    GET tiddlyweb.web.search:get
+    GET tiddlyweb.web.handler.search:get
 # A search mechanism that searches the entire datastore for
 # tiddlers that match the query passed in on a 'q=' query string.
 # Returns a collection of Tiddlers.
@@ -190,6 +190,6 @@
 # dependent on the implementation.
 
 /edit
-    GET tiddlyweb.web.edit:get
+    GET tiddlyweb.web.handler.edit:get
 # Produce an editor for a Tiddler identified by 
 # query parameters. Usually the editor is a TiddlyWiki.
