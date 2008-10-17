@@ -11,7 +11,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.web import util as web
-from tiddlyweb.web.tiddlers import send_tiddlers
+from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
 def get(environ, start_response):

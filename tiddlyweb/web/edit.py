@@ -11,7 +11,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError, NoBagError, NoRecipeError
-from tiddlyweb.web.tiddlers import send_tiddlers
+from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.util import tiddler_url
 
 

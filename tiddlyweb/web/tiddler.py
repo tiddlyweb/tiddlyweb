@@ -13,7 +13,7 @@ from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
 from tiddlyweb.web import util as web
-from tiddlyweb.web.tiddlers import send_tiddlers
+from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
 def get(environ, start_response):

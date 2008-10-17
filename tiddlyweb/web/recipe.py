@@ -12,7 +12,7 @@ from tiddlyweb.model.policy import create_policy_check, UserRequiredError, Forbi
 from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
-from tiddlyweb.web.tiddlers import send_tiddlers
+from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 
