@@ -13,7 +13,7 @@ from tiddlyweb.user import User
 COMMANDS = {}
 
 
-def _make_command():
+def make_command():
     """
     A decorator that marks the decorated method
     as a member of the commands dictionary, with
@@ -31,7 +31,7 @@ def _make_command():
     return decorate
 
 
-@_make_command()
+@make_command()
 def server(args):
     """Start the server: <hostname or ip number> <port>"""
     try:
@@ -50,7 +50,7 @@ def _store():
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
 
-@_make_command()
+@make_command()
 def adduser(args):
     """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
     try:
@@ -78,7 +78,7 @@ def adduser(args):
     return True
 
 
-@_make_command()
+@make_command()
 def imwiki(args):
     """Import a Tiddlywiki html file into a bag: <filename> <bag name>"""
     from tiddlyweb.importer import import_wiki_file
@@ -96,7 +96,7 @@ def imwiki(args):
         usage()
 
 
-@_make_command()
+@make_command()
 def recipe(args):
     """Create or update a recipe with the recipe text on stdin: <recipe name>"""
     try:
@@ -117,7 +117,7 @@ def recipe(args):
     store.put(recipe)
 
 
-@_make_command()
+@make_command()
 def bag(args):
     """Create or update a bag with the json text on stdin: <bag name>"""
     try:
@@ -140,7 +140,7 @@ def bag(args):
     store.put(bag)
 
 
-@_make_command()
+@make_command()
 def tiddler(args):
     """Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>"""
     try:
@@ -162,7 +162,7 @@ def tiddler(args):
     store.put(tiddler)
 
 
-@_make_command()
+@make_command()
 def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
@@ -175,6 +175,12 @@ def handle(args):
     Dispatch to the proper function for the command
     given in a args[1].
     """
+    plugins = config['manager_plugins']
+    for plugin in plugins:
+        # let the import fail with error if it does
+        imported_module = __import__(plugin, {}, {}, ['init'])
+        imported_module.init(config)
+
     try:
         candidate_command = args[1]
     except IndexError:
