@@ -8,9 +8,8 @@ These need some refactoring.
 
 import urllib
 
-from tiddlyweb.auth import UserRequiredError, ForbiddenError
 from tiddlyweb.bag import Bag
-from tiddlyweb.policy import create_policy_check
+from tiddlyweb.policy import create_policy_check, UserRequiredError, ForbiddenError
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control

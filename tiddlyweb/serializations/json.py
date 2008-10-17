@@ -5,7 +5,7 @@ Text based serializers.
 import simplejson
 
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.bag import Policy
+from tiddlyweb.policy import Policy # XXX might be able to be rid of this
 
 
 class Serialization(SerializationInterface):

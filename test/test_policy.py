@@ -5,10 +5,10 @@ Test the creation and data handling of policies.
 
 import sys
 sys.path.append('.')
-from tiddlyweb.bag import Policy, Bag
+from tiddlyweb.bag import Bag
+from tiddlyweb.policy import Policy, ForbiddenError, UserRequiredError
 
 import py.test
-from tiddlyweb.auth import ForbiddenError, UserRequiredError
 
 jeremy_info = {'name':'jeremy'}
 chris_info = {'name':'chris','roles':['R:ADMIN']}

@@ -2,7 +2,19 @@
 A module containing the Bag class.
 """
 
-from tiddlyweb.auth import ForbiddenError, UserRequiredError
+
+class ForbiddenError(Exception):
+    """
+    The provided user cannot do this action.
+    """
+    pass
+
+
+class UserRequiredError(Exception):
+    """
+    To do this action a user is required.
+    """
+    pass
 
 
 class Policy(object):

@@ -4,8 +4,6 @@ use to get and put data into a storage
 system.
 """
 
-import re
-
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.tiddler import string_to_tags_list
 
