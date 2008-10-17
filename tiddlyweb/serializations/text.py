@@ -38,9 +38,9 @@ class Serialization(SerializationInterface):
         for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
             policy_dict[key] = getattr(policy, key)
         lines = ['desc: %s' % recipe.desc, 'policy: %s' % simplejson.dumps(policy_dict), '']
+
         for bag, filter_string in recipe:
             line = ''
-# enable BagS in recipes
             if not isinstance(bag, basestring):
                 bag = bag.name
             line += '/bags/%s/tiddlers' % bag
@@ -53,8 +53,7 @@ class Serialization(SerializationInterface):
         """
         Turn a string back into a recipe.
         """
-        try:
-            header, body = input_string.rstrip().split('\n\n', 1)
+        def _handle_headers(recipe, header):
             headers = header.split('\n')
             for field, value in [x.split(': ', 1) for x in headers]:
                 if field == 'policy':
@@ -64,8 +63,16 @@ class Serialization(SerializationInterface):
                         recipe.policy.__setattr__(key, value)
                 else:
                     setattr(recipe, field, value)
+
+        try:
+            header, body = input_string.rstrip().split('\n\n', 1)
+            _handle_headers(recipe, header)
         except ValueError:
             body = input_string.rstrip()
+            if body.startswith('desc:'):
+                header = body
+                body = ''
+                _handle_headers(recipe, header)
 
         recipe_lines = self._recipe_lines(body)
         recipe.set_recipe(recipe_lines)
@@ -135,16 +142,17 @@ class Serialization(SerializationInterface):
         the recipe information they hold and return
         as a list of bagname, filter lists.
         """
-        lines = body.rstrip().split('\n')
         recipe_lines = []
-        for line in lines:
-            if '?' in line:
-                bag, query_string = line.split('?')
-                request_info = cgi.parse_qs(query_string)
-                filter_string = request_info.get('filter', [''])[0]
-            else:
-                bag = line
-                filter_string = ''
-            bagname = urllib.unquote(bag.split('/')[2])
-            recipe_lines.append([bagname, filter_string])
+        if len(body):
+            lines = body.rstrip().split('\n')
+            for line in lines:
+                if '?' in line:
+                    bag, query_string = line.split('?')
+                    request_info = cgi.parse_qs(query_string)
+                    filter_string = request_info.get('filter', [''])[0]
+                else:
+                    bag = line
+                    filter_string = ''
+                bagname = urllib.unquote(bag.split('/')[2])
+                recipe_lines.append([bagname, filter_string])
         return recipe_lines

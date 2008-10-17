@@ -57,3 +57,17 @@ def test_recipe_get():
     store.get(stored_recipe)
 
     assert stored_recipe == recipe_list_string
+
+def test_recipe_no_recipe():
+    """
+    make a sure a recipe that is stored without a recipe is retrievable
+    """
+    recipe = Recipe('testrecipe2')
+    recipe.desc = 'I enjoy being stored'
+    store.put(recipe)
+
+    stored_recipe = Recipe('testrecipe2')
+    store.get(stored_recipe)
+
+    assert stored_recipe.desc == recipe.desc
+
