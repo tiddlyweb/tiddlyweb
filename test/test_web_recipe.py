@@ -39,7 +39,7 @@ def setup_module(module):
 
 def test_get_recipe_wiki_fail():
     """
-    Return a wiki for a recipe we can access.
+    Don't Return a wiki for a recipe, because only do that for tiddlers.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long.wiki',
@@ -60,13 +60,29 @@ def test_get_recipe_txt():
 
 def test_get_recipe_not():
     """
-    Return a 415 when content type no good.
+    Return a 404 when content type not regonized.
     """
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
             method='GET')
 
-    assert response['status'] == '415'
+    assert response['status'] == '404'
+
+def test_get_recipe_dot_name():
+    """
+    Effectively return an entity with a dot in the name.
+    """
+    recipe = Recipe('long.gif')
+    recipe.desc = 'hello'
+    store.put(recipe)
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.gif',
+            method='GET')
+
+    assert response['status'] == '200'
+
+    store.delete(recipe)
 
 def test_get_recipe_not_with_accept():
     """
@@ -74,7 +90,7 @@ def test_get_recipe_not_with_accept():
     content type conflict.
     """
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long.xml',
+    response, content = http.request('http://our_test_domain:8001/recipes/long.html',
             method='GET', headers={'Accept': 'text/plain'})
 
     assert response['status'] == '200'
