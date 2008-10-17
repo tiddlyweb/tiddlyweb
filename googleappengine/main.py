@@ -63,7 +63,10 @@ def google_app():
     filters_in.insert(0, ScriptCleanup)
 
     filters_out = config['server_response_filters']
-    filters_out.remove(SimpleLog)
+    try:
+        filters_out.remove(SimpleLog)
+    except ValueError:
+        pass # it wasn't in there
 
     app = load_app(host, port, filename)
     return app

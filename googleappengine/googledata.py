@@ -7,9 +7,10 @@ import logging
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
-from tiddlyweb.bag import Bag, Policy
-from tiddlyweb.recipe import Recipe
-from tiddlyweb.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import Policy
+from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, NoUserError, StoreLockError
 from tiddlyweb.stores import StorageInterface
