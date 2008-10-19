@@ -1,7 +1,11 @@
 #!/usr/bin/env python
+import os
 import sys
 
 from tiddlyweb.manage import handle
+
+cwd = os.getcwd()
+sys.path.insert(0,cwd)
 
 if __name__ == '__main__':
     handle(sys.argv)

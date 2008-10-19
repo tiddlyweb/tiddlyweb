@@ -175,11 +175,14 @@ def handle(args):
     Dispatch to the proper function for the command
     given in a args[1].
     """
-    plugins = config['manager_plugins']
-    for plugin in plugins:
-        # let the import fail with error if it does
-        imported_module = __import__(plugin, {}, {}, ['init'])
-        imported_module.init(config)
+    try:
+        plugins = config['manager_plugins']
+        for plugin in plugins:
+            # let the import fail with error if it does
+            imported_module = __import__(plugin, {}, {}, ['init'])
+            imported_module.init(config)
+    except KeyError:
+        pass # no plugins
 
     try:
         candidate_command = args[1]

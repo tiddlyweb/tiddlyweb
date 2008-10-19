@@ -19,11 +19,14 @@ def load_app(host, port, map_filename):
     app = selector.Selector(mapfile=map_filename)
     config['selector'] = app
 
-    plugins = config['system_plugins']
-    for plugin in plugins:
-        # let the import fail with error if it does
-        imported_module = __import__(plugin, {}, {}, ['init'])
-        imported_module.init(config)
+    try:
+        plugins = config['system_plugins']
+        for plugin in plugins:
+            # let the import fail with error if it does
+            imported_module = __import__(plugin, {}, {}, ['init'])
+            imported_module.init(config)
+    except KeyError:
+        pass # no plugins
 
     config['server_host'] = dict(scheme='http', host=host, port=port)
     wrappers = []
