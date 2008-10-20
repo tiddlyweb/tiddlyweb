@@ -2,6 +2,8 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
+from base64 import b64encode
+
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import server_base_url
@@ -151,11 +153,24 @@ class Serialization(SerializationInterface):
             host = ''
         host = '%s/' % host
 
+        if tiddler.type and tiddler.type != 'None':
+            tiddler_output = self._binary_tiddler(tiddler)
+        else:
+            tiddler_output = tiddler.text
+
         return '<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s" %s>\n<pre>%s</pre>\n</div>\n' \
                 % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name,
                         host, tiddler.bag, tiddler.modified, tiddler.created,
                         self.tags_as(tiddler.tags), self._tiddler_fields(tiddler.fields),
-                        self._html_encode(tiddler.text))
+                        self._html_encode(tiddler_output))
+
+    def _binary_tiddler(self, tiddler):
+        if tiddler.type.startswith('image'):
+            return '\n<html><img src="data:%s;base64,%s" /></html>\n' % \
+                    (tiddler.type, b64encode(tiddler.text))
+        else:
+            return '\n<html><a href="data:%s;base64,%s">%s</a></html>\n' % \
+                    (tiddler.type, b64encode(tiddler.text), tiddler.title)
 
     def _tiddler_fields(self, fields):
         output = []
