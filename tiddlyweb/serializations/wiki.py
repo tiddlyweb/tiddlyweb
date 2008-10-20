@@ -6,7 +6,7 @@ from base64 import b64encode
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.web.util import server_base_url
+from tiddlyweb.web.util import server_base_url, tiddler_url
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
 
@@ -165,12 +165,18 @@ class Serialization(SerializationInterface):
                         self._html_encode(tiddler_output))
 
     def _binary_tiddler(self, tiddler):
-        if tiddler.type.startswith('image'):
-            return '\n<html><img src="data:%s;base64,%s" /></html>\n' % \
-                    (tiddler.type, b64encode(tiddler.text))
+        if len(tiddler.text) < 32 * 1024:
+            if tiddler.type.startswith('image'):
+                return '\n<html><img src="data:%s;base64,%s" /></html>\n' % \
+                        (tiddler.type, b64encode(tiddler.text))
+            else:
+                return '\n<html><a href="data:%s;base64,%s">%s</a></html>\n' % \
+                        (tiddler.type, b64encode(tiddler.text), tiddler.title)
         else:
-            return '\n<html><a href="data:%s;base64,%s">%s</a></html>\n' % \
-                    (tiddler.type, b64encode(tiddler.text), tiddler.title)
+            if tiddler.type.startswith('image'):
+                return '\n<html><img src="%s" /></html>\n' % tiddler_url(self.environ, tiddler)
+            else:
+                return '\n<html><a href="%s">%s</a></html>\n' % (tiddler_url(self.environ, tiddler), tiddler.title)
 
     def _tiddler_fields(self, fields):
         output = []
