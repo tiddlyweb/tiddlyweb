@@ -5,6 +5,8 @@ a Tiddler, GET a list of revisions of a Tiddler.
 
 import urllib
 
+from base64 import b64decode
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
@@ -115,7 +117,7 @@ def _put_tiddler(environ, start_response, tiddler):
     content_type = environ['tiddlyweb.type']
 
     if content_type != 'text/plain' and content_type != 'application/json':
-        raise HTTP415('%s not supported ' % content_type)
+        tiddler.type = content_type
 
     last_modified = None
     etag = None
@@ -133,10 +135,14 @@ def _put_tiddler(environ, start_response, tiddler):
             _check_bag_constraint(environ, bag, 'create')
 
         content = environ['wsgi.input'].read(int(length))
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = tiddler
-        serializer.from_string(content.decode('UTF-8'))
+
+        if not tiddler.type:
+            serialize_type, mime_type = web.get_serialize_type(environ)
+            serializer = Serializer(serialize_type, environ)
+            serializer.object = tiddler
+            serializer.from_string(content.decode('UTF-8'))
+        else:
+            tiddler.text = content
 
         store.put(tiddler)
     except NoBagError, exc:
@@ -191,19 +197,24 @@ def _send_tiddler(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
-    # this will raise 304
-    # have to do this check after we read from the store because
-    # we need the revision, which is sad
     last_modified, etag = _validate_tiddler(environ, tiddler)
 
-    serialize_type, mime_type = web.get_serialize_type(environ)
-    serializer = Serializer(serialize_type, environ)
-    serializer.object = tiddler
+    if tiddler.type and tiddler.type != 'None':
+        content = b64decode(tiddler.text.lstrip().rstrip())
+        mime_type = tiddler.type
+    else:
+        # this will raise 304
+        # have to do this check after we read from the store because
+        # we need the revision, which is sad
 
-    try:
-        content = serializer.to_string()
-    except TiddlerFormatError, exc:
-        raise HTTP415(exc)
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = tiddler
+
+        try:
+            content = serializer.to_string()
+        except TiddlerFormatError, exc:
+            raise HTTP415(exc)
 
     cache_header = ('Cache-Control', 'no-cache')
     content_header = ('Content-Type', mime_type)

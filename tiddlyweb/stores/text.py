@@ -10,6 +10,8 @@ import simplejson
 import shutil
 import urllib
 
+from base64 import b64encode
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.model.recipe import Recipe
@@ -168,6 +170,9 @@ class Store(StorageInterface):
         revision = self._tiddler_revision_filename(tiddler) + 1
         tiddler_filename = os.path.join(tiddler_base_filename, '%s' % revision)
         tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
+
+        if tiddler.type:
+            tiddler.text = b64encode(tiddler.text)
 
         serializer = Serializer('text')
         serializer.object = tiddler

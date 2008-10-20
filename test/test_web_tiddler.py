@@ -456,6 +456,22 @@ def test_tiddler_no_recipe():
             method='GET')
     assert response['status'] == '404'
 
+def test_binary_tiddler():
+    image = file('test/peermore.png', 'rb')
+    content = image.read()
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
+            method='PUT', headers={'Content-Type': 'image/png'},
+            body=content)
+
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'image/png'
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 
@@ -464,4 +480,3 @@ def _put_policy(bag_name, policy_dict):
             method='PUT', headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
             body=json)
     assert response['status'] == '204'
-

@@ -20,6 +20,7 @@ from tiddlyweb.serializer import Serializer, TiddlerFormatError
 expected_string = """modifier: test@example.com
 created: 
 modified: 200803030303
+type: None
 tags: foobar [[foo bar]]
 
 Hello, I'm the content.
@@ -29,6 +30,7 @@ Hello, I'm the content.
 bad_string = """modifiXr: test@example.com
 created: 
 modiFied: 200803030303
+type: None
 tgs: foobar [[foo bar]]
 
 Hello, I'm the content.

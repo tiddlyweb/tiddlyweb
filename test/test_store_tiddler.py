@@ -24,6 +24,7 @@ expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers
 expected_stored_text = """modifier: AuthorOne
 created: 
 modified: 200803030303
+type: None
 tags: tagone tagtwo [[tag five]]
 
 c tiddler one content

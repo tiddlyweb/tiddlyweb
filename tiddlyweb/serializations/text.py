@@ -95,8 +95,8 @@ class Serialization(SerializationInterface):
         """
         Represent a tiddler as a text string: headers, blank line, text.
         """
-        return 'modifier: %s\ncreated: %s\nmodified: %s\ntags: %s%s\n%s\n' \
-                % (tiddler.modifier, tiddler.created, tiddler.modified, \
+        return 'modifier: %s\ncreated: %s\nmodified: %s\ntype: %s\ntags: %s%s\n%s\n' \
+                % (tiddler.modifier, tiddler.created, tiddler.modified, tiddler.type, \
                 self.tags_as(tiddler.tags), self.fields_as(tiddler), tiddler.text)
 
     def fields_as(self, tiddler):

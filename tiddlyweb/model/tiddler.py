@@ -77,6 +77,7 @@ class Tiddler(object):
             'tags',
             'fields',
             'text',
+            'type',
             'revision',
             'bag',
             'recipe',
@@ -99,6 +100,7 @@ class Tiddler(object):
         self.tags = []
         self.fields = {}
         self.text = None
+        self.type = None
         self.revision = None
         self.recipe = None
         # reference to the store which 'got' us
