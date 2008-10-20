@@ -15,7 +15,6 @@ from tiddlyweb.filter import FILTER_MAP
 
 
 def init(config):
-    print "Initializing %s!" % __name__
 
     # here's an example of extending the filtering
     # system. It counts the letter i in tiddler.text.
