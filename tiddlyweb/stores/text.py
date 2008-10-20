@@ -10,7 +10,7 @@ import simplejson
 import shutil
 import urllib
 
-from base64 import b64encode
+from base64 import b64encode, b64decode
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -139,6 +139,8 @@ class Store(StorageInterface):
             # set created on new tiddler from modified on base_tiddler
             # (might be the same)
             tiddler.created = base_tiddler.modified
+            if tiddler.type and tiddler.type != 'None':
+                tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
             return tiddler
         except IOError, exc:
             raise NoTiddlerError('no tiddler for %s: %s' % (tiddler.title, exc))

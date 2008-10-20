@@ -5,8 +5,6 @@ a Tiddler, GET a list of revisions of a Tiddler.
 
 import urllib
 
-from base64 import b64decode
-
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
@@ -200,8 +198,8 @@ def _send_tiddler(environ, start_response, tiddler):
     last_modified, etag = _validate_tiddler(environ, tiddler)
 
     if tiddler.type and tiddler.type != 'None':
-        content = b64decode(tiddler.text.lstrip().rstrip())
         mime_type = tiddler.type
+        content = tiddler.text
     else:
         # this will raise 304
         # have to do this check after we read from the store because
