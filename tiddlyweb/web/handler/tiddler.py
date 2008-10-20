@@ -215,7 +215,7 @@ def _send_tiddler(environ, start_response, tiddler):
             raise HTTP415(exc)
 
     cache_header = ('Cache-Control', 'no-cache')
-    content_header = ('Content-Type', mime_type)
+    content_header = ('Content-Type', str(mime_type))
     response = [cache_header, content_header]
     if last_modified:
         response.append(last_modified)

@@ -173,7 +173,7 @@ class Store(StorageInterface):
         tiddler_filename = os.path.join(tiddler_base_filename, '%s' % revision)
         tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
 
-        if tiddler.type:
+        if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64encode(tiddler.text)
 
         serializer = Serializer('text')

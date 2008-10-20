@@ -4,6 +4,8 @@ Text based serializers.
 
 import simplejson
 
+from base64 import b64encode, b64decode
+
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy # XXX might be able to be rid of this
 
@@ -91,7 +93,10 @@ class Serialization(SerializationInterface):
         plus the text of the tiddler.
         """
         tiddler_dict = self._tiddler_dict(tiddler)
-        tiddler_dict['text'] = tiddler.text
+        if tiddler.type and tiddler.type != 'None':
+            tiddler_dict['text'] = b64encode(tiddler.text)
+        else:
+            tiddler_dict['text'] = tiddler.text
 
         return simplejson.dumps(tiddler_dict)
 
@@ -103,6 +108,8 @@ class Serialization(SerializationInterface):
         for key, value in dict_from_input.iteritems():
             if value:
                 setattr(tiddler, key, value)
+        if tiddler.type and tiddler.type != 'None':
+            tiddler.text = b64decode(tiddler.text)
 
         return tiddler
 

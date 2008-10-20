@@ -4,6 +4,8 @@ A StorageInterface that stores in Google Data.
 
 import logging
 
+from base64 import b64encode, b64decode
+
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
@@ -12,7 +14,7 @@ from tiddlyweb.model.policy import Policy
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, NoUserError, StoreLockError
+from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError
 from tiddlyweb.stores import StorageInterface
 
 class GDRecipe(db.Model):
@@ -45,6 +47,7 @@ class GDTiddler(db.Expando):
     tags = db.ListProperty(unicode)
     text = db.TextProperty()
     bag = db.StringProperty()
+    type = db.StringProperty()
 
 class Store(StorageInterface):
 
@@ -150,15 +153,8 @@ class Store(StorageInterface):
         memcache.delete(self._tiddler_key(tiddler))
         gdtiddler.delete()
 
-    title = db.StringProperty(required=True)
-    modifier = db.StringProperty()
-    modified = db.StringProperty()
-    created = db.StringProperty()
-    tags = db.ListProperty(unicode)
-    text = db.TextProperty()
-    bag = db.StringProperty()
     def tiddler_get(self, tiddler):
-        tiddler_properties = ['text', 'bag', 'modifier', 'modified', 'created', 'tags']
+        tiddler_properties = ['text', 'bag', 'modifier', 'modified', 'created', 'tags', 'type']
         try:
             mem_tiddler = memcache.get(self._tiddler_key(tiddler))
             if mem_tiddler is not None:
@@ -169,6 +165,8 @@ class Store(StorageInterface):
                         tiddler.fields[item] = mem_tiddler.__getattr__(item)
                 except TypeError:
                     pass
+                if tiddler.type and tiddler.type != 'None':
+                    tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
                 return tiddler
         except KeyError:
             pass
@@ -186,15 +184,20 @@ class Store(StorageInterface):
             tiddler.fields[item] = gdtiddler.__getattr__(item)
 
         memcache.add(self._tiddler_key(tiddler), gdtiddler)
+        if tiddler.type and tiddler.type != 'None':
+            tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
         return tiddler
 
     def tiddler_put(self, tiddler):
+        if tiddler.type and tiddler.type != 'None':
+            tiddler.text = b64encode(tiddler.text)
         gdtiddler = GDTiddler(key_name=self._tiddler_key(tiddler), title=tiddler.title, bag=tiddler.bag)
         gdtiddler.modifier = tiddler.modifier
         gdtiddler.modified = tiddler.modified
         gdtiddler.created = tiddler.created
         gdtiddler.text = tiddler.text
         gdtiddler.tags = tiddler.tags
+        gdtiddler.type = tiddler.type
         for key in tiddler.fields:
             if not key.startswith('server.') and key != 'title':
                 logging.warning('attempting to set key %s' % key)
