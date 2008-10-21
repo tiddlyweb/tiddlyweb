@@ -41,6 +41,7 @@ def get(environ, start_response):
         try:
             store.get(recipe)
             tiddler.bag = control.determine_tiddler_bag_from_recipe(recipe, tiddler).name
+            tiddler.recipe = recipe.name
         except NoRecipeError, exc:
             raise HTTP404('unable to edit %s, recipe %s not found: %s' % (tiddler.title, recipe_name, exc))
         except NoBagError, exc:
