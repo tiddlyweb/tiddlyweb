@@ -45,11 +45,12 @@ docs/TODO: For tasks that need to be done.
 docs/RUN: To run this installation in place with some sample data.
 docs/TESTING: Information about the tests located in the test directory.
 docs/COOKBOOK: A guide to how to setup a TiddlyWeb server with your own content.
-atom/README: An example of how to extend the system so it presents Atom feeds.
-googleappengine/README: An example of how to modify the system it works under
-    Google App Engine.
 index.cgi: A sample of how to make TiddlyWeb run as a CGI with a web server
     such as Apache.
+modpython.py: A sample of hos to make TiddlyWeb run under mod_python and Apache.
+
+See http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/tiddlyweb-plugins/
+for some samples of plugins that TiddlyWeb can use with itself.
 
 If you have questions or contributions on making this work
 please post the TiddlyWikiDev group at google groups:

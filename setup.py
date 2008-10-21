@@ -13,10 +13,11 @@ setup(name = 'tiddlyweb',
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/core',
-        packages = ['tiddlyweb', 'tiddlyweb.model', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler'],
+        packages = ['tiddlyweb', 'tiddlyweb.model', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler', 'cherrypy', 'cherrypy.wsgiserver'],
         scripts = ['twanager',],
         platforms = 'Posix; MacOS X; Windows',
         install_requires = ['selector', 'simplejson', 'BeautifulSoup', 'wikklytext'],
+        include_package_data = True,
         )
 
 

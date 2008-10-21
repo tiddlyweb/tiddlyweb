@@ -20,7 +20,7 @@ def setup_module(module):
     from tiddlyweb.web import serve
     serve.config['auth_systems'].append('not.really.there')
     def app_fn():
-        return serve.load_app('our_test_domain', 8001, 'urls.map')
+        return serve.load_app('our_test_domain', 8001, 'tiddlyweb/urls.map')
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
     module.store = teststore()
