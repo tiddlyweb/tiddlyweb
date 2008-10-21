@@ -96,7 +96,10 @@ class Serialization(HTMLSerialization):
             link = u'%sbags/%s/tiddlers/%s' % \
                     (self._server_url(), iri_to_uri(tiddler.bag), iri_to_uri(tiddler.title))
 
-        description = wikitext_to_wikklyhtml(self._server_url(), tiddler_link, tiddler.text)
+        if tiddler.type and tiddler.type != 'None':
+            description = 'Binary Content'
+        else:
+            description = wikitext_to_wikklyhtml(self._server_url(), tiddler_link, tiddler.text)
         feed.add_item(title=tiddler.title,
                 link=link,
                 description=description,
