@@ -134,8 +134,7 @@ class Store(StorageInterface):
             # base_tiddler is the head of the revision stack
             base_tiddler = Tiddler(tiddler.title)
             base_tiddler.bag = tiddler.bag
-            base_tiddler = \
-                    self._read_tiddler_revision(base_tiddler, index=-1)
+            base_tiddler = self._read_tiddler_revision(base_tiddler, index=-1)
             # set created on new tiddler from modified on base_tiddler
             # (might be the same)
             tiddler.created = base_tiddler.modified

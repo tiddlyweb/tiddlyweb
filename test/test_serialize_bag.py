@@ -40,6 +40,11 @@ expected_html_revbag_string = """<ul id="tiddlers" class="entitylist">
 <li><a href="/bags/bagfour/tiddlers/TiddlerThree/revisions/None">TiddlerThree:None</a></li>
 </ul>"""
 
+expected_bag_html = """
+<div id="bagdesc" class="description">a tasty little bag</div>
+<div class="tiddlerslink"><a href="bagfour/tiddlers">Tiddlers in Bag bagfour</a></div>
+"""
+
 def setup_module(module):
     module.serializer = Serializer('text')
 
@@ -113,3 +118,11 @@ def test_json_to_bag():
     assert newbag.policy.read == ['user1']
     assert newbag.policy.manage == ['NONE']
     assert newbag.desc == 'simply the best'
+
+def test_bag_to_html():
+    serializer = Serializer('html')
+
+    serializer.object = bagfour
+    html = serializer.to_string()
+
+    assert html == expected_bag_html

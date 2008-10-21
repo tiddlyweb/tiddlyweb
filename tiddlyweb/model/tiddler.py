@@ -83,9 +83,7 @@ class Tiddler(object):
             'recipe',
             'store']
 
-    def __init__(self,
-            title=None,
-            bag=None):
+    def __init__(self, title=None, bag=None):
         """
         Create a new Tiddler object.
 

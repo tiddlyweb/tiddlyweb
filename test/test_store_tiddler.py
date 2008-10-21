@@ -141,4 +141,9 @@ def test_store_lock():
     tiddler.bag = 'bagone'
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 
-
+def test_bad_filename():
+    """
+    If there is ../ in the tiddler name, choke.
+    """
+    tiddler = Tiddler('../nastyone', 'bagone')
+    py.test.raises(NoTiddlerError, 'store.put(tiddler)')

@@ -14,6 +14,8 @@ sys.path.append('.')
 import simplejson
 import py.test
 
+from base64 import b64encode
+
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 
@@ -97,5 +99,18 @@ def test_tiddler_html_encode():
 
     assert '"Hello." I\'m &gt; than 5 &amp; &lt; you.' in string
 
+def test_tiddler_json_base64():
+    serializer = Serializer('json')
+    tiddler = Tiddler('binarytiddler')
+    tiddler.bag = 'foo'
+    tiddler.text = file('test/peermore.png', 'rb').read()
+    bininfo = tiddler.text
+    b64expected = b64encode(tiddler.text)
+    tiddler.type = 'image/png'
+    serializer.object = tiddler
+    string = serializer.to_string()
+    info = simplejson.loads(string)
+    assert info['text'] == b64expected
 
-
+    tiddler = serializer.from_string(string)
+    assert tiddler.text == bininfo

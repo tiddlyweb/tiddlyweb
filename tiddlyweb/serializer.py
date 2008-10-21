@@ -67,7 +67,7 @@ class Serializer(object):
         try:
             object_func = getattr(self.serialization, 'as_%s' % lower_class)
         except AttributeError, exc:
-            raise AttributeError('unable to find from string function for %s: $s' % (lower_class, exc))
+            raise AttributeError('unable to find from string function for %s: %s' % (lower_class, exc))
         return object_func(self.object, input_string)
 
     def list_recipes(self, recipes):

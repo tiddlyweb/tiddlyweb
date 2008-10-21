@@ -14,6 +14,7 @@ from base64 import b64encode
 
 from fixtures import muchdata, reset_textstore, teststore
 from tiddlyweb.model.user import User
+from tiddlyweb.config import config
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -133,3 +134,20 @@ def test_openid():
         raised = 1
     assert raised
     assert e.response['status'] == '303'
+
+def test_single_challenge_redirect():
+    """
+    When there is only one challenger configured, we should
+    be redirected to it instead of getting a list.
+    """
+
+    config['auth_systems'] = ['cookie_form']
+    http = httplib2.Http()
+    raised = 0
+    try:
+        response, content = http.request('http://our_test_domain:8001/challenge', method='GET', redirections=0)
+    except httplib2.RedirectLimit, e:
+        raised = 1
+
+    assert raised
+    assert e.response['status'] == '302'
