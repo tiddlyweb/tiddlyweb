@@ -48,6 +48,8 @@ def setup_module(module):
     user.set_password('cowpig')
     module.store.put(user)
 
+    os.mkdir('.test_cache')
+
 def test_get_tiddler():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8',
