@@ -1,13 +1,24 @@
 """
-XXX THIS DOESN'T WORK YET! XXX
+Try to setup tiddlyweb.
 """
-from distutils.core import setup
-setup(name='tiddlyweb',
-        version='0.2',
-        description='A headless wiki RESTful datastore for TiddlyWiki',
-        author='Chris Dent',
-        author_email='cdent@peermore.com',
-        packages=['tiddlyweb',],
-        scripts=['manager',],
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+setup(name = 'tiddlyweb',
+        version = '0.2',
+        description = 'An optionally headless, extensible RESTful datastore for TiddlyWiki',
+        author = 'Chris Dent',
+        author_email = 'cdent@peermore.com',
+        url = 'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/core',
+        packages = ['tiddlyweb', 'tiddlyweb.model', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler'],
+        scripts = ['twanager',],
+        platforms = 'Posix; MacOS X; Windows',
+        install_requires = ['selector', 'simplejson', 'BeautifulSoup', 'wikklytext'],
         )
+
+
+
 
