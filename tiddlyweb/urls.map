@@ -188,8 +188,3 @@
 # is generally used to present an interface, POST
 # to deal with user response. But this is very
 # dependent on the implementation.
-
-/edit
-    GET tiddlyweb.web.handler.edit:get
-# Produce an editor for a Tiddler identified by 
-# query parameters. Usually the editor is a TiddlyWiki.

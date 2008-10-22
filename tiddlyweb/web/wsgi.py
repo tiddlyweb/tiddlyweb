@@ -33,6 +33,7 @@ class HTMLPresenter(object):
             links = '\n'.join(environ['tiddlyweb.links'])
         except KeyError:
             links = ''
+        header_extra = self.header_extra(environ)
         return """
 <html>
 <head>
@@ -41,11 +42,14 @@ class HTMLPresenter(object):
 %s
 </head>
 <body>
-<div id="header">%s</div>
-""" % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'])
+<div id="header">
+<h1 id="pagetitle">%s</h1>
+%s
+</div>
+""" % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'], header_extra)
 
     def _footer(self, environ):
-        edit_link = self._edit_link(environ)
+        footer_extra = self.footer_extra(environ)
         return """
 <div id="footer">
 %s
@@ -54,20 +58,18 @@ class HTMLPresenter(object):
 </div>
 </body>
 </html>
-""" % (edit_link, environ['tiddlyweb.usersign']['name'])
+""" % (footer_extra, environ['tiddlyweb.usersign']['name'])
 
-    def _edit_link(self, environ):
+    def header_extra(self, environ):
+        """
+        Override this in plugins to add to the header.
+        """
+        return ''
 
-        if 'editor_tiddlers' in environ['tiddlyweb.config']:
-            tiddler_name = environ['wsgiorg.routing_args'][1].get('tiddler_name', None)
-            recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', '')
-            bag_name = environ['wsgiorg.routing_args'][1].get('bag_name', '')
-            revision = environ['wsgiorg.routing_args'][1].get('revision', None)
-
-            if tiddler_name and not revision:
-                return '<div id="edit"><a href="/edit?tiddler=%s;bag=%s;recipe=%s">Edit</a></div>' \
-                        % (tiddler_name, bag_name, recipe_name)
-
+    def footer_extra(self, environ):
+        """
+        Override this in plugins to add to the footer.
+        """
         return ''
 
 
