@@ -1,5 +1,6 @@
 include demo.py index.cgi mod_python.py
 include tiddlyweb/empty.html
 include tiddlyweb/urls.map
+recursive-include docstore *
 recursive-include test *
 recursive-include docs *
