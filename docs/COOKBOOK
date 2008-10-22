@@ -108,8 +108,8 @@ text store.
 
 To put then into the bag run the following:
 
-  $ ./manager tiddler TiddlyWebAdaptorPlugin TiddlyWeb < path/to/TiddlyWebAdaptorPlugin.txt
-  $ ./manager tiddler TiddlyWebAutoSavePlugin TiddlyWeb < path/to/TiddlyWebAutoSavePlugin.txt
+  $ twanager tiddler TiddlyWebAdaptorPlugin TiddlyWeb < path/to/TiddlyWebAdaptorPlugin.txt
+  $ twanager tiddler TiddlyWebAutoSavePlugin TiddlyWeb < path/to/TiddlyWebAutoSavePlugin.txt
 
 This stores the two named plugins into the TiddlyWeb bag.
 
@@ -237,7 +237,7 @@ whenever you like. If you want to start it and keep a record of the log
 you may, depending on operating system and shell choices, do something 
 like this:
 
-  $ ./manager server <ip number> <port> &> server.log &
+  $ twanager server <ip number> <port> &> server.log &
 
 If you encounter difficulties using TiddlyWeb contact the TiddlyWikiDev
 Google Group, or contact the first author Chris Dent, <cdent@peermore.com>.
