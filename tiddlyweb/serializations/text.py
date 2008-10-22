@@ -53,6 +53,7 @@ class Serialization(SerializationInterface):
         """
         Turn a string back into a recipe.
         """
+
         def _handle_headers(recipe, header):
             headers = header.split('\n')
             for field, value in [x.split(': ', 1) for x in headers]:

@@ -130,7 +130,6 @@ class Serialization(SerializationInterface):
 </ul>
 """ % (self._tiddler_list_header(wiki_link), output)
 
-
     def tiddler_as(self, tiddler):
         """
         Transform the provided tiddler into an HTML
@@ -142,7 +141,6 @@ class Serialization(SerializationInterface):
             return self._tiddler_to_wikklyhtml(tiddler)
         except ImportError:
             return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
-
 
     def _server_prefix(self):
         config = self.environ.get('tiddlyweb.config', {})
