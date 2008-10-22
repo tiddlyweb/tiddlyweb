@@ -1,68 +1,10 @@
-modifier: ChrisDent
-modified: 200806220000
-created: 200803280000
-tags: 
 
-Note: Some of these items have been moved to Trac, which will slowly become the canonical source of TiddlyWeb action items.
-See: http://trac.tiddlywiki.org/query?component=tiddlyweb&order=priority
+TODOS and other issues for TiddlyWeb are not being kept
+in TiddlyWiki's trac server:
 
-A place to note tasks that need to be done. This is not complete, and likely not up to date.
+  http://trac.tiddlywiki.org/
 
-If you think there should be something on this list, contact ChrisDent.
+Here's a direct link to a query for all tiddlyweb tickets:
 
-!Functionality
+  http://trac.tiddlywiki.org/query?status=assigned&status=new&status=reopened&component=tiddlyweb&order=priority&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component
 
-!! Middleware and Starters
-
-* Remove logger from the index.cgi app configuration and make sure errors get sent to stderr.
-* Set REMOTE_USER in the real (os) environment so Apache can use that if we are in Apache and want its logging.
-
-!! Core
-
-* Explore storage of binary content types in the system. Perhaps Base64 encoded tiddler bodies.
-
-!! Serializations
-
-* Support for skinny tiddlers and lazy loading.
-
-!! Stores
-
-* Implement support for deleting users from the store.
-* Additional stores: S3, sqlite, subversion, etc.
-
-!! Filters
-
-* Unify filter string syntax on Jon's research.
-* Add name fragments to arguments in filters
-
-!! Web Handling
-
-* There are unicode issues in the GAE handling of html content. (via bentrem)
-* User registration concerns.
-
-!! Miscellaneous
-
-* py2app and py2exe versions for one click installation on OS X and Windows.
-
-!Tests and assurancs
-
-* Tests for '..', '/', etc in title and name fields w/ store handling. !!
-* Rhino and Selenium based testing.
-
-!Cleanliness, Documentation and Protocol Behavior
-
-* Proper navigability between resources in HTML and JSON reps.
-* More readable, and more, HTTP based tests, demonstrating, clearly, the protocol.
-* As a sample use case, create a blog recipe in which blog content is writeable by the author, but not by others, and there is a CommentPlugin for others to leave feedback.
-
-!Client side issues and plugins
-
-* Fix a bug in TiddlyWebAutoSavePlugin where it says there's been a successful save even when the server is no longer running. Should be an error.
-* There needs to be a way in the client to do a refresh when a 412 comes along.
-* Bag security policy authoring
-* Client side recipe and bag construction sets.
-
-!Moonbeams from Ponies of the Future
-
-* Align with http://www.mnot.net/blog/2008/03/20/beyond_methods
-* Recipes that contain bags on multiple servers.

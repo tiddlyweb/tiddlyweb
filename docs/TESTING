@@ -1,8 +1,8 @@
 
-A growing suite of tests are located in the test directory.
+A sizable suite of tests is located in the test directory.
 
 The tests may be run with py.test[1]. If you have py.test
-install, from the TiddlyWeb base directory simply type
+installed, from the TiddlyWeb base directory simply type
 
   py.test
   
@@ -11,6 +11,13 @@ the output can be a bit hard to interpret. You can run
 an individual test file, with more verbose output as follows:
 
   py.test -v --nocapture test/test_web_tiddler.py
+
+You can run the tests to the first failure:
+
+  py.test -x
+
+This helps quite a bit with dealing with the error 
+output.
 
 Tests which test the web serving sides of the application 
 require httplib2[2] and wsgi_intercept[3] (so no web server 

@@ -8,13 +8,6 @@ sever that is built in.
 Put the cgi somewhere your web server can run cgis. You
 can rename it if you like. Make sure the file is executable.
 
-In the same directory as index.cgi, make a copy of or synlink
-to the lib directory available in the TiddlyWeb code repo.
-
-Place a copy of urls.map in the same directory as index.cgi
-or adjust the tiddlywebconfig.py urls_map key to point to
-wherever you have it.
-
 If you are using the text store (you probably are) follow
 the instructions in COOKBOOK to make a text store directory
 structure somewhere. The directory hierarchy must be writable 

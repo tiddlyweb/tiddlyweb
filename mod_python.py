@@ -10,7 +10,7 @@ http://www.aminus.net//wiki/ModPythonGateway
 
 (There are other options as well if you are stuck
 with mod_python. If you are not but wish to use
-Apache, mod_wsgi is likely a better choice.)
+Apache, mod_wsgi is a better choice.)
 
 The apache configuration has something like this:
 
@@ -24,13 +24,6 @@ The apache configuration has something like this:
 
 For purposes beyond this script the name twtest and
 the path to it would need to be changed.
-
-If this script is not running out of the same directory
-that contains lib and urls.map, those will need to be 
-symlinked into the same directory as the script OR
-tiddlywebconfig.py will need to be updated to set
-urls_map and base_tiddlywiki to point to the correct
-locations.
 
 Instead of setting config items in this script a
 tiddlywebconfig.py could be used instead.
