@@ -4,7 +4,7 @@ the web server. There are probably better places
 for this.
 """
 
-ROOT_PAGE = """<ul id="root" class="entitylist">
+ROOT_PAGE = """<ul id="root" class="listing">
 <li><a href="recipes">recipes</a></li>
 <li><a href="bags">bags</a></li>
 </ul>"""

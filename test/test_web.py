@@ -15,7 +15,7 @@ import tiddlyweb.web.util
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.bag import Bag
 
-expected_content="""<ul id="root" class="entitylist">
+expected_content="""<ul id="root" class="listing">
 <li><a href="recipes">recipes</a></li>
 <li><a href="bags">bags</a></li>
 </ul>"""

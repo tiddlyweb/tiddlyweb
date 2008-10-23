@@ -25,7 +25,7 @@ class Serialization(SerializationInterface):
         """
         self.environ['tiddlyweb.title'] = 'Recipes'
         lines = []
-        output = '<ul id="recipes" class="entitylist">\n'
+        output = '<ul id="recipes" class="listing">\n'
         for recipe in recipes:
             line = '<li><a href="recipes/%s">%s</a></li>' % (urllib.quote(recipe.name.encode('utf-8')), recipe.name)
             lines.append(line)
@@ -38,7 +38,7 @@ class Serialization(SerializationInterface):
         """
         self.environ['tiddlyweb.title'] = 'Bags'
         lines = []
-        output = '<ul id="bags" class="entitylist">\n'
+        output = '<ul id="bags" class="listing">\n'
         for bag in bags:
             line = '<li><a href="bags/%s">%s</a></li>' % (urllib.quote(bag.name.encode('utf-8')), bag.name)
             lines.append(line)
@@ -65,7 +65,7 @@ class Serialization(SerializationInterface):
         tiddler_link = '%s/tiddlers' % urllib.quote(recipe.name.encode('utf-8'))
         return """
 <div id="recipedesc" class="description">%s</div>
-<ul id="recipe">
+<ul id="recipe" class="listing">
 %s
 </ul>
 <div class="tiddlerslink"><a href="%s">Tiddlers in Recipe</a></div>
@@ -125,7 +125,7 @@ class Serialization(SerializationInterface):
         self.environ['tiddlyweb.title'] = title
         return """
 %s
-<ul id="tiddlers" class="entitylist">
+<ul id="tiddlers" class="listing">
 %s
 </ul>
 """ % (self._tiddler_list_header(wiki_link), output)

@@ -43,14 +43,16 @@ class HTMLPresenter(object):
 </head>
 <body>
 <div id="header">
-<h1 id="pagetitle">%s</h1>
+<h1>%s</h1>
 %s
 </div>
+<div id="content">
 """ % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'], header_extra)
 
     def _footer(self, environ):
         footer_extra = self.footer_extra(environ)
         return """
+</div>
 <div id="footer">
 %s
 <div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>

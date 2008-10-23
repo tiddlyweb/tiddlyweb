@@ -22,19 +22,19 @@ expected_revbag_string = """TiddlerOne:None
 TiddlerTwo:None
 TiddlerThree:None"""
 
-expected_html_string = """<ul id="tiddlers" class="entitylist">
+expected_html_string = """<ul id="tiddlers" class="listing">
 <li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerTwo">TiddlerTwo</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerThree">TiddlerThree</a></li>
 </ul>"""
 
-prefix_expected_html_string = """<ul id="tiddlers" class="entitylist">
+prefix_expected_html_string = """<ul id="tiddlers" class="listing">
 <li><a href="/salacious/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
 <li><a href="/salacious/bags/bagfour/tiddlers/TiddlerTwo">TiddlerTwo</a></li>
 <li><a href="/salacious/bags/bagfour/tiddlers/TiddlerThree">TiddlerThree</a></li>
 </ul>"""
 
-expected_html_revbag_string = """<ul id="tiddlers" class="entitylist">
+expected_html_revbag_string = """<ul id="tiddlers" class="listing">
 <li><a href="/bags/bagfour/tiddlers/TiddlerOne/revisions/None">TiddlerOne:None</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerTwo/revisions/None">TiddlerTwo:None</a></li>
 <li><a href="/bags/bagfour/tiddlers/TiddlerThree/revisions/None">TiddlerThree:None</a></li>
