@@ -59,7 +59,7 @@ class Challenger(ChallengerInterface):
         if len(openid):
             return self._find_speak_to_server(environ, start_response, redirect, openid)
         else:
-            return self._send_openid_form(environ, start_response, redirect, 'Enter an OpenID')
+            return self._send_openid_form(environ, start_response, redirect, message='Enter an OpenID')
 
     def _handle_server_response(self, environ, start_response):
         """
@@ -83,7 +83,10 @@ class Challenger(ChallengerInterface):
             if item == 'mode' or item == 'sig' or item == 'signed' or item == 'assoc_handle':
                 continue
             key = 'openid.%s' % item
-            data[key] = request_info[key][0]
+            try:
+                data[key] = request_info[key][0]
+            except KeyError:
+                pass # signed key not in request
         post_data = urllib.urlencode(data)
 
         response = urllib.urlopen(openid_server, post_data).read()
