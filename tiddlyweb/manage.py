@@ -176,7 +176,7 @@ def handle(args):
     given in a args[1].
     """
     try:
-        plugins = config['manager_plugins']
+        plugins = config['twanager_plugins']
         for plugin in plugins:
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
