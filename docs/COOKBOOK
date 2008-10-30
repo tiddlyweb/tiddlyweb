@@ -32,11 +32,12 @@ Let's begin.
 
 1. Get Where You Need to Be
 
-The first step is to create a directory where you will build the
-system and change to it. This can be anywhere that is convenient for you.
-
-  $ mkdir <directory name>
-  $ cd <directory name>
+The first step is to choose a directory where you will build the
+system. This can be anywhere that is convenient for you. Since
+version 0.6 of tiddlyweb, this directory will be automatically
+created for you using a twanager command. So all you need to do 
+for now is go to the directory that will contain the directory
+you wish to create.
 
 Next we'll confirm that you have access to the twanager (TiddlyWeb
 Manager) command. You'll use this command quite a bit. It is a tool for
@@ -51,6 +52,7 @@ You should see something like this:
        bag: Create or update a bag with the json text on stdin: <bag name>
   from_svn: Import one or more plugins, tiddlers or recipes from tiddlywiki subversion.
     imwiki: Import a Tiddlywiki html file into a bag: <filename> <bag name>
+  instance: Create a tiddlyweb instance with default plugins in the named directory.
     recipe: Create or update a recipe with the recipe text on stdin: <recipe name>
     server: Start the server: <hostname or ip number> <port>
    tiddler: Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>
@@ -86,32 +88,46 @@ content from and to a bag.
 The first bag we'll create is one that will contains the two plugins
 that make content automatically synchronize back to the TiddlyWeb server
 after it has been edited in a TiddlyWiki. We'll call this bag
-'TiddlyWeb'. Where the below shows ^D, type ctrl-d.
+'system'. Because this is something you are likely to do quite a bit
+if you install TiddlyWeb often, there's a twanager command that encapsulates
+multiple steps in one. Remember the directory name you chose above, we'll
+use that now to create an "instance" of TiddlyWeb.
 
-  $ .twanager bag TiddlyWeb
-  ^D
+  $ twanager instance <directory name>
 
 If you get no error message it worked. You can confirm that it did
 by doing
 
-  % ls -lR store
+  $ ls -lR <directory name>
 
 You should see a list of several files including a directory:
-'/store/bags/TiddlyWeb'
+'<directory name>/store/bags/system'
 
-Now we'll add the two plugin tiddlers to the bag. First we
-need to get them from the TiddlyWiki subversion repository.
-TiddlyWeb has built in support for retrieving tiddlers and plugins
-from there. The twanager command from_svn can retrieve tiddlers,
-plugins and full cook-style recipes from subversion. For now we 
-will just get two plugins, and put them in the TiddlyWeb bag
-you just created.
+The instance command has:
 
-Enter the following at the command line (as one long line):
+ * created <directory name> directory
+ * created a storage directory
+ * create a bag named system
+ * imported the TiddlyWebAutoSavePlugin and TiddlyWebAdaptorPlugin
+   from svn.tiddlywiki.org into the system bag
+ * put an empty configuration file (tiddlywebconfig.py) in 
+   <directory name>
 
-  $ twanager from_svn TiddlyWeb http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAdaptorPlugin.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
+For the next steps you'll need to be in <directory name> so 
+change into it:
 
-This stores the two named plugins into the TiddlyWeb bag.
+  $ cd <directory name> 
+
+If you want to add other content from svn.tiddlywiki.org TiddlyWeb has
+built in support for retrieving tiddlers and plugins from there. The
+twanager command from_svn can retrieve tiddlers, plugins and full cook-
+style recipes from subversion. If the instance command did not exist
+we could have done:
+
+  $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAdaptorPlugin.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
+
+This would have installed the two named plugins into the system bag,
+if it existed.
 
 4. Import A TiddlyWiki
 
@@ -126,9 +142,11 @@ If you want to use the TiddlyWiki at tiddlyweb.com there are concrete
 instructions for that at the end of this section. If you want to use
 your own wiki file, carry on as follows:
 
-Create a bag for each TiddlyWiki you wish to import, replace <bag name>
-with a unique name for each TiddlyWiki. You can use spaces if you want.
-Remember which name goes with which TiddlyWiki.
+To create a bag for each TiddlyWiki you wish to import we will use
+the 'bag' command, replacing <bag name> with a unique name for each
+TiddlyWiki. You can use spaces if you want, but if you do you need to
+put the name in quotes. Remember which name goes with which TiddlyWiki.
+Where you see ^D type ctrl-d.
 
   $ twanager bag <bag name>
   ^D
@@ -150,7 +168,7 @@ To use the TiddlyWiki at tiddlywiki.com as your sample wiki do the following.
 You will need to have curl <http://curl.haxx.se/> available on your system.
 
   $ curl http://www.tiddlywiki.com > tiddlywiki.html
-  $ twanager bag tiddlywiki
+  $ twanager bag tiddlywiki < /dev/null
   $ twanager imwiki tiddlywiki.html tiddlywiki
   $ ls store/bags/tiddlywiki/tiddlers
 
@@ -178,7 +196,7 @@ beginning with $ are lines for you to type (substituting the bag's name
 for <bag name>. Make sure you type them correctly:
 
   $ twanager recipe <recipe name>
-  /bags/TiddlyWeb/tiddlers
+  /bags/system/tiddlers
   /bags/<bag name>/tiddlers
   ^D
 
