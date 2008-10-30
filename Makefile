@@ -5,10 +5,10 @@
 .PHONY: test dist upload
 
 test: 
-	py.test test
+	py.test -x test
 
-dist:
+dist: test
 	python setup.py sdist
 
-upload:
-	scp dist/tiddlyweb-*.gz cdent@hot.burningchrome.com:public_html/peermore.com/tiddlyweb/dist
+upload: dist
+	scp dist/tiddlyweb-*.gz cdent@peermore.com:public_html/peermore.com/tiddlyweb/dist

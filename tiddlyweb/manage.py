@@ -166,7 +166,7 @@ def tiddler(args):
 def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
-        print "%s\t\t%s" % (key, COMMANDS[key].description)
+        print "%10s: %s" % (key, COMMANDS[key].description)
     sys.exit(0)
 
 

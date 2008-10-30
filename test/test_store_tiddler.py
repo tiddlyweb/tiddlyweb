@@ -13,6 +13,7 @@ import sys
 sys.path.append('.')
 
 from fixtures import bagone, bagfour, textstore, reset_textstore, teststore
+from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
@@ -131,7 +132,7 @@ def test_store_lock():
     Make the sure the locking system throws the proper lock.
     """
 
-    texter = Texter()
+    texter = Texter(environ={'tiddlyweb.config': config})
     texter.write_lock(textstore.bag_store)
     py.test.raises(StoreLockError, 'texter.write_lock(textstore.bag_store)')
 

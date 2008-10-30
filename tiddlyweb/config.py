@@ -120,7 +120,7 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, P
 # wikis.
 DEFAULT_CONFIG = {
         'system_plugins': [],
-        'twanager_plugins': [],
+        'twanager_plugins': ['tiddlyweb.fromsvn'],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,

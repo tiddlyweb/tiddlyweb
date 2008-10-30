@@ -10,6 +10,7 @@ sys.path.append('.')
 import py.test
 
 from tiddlyweb.store import Store
+from tiddlyweb.config import config
 
 def setup_module(module):
     pass
@@ -22,5 +23,5 @@ def test_unsupported_class():
         pass
 
     foo = Foo()
-    store = Store('text')
+    store = Store('text', environ={'tiddlyweb.config': config})
     py.test.raises(AttributeError, 'store.put(foo)')

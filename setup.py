@@ -8,7 +8,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name = 'tiddlyweb',
-        version = '0.5',
+        version = '0.6',
         description = 'An optionally headless, extensible RESTful datastore for TiddlyWiki',
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
