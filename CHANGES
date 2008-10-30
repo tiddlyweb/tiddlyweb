@@ -1,3 +1,10 @@
+0.6 Thu Oct 30 16:29:50 GMT 2008
+
+  * text store automatically creates necessary directories
+  * from_svn twanager command included in core
+  * instance twanager command created (established basic install)
+  * updated COOKBOOK to reflect instance command
+  * beginning of docs/EXTEND
 
 0.5 Fri Oct 24 11:37:03 BST 2008
 
