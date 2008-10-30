@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
 """
-A built-in twanger plugin for retrieving tiddlers, plugins or full recipes
+A built-in twanager plugin for retrieving tiddlers, plugins or full recipes
 from the TiddlyWiki subversion repository. Provide the
 name of one bag and one or more urls on the twanager command line.
 
