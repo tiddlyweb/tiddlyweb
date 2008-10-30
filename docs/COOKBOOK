@@ -47,13 +47,14 @@ arguments you should get a list of possible commands. Try it:
 
 You should see something like this:
 
-adduser     Add or update a user to the database: <username> <password>
-bag         Create or update a bag with the json text on stdin: <bag name>
-help        List this help
-imwiki      Import a Tiddlywiki html file into a bag: <filename> <bag name>
-recipe      Create or update a recipe with the recipe text on stdin: <recipe name>
-server      Start the server: <hostname or ip number> <port>
-tiddler     Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>
+   adduser: Add or update a user to the database: <username> <password> [[role] [role] ...]
+       bag: Create or update a bag with the json text on stdin: <bag name>
+  from_svn: Import one or more plugins, tiddlers or recipes from tiddlywiki subversion.
+    imwiki: Import a Tiddlywiki html file into a bag: <filename> <bag name>
+    recipe: Create or update a recipe with the recipe text on stdin: <recipe name>
+    server: Start the server: <hostname or ip number> <port>
+   tiddler: Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>
+     usage: List this help
 
 If it doesn't work then you are in an unsual situation. First make sure
 the stuff in README and RUN checks out okay and then contact
@@ -65,13 +66,9 @@ By default, TiddlyWeb uses a text based storage system with its
 root in a directory named 'store' in the same directory from which
 the server starts. That's the directory we are in right now.
 
-We need to make the store directory (now empty) and three required
-directories within:
-
-  $ mkdir store
-  $ mkdir store/bags
-  $ mkdir store/recipes
-  $ mkdir store/users
+As of version 0.6, the store directory and subdirectories are
+automatically created for you when you first use the store, so
+this will be done in the next step.
 
 3. Create Your First Bag
 
@@ -94,22 +91,25 @@ after it has been edited in a TiddlyWiki. We'll call this bag
   $ .twanager bag TiddlyWeb
   ^D
 
-If you get no error message it worked.
+If you get no error message it worked. You can confirm that it did
+by doing
+
+  % ls -lR store
+
+You should see a list of several files including a directory:
+'/store/bags/TiddlyWeb'
 
 Now we'll add the two plugin tiddlers to the bag. First we
-need to get them from the internet. Get and save the following
-two URLs:
+need to get them from the TiddlyWiki subversion repository.
+TiddlyWeb has built in support for retrieving tiddlers and plugins
+from there. The twanager command from_svn can retrieve tiddlers,
+plugins and full cook-style recipes from subversion. For now we 
+will just get two plugins, and put them in the TiddlyWeb bag
+you just created.
 
-    http://peermore.com:8080/recipes/AutoTiddlyWeb/tiddlers/TiddlyWebAdaptorPlugin.txt
-    http://peermore.com:8080/recipes/AutoTiddlyWeb/tiddlers/TiddlyWebAutoSavePlugin.txt
+Enter the following at the command line (as one long line):
 
-Thes files are specially formatted for use with the TiddlyWeb
-text store.
-
-To put then into the bag run the following:
-
-  $ twanager tiddler TiddlyWebAdaptorPlugin TiddlyWeb < path/to/TiddlyWebAdaptorPlugin.txt
-  $ twanager tiddler TiddlyWebAutoSavePlugin TiddlyWeb < path/to/TiddlyWebAutoSavePlugin.txt
+  $ twanager from_svn TiddlyWeb http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAdaptorPlugin.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
 
 This stores the two named plugins into the TiddlyWeb bag.
 
@@ -187,12 +187,12 @@ start the server.
 
 6. Start The Server
 
-TiddlyWeb comes with its own built in web server. It can be run with any
+TiddlyWeb comes with its own built in web server. TiddlyWeb can be run with any
 sever you like, with some scripting, but for these current purposes the
 built in server should work fine. You need to decide the hostname or ip
 number and port on which your server is going to run. If you're just
 experimenting on your local machine, for now you can use 0.0.0.0 (or if
-that doesn't work 127.0.0.1) for the ip number and 8080 for the port
+that doesn't work, 127.0.0.1) for the ip number and 8080 for the port
 number. If you are running TiddlyWeb on a remote server you need to
 choose the hostname of that server, and an available port.
 
@@ -201,7 +201,7 @@ Once you have figured these bits out you can start the server:
   $ twanager server <ip number> <port>
 
 You should see 'Starting CherryPy' and the $ prompt will not come
-back. If you get an 'Address already in use' some other service is
+back. If you get an 'Address already in use' error some other service is
 using the <port> you chose. Choose a different one.
 
 It's time to go to your web browser. For the examples below
@@ -252,7 +252,7 @@ example TiddlyWeb can now run on Google's app engine service and it can
 provide Atom feeds of lists of tiddlers.
 
 TiddlyWeb is built as a REST API so can be flexibly accessed by a variety
-of clients: a web browser, TiddlyWiki, script languages, other web
+of clients: a web browser, TiddlyWiki, scripting languages, other web
 servers. By looking through the code and experimenting with the URLs
 given to the server you'll see that TiddlyWeb can do far more than 
 explained in this document. Have fun with it.
