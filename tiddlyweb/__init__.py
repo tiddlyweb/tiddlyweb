@@ -17,3 +17,4 @@ changing the urls_map key in tiddlywebconfig.
 The primary resources presented by the server are Recipes,
 Bags and Tiddlers.
 """
+__version__ = '0.7'

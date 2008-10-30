@@ -7,8 +7,10 @@ try:
 except ImportError:
     from distutils.core import setup
 
+from tiddlyweb import __version__ as VERSION
+
 setup(name = 'tiddlyweb',
-        version = '0.6',
+        version = VERSION,
         description = 'An optionally headless, extensible RESTful datastore for TiddlyWiki',
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
