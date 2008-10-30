@@ -24,6 +24,15 @@ from tiddlyweb.stores import StorageInterface
 
 class Store(StorageInterface):
 
+    def __init__(self, environ={}):
+        self.environ = environ
+        if not os.path.exists(self._store_root()):
+            os.mkdir(self._store_root())
+            for name in ['bags', 'recipes', 'users']:
+                path = os.path.join(self._store_root(), name)
+                if not os.path.exists(path):
+                    os.mkdir(path)
+
     def recipe_delete(self, recipe):
 
         try:
