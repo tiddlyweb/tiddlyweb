@@ -27,8 +27,8 @@ and use the importer to import it.
 
 import sys
 import httplib2
-from urlparse import urljoin
 
+from urlparse import urljoin
 from BeautifulSoup import BeautifulSoup
 
 from tiddlyweb.manage import make_command
@@ -40,6 +40,9 @@ from tiddlyweb.importer import _do_tiddler
 
 
 class HTTPProblem(Exception):
+    """
+    Generic exception to indicate when the HTTP request has failed.
+    """
     pass
 
 
@@ -55,11 +58,13 @@ def from_svn(args):
     import_list(bag, urls)
 
 def import_list(bag, urls):
+    """Import a list of svn urls into bag."""
     for url in urls:
         import_one(bag, url)
 
 
 def import_one(bag, url):
+    """Import one svn url into bag."""
     print >> sys.stderr, "handling %s" % url
     if url.endswith('.recipe'):
         import_via_recipe(bag, url)
@@ -70,23 +75,22 @@ def import_one(bag, url):
 
 
 def import_via_recipe(bag, url):
+    """
+    Import one recipe, at svn url, into bag, calling import_one as needed.
+    Will recurse recipes as it finds them. NO LOOP DETECTION.
+    """
     recipe = get_url(url)
     rules = [line for line in recipe.split('\n') if line.startswith('tiddler:') or line.startswith('recipe:')]
     for rule in rules:
-        type, target = rule.split(':', 2)
+        target = rule.split(':', 2)[1]
         target = target.lstrip().rstrip()
         target_url = urljoin(url, target)
         import_one(bag, target_url)
 
 
-def import_tiddler(bag, url):
-    content = get_url(url)
-    tiddler = BeautifulSoup(content).find('div')
-    store = Store(config['server_store'][0], {'tiddlyweb.config': config})
-    _do_tiddler(bag, tiddler, store)
-
-
 def get_url(url):
+    """Get the content at url, raising HTTPProblem if there is one."""
+
     http = httplib2.Http()
     response, content = http.request(url, method='GET')
     if response.status != 200:
@@ -94,7 +98,21 @@ def get_url(url):
     return unicode(content, 'utf-8')
 
 
+def import_tiddler(bag, url):
+    """
+    Import one tiddler, at svn url, into bag.
+    """
+    content = get_url(url)
+    tiddler = BeautifulSoup(content).find('div')
+    store = Store(config['server_store'][0], {'tiddlyweb.config': config})
+    _do_tiddler(bag, tiddler, store)
+
+
 def import_plugin(bag, url):
+    """
+    Import one plugin, at svn url, into bag, retrieving
+    both the .js and .js.meta files.
+    """
     meta_url = '%s.meta' % url
     plugin_content = get_url(url)
     meta_content = get_url(meta_url)
@@ -116,5 +134,6 @@ def import_plugin(bag, url):
 
 
 def init(config_in):
+    """Register the config into the plugin."""
     global config
     config = config_in

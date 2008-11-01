@@ -47,17 +47,20 @@ def instance(args):
 
 
 def _empty_config():
+    """Write an empty tiddlywebconfig.py to the CWD."""
     cfg = open(CONFIG_NAME, 'w')
     cfg.write(EMPTY_CONFIG)
     cfg.close()
 
 
 def _make_bag(bag_name):
+    """Make a bag with name bag_name to the sore."""
     bag = Bag(bag_name)
     store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
     store.put(bag)
 
 
 def init(config_in):
+    """Initialize the plugin with config."""
     global config
     config = config_in
