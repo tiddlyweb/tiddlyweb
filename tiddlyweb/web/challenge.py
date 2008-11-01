@@ -11,6 +11,10 @@ from tiddlyweb.web.util import server_base_url
 
 
 def _challenger_url(environ, system):
+    """
+    Return the proper URL for a specific challenger
+    system.
+    """
     redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [''])[0]
     if len(redirect):
         redirect = '?tiddlyweb_redirect=%s' % redirect
@@ -20,6 +24,11 @@ def _challenger_url(environ, system):
 
 
 def base(environ, start_response):
+    """
+    The basic listing page that shows all available
+    challenger systems. If there is only one, we
+    redirect to that instead of listing.
+    """
     auth_systems = environ['tiddlyweb.config']['auth_systems']
     if len(auth_systems) == 1:
         raise HTTP302(_challenger_url(environ, auth_systems[0]))
@@ -32,16 +41,26 @@ def base(environ, start_response):
 
 
 def challenge_get(environ, start_response):
-    challenger = _determine_challenger(environ, start_response)
+    """
+    Dispatch a GET request to the chosen challenger.
+    """
+    challenger = _determine_challenger(environ)
     return challenger.challenge_get(environ, start_response)
 
 
 def challenge_post(environ, start_response):
-    challenger = _determine_challenger(environ, start_response)
+    """
+    Dispatch a POST request to the chosen challenger.
+    """
+    challenger = _determine_challenger(environ)
     return challenger.challenge_post(environ, start_response)
 
 
-def _determine_challenger(environ, start_response):
+def _determine_challenger(environ):
+    """
+    Determine which challenger we are using and import it
+    as necessary.
+    """
     challenger_name = environ['wsgiorg.routing_args'][1]['challenger']
     # If the challenger is not in config, do a 404, we don't want
     # to import any old code.

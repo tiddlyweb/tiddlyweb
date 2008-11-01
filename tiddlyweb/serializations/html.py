@@ -143,10 +143,17 @@ class Serialization(SerializationInterface):
             return self._tiddler_div(tiddler) + '<pre>%s</pre>' % self._html_encode(tiddler.text) + '</div>'
 
     def _server_prefix(self):
+        """
+        Return the string that is the server prefix,
+        for creating URLs.
+        """
         config = self.environ.get('tiddlyweb.config', {})
         return config.get('server_prefix', '')
 
     def _tiddler_list_header(self, wiki_link):
+        """
+        The string we present at the top of a list of tiddlers.
+        """
         if wiki_link:
             return """
 <div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
@@ -154,18 +161,28 @@ class Serialization(SerializationInterface):
         return ''
 
     def _tiddler_div(self, tiddler):
+        """
+        The string that starts the div that contains a tiddler.
+        """
         return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
         (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified,
         tiddler.created, self.tags_as(tiddler.tags),
         self._tiddler_fields(tiddler.fields))
 
     def _tiddler_fields(self, fields):
+        """
+        Turn tiddler fields into a string suitable for
+        _tiddler_div.
+        """
         output = []
         for key in fields:
             output.append('%s="%s"' % (key, fields[key]))
         return ' '.join(output)
 
     def _tiddler_to_wikklyhtml(self, tiddler):
+        """
+        Render tiddler.text to HTML using wikklytext.
+        """
         server_prefix = self._server_prefix()
         if tiddler.recipe:
             list_link = 'recipes/%s/tiddlers' % tiddler.recipe.encode('utf-8')

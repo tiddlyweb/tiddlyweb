@@ -1,5 +1,5 @@
 """
-Text based serializers.
+JSON based serializer.
 """
 
 import simplejson
@@ -7,10 +7,13 @@ import simplejson
 from base64 import b64encode, b64decode
 
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.model.policy import Policy # XXX might be able to be rid of this
+from tiddlyweb.model.policy import Policy
 
 
 class Serialization(SerializationInterface):
+    """
+    Turn various entities to and from JSON.
+    """
 
     def list_recipes(self, recipes):
         """

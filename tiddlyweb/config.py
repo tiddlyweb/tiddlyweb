@@ -115,9 +115,11 @@ from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, PermissionsExceptor
 
 
-# A dict explaining the scheme, host and port of our server.
-# FIXME: a hack to get the server.host set properly in outgoing
-# wikis.
+# A dict containing the configuration of TiddlyWeb, both 
+# as a server and as a library. This dictionary can contain
+# anything. If there is a file called tiddlywebconfig.py in
+# the startup working directory of twanager or other tiddlyweb
+# using code, its contents will be merged with these defaults.
 DEFAULT_CONFIG = {
         'system_plugins': [],
         'twanager_plugins': ['tiddlyweb.fromsvn', 'tiddlyweb.instancer'],
@@ -171,10 +173,10 @@ DEFAULT_CONFIG = {
 
 def read_config():
     """
-    Read in a local configuration override, but only
-    from the current working directory (for now). If the
-    file can't be imported things will blow up and the
-    server not run.
+    Read in a local configuration override, called
+    tiddlywebconfig.py, from the current working directory.
+    If the file can't be imported an exception will be
+    thrown, preventing unexpected results.
 
     What's expected in the override file is a dict with the
     name config.

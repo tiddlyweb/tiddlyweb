@@ -53,10 +53,11 @@ class Serialization(SerializationInterface):
         return self._put_tiddlers_in_tiddlywiki([tiddler], title=tiddler.title)
 
     def _put_tiddlers_in_tiddlywiki(self, tiddlers, title='TiddlyWeb Loading'):
-# read in empty.html from somewhere (prefer url)
-# replace <title> with the right stuff
-# replace markup etc with the right stuff
-# hork in the stuff
+        """
+        Take the provided tiddlers and inject them into the base_tiddlywiki,
+        adjusting content for title, subtite, and the various pre and post
+        head sections of the file.
+        """
 
         # figure out the content to be pushed into the
         # wiki and calculate the title
@@ -97,6 +98,11 @@ class Serialization(SerializationInterface):
         return tiddlystart + lines + SPLITTER + tiddlyfinish
 
     def _plain_textify_string(self, title):
+        """
+        Take a string that may be HTML and turn it 
+        into plain text by finding all the included
+        text.
+        """
         try:
             # If the HTML serialization doesn't have wikklytext
             # we will get back wikitext inside the div classed
@@ -114,6 +120,10 @@ class Serialization(SerializationInterface):
             return title
 
     def _determine_title(self, title, candidate_title, candidate_subtitle):
+        """
+        Create a title for the wiki file from various
+        optional inputs.
+        """
         if candidate_title and candidate_subtitle:
             return '%s - %s' % (candidate_title, candidate_subtitle)
         if candidate_title:
@@ -123,9 +133,17 @@ class Serialization(SerializationInterface):
         return title
 
     def _inject_title(self, wiki, title):
+        """
+        Replace the title in the base_tiddlywiki
+        with our title.
+        """
         return self._replace_chunk(wiki, '\n<title>\n', '\n</title>\n', title)
 
     def _replace_chunk(self, wiki, start, finish, replace):
+        """
+        Find the index of start and finish in the string, and
+        replace the part in between with replace.
+        """
         try:
             sindex = wiki.index(start)
             findex = wiki.index(finish) + len(finish)
@@ -134,6 +152,9 @@ class Serialization(SerializationInterface):
             return wiki
 
     def _get_wiki(self):
+        """
+        Read base_tiddlywiki from its location.
+        """
         base_tiddlywiki = open(self.environ['tiddlyweb.config']['base_tiddlywiki'])
         wiki = base_tiddlywiki.read()
         base_tiddlywiki.close()
@@ -165,6 +186,11 @@ class Serialization(SerializationInterface):
                         self._html_encode(tiddler_output))
 
     def _binary_tiddler(self, tiddler):
+        """
+        Make the content for a tiddler that has non-wikitext content.
+
+        Base64 encode if the stuff is small enough for browsers to handle.
+        """
         b64text = b64encode(tiddler.text)
         if b64text < 32 * 1024:
             if tiddler.type.startswith('image'):
@@ -180,6 +206,10 @@ class Serialization(SerializationInterface):
                 return '\n<html><a href="%s">%s</a></html>\n' % (tiddler_url(self.environ, tiddler), tiddler.title)
 
     def _tiddler_fields(self, fields):
+        """
+        Turn tiddler fields into a string suitable for
+        a div attribute.
+        """
         output = []
         for key in fields:
             output.append('%s="%s"' % (key, fields[key]))

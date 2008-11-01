@@ -5,6 +5,12 @@ and put the type in tiddlyweb.type.
 
 
 class Negotiate(object):
+    """
+    Perform a form of content negotiation
+    to provide information to the environment
+    that will later be used to choose
+    serializers.
+    """
 
     def __init__(self, application):
         self.application = application
@@ -25,12 +31,23 @@ class Negotiate(object):
             self._figure_type_for_other(environ)
 
     def _figure_type_for_other(self, environ):
+        """
+        Determine the type for PUT and POST
+        requests, based on the content-type
+        header.
+        """
         content_type = environ.get('CONTENT_TYPE', None)
         if content_type:
             content_type = content_type.split(';')[0]
             environ['tiddlyweb.type'] = content_type
 
     def _figure_type_for_get(self, environ):
+        """
+        Determine the type for a GET request,
+        based on the Accept header and url path
+        filename extensions (if there an extension
+        wins).
+        """
         accept_header = environ.get('HTTP_ACCEPT')
         path_info = environ.get('PATH_INFO')
 
@@ -57,8 +74,11 @@ class Negotiate(object):
         return
 
     def _parse_accept_header(self, header):
-# copied from REST::Application
-# thanks matthew!
+        """
+        Parse the accept header to get the highest
+        priority type. Copied from Perl's REST::Application
+        Thanks Matthew O'Connor.
+        """
         default_weight = 1
         prefs = []
 
