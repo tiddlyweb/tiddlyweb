@@ -19,11 +19,7 @@ from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
 
 def delete(environ, start_response):
-    # XXX refactor out a _determine_bag or _determine_bag_name
-    # lots of duplication going on here.
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
@@ -44,11 +40,8 @@ def delete(environ, start_response):
 
 
 def get(environ, start_response):
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
-
     bag = _get_bag(environ, bag_name)
 
     bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
@@ -71,9 +64,7 @@ def get(environ, start_response):
 def get_tiddlers(environ, start_response):
     filter_string = web.filter_query_string(environ)
 
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
@@ -89,9 +80,7 @@ def get_tiddlers(environ, start_response):
 
 
 def import_wiki(environ, start_response):
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
     length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
@@ -142,9 +131,7 @@ def list(environ, start_response):
 
 
 def put(environ, start_response):
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
+    bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
 
     bag = Bag(bag_name)
@@ -176,6 +163,13 @@ def put(environ, start_response):
             [('Location', web.bag_url(environ, bag))])
 
     return []
+
+
+def _determine_bag_name(environ):
+    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
+    bag_name = urllib.unquote(bag_name)
+    bag_name = unicode(bag_name, 'utf-8')
+    return bag_name
 
 
 def _get_bag(environ, bag_name):
