@@ -17,26 +17,45 @@ from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
 def get(environ, start_response):
+    """
+    Get a representation of a single tiddler,
+    dependent on the chosen serialization and permissions of the
+    containing bag.
+    """
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _send_tiddler(environ, start_response, tiddler)
 
 
 def get_revisions(environ, start_response):
+    """
+    Get the list of revisions for this tiddler.
+    """
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
 
 def delete(environ, start_response):
+    """
+    Delete this tiddler from the store. What
+    delete means is up to the store.
+    """
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _delete_tiddler(environ, start_response, tiddler)
 
 
 def put(environ, start_response):
+    """
+    Put a tiddler into the store.
+    """
     tiddler = _determine_tiddler(environ, control.determine_bag_for_tiddler)
     return _put_tiddler(environ, start_response, tiddler)
 
 
 def _check_bag_constraint(environ, bag, constraint):
+    """
+    Check to see if the bag allows the current user
+    to perform the requested action.
+    """
     store = environ['tiddlyweb.store']
     usersign = environ['tiddlyweb.usersign']
     try:
@@ -47,6 +66,9 @@ def _check_bag_constraint(environ, bag, constraint):
 
 
 def _delete_tiddler(environ, start_response, tiddler):
+    """
+    The guts of deleting a tiddler from the store.
+    """
     store = environ['tiddlyweb.store']
 
     bag = Bag(tiddler.bag)
@@ -63,6 +85,11 @@ def _delete_tiddler(environ, start_response, tiddler):
 
 
 def _determine_tiddler(environ, bag_finder):
+    """
+    Determine, using URL info, the target tiddler.
+    This can be complicated because of the mechanics
+    of recipes and bags.
+    """
     tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
     tiddler_name = urllib.unquote(tiddler_name)
     tiddler_name = unicode(tiddler_name, 'utf-8')
@@ -109,6 +136,9 @@ def _determine_tiddler(environ, bag_finder):
 
 
 def _put_tiddler(environ, start_response, tiddler):
+    """
+    The guts of putting a tiddler into the store.
+    """
     store = environ['tiddlyweb.store']
     length = environ['CONTENT_LENGTH']
 
@@ -159,6 +189,11 @@ def _put_tiddler(environ, start_response, tiddler):
 
 
 def _validate_tiddler(environ, tiddler):
+    """
+    Check ETAG and last modified information to 
+    see if a) the client can use its cached tiddler
+    b) we have edit contention when trying to write.
+    """
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
 
@@ -184,6 +219,10 @@ def _validate_tiddler(environ, tiddler):
 
 
 def _send_tiddler(environ, start_response, tiddler):
+    """
+    Push a single tiddler out the network in the
+    form of the chosen serialization.
+    """
     store = environ['tiddlyweb.store']
 
     bag = Bag(tiddler.bag)
@@ -227,6 +266,9 @@ def _send_tiddler(environ, start_response, tiddler):
 
 
 def _send_tiddler_revisions(environ, start_response, tiddler):
+    """
+    Push the list of tiddler revisions out the network.
+    """
     store = environ['tiddlyweb.store']
 
     tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
@@ -250,5 +292,9 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
 
 
 def _tiddler_etag(tiddler):
+    """
+    Calculate the ETAG of a tiddler, based on 
+    bag name, tiddler title and revision.
+    """
     return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8')),
         urllib.quote(tiddler.title.encode('utf-8')), tiddler.revision))

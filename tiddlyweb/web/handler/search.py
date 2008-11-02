@@ -15,6 +15,12 @@ from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
 def get(environ, start_response):
+    """
+    Perform a search on the store. What search
+    means and what results are returned is dependent
+    on the search implementation (if any) in the 
+    chosen store.
+    """
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
         search_query = urllib.unquote(search_query)

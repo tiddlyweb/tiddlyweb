@@ -21,9 +21,6 @@ def delete(environ, start_response):
     """
     Delete a recipe, where what delete means
     depends on the store used.
-
-    XXX: There are no permissions on this method.
-    There should be!
     """
     recipe = _determine_recipe(environ)
 
@@ -39,6 +36,11 @@ def delete(environ, start_response):
 
 
 def get(environ, start_response):
+    """
+    Get the representation of a recipe, based on the
+    requested serialization. Will usually show the list
+    of bags and filters that make up the recipe.
+    """
     recipe = _determine_recipe(environ)
     recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
 
@@ -57,6 +59,10 @@ def get(environ, start_response):
 
 
 def get_tiddlers(environ, start_response):
+    """
+    Get the list of tiddlers produced by this 
+    recipe.
+    """
     filter_string = web.filter_query_string(environ)
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
@@ -99,6 +105,9 @@ def get_tiddlers(environ, start_response):
 
 
 def list(environ, start_response):
+    """
+    Get a list of all recipes the current user can read.
+    """
     store = environ['tiddlyweb.store']
     recipes = store.list_recipes()
     kept_recipes = []
@@ -120,6 +129,9 @@ def list(environ, start_response):
 
 
 def put(environ, start_response):
+    """
+    Put a new recipe to the server.
+    """
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     recipe_name = urllib.unquote(recipe_name)
     recipe_name = unicode(recipe_name, 'utf-8')
@@ -155,6 +167,10 @@ def put(environ, start_response):
 
 
 def _determine_recipe(environ):
+    """
+    Interpret URL information to determine the target
+    recipe and then get it from the store.
+    """
     recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
     recipe_name = urllib.unquote(recipe_name)
     recipe_name = unicode(recipe_name, 'utf-8')

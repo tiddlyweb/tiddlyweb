@@ -19,6 +19,11 @@ from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
 
 
 def delete(environ, start_response):
+    """
+    Remove a bag and its tiddlers from the store.
+    How the store chooses to handle remove and what
+    it means is up to the store.
+    """
     bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
 
@@ -40,6 +45,10 @@ def delete(environ, start_response):
 
 
 def get(environ, start_response):
+    """
+    Get a representation in some serialization of
+    a bag (the bag itself not the tiddlers within).
+    """
     bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
     bag = _get_bag(environ, bag_name)
@@ -62,6 +71,11 @@ def get(environ, start_response):
 
 
 def get_tiddlers(environ, start_response):
+    """
+    Get a list representation of the tiddlers in a
+    bag. The information sent is dependent on the
+    serialization chosen.
+    """
     filter_string = web.filter_query_string(environ)
 
     bag_name = _determine_bag_name(environ)
@@ -80,6 +94,10 @@ def get_tiddlers(environ, start_response):
 
 
 def import_wiki(environ, start_response):
+    """
+    Accept a tiddlywiki as POST and using it as the source
+    parse it for tiddlers to be stored in the named bag.
+    """
     bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
     length = environ['CONTENT_LENGTH']
@@ -104,6 +122,9 @@ def import_wiki(environ, start_response):
 
 
 def list(environ, start_response):
+    """
+    List all the bags that the current user can read.
+    """
     store = environ['tiddlyweb.store']
     bags = store.list_bags()
     kept_bags = []
@@ -131,6 +152,10 @@ def list(environ, start_response):
 
 
 def put(environ, start_response):
+    """
+    Put a bag to the server, meaning the description and
+    policy of the bag, if policy allows.
+    """
     bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
 
@@ -166,6 +191,10 @@ def put(environ, start_response):
 
 
 def _determine_bag_name(environ):
+    """
+    Figure out the name of the target bag by
+    parsing the URL.
+    """
     bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
     bag_name = urllib.unquote(bag_name)
     bag_name = unicode(bag_name, 'utf-8')
@@ -173,6 +202,9 @@ def _determine_bag_name(environ):
 
 
 def _get_bag(environ, bag_name):
+    """
+    Get the named bag out of the store.
+    """
     bag = Bag(bag_name)
     store = environ['tiddlyweb.store']
     try:

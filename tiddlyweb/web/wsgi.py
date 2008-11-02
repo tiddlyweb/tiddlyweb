@@ -1,3 +1,7 @@
+"""
+WSGI Middleware apps that haven't gotten around
+to being extracted to their own modules.
+"""
 
 import sys
 import time
@@ -11,8 +15,9 @@ from tiddlyweb.web.util import server_base_url
 
 class HTMLPresenter(object):
     """
-    Take the core app output, see if it is text/html,
-    and if it is, add some framework.
+    Take the core app output, if tiddlyweb.title is set
+    in environ and we appear to be using a browser,
+    add some HTML framework.
     """
 
     def __init__(self, application):
@@ -26,6 +31,9 @@ class HTMLPresenter(object):
         return output
 
     def _header(self, environ):
+        """
+        Wrap the HTML in an HTML header.
+        """
         css = ''
         if 'css_uri' in environ['tiddlyweb.config']:
             css = '<link rel="stylesheet" href="%s" type="text/css" />' % environ['tiddlyweb.config']['css_uri']
@@ -50,6 +58,9 @@ class HTMLPresenter(object):
 """ % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'], header_extra)
 
     def _footer(self, environ):
+        """
+        Wrap the HTML with an HTML footer.
+        """
         footer_extra = self.footer_extra(environ)
         return """
 </div>
@@ -62,6 +73,8 @@ class HTMLPresenter(object):
 </html>
 """ % (footer_extra, environ['tiddlyweb.usersign']['name'])
 
+    # XXX: to make these stackable this can't just
+    # be a method, we need some kind of registry.
     def header_extra(self, environ):
         """
         Override this in plugins to add to the header.
@@ -106,6 +119,9 @@ class SimpleLog(object):
         return self.application(environ, replacement_start_response)
 
     def write_log(self, environ, req_uri, status, bytes):
+        """
+        Print the log info out in a formatted for to stdout.
+        """
         environ['REMOTE_USER'] = None
         try:
             environ['REMOTE_USER'] = environ['tiddlyweb.usersign']['name']
