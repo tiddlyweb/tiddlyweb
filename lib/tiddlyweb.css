@@ -1,0 +1,84 @@
+body, h1, h2, h3, h4, div, ul {
+	padding:0;
+	margin:0;	
+}
+
+body {
+	font-family:georgia;
+	font-size:14px;
+	line-height:1.5em;
+	background-color:#fff;
+	color:#444;
+}
+
+a:link,
+a:visited {
+	text-decoration:none;
+	border-bottom:1px dotted #0056C0;
+	color:#333;
+}
+a:hover,
+a:active,
+a:focus {
+	text-decoration:none;
+	color:#0056C0;
+}
+
+div#header {
+	background-color:#0056C0;
+	border-bottom:solid 1px #00387D;
+	padding:2em 1em;
+
+}
+
+	div#header h1 {
+		font-size: 3em;
+		font-weight:normal;
+		color:#fff;
+	}
+	
+div#content {
+	display:block;
+	padding:1em 1em 2em 1em;
+	background-color:#eee;
+	border-bottom:solid 1px #ccc;
+}
+
+div#tiddlersheader,
+div.tiddlerslink {
+	padding:0 0 1em 0;
+}
+
+ul {
+	margin-left:1em;
+	color:#000;
+}
+
+	ul li {
+		margin-left:20px;
+	}
+	
+div.tiddler {
+	padding:1em;
+	border:solid 1px #ccc;
+	border-bottom:solid 1px #aaa;
+	background-color:#faf9fe;
+}
+
+div#footer {
+	padding:0.5em 1em;
+	font-size:0.9em;
+	background-color:#faf9fe;
+	height:2em;
+	border-bottom:solid 1px #ddd;
+}
+
+	div#badge {
+		float:right;
+		font-style:italic;
+	}
+
+	div#usergreet {
+		float:left;	
+	}
+	
