@@ -75,6 +75,7 @@ class HTMLPresenter(object):
 
     # XXX: to make these stackable this can't just
     # be a method, we need some kind of registry.
+
     def header_extra(self, environ):
         """
         Override this in plugins to add to the header.

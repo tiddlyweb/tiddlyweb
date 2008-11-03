@@ -190,7 +190,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
 def _validate_tiddler(environ, tiddler):
     """
-    Check ETAG and last modified information to 
+    Check ETAG and last modified information to
     see if a) the client can use its cached tiddler
     b) we have edit contention when trying to write.
     """

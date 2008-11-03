@@ -31,6 +31,7 @@ PLUGINS = [
         'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js',
         ]
 
+
 @make_command()
 def instance(args):
     """Create a tiddlyweb instance with default plugins in the named directory."""

@@ -18,7 +18,7 @@ def get(environ, start_response):
     """
     Perform a search on the store. What search
     means and what results are returned is dependent
-    on the search implementation (if any) in the 
+    on the search implementation (if any) in the
     chosen store.
     """
     try:

@@ -60,7 +60,7 @@ def get(environ, start_response):
 
 def get_tiddlers(environ, start_response):
     """
-    Get the list of tiddlers produced by this 
+    Get the list of tiddlers produced by this
     recipe.
     """
     filter_string = web.filter_query_string(environ)

@@ -99,7 +99,7 @@ class Serialization(SerializationInterface):
 
     def _plain_textify_string(self, title):
         """
-        Take a string that may be HTML and turn it 
+        Take a string that may be HTML and turn it
         into plain text by finding all the included
         text.
         """

@@ -57,6 +57,7 @@ def from_svn(args):
         raise ValueError('you must provide at least one url')
     import_list(bag, urls)
 
+
 def import_list(bag, urls):
     """Import a list of svn urls into bag."""
     for url in urls:

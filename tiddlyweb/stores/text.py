@@ -94,7 +94,7 @@ class Store(StorageInterface):
     def bag_delete(self, bag):
         """
         Delete a bag AND THE TIDDLERS WITHIN from
-        the system. 
+        the system.
         """
         bag_path = self._bag_path(bag.name)
 
