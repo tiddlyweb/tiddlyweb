@@ -127,7 +127,6 @@ def test_put_tiddler_txt():
     content = content.decode('UTF-8')
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
-    assert contents[0] == texts[0] # modifier
     assert contents[-1] == texts[-1] # text
     assert contents[-3] == texts[-3] # tags
 
@@ -296,7 +295,6 @@ def test_get_tiddler_text_created():
     content = content.decode('UTF-8')
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
-    assert contents[0] == u'modifier: ArthurDent'
     assert contents[-1] == u'Towels' # text
     assert contents[-3] == u'tags: ' # tags
     assert match('created: \d{12}', contents[1])

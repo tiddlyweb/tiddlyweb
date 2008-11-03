@@ -67,7 +67,6 @@ def test_put_unicode_tiddler():
     store.get(tiddler)
     assert tiddler.title == tiddler_name
     assert tiddler.text == tiddler_text
-    assert tiddler.modifier == name
     assert tiddler.tags == [name]
 
 def test_put_unicode_recipe():
@@ -115,7 +114,6 @@ def get_tiddlers_from_thing(container):
     assert response['status'] == '200'
     tiddler_info = simplejson.loads(content)
     assert tiddler_info[0]['title'] == name
-    assert tiddler_info[0]['modifier'] == name
     assert tiddler_info[0]['tags'] == [name]
 
     response, content = http.request('http://our_test_domain:8001/%s/%s/tiddlers/%s.json' \
@@ -124,7 +122,5 @@ def get_tiddlers_from_thing(container):
     assert response['status'] == '200'
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['title'] == name
-    assert tiddler_info['modifier'] == name
     assert tiddler_info['tags'] == [name]
     assert tiddler_info['text'] == 'hello %s' % name
-

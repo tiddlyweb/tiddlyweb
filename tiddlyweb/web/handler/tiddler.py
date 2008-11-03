@@ -172,6 +172,8 @@ def _put_tiddler(environ, start_response, tiddler):
         else:
             tiddler.text = content
 
+        tiddler.modifier = environ['tiddlyweb.usersign']['name']
+
         store.put(tiddler)
     except NoBagError, exc:
         raise HTTP409("Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." %
