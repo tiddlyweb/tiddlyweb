@@ -1,0 +1,39 @@
+
+The architecture, attitude and action of TiddlyWeb is the result of
+ideas and interactions with many people, all of whom are impossible to
+list here, but a few highlights:
+
+* The original mo'ass (mother of all server sides) idea, including the
+  concepts of recipes and bags, comes from Jeremy Ruston, the original
+  inventor of TiddlyWiki.
+
+* TiddlyWeb is a Python application in large part because of the WSGI
+  specification, PEP 333, authored by Phillip J. Eby and the stalwart
+  enthusiasm of Zac Bir, a long time Python confederate.
+
+* Zac is also a conceptual parent of the architectural style that drives
+  TiddlyWeb's extensibility in the stores and serializers and the
+  challengers and extractors. All four are modeled, at a distance, on
+  concepts in Zope and systems implemented or designed to varying
+  degrees while at Socialtext.
+
+* The RESTful principles, or at least web friendly principles depending
+  on how strict you care to think about such things, that drive the
+  TiddlyWeb HTTP API, are all based on research and development creating
+  the Socialtext REST API with Matt Liggett and Matthew O'Connor.
+
+* Frank McIngvale, the author of WikklyText which does the server-side
+  wikitext to HTML transformation in TiddlyWeb, provided excellent input
+  on many aspects of TiddlyWeb, and of course built the excellent
+  WikklyText.
+
+* Frederik Dohr is the earliest adopter of TiddlyWeb, using it to build
+  a Plugin Library for TiddlyWiki. In that role he has provided
+  invaluable input on features, excellent bug reports, and general
+  support and comradeship throughout the development process.
+
+* Action requires communication to make go. Many thanks to Jon Lister,
+  Martin Budden, Paul Downey, Phil Hawksworth, Phil Whitehouse, Simon
+  McManus, Saq Imtiaz, Michael Mahemoff, Tony from the TiddlyWikiDev
+  group, Ben Tremblay and many others for comments, questions and
+  conversations about TiddlyWeb.
