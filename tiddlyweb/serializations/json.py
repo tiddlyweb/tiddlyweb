@@ -7,6 +7,7 @@ import simplejson
 from base64 import b64encode, b64decode
 
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 
 
@@ -126,4 +127,18 @@ class Serialization(SerializationInterface):
         wanted_info = {}
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute)
+        wanted_info['permissions'] = self._tiddler_permissions(tiddler)
         return dict(wanted_info)
+
+    def _tiddler_permissions(self, tiddler):
+        """
+        Make a list of the permissions the current user has
+        on this tiddler.
+        """
+        perms = []
+        bag = Bag(tiddler.bag)
+        if tiddler.store:
+            tiddler.store.get(bag)
+            if 'tiddlyweb.usersign' in self.environ:
+                perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
+        return perms

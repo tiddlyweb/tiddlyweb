@@ -93,6 +93,17 @@ class Policy(object):
         # we've fallen through, the user we have matches nothing
         raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
+    def user_perms(self, usersign):
+        perms = ['read', 'write', 'create', 'delete']
+        matched_perms = []
+        for perm in perms:
+            try:
+                self.allows(usersign, perm)
+                matched_perms.append(perm)
+            except (UserRequiredError, ForbiddenError):
+                pass
+        return matched_perms
+
 
 def create_policy_check(environ, entity, usersign):
     """

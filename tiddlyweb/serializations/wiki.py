@@ -6,6 +6,7 @@ from base64 import b64encode
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.web.util import server_base_url, tiddler_url
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
@@ -179,11 +180,24 @@ class Serialization(SerializationInterface):
         else:
             tiddler_output = tiddler.text
 
-        return '<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" modified="%s" created="%s" tags="%s" %s>\n<pre>%s</pre>\n</div>\n' \
+        return '<div title="%s" server.page.revision="%s" modifier="%s" server.workspace="%s" server.type="tiddlyweb" server.host="%s" server.bag="%s" server.permissions="%s" modified="%s" created="%s" tags="%s" %s>\n<pre>%s</pre>\n</div>\n' \
                 % (tiddler.title, tiddler.revision, tiddler.modifier, recipe_name,
-                        host, tiddler.bag, tiddler.modified, tiddler.created,
+                        host, tiddler.bag, self._tiddler_permissions(tiddler), tiddler.modified, tiddler.created,
                         self.tags_as(tiddler.tags), self._tiddler_fields(tiddler.fields),
                         self._html_encode(tiddler_output))
+
+    def _tiddler_permissions(self, tiddler):
+        """
+        Make a list of the permissions the current user has
+        on this tiddler.
+        """
+        perms = []
+        bag = Bag(tiddler.bag)
+        if tiddler.store:
+            tiddler.store.get(bag)
+            if 'tiddlyweb.usersign' in self.environ:
+                perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
+        return ', '.join(perms)
 
     def _binary_tiddler(self, tiddler):
         """

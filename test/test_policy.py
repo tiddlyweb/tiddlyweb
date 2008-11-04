@@ -11,7 +11,7 @@ from tiddlyweb.model.policy import Policy, ForbiddenError, UserRequiredError
 import py.test
 
 jeremy_info = {'name':'jeremy'}
-chris_info = {'name':'chris','roles':['R:ADMIN']}
+chris_info = {'name':'chris','roles':['ADMIN']}
 none_info = {'name':'NONE'}
 barnabas_info = {'name':'barnabas'}
 randomer_info = {'name':'randomer'}
@@ -55,6 +55,7 @@ def test_policy_allows():
     policy = Policy(read=['chris','jeremy'],write=['NONE'],delete=['R:ADMIN'],manage=['chris'])
 
     assert policy.allows(chris_info, 'read')
+    assert policy.allows(chris_info, 'delete')
     assert policy.allows(jeremy_info, 'read')
     py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "write")')
     assert policy.allows(chris_info, 'manage')
@@ -80,3 +81,11 @@ def test_bag_policy():
     assert bag.policy.allows(chris_info, 'read')
     py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read")')
 
+def test_user_perms():
+    policy = Policy()
+    assert policy.user_perms(chris_info) == ['read','write','create','delete']
+
+    policy = Policy(read=['R:ADMIN'], write=['R:ADMIN'], create=['jeremy'], delete=['jeremy'])
+    assert policy.user_perms(chris_info) == ['read','write']
+
+    assert policy.user_perms(jeremy_info) == ['create', 'delete']
