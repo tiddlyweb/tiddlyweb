@@ -1,4 +1,4 @@
-include demo.py index.cgi mod_python.py CHANGES COPYING Makefile
+include demo.py index.cgi mod_python.py CHANGES COPYRIGHT Makefile
 include tiddlyweb/empty.html
 include tiddlyweb/urls.map
 recursive-include docstore *

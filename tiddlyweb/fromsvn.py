@@ -26,8 +26,8 @@ and use the importer to import it.
 """
 
 import sys
-import httplib2
 
+from urllib2 import urlopen
 from urlparse import urljoin
 from BeautifulSoup import BeautifulSoup
 
@@ -37,13 +37,6 @@ from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.importer import _do_tiddler
-
-
-class HTTPProblem(Exception):
-    """
-    Generic exception to indicate when the HTTP request has failed.
-    """
-    pass
 
 
 @make_command()
@@ -92,10 +85,8 @@ def import_via_recipe(bag, url):
 def get_url(url):
     """Get the content at url, raising HTTPProblem if there is one."""
 
-    http = httplib2.Http()
-    response, content = http.request(url, method='GET')
-    if response.status != 200:
-        raise HTTPProblem
+    getter = urlopen(url)
+    content = getter.read()
     return unicode(content, 'utf-8')
 
 
