@@ -18,6 +18,7 @@ from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
 import simplejson
+import yaml
 
 from base64 import b64encode
 from re import match
@@ -76,33 +77,7 @@ EMPTY_TEST = {
         'expected': [],
         'data': '',
         }
-TESTS = [
-        { ##########
-            'name': 'Get Root Page',
-            'desc': 'Get and display the root page',
-            'url': '/',
-            'response_headers': {
-                'content-type': 'text/html; charset=UTF-8',
-                },
-            'expected': ['bags', 'recipes'],
-            },
-        { ##########
-            'name': 'Authenticated Root Page',
-            'desc': 'Pass in auth info when getting root page',
-            'url': '/',
-            'request_headers': {
-                'Authorization': 'Basic %s' % authorization,
-                'User-Agent': 'Mozilla/5',
-                },
-            'expected': ['bags', 'recipes', 'User cdent'],
-            },
-        { ##########
-            'name': 'List of recipes',
-            'desc': 'Get the list of all readable recipes',
-            'url': '/recipes',
-            'expected': ['id="recipes"', 'long'],
-            },
-        ]
+TESTS = yaml.load(open('test/httptest.yaml'))
 
 def test_the_TESTS():
     """

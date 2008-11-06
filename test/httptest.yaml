@@ -1,0 +1,27 @@
+- name: Get Root Page
+  desc: Get and display the root page
+  expected:
+  - bags
+  - recipes
+  response_headers: 
+    content-type: text/html; charset=UTF-8
+  url: /
+
+- name: Authenticated Root Page
+  desc: Pass in auth info when getting root page
+  expected:
+  - bags
+  - recipes
+  - User cdent
+  request_headers: 
+    Authorization: Basic Y2RlbnQ6Y293cGln
+    User-Agent: Mozilla/5
+  url: /
+
+- name: List of recipes
+  desc: Get the list of all readable recipes
+  expected: 
+  - id="recipes"
+  - long
+  url: /recipes
+
