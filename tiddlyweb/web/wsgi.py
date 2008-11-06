@@ -12,6 +12,8 @@ from tiddlyweb.store import Store
 from tiddlyweb.web.http import HTTP403, HTTP302
 from tiddlyweb.web.util import server_base_url
 
+from tiddlyweb import __version__ as VERSION
+
 
 class HTMLPresenter(object):
     """
@@ -66,12 +68,12 @@ class HTMLPresenter(object):
 </div>
 <div id="footer">
 %s
-<div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a></div>
+<div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a> %s</div>
 <div id="usergreet">User %s.</div>
 </div>
 </body>
 </html>
-""" % (footer_extra, environ['tiddlyweb.usersign']['name'])
+""" % (footer_extra, VERSION, environ['tiddlyweb.usersign']['name'])
 
     # XXX: to make these stackable this can't just
     # be a method, we need some kind of registry.
