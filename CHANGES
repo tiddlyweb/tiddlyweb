@@ -1,3 +1,11 @@
+0.7 Thu Nov  6 15:04:26 GMT 2008
+
+  * add docs/CREDITS to give props
+  * tiddler permissions information in wiki and json serializations
+  * always save the tiddler with modifier set to tiddlyweb.usersign
+  * more docstrings on methods and functions
+  * example css in lib/tiddlyweb.css
+
 0.6 Thu Oct 30 16:29:50 GMT 2008
 
   * text store automatically creates necessary directories
