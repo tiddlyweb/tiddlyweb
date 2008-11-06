@@ -91,12 +91,13 @@ def test_the_TESTS():
             response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
         else:
             response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
-                    body=data)
+                    body=test['data'])
+            print content
         assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 
 def assert_response(response, content, status, headers=None, expected=None):
-    assert response['status'] == status
+    assert response['status'] == '%s' % status
 
     if headers:
         for header in headers:
@@ -111,7 +112,6 @@ if __name__ == '__main__':
         test = dict(EMPTY_TEST)
         test.update(test_data)
         full_url = base_url + test['url']
-        print "testing: %s" % test['name']
-        print test['desc']
+        print test['name']
         print '%s %s' % (test['method'], full_url)
         print
