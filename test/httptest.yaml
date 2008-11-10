@@ -87,7 +87,7 @@
 
 # PUT a recipe using JSON. Any key not set will be
 # given defaults. Creating a recipe is controlled by
-# the settings on tiddlyweb.config:config['recipe_create_policy'.
+# the settings on tiddlyweb.config:config['recipe_create_policy'].
 # Modifying a recipe is controlled by the recipe's policy.
 - name: Put a recipe
   desc: Put a sample recipe
