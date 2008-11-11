@@ -11,7 +11,7 @@ import urllib
 from tiddlyweb.web.query import Query
 
 def setup_module(module):
-    module.environ = {'QUERY_STRING': 'hello=goodbye&barney=ugly&special=nice'}
+    module.environ = {'QUERY_STRING': 'hello=goodbye&barney=ugly&special=nice', 'REQUEST_METHOD': 'GET'}
 
 def test_interpret_query():
     def app(environ, start_response):

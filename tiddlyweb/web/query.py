@@ -26,4 +26,11 @@ class Query(object):
         return self.application(environ, start_response)
 
     def extract_query(self, environ):
-        environ['tiddlyweb.query'] = cgi.parse_qs(environ.get('QUERY_STRING', ''))
+        content_type = environ.get('CONTENT_TYPE', None)
+        environ['tiddlyweb.query'] = {}
+        if environ['REQUEST_METHOD'].upper() == 'POST' and content_type == 'application/x-www-form-urlencoded':
+            length = environ['CONTENT_LENGTH']
+            content = environ['wsgi.input'].read(int(length))
+            posted_data = cgi.parse_qs(content)
+            environ['tiddlyweb.query'].update(posted_data)
+        environ['tiddlyweb.query'].update(cgi.parse_qs(environ.get('QUERY_STRING', '')))

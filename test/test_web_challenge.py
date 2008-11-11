@@ -74,6 +74,7 @@ def test_simple_cookie_redirect():
         response, content = http.request(
                 'http://our_test_domain:8001/challenge/cookie_form',
                 method='POST',
+                headers={'content-type': 'application/x-www-form-urlencoded'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
     except httplib2.RedirectLimit, e:
@@ -128,6 +129,7 @@ def test_openid():
         response, content = http.request(
                 'http://our_test_domain:8001/challenge/openid',
                 method='POST',
+                headers={'content-type': 'application/x-www-form-urlencoded'},
                 body='openid=cdent.livejournal.com&tiddlyweb_redirect=http://www.example.com/',
                 redirections=0)
     except httplib2.RedirectLimit, e:

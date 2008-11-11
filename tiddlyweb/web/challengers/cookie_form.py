@@ -35,12 +35,12 @@ class Challenger(ChallengerInterface):
         does not, send the form aagain. If it does, validate
         the data.
         """
-        request_info = cgi.parse_qs(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
-        redirect = request_info.get('tiddlyweb_redirect', ['/'])[0]
+        query = environ['tiddlyweb.query']
+        redirect = query.get('tiddlyweb_redirect', ['/'])[0]
 
         try:
-            user = request_info['user'][0]
-            password = request_info['password'][0]
+            user = query['user'][0]
+            password = query['password'][0]
             return self._validate_and_redirect(environ, start_response, user, password, redirect)
         except KeyError:
             return self._send_cookie_form(environ, start_response, redirect, '401 Unauthorized')

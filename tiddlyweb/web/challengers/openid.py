@@ -52,9 +52,8 @@ class Challenger(ChallengerInterface):
         to find the server and send the user to talk to it. Otherwise, ask
         the user to fill out the form again.
         """
-        request_info = cgi.parse_qs(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
-        redirect = request_info.get('tiddlyweb_redirect', ['/'])[0]
-        openid = request_info.get('openid', [''])[0]
+        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', ['/'])[0]
+        openid = environ['tiddlyweb.query'].get('openid', [''])[0]
 
         if len(openid):
             return self._find_speak_to_server(environ, start_response, redirect, openid)
