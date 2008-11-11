@@ -128,6 +128,12 @@ class Serialization(SerializationInterface):
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute, None)
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
+        try:
+            fat = self.environ['tiddlyweb.query'].get('fat', [None])[0]
+            if fat:
+                wanted_info['text'] = tiddler.text
+        except KeyError:
+            pass # tiddlyweb.query is not there
         return dict(wanted_info)
 
     def _tiddler_permissions(self, tiddler):
