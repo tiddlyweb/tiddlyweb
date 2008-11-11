@@ -122,11 +122,11 @@ class Serialization(SerializationInterface):
         Select fields from a tiddler to create
         a dictonary.
         """
-        unwanted_keys = ['text', 'recipe', 'store']
+        unwanted_keys = ['text', 'store']
         wanted_keys = [attribute for attribute in tiddler.__slots__ if attribute not in unwanted_keys]
         wanted_info = {}
         for attribute in wanted_keys:
-            wanted_info[attribute] = getattr(tiddler, attribute)
+            wanted_info[attribute] = getattr(tiddler, attribute, None)
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
         return dict(wanted_info)
 
