@@ -92,7 +92,6 @@ def test_the_TESTS():
         else:
             response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
                     body=test['data'])
-            print content
         assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 
