@@ -179,12 +179,8 @@ class EncodeUTF8(object):
             string = string.encode('utf-8')
         return string
 
-    def _yielder(self, environ, start_response):
-        for output in self.application(environ, start_response):
-            yield self._encoder(output)
-
     def __call__(self, environ, start_response):
-        return self._yielder(environ, start_response)
+        return [self._encoder(output) for output in self.application(environ, start_response)]
 
 
 class PermissionsExceptor(object):
