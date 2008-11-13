@@ -156,11 +156,13 @@
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
     GET tiddlyweb.web.handler.tiddler:get_revisions
+    POST tiddlyweb.web.handler.tiddler:post_revisions
 # The collection of revisions of a single Tiddler in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers
 #               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 #               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+#         POST: application/json: a JSON list of _fat_ tiddlers
 
 
 /search[.{format}]

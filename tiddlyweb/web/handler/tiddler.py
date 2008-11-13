@@ -43,6 +43,15 @@ def delete(environ, start_response):
     return _delete_tiddler(environ, start_response, tiddler)
 
 
+def post_revisions(environ, start_response):
+    """
+    Take a fat collect of JSON tiddlers and process
+    them into the store.
+    """
+    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    return _post_tiddler_revisions(environ, start_response, tiddler)
+
+
 def put(environ, start_response):
     """
     Put a tiddler into the store.
@@ -133,6 +142,49 @@ def _determine_tiddler(environ, bag_finder):
 
     tiddler.bag = bag_name
     return tiddler
+
+
+def _post_tiddler_revisions(environ, start_response, tiddler):
+    """
+    We have a list of revisions, put them in a new place.
+    """
+    content_type = environ['tiddlyweb.type']
+    previous_title = environ['tiddlyweb.query'].get('previous', [None])[0]
+
+    if content_type != 'application/json':
+        raise HTTP415('application/json required')
+
+    bag = Bag(tiddler.bag)
+    #  both create and write required for this action
+    _check_bag_constraint(environ, bag, 'create')
+    _check_bag_constraint(environ, bag, 'write')
+
+    length = environ['CONTENT_LENGTH']
+    content = environ['wsgi.input'].read(int(length))
+
+    # this code (to __HERE__) should not be here, but not sure
+    # it should be in the serializer either
+    try:
+        import simplejson
+        json_tiddlers = simplejson.loads(content)
+    except ValueError, exc:
+        raise HTTP409('unable to handle json: %s' % exc)
+
+    store = environ['tiddlyweb.store']
+    serializer = Serializer('json', environ)
+    serializer.object = tiddler
+    for json_tiddler in reversed(json_tiddlers):
+        json_string = simplejson.dumps(json_tiddler)
+        serializer.from_string(json_string.decode('UTF-8'))
+        if previous_title:
+            tiddler.fields['previous'] = previous_title
+        store.put(tiddler)
+    # __HERE__
+
+    response = [('Location', web.tiddler_url(environ, tiddler))]
+    start_response("204 No Content", response)
+
+    return []
 
 
 def _put_tiddler(environ, start_response, tiddler):

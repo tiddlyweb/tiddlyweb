@@ -121,3 +121,28 @@ def test_get_tiddler_revision_list_json():
     assert response['status'] == '200'
     assert len(info) == 3
 
+def test_tiddler_revision_list_json_fat():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
+            method='GET')
+
+    info = simplejson.loads(content)
+    assert response['status'] == '200'
+    assert len(info) == 3
+    assert info[0]['revision'] == 3
+    assert 'I have something to sell' in info[0]['text']
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json?previous=long:TestOne',
+            method='POST', headers={'content-type': 'application/json'}, body=content)
+
+    print content
+    assert response['status'] == '204'
+    assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+            method='GET')
+
+    info = simplejson.loads(content)
+    assert response['status'] == '200'
+
+    assert info[0]['fields']['previous'] == 'long:TestOne'

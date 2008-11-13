@@ -109,8 +109,9 @@ class Serialization(SerializationInterface):
         Turn a JSON dictionary into a Tiddler.
         """
         dict_from_input = simplejson.loads(input_string)
+        accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields', 'text', 'type']
         for key, value in dict_from_input.iteritems():
-            if value:
+            if value and key in accepted_keys:
                 setattr(tiddler, key, value)
         if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64decode(tiddler.text)
