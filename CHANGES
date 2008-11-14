@@ -1,3 +1,19 @@
+0.8 Fri Nov 14 13:14:32 GMT 2008
+
+  * correct EncodeUTF8 middleware so it operates better with
+    upstream middleware
+  * add a test/test_http_api.py and test/httptest.yaml: YAML
+    based tests of the HTTP for purpose of testing and
+    documentation
+  * clean up and enhance the mod_python.py adaptor
+  * include recipe if the JSON tiddler dict if set
+  * extent Query middleware to handle POST parameters when 
+    they are a CGI form
+  * when getting a list of tiddlers as JSON, if you set fat=1
+    as query parameter, tiddler.text is included
+  * on ../tiddlers/{name}/revisions accept a JSON POST of
+    a revision history of one tiddler, to facilitate rename
+
 0.7 Thu Nov  6 15:04:26 GMT 2008
 
   * add docs/CREDITS to give props
