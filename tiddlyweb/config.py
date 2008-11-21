@@ -105,7 +105,13 @@ API. See bag_create_policy.
 
 import os
 
-from pkg_resources import resource_filename
+try:
+    from pkg_resources import resource_filename
+    base_tiddlywiki = resource_filename('tiddlyweb', 'empty.html')
+    urls_map = resource_filename('tiddlyweb', 'urls.map')
+except ImportError:
+    base_tiddlywiki = 'tiddlyweb/empty.html'
+    urls_map = 'tiddlyweb/urls.map'
 
 # The server filters (the WSGI MiddleWare)
 from tiddlyweb.web.negotiate import Negotiate
@@ -164,8 +170,8 @@ DEFAULT_CONFIG = {
         'secret': 'this should come from a file',
         # XXX this should allow a URL, but not doing that
         # yet because of google app engine
-        'base_tiddlywiki': resource_filename('tiddlyweb', 'empty.html'),
-        'urls_map': resource_filename('tiddlyweb', 'urls.map'),
+        'base_tiddlywiki': base_tiddlywiki,
+        'urls_map': urls_map,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         }
