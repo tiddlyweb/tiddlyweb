@@ -16,6 +16,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.user import User
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError, StoreEncodingError
@@ -280,6 +281,15 @@ class Store(StorageInterface):
         bags = self._files_in_dir(path)
 
         return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
+
+    def list_users(self):
+        """
+        List all the users in the store.
+        """
+        path = os.path.join(self._store_root(), 'users')
+        users = self._files_in_dir(path)
+
+        return [User(urllib.unquote(user).decode('utf-8')) for user in users]
 
     def list_tiddler_revisions(self, tiddler):
         """

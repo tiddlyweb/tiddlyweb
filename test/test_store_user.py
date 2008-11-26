@@ -35,3 +35,17 @@ def test_simple_get():
 
 def test_failed_get():
     py.test.raises(NoUserError, 'store.get(User("nothere"))')
+
+def test_list_users():
+    user1 = User('test1')
+    user2 = User('test2')
+    store.put(user1)
+    store.put(user2)
+
+    users = store.list_users()
+    assert len(users) == 3
+    usernames = [user.usersign for user in users]
+    assert 'test1' in usernames
+    assert 'test2' in usernames
+    assert 'cdent' in usernames
+    assert 'laramie' not in usernames

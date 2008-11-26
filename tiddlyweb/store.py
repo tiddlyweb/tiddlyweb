@@ -121,12 +121,12 @@ class Store(object):
             raise AttributeError('unable to figure function for %s: %s' % (lower_class, exc))
         return func
 
-    def list_tiddler_revisions(self, tiddler):
+    def list_bags(self):
         """
-        List the revision ids of the revisions of the indicated tiddler.
+        List all the available bags in the system.
         """
-        list_func = getattr(self.storage, 'list_tiddler_revisions')
-        return list_func(tiddler)
+        list_func = getattr(self.storage, 'list_bags')
+        return list_func()
 
     def list_recipes(self):
         """
@@ -135,11 +135,18 @@ class Store(object):
         list_func = getattr(self.storage, 'list_recipes')
         return list_func()
 
-    def list_bags(self):
+    def list_tiddler_revisions(self, tiddler):
         """
-        List all the available bags in the system.
+        List the revision ids of the revisions of the indicated tiddler.
         """
-        list_func = getattr(self.storage, 'list_bags')
+        list_func = getattr(self.storage, 'list_tiddler_revisions')
+        return list_func(tiddler)
+
+    def list_users(self):
+        """
+        List all the available users in the system.
+        """
+        list_func = getattr(self.storage, 'list_users')
         return list_func()
 
     def search(self, search_query):
