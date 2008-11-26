@@ -17,8 +17,8 @@ class StorageInterface(object):
     (optionally) exists <entity_put and <entity>_get methods
     in each Store.
 
-    There are also three supporting methods, list_recipes(),
-    list_bags() and list_tiddler_revisions() that provide
+    There are also four supporting methods, list_recipes(),
+    list_bags(), list_users(), and list_tiddler_revisions() that provide
     methods for presenting a collection.
     """
 
@@ -111,6 +111,12 @@ class StorageInterface(object):
     def list_bags(self):
         """
         Retrieve a list of all bag objects in the system.
+        """
+        raise StoreMethodNotImplemented
+
+    def list_users(self):
+        """
+        Retrieve a list of all the user objects in the system.
         """
         raise StoreMethodNotImplemented
 
