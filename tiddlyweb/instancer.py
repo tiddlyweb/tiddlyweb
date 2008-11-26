@@ -27,7 +27,7 @@ config = {
 }
 """
 PLUGINS = [
-        'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAdaptorPlugin.js',
+        'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
         'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js',
         ]
 

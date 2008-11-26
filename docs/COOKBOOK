@@ -35,7 +35,7 @@ Let's begin.
 The first step is to choose a directory where you will build the
 system. This can be anywhere that is convenient for you. Since
 version 0.6 of tiddlyweb, this directory will be automatically
-created for you using a twanager command. So all you need to do 
+created for you using a twanager command. So all you need to do
 for now is go to the directory that will contain the directory
 you wish to create.
 
@@ -82,7 +82,7 @@ bag's name and its tiddler title.
 
 To put content into a TiddlyWeb server, we first have to create a bag.
 Bags have permission structures which can be set. For now we will ignore
-those and use the default, which is that everyone can read or write 
+those and use the default, which is that everyone can read or write
 content from and to a bag.
 
 The first bag we'll create is one that will contains the two plugins
@@ -108,15 +108,15 @@ The instance command has:
  * created <directory name> directory
  * created a storage directory
  * create a bag named system
- * imported the TiddlyWebAutoSavePlugin and TiddlyWebAdaptorPlugin
+ * imported the TiddlyWebAutoSavePlugin and TiddlyWebAdaptor
    from svn.tiddlywiki.org into the system bag
- * put an empty configuration file (tiddlywebconfig.py) in 
+ * put an empty configuration file (tiddlywebconfig.py) in
    <directory name>
 
-For the next steps you'll need to be in <directory name> so 
+For the next steps you'll need to be in <directory name> so
 change into it:
 
-  $ cd <directory name> 
+  $ cd <directory name>
 
 If you want to add other content from svn.tiddlywiki.org TiddlyWeb has
 built in support for retrieving tiddlers and plugins from there. The
@@ -124,7 +124,7 @@ twanager command from_svn can retrieve tiddlers, plugins and full cook-
 style recipes from subversion. If the instance command did not exist
 we could have done:
 
-  $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAdaptorPlugin.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
+  $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
 
 This would have installed the two named plugins into the system bag,
 if it existed.
@@ -185,13 +185,13 @@ from the last bag to have it is the one that is included in the collection
 (the recipes are processed in order).
 
 Your recipe gets a name. This name will be used in URLs that you publish,
-so make it meaningful to you. 
+so make it meaningful to you.
 
 For this cookbook we'll ignore filters for now, and create a simple
 recipe that allows the content you imported from one of your TiddlyWikis
 to be presented through TiddlyWeb and be edited. For this you'll need
 the name of the bag in which the tiddlers you want can be found. Use
-that name in the instructions below. The two lines that follow the line 
+that name in the instructions below. The two lines that follow the line
 beginning with $ are lines for you to type (substituting the bag's name
 for <bag name>. Make sure you type them correctly:
 
@@ -228,7 +228,7 @@ with the information you chose. Go to:
 
   http://0.0.0.0:8080/
 
-You should see a list containing 'recipes' and 'bags'. Click 
+You should see a list containing 'recipes' and 'bags'. Click
 around and see what you can discover. Going to
 
   http://0.0.0.0:8080/recipes/<recipe name>/tiddlers
@@ -252,7 +252,7 @@ on the server, as HTML, by going to:
 
 Now you have a working TiddlyWeb server. You can stop and start it
 whenever you like. If you want to start it and keep a record of the log
-you may, depending on operating system and shell choices, do something 
+you may, depending on operating system and shell choices, do something
 like this:
 
   $ twanager server <ip number> <port> &> server.log &
@@ -263,7 +263,7 @@ Google Group, or contact the first author Chris Dent, <cdent@peermore.com>.
 You can create bags and recipes as you need them for whatever functionality
 you might need. With filters it is possible to create complex recipes.
 
-TiddlyWeb is highly extensible, with a slowly growing collection of 
+TiddlyWeb is highly extensible, with a slowly growing collection of
 plugins for using different storage mechanism, outputting different
 types of a content and presenting additional URLs and interfaces. For
 example TiddlyWeb can now run on Google's app engine service and it can
@@ -272,7 +272,7 @@ provide Atom feeds of lists of tiddlers.
 TiddlyWeb is built as a REST API so can be flexibly accessed by a variety
 of clients: a web browser, TiddlyWiki, scripting languages, other web
 servers. By looking through the code and experimenting with the URLs
-given to the server you'll see that TiddlyWeb can do far more than 
+given to the server you'll see that TiddlyWeb can do far more than
 explained in this document. Have fun with it.
 
 8. What's Been Left Out?
