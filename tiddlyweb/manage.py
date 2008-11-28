@@ -167,7 +167,6 @@ def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
         print "%10s: %s" % (key, COMMANDS[key].description)
-    sys.exit(0)
 
 
 def handle(args):

@@ -6,7 +6,7 @@ Test the creation and data handling of policies.
 import sys
 sys.path.append('.')
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.policy import Policy, ForbiddenError, UserRequiredError
+from tiddlyweb.model.policy import Policy, ForbiddenError, UserRequiredError, create_policy_check
 
 import py.test
 
@@ -89,3 +89,18 @@ def test_user_perms():
     assert policy.user_perms(chris_info) == ['read','write']
 
     assert policy.user_perms(jeremy_info) == ['create', 'delete']
+
+def test_create_policy_check():
+    no_environ = {'tiddlyweb.config':{'bag_create_policy':''}}
+    all_environ = {'tiddlyweb.config':{'recipe_create_policy':''}}
+    any_environ = {'tiddlyweb.config':{'recipe_create_policy':'ANY'}}
+    admin_environ = {'tiddlyweb.config':{'recipe_create_policy':'ADMIN'}}
+    weird_environ = {'tiddlyweb.config':{'recipe_create_policy':'WEIRD'}}
+
+    py.test.raises(ForbiddenError, 'create_policy_check(no_environ, "recipe", chris_info)')
+    assert create_policy_check(all_environ, "recipe", chris_info)
+    assert create_policy_check(any_environ, "recipe", chris_info)
+    py.test.raises(UserRequiredError, 'create_policy_check(any_environ, "recipe", {"name":"GUEST"})')
+    assert create_policy_check(admin_environ, "recipe", chris_info)
+    py.test.raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", jeremy_info)')
+    py.test.raises(ForbiddenError, 'create_policy_check(weird_environ, "recipe", jeremy_info)')

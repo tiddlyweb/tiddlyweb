@@ -22,10 +22,12 @@ from tiddlyweb.manage import make_command
 from tiddlyweb.store import Store
 
 CONFIG_NAME = 'tiddlywebconfig.py'
+
 EMPTY_CONFIG = """# A default empty config, make your changes here.
 config = {
 }
 """
+
 PLUGINS = [
         'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
         'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js',
