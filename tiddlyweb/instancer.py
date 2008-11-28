@@ -18,6 +18,7 @@ import os
 
 from tiddlyweb.fromsvn import import_list
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.manage import make_command
 from tiddlyweb.store import Store
 
@@ -46,6 +47,8 @@ def instance(args):
     os.chdir(directory)
     _make_bag('system')
     import_list('system', PLUGINS)
+    _make_bag('common')
+    _make_recipe('default', ['system','common'])
     _empty_config()
 
 
@@ -56,8 +59,17 @@ def _empty_config():
     cfg.close()
 
 
+def _make_recipe(recipe_name, bags):
+    """Make a recipe with recipe_name."""
+    recipe = Recipe(recipe_name)
+    recipe_list = [[bag, ''] for bag in bags]
+    recipe.set_recipe(recipe_list)
+    store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
+    store.put(recipe)
+
+
 def _make_bag(bag_name):
-    """Make a bag with name bag_name to the sore."""
+    """Make a bag with name bag_name to the store."""
     bag = Bag(bag_name)
     store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
     store.put(bag)
