@@ -31,7 +31,8 @@ config = {
 
 PLUGINS = [
         'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
-        'http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js',
+        'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
+        'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js.js'
         ]
 
 
