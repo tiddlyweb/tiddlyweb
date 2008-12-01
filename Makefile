@@ -10,6 +10,10 @@ test:
 dist: test
 	python setup.py sdist
 
-upload: test
+upload: pypi peermore
+
+pypi: test
 	python setup.py sdist upload
+
+peermore: test
 	scp CHANGES dist/tiddlyweb-*.gz cdent@peermore.com:public_html/peermore.com/tiddlyweb/dist

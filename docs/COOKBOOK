@@ -107,9 +107,11 @@ The instance command has:
 
  * created <directory name> directory
  * created a storage directory
- * create a bag named system
- * imported the TiddlyWebAutoSavePlugin and TiddlyWebAdaptor
-   from svn.tiddlywiki.org into the system bag
+ * created a bag name common where new content will be saved
+ * create a bag named system where plugins for automatic saving
+   are kept
+ * imported the ServerConfig, ServerSideSavingPlugin and TiddlyWebAdaptor
+   plugins from svn.tiddlywiki.org into the system bag
  * put an empty configuration file (tiddlywebconfig.py) in
    <directory name>
 
@@ -124,9 +126,9 @@ twanager command from_svn can retrieve tiddlers, plugins and full cook-
 style recipes from subversion. If the instance command did not exist
 we could have done:
 
-  $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/client/plugins/TiddlyWebAutoSavePlugin.js
+  $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js
 
-This would have installed the two named plugins into the system bag,
+This would have installed the named plugin into the system bag,
 if it existed.
 
 4. Import A TiddlyWiki
@@ -224,7 +226,8 @@ using the <port> you chose. Choose a different one.
 
 It's time to go to your web browser. For the examples below
 we'll use 0.0.0.0 and 8080 for ip number and port. Replace these
-with the information you chose. Go to:
+with the information you chose. On some systems 0.0.0.0 will not
+work, you can try 127.0.0.1 instead. Go to:
 
   http://0.0.0.0:8080/
 
