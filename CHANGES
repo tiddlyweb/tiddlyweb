@@ -1,3 +1,11 @@
+0.9 Mon Dec  1 17:34:18 GMT 2008
+
+  * Extensive adjustments to the TiddlyWiki saving plugins
+    to make saving more workable (FND).
+  * tiddlyweb now available in PyPI.
+  * Support for listing all users in the store.
+  * Instancer now creates a common bag to go along with the system bag.
+
 0.8 Fri Nov 14 13:14:32 GMT 2008
 
   * correct EncodeUTF8 middleware so it operates better with
