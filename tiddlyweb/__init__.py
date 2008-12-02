@@ -23,4 +23,4 @@ extensibility.
 The primary resources presented by the server are Recipes,
 Bags and Tiddlers. See the tiddlyweb.model package.
 """
-__version__ = '0.9.1'
+__version__ = '0.9.2'

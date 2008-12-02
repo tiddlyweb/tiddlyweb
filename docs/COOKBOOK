@@ -115,6 +115,13 @@ The instance command has:
  * put an empty configuration file (tiddlywebconfig.py) in
    <directory name>
 
+The instance command needs access to the internet (over HTTP). If
+you are behind a firewall that users a proxy, you will need to make
+sure that http_proxy is set in your environment to the details of
+your proxy server. Something like this:
+
+    http_proxy=http://<username>:<password>@<proxy host>/
+
 For the next steps you'll need to be in <directory name> so
 change into it:
 
