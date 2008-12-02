@@ -2,7 +2,7 @@
 A class representing a simple user entity.
 """
 
-from crypt import crypt
+from sha import sha
 
 
 class User(object):
@@ -46,7 +46,7 @@ class User(object):
         Set the password for this user.
         """
         password = password.strip()
-        self._password = crypt(password.strip(), 'salty')
+        self._password = sha(password.strip()).hexdigest()
 
     def check_password(self, candidate_password):
         """
@@ -54,7 +54,7 @@ class User(object):
         """
         if self._password is None:
             return False
-        crypted_thing = crypt(candidate_password.strip(), self._password)
+        crypted_thing = sha(candidate_password.strip()).hexdigest()
         return crypted_thing == self._password
 
     def __repr__(self):
