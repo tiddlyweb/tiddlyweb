@@ -12,7 +12,7 @@ def current_timestring():
     Translate (now) into a TiddlyWiki conformat timestring.
     """
     time_object = datetime.utcnow()
-    return unicode(time_object.strftime('%Y%m%d%H%M'))
+    return unicode(time_object.strftime('%Y%m%d%H%M%S'))
 
 
 def string_to_tags_list(string):

@@ -52,7 +52,10 @@ def filter_query_string(environ):
 
 
 def http_date_from_timestamp(timestamp):
-    timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
+    try:
+        timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
+    except ValueError:
+        timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M%S')[0:6]))
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
 

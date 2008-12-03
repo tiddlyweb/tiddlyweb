@@ -53,13 +53,14 @@ def _validate_tiddler_list(environ, tiddlers):
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-    if incoming_etag == etag_string:
-        raise HTTP304(incoming_etag)
-
-    incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
-    if incoming_modified and \
-            (datetime_from_http_date(incoming_modified) >= datetime_from_http_date(last_modified_string)):
-        raise HTTP304('')
+    if incoming_etag:
+        if incoming_etag == etag_string:
+            raise HTTP304(incoming_etag)
+    else:
+        incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
+        if incoming_modified and \
+                (datetime_from_http_date(incoming_modified) >= datetime_from_http_date(last_modified_string)):
+            raise HTTP304('')
 
     return last_modified, etag
 
