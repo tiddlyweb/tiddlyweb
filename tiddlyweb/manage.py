@@ -187,6 +187,7 @@ def handle(args):
         candidate_command = args[1]
     except IndexError:
         usage([])
+        return
 
     try:
         args = args[2:]
