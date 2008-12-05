@@ -33,7 +33,7 @@ def make_command():
 
 @make_command()
 def server(args):
-    """Start the server: <hostname or ip number> <port>"""
+    """Start the server: <host name or IP number> <port>"""
     try:
         hostname, port = args[0:2]
     except IndexError:
@@ -80,7 +80,7 @@ def adduser(args):
 
 @make_command()
 def imwiki(args):
-    """Import a Tiddlywiki html file into a bag: <filename> <bag name>"""
+    """Import a Tiddlywiki html file into a bag: <filename> <bag>"""
     from tiddlyweb.importer import import_wiki_file
 
     store = _store()
@@ -98,7 +98,7 @@ def imwiki(args):
 
 @make_command()
 def recipe(args):
-    """Create or update a recipe with the recipe text on stdin: <recipe name>"""
+    """Create or update a recipe with the recipe text on stdin: <recipe>"""
     try:
         recipe_name = args[0]
     except IndexError:
@@ -119,7 +119,7 @@ def recipe(args):
 
 @make_command()
 def bag(args):
-    """Create or update a bag with the json text on stdin: <bag name>"""
+    """Create or update a bag with the json text on stdin: <bag>"""
     try:
         bag_name = args[0]
     except IndexError:
@@ -142,7 +142,7 @@ def bag(args):
 
 @make_command()
 def tiddler(args):
-    """Import a single tiddler into an existing bag from stdin: <tiddler_name> <bag name>"""
+    """Import a single tiddler into an existing bag from stdin: <tiddler> <bag>"""
     try:
         tiddler_name, bag_name = args[0:3]
     except (IndexError, ValueError):

@@ -38,7 +38,7 @@ PLUGINS = [
 
 @make_command()
 def instance(args):
-    """Create a tiddlyweb instance with default plugins in the named directory."""
+    """Create a tiddlyweb instance with default plugins in the named directory: <dir>"""
     directory = args[0]
     if not directory:
         raise ValueError('you must provide the name of a directory')
