@@ -287,12 +287,13 @@ def test_get_recipe_wiki_has_workspace_bag_does_not():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
             method='GET')
     assert response['status'] == '200'
-    assert 'workspace="long"' in content
+    assert 'recipe="long"' in content
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers.wiki',
             method='GET')
     assert response['status'] == '200'
-    assert 'workspace="long"' not in content
+    assert 'recipe="long"' not in content
+    assert 'workspace="bags/bag28"' in content
 
 def test_roundtrip_unicode_recipe():
     http = httplib2.Http()
