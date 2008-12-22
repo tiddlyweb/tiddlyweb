@@ -183,6 +183,7 @@ def handle(args):
     except KeyError:
         pass # no plugins
 
+    candidate_command = None
     try:
         candidate_command = args[1]
     except IndexError:
@@ -194,7 +195,7 @@ def handle(args):
     except IndexError:
         args = []
 
-    if candidate_command in COMMANDS:
+    if candidate_command and candidate_command in COMMANDS:
         COMMANDS[candidate_command](args)
     else:
         usage(args)
