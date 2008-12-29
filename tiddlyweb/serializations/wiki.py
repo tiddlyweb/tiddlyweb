@@ -138,7 +138,7 @@ class Serialization(SerializationInterface):
         Replace the title in the base_tiddlywiki
         with our title.
         """
-        return self._replace_chunk(wiki, '\n<title>\n', '\n</title>\n', title)
+        return self._replace_chunk(wiki, '\n<title> ', ' </title>\n', title)
 
     def _replace_chunk(self, wiki, start, finish, replace):
         """

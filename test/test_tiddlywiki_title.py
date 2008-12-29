@@ -32,7 +32,7 @@ def test_get_wiki():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert '<title>\nTiddlyWeb Loading\n</title>' in content
+    assert '\n<title> TiddlyWeb Loading </title>\n' in content
     assert 'i am tiddler 8' in content
 
 def test_get_wiki_with_title():
@@ -47,7 +47,7 @@ def test_get_wiki_with_title():
             method='GET')
 
     assert response['status'] == '200'
-    assert '<title>\nWow cow moo\n</title>' in content
+    assert '\n<title> Wow cow moo </title>\n' in content
     assert 'Wow //cow// moo' in content
 
     tiddler = Tiddler('SiteSubtitle')
@@ -60,7 +60,7 @@ def test_get_wiki_with_title():
             method='GET')
 
     assert response['status'] == '200'
-    assert '<title>\nWow cow moo - MooCow\n</title>' in content
+    assert '<title> Wow cow moo - MooCow </title>' in content
     assert 'MooCow' in content
 
     tiddler = Tiddler('SiteTitle')
@@ -72,5 +72,5 @@ def test_get_wiki_with_title():
             method='GET')
 
     assert response['status'] == '200'
-    assert '<title>\nMooCow\n</title>' in content
+    assert '<title> MooCow </title>' in content
     assert 'MooCow' in content
