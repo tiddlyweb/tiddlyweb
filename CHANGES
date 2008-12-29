@@ -1,3 +1,11 @@
+0.9.4 Mon Dec 29 14:45:35 GMT 2008
+
+  * Use the latest TiddlyWiki 2.4.2 beta.
+  * Update the docstore to use the latest client plugins and docs.
+  * Send server.workspace as a partial url fragment in wiki 
+    serialization.
+  * Correct a minor error in twanager that could cause a warning.
+
 0.9.3 Wed Dec  3 20:05:03 GMT 2008
 
   * Increase the granularity of modified timestamps on
