@@ -1,0 +1,23 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229132221
+type: None
+tags: 
+title: HowToBuiltInUsers
+
+''Note'': This is a TiddlyWebHalfStep.
+
+TiddlyWeb has an optional built in [[User]] database. It can be used by credentials extractors and challengers that work in terms of a username and password or for associating usernames with [[Role]]s. The {{{simple_cookie}}} [[Challenger]] takes a username and password and validates against the database. The {{{http_basic}}} CredentialsExtractor looks for Authorization Basic header information and validates them against the database.
+
+The [[twanager]] script can be used for creating users, or the {{{tiddlyweb}}} [[Python]] code can be imported into other scripts to directly manipulate user data.
+
+{{{
+    ./twanager adduser <username> <password>
+}}}
+
+Creates the user with <username> and <password>.
+
+There are two ways to use these users (neither of which is particular secure because a password gets passed over the wire in an insecure fashion, use SSL if you need secure passwords!):
+
+# Cause the user to interact with the {{{/challenger/simple_cookie}}} to enter and validate username and password and then generate a cookie available for future requests.
+# In every request send the username and password in an HTTP Basic Authorize header.

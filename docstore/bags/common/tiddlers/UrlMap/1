@@ -1,0 +1,201 @@
+modifier: cdent.livejournal.com
+created: 200803250000
+modified: 20081229132945
+type: None
+tags: 
+title: UrlMap
+
+{{{
+# This file is the URL map for TiddlyWeb. URL paths
+# dispatch, by REQUEST_METHOD, to WSGI style callables
+# in the tiddlyweb.web.handler package in the TiddlyWeb code. 
+#
+# The map is automatically loaded at run time and 
+# processed by Selector. Fields within { } are
+# made available in the WSGI environment.
+#
+# You may extend TiddlyWeb by adding URLs in this
+# file and pointing to WSGI applications of your
+# own design. It is important to remember that
+# these applications will be running withing the
+# TiddlyWeb stack, listed as 'server_request_filters' and
+# 'server_response_filters' in tiddlyweb.config.
+# These provide authentication handling, database
+# setup, UTF-8 encoding and associated functionality.
+#
+# Below each URL is listed, followed by HTTP methods
+# and pointers to the methods which handle the request.
+# The default content types available for the request
+# are listed as well. Some TiddlyWeb installations will
+# have more or less content types depending on configuration.
+#
+# If a URL as a .format extension, this is a method by
+# which it is possible to request a different content-type
+# for the requested resource, overriding the Accept header.
+# See tiddlyweb.config for supported extensions.
+#
+# URLs that produce collections of Tiddlers accept a
+# filter query_string to filter the results.
+
+/
+    GET tiddlyweb.web.handler:root
+# A root page for the system pointing to /bags and /recipes.
+# Supports GET:  text/html
+
+
+/recipes[.{format}]
+    GET tiddlyweb.web.handler.recipe:list
+# List of recipes in a variety of formats.
+# Supports GET: text/plain: list of recipe_name
+#               text/html: list of links to /recipes/{recipe_name}
+#               application/json: list of recipe_name
+
+
+/recipes/{recipe_name:segment}[/]
+    GET tiddlyweb.web.handler.recipe:get
+    PUT tiddlyweb.web.handler.recipe:put
+    DELETE tiddlyweb.web.handler.recipe:delete
+# Representation of a Recipe resource, an ordered list of bag+filter
+# Supports GET: text/plain: text representation of list of bags+filters
+#               text/html: links to bag with filter query string
+#               application/json: list of bag, filter pairs
+# Supports PUT: text/plain: text representation (bag+filter URL)
+#               application/json: list of bag, filter lists (as follows)
+#                 [ [ bag_name, filter_string], [ bag_name, filter_string] ]
+
+
+/recipes/{recipe_name:segment}/tiddlers[.{format}]
+    GET tiddlyweb.web.handler.recipe:get_tiddlers
+# The collection of Tiddlers created by this Recipe.
+# Supports GET: text/plain: a list of tiddler names
+#               text/html: a list of links to the tiddlers _in their bag_
+#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+
+
+/recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
+    GET tiddlyweb.web.handler.tiddler:get
+    PUT tiddlyweb.web.handler.tiddler:put
+    DELETE tiddlyweb.web.handler.tiddler:delete
+# A single Tiddler produced by this Recipe.
+# Supports GET: text/plain: a text representation of the tiddler
+#               text/html: the tiddler rendered as HTML, in a div
+#               application/json: a JSON dict representing the tiddler
+#               text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+# Supports PUT: text/plain: a text representation of a tiddler (see
+#                             tiddlyweb.serializations.text)
+#               application/json: a JSON dict representation of a tiddler (see
+#                                   tiddlyweb.serializations.json)
+# Supports DELETE: (irrevocably removes the tiddler)
+
+
+/recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
+    GET tiddlyweb.web.handler.tiddler:get
+# A single revision of a Tiddler produced by this Recipe.
+# Supports GET: text/plain: a text representation of the tiddler
+#               text/html: the tiddler rendered as HTML, in a div
+#               application/json: a JSON dict representing the tiddler
+#               text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+
+
+/recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
+    GET tiddlyweb.web.handler.tiddler:get_revisions
+# The collection of revisions of a single Tiddler produced by this Recipe.
+# Supports GET: text/plain: a list of tiddler names
+#               text/html: a list of links to the tiddlers _in their bag_
+#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+
+
+/bags[.{format}]
+    GET tiddlyweb.web.handler.bag:list
+# The list of bags available on the system (to the current user)
+# Supports GET: text/plain: a list of bag names
+#               text/html: a list of bag names linking to the the list of tidders in the bag
+#               application/json: a list of bag names
+
+
+/bags/{bag_name:segment}[/]
+    GET tiddlyweb.web.handler.bag:get
+    PUT tiddlyweb.web.handler.bag:put
+    DELETE tiddlyweb.web.handler.bag:delete
+# A representation of a single Bag.
+# Supports GET: application/json: The Bag description and Policy.
+#               text/html: The bag description and link to tiddlers.
+# Supports PUT: application/json: 
+# Supports DELETE: (removes the bag and its tiddlers)
+
+
+/bags/{bag_name:segment}/tiddlers[.{format}]
+    GET tiddlyweb.web.handler.bag:get_tiddlers
+    POST tiddlyweb.web.handler.bag:import_wiki
+# The collection of Tiddlers in this Bag.
+# Supports GET: text/plain: a list of tiddler names
+#               text/html: a list of links to the tiddlers 
+#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+# Supports POST: text/x-tiddlywiki: extract the tiddlers from the tiddlywiki and put them
+#                                   in the Bag
+
+/bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
+    GET tiddlyweb.web.handler.tiddler:get
+    PUT tiddlyweb.web.handler.tiddler:put
+    DELETE tiddlyweb.web.handler.tiddler:delete
+# A single Tiddler located in this Bag.
+# Supports GET: text/plain: a text representation of the tiddler
+#               text/html: the tiddler rendered as HTML, in a div
+#               application/json: a JSON dict representing the tiddler
+#               text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+# Supports PUT: text/plain: a text representation of a tiddler (see
+#                             tiddlyweb.serializations.text)
+#               application/json: a JSON dict representation of a tiddler (see
+#                                   tiddlyweb.serializations.json)
+# Supports DELETE: (irrevocably removes the tiddler)
+
+
+/bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
+    GET tiddlyweb.web.handler.tiddler:get
+# A single revision of a Tiddler in this Bag.
+# Supports GET: text/plain: a text representation of the tiddler
+#               text/html: the tiddler rendered as HTML, in a div
+#               application/json: a JSON dict representing the tiddler
+#               text/x-tiddlywiki: this tiddler wrapped up as a TiddlyWiki
+
+
+/bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
+    GET tiddlyweb.web.handler.tiddler:get_revisions
+    POST tiddlyweb.web.handler.tiddler:post_revisions
+# The collection of revisions of a single Tiddler in this Bag.
+# Supports GET: text/plain: a list of tiddler names
+#               text/html: a list of links to the tiddlers
+#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+#         POST: application/json: a JSON list of _fat_ tiddlers
+
+
+/search[.{format}]
+    GET tiddlyweb.web.handler.search:get
+# A search mechanism that searches the entire datastore for
+# tiddlers that match the query passed in on a 'q=' query string.
+# Returns a collection of Tiddlers.
+# Supports GET: text/plain: a list of tiddler names
+#               text/html: a list of links to the tiddlers
+#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
+
+
+/challenge
+    GET tiddlyweb.web.challenge:base
+# The base of the the user challenge mechanism. If
+# there are more than one challenge systems configured
+# this page will list them and allow the client to choose.
+
+
+/challenge/{challenger:segment}
+    GET tiddlyweb.web.challenge:challenge_get
+    POST tiddlyweb.web.challenge:challenge_post
+# One of potentially many challenge systems. GET
+# is generally used to present an interface, POST
+# to deal with user response. But this is very
+# dependent on the implementation.
+}}}

@@ -1,0 +1,17 @@
+modifier: cdent.livejournal.com
+created: 200803260329
+modified: 20081229125919
+type: None
+tags: 
+title: Serializer
+
+A Serializer performs two purposes:
+
+# It takes an object and transforms it into some representation, such as JSON, text, or the object embedded in a working TiddlyWiki, perhaps to display the object over the web.
+# It takes some representation, such as JSON or text, and turns it into an object, perhaps to store data posted from the web.
+
+In TiddlyWeb, the serialization system is designed to be easy to extend. The core code includes text, JSON, HTML and wiki serializers, but others, such as YAML would be easy for others to create and install.
+
+A serializer has to satisfy an interface (described in {{{tiddlyweb/serializers/__init.py__}}}) and be a module in the {{{tiddlyweb.serializers}}} namespace.
+
+TiddlyWeb uses the HTTP Accept and Content-Type headers to determine what serializer to use for any given request. The included (in {{{tiddlyweb.web.negotiate}}}) [[WSGI Middleware]] [[Negotiate]] does this [[Content Negotiation]] work.

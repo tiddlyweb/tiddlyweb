@@ -1,0 +1,9 @@
+modifier: cdent.livejournal.com
+created: 200803281434
+modified: 20081229123148
+type: None
+tags: 
+title: Issues
+
+
+Issues for TiddlyWeb are now being tracked in trac. Here's a list of [[tickets|http://trac.tiddlywiki.org/query?status=assigned&status=new&status=reopened&component=tiddlyweb&order=priority&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component]].

@@ -1,0 +1,15 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229132056
+type: None
+tags: halfstep
+title: HowToOpenID
+
+''Note'': This is a TiddlyWebHalfStep
+
+OpenID support is available in TiddlyWeb by default. When a user or a TiddlyWiki is presented with an authorization error and sent into the [[Challenger]] system the user side of the system can choose to use an OpenID challenger. Successful use of that challenger will send a cookie to the user agent to be used for subsequent credentials extraction. The CredentialsExtractor will set {{{tiddlyweb.usersign}}} to the OpenID (sans 'http://').
+
+Therefore, in order to control access with [[OpenID]]s [[OpenID]]s need to be put in bag polcies (see NeedForRoles). For now there are two options:
+
+# Set the desired attribute to {{{["ANY"]}}} this will make it so any authorized user (any validated OpenID) can perform the action described by the attribute.
+# Set the desired policy attribute to a list of [[OpenID]]s (i.e. {{{["foo.example.com", "bar.example.com"]}}}) that should be allowed to do the action. Obviously this doesn't scale particularly well for many situations, so one can create TiddlyWeb [[User]]s with [[Role]]s and use roles in policies. Also keep in mind the bag editing process is entirely scriptable (from TiddlyWiki plugins or othertools, its kind of the point of the whole system).

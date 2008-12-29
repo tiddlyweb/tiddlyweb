@@ -1,0 +1,8 @@
+modifier: cdent.livejournal.com
+created: 20081229125740
+modified: 20081229125740
+type: None
+tags: 
+title: Control
+
+{{{tiddlyweb.control}}} is a module that contains code that works with multiple entities in the TiddlyWeb system. It is used so that the entity modules have as few methods or functions as possible. The original goal here was to limit the number of collaborations in the codebase, and keep things dry. It's not clear that this has resulted in more readable code, however, so this design is subject to change in the future.

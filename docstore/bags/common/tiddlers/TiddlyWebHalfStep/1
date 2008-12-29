@@ -1,0 +1,10 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200808291100
+type: None
+tags: 
+title: TiddlyWebHalfStep
+
+Any information in this wiki that is marked with TiddlyWebHalfStep is subject to change as the API and implementation of TiddlyWeb changes. A half step is exploratory work in a particular direction to see if that direction is the right one. As development and documentation move at different speeds there is a significant chance the documentation will be out of date relative to the codebase.
+
+When the codebase stabilizes for version 1.0 this will no longer be an issue. TiddlyWeb remains some distance from version 1.0.

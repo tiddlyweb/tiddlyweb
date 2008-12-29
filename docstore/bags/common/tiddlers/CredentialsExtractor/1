@@ -1,0 +1,12 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229131327
+type: None
+tags: 
+title: CredentialsExtractor
+
+A CredentialsExtractor examines an incoming request to see if it contains sufficient information to extract a username and validate that it is authentic. If it is the username is injected into the WSGI environment as {{{tiddlyweb.usersign}}}. If no username is available usersign is set to GUEST. {{usersign}} is a dict containing (at this time) two keys: {{{name}}} with a string value and {{{roles}}} a possibly empty list of strings, each representing a role the named user has.
+
+TiddlyWeb can be configured (via {{{tiddlyweb.config.extractors}}}) to use an ordered stack of extractors. When one returns a value the stack is left and {{{tiddlyweb.usersign}} set. If no value is returned from one extractor the next is tried.
+
+Credentials are installed in requests by successfully interacting with a [[Challenger]].

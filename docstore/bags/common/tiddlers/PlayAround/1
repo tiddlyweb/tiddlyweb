@@ -1,0 +1,25 @@
+modifier: cdent.livejournal.com
+created: 200803271705
+modified: 20081229123506
+type: None
+tags: 
+title: PlayAround
+
+This site exists so people can experiment with  TiddlyWeb. Feel free to create and change content.
+
+You have a few options:
+* You can use the page directly from http://peermore.com:8080/recipes/TiddlyWeb/tiddlers.wiki and click sync to save your changes whenever you like.
+* You can use the page directly from http://peermore.com:8080/recipes/AutoTiddlyWeb/tiddlers.wiki and content will be saved as you edit.
+* You can save a generated wiki to disk as a usual TiddlyWiki file, and sync or  save from there.
+* You can browse the the URLs presented by tiddlyweb itself. A starting point is http://peermore.com:8080. You can add .txt, .json and .wiki to many of the URLs to get different representations. Not all URLs support all extensions.
+* When browsing bags you can play with FilterStrings
+
+If you choose to add plugins, realize that you may blow things up for other people.
+
+Contact cdent@peermore.com or send mail to the TiddlyWikiDev group if there are issues.
+
+While TiddlyWeb supports handling contention resolution when there are concurrent writes to the same tiddler in the datastore, there is not, as yet, support on the client side for handling the HTTP response code that is generated.
+
+!User Content
+* [[Feature Requests]]
+* [[Sandbox]]

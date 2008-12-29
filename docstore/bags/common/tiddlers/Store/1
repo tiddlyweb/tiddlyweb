@@ -1,0 +1,14 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229130138
+type: None
+tags: 
+title: Store
+
+A Store is the TiddlyWeb name for a system that does persistent storage of [[Recipe]], [[Bag]], [[Tiddler]], and [[User]] objects. A TiddlyWeb installation may use (under normal circumstances) only one store, but what that store is up to the configuration of the installation.
+
+By default TiddlyWeb uses a simple text files in a hierarchy of directories for the store. All of the activity of the store is located in one module, {{{tiddlyweb.stores.text}}}, which implements the StorageInterface.
+
+Other stores can be created by creating a class called Store that implements the StorageInterface. A sample that uses the google app engine storage system can be found at http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/tiddlyweb-plugins/googleappengine/googledata.py
+
+A critical aspect of using the Store in TiddlyWeb is that the non store code must ''never'' use methods on the store that are not part of the StorageInterface.

@@ -1,0 +1,12 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229130948
+type: None
+tags: 
+title: WebHandlers
+
+WebHandlers are those pieces of code which respond to the URLs listed in the UrlMap. In TiddlyWeb the WebHandlers are [[WSGI]] applications (meaning they present a specific method interface and satisfy a specific contract for what they will return). The WebHandlers are kept in the {{{tiddlyweb.web.handler}}} package of the code distribution.
+
+Generally speaking the handlers are asked to instantiate a collection of entities or a single entity, and then do something with it; either return a representation or store a representation. In either case the handlers interact with a [[Store]] and [[Serializer]].
+
+Each handler attempts to be content-type agnostic. It does the work of locating an object, but leaves the manipulation (creation or decomposition) of the representation to the [[Serializer]]. Because there can be a theoretically infinite number of serializers handlers can present a theoretically infinite number of representations without the handler code needing to change. That is, in a word, good.

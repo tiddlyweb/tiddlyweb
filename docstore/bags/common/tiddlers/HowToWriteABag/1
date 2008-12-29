@@ -1,0 +1,21 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200808291100
+type: None
+tags: howto
+title: HowToWriteABag
+
+Client code can write a [[Bag]] to update its [[Policy]] or description by sending a {{{PUT}}} request to {{{/bags/{bag_name} }}} containing a JSON representation of the Bag. Note that writing a bag does not change the ''contents'' of the bag, just the bag's metadata. The tiddler contents of a bag are updated by updating individual tiddlers.
+
+The JSON structure of a bag is as follows:
+
+{{{
+{
+    "policy": {POLICY_DICT},
+    "desc": 'text string describing the bag'
+}
+}}}
+
+If policy or dict are not set, defaults are used, however it is very important to note that the bag is being updated by a PUT and thus the incoming representation entirely replaces whatever representation is stored on the server. Thus the cleanest way to do an update is to GET a representation, modify it locally, and then PUT it back to the server.
+
+See [[Policy]] and PolicyExamples for more information on the contents of the ~POLICY_DICT.

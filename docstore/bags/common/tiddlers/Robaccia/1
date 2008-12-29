@@ -1,0 +1,9 @@
+modifier: ChrisDent
+created: 200803271705
+modified: 200803271705
+type: None
+tags: 
+title: Robaccia
+
+
+Robaccia is a simple web framework written in [[Python]] by [[Joe Gregorio]]. He wrote it to demonstrate [[why there are so many web frameworks in python|http://bitworking.org/news/Why_so_many_Python_web_frameworks]]. The summary answer is because [[WSGI]] and other excellent Python tools make it easy and simple.

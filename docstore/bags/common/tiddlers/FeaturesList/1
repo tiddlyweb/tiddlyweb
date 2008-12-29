@@ -1,0 +1,21 @@
+modifier: GUEST
+created: 20081229122355
+modified: 20081229122355
+type: None
+tags: 
+title: FeaturesList
+
+Type the text for 'FeaturesList'At base TiddlyWeb is a [[Python]] [[WSGI]] application. It makes use of a variety of Python and WSGI features to be flexible and useful. A basic TiddlyWeb installation provides:
+
+* A modular/pluggable datastore for storing [[Tiddler]]s in [[Bag]]s and building [[Recipe]]s.
+* An HTTP API to accessing that datastore (see [[URLs]] and [[WebHandlers]]).
+* Server side rendering of wikitext to HTML, for online viewing.
+* A command line tool (called [[twanager]]) for controlling multiple installations on a single server.
+* An extensible authentication system based on [[Challenger]]s and [[CredentialsExtractor]s. See also UsersAndSecurity.
+* A straightforward authorization system using [[Policy]] statements associated with [[Bag]]s and [[Recipe]]s.
+* Python based configuration system.
+* FilterStrings
+* A simple plugin system for adding features.
+* Rudimentary support for storing and delivery binary content (such as images).
+* Unicode on the inside, UTF-8 on the outside.
+* Ships with its own server (cherrypy's wsgiserver) but also works with CGI, mod_python, mod_wsgi, etc.

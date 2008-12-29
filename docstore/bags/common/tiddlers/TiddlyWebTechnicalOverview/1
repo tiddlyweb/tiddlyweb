@@ -1,0 +1,31 @@
+modifier: cdent.livejournal.com
+created: 200804301354
+modified: 20081229124831
+type: None
+tags: 
+title: TiddlyWebTechnicalOverview
+
+TiddlyWeb is written using version 2.5 of [[Python]]. It has been shown to work with version 2.4. 2.6 and 3.0 have not yet been tested, but support for both is planned.
+
+Its basic architecture is strongly based on [[Joe Gregorio]]'s [[Robaccia]] "toy" framework, meaning: TiddlyWeb is a [[WSGI]] application that uses [[Selector]] to dispatch a small number of URLs to simple functions in simple modules that satisfy the request. WSGI "middleware" is used to handle filtering incoming info and transform outgoing data. See a [[blog post|http://cdent.tumblr.com/post/55167654/tiddlyweb-plugins]] with an illustration.
+
+The TiddlyWeb UrlMap maps URLs to code.
+
+There are three primary entities operating in the TiddlyWeb system:
+
+* [[Recipe]]s
+* [[Bag]]s
+* [[Tiddler]]s
+
+There are also [[User]]s, but they are optional. If a User is not present the system thinks the user is GUEST.
+
+The entities are represented in code by very simple classes. Recipe, Bag and Tiddler objects have very few methods, only attributes. Other modules use the objects in concert with other modules to perform required actions. These other modules can be divided into sets:
+
+* WebHandlers
+* [[Store]]s
+* [[Serializer]]s
+* [[Control]]
+* FilterStrings
+* [[WSGI Middleware]]
+
+The UrlMap dispatches requests to WebHandlers. The WebHandlers instantiate Recipe, Bag and Tiddler objects and then get them from or put them to [[Store]]s. When the request requires some form of output, a [[Serializer]] is used to transform the object to the required form. A bastardized form of [[Content Negotiation]] is done to select which Serializer to use.

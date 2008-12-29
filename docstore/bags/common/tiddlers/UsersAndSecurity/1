@@ -1,0 +1,33 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229132717
+type: None
+tags: 
+title: UsersAndSecurity
+
+
+TiddlyWeb has what is supposed to be a fairly simple but robust user authentication and authorization model. The primary model is that access to and manipulation of [[Tiddler]]s is controlled by a [[Policy]] that is associated with the [[Bag]] in which a Tiddler is located. A Policy contains an access control list, associating actions with a list of usernames or [[Role]]s that may do that action.
+
+There is no explicit requirement that the users named in a Policy be registered with the TiddlyWeb system, just that they have been authenticated in some fashion. There are [[User]] entities available in the TiddlyWeb database which are available if a [[Challenger]] or [[CredentialsExtractor]] needs one.
+
+The pieces involved in handling users and security are:
+
+* [[CredentialsExtractor]]
+* [[User]]
+* [[Bag]]s and [[Recipe]]s and associated [[Policy]] statements
+* [[Challenger]]
+
+The generic flow of a request to the server proceeds as follows:
+
+# An incoming request is examined by one or more configured [[CredentialsExtractor]]s. If the request contains sufficient information to extract and validate a username, that username is injected into the WSGI environment as {{{tiddlyweb.usersign}}}. If no username is available usersign is set to GUEST.
+# If the found username is located in the [[User]] datastore, that user is loaded and checked for [[Role]]s. If there are any, they are added to the usersign.
+# {{{tiddlyweb.usersign}} is a dict with {{{name}}} and {{{roles}}} keys.
+# If the request operates on one or more [[Tiddler]] resources, for each Tiddler involved, its bag's [[Policy]] is inspected to see if the current usersign may do the action.
+# If the current usersign may not do the action, a permissions exception occurs sending the user agent into the the [[Challenger]] system.
+# If the challenger system is successfully negotiated by the user, subsequent requests will include necessary information for a [[CredentialsExtractor]] to extract a username.
+
+!! Related
+
+* HowToOpenID
+* PolicyExamples
+* HowToBuiltInUsers

@@ -1,0 +1,21 @@
+modifier: cdent.livejournal.com
+created: 20081229125458
+modified: 20081229125458
+type: None
+tags: 
+title: Content Negotiation
+
+Content Negotiation is system whereby an HTTP user-agent can request the best possible representation of a resource from an HTTP server. In its theoretical form the user-agent says, "I can work with the following content-types, and I'd prefer X". The server says, "I can't do X but I can do that Y you say you can handle, so here's the resource in type Y". The client uses the Accept header and the server uses the Content-Type header.
+
+In practice content negotiation has never really worked as well as designed primarily because web browser and server implementations have never quite done the right thing.
+
+In its place is something that might actually be more useful: A server has a few representations it can present and the client is able to specify which one it wants.
+
+TiddlyWeb supports something like this latter type. Most resources can be retrieved in one of several representations:
+
+* HTML (text/html)
+* plain text (text/plain)
+* JSON (application/json)
+* TiddlyWiki wikitext (text/x-tiddlywiki)
+
+GET requests may set the Accept header or use an extension on the request URL (.html, .txt, .json, .wiki).

@@ -1,0 +1,15 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229131617
+type: None
+tags: 
+title: Challenger
+
+A Challenger is an interface for requesting and processing information from a web-based user to authenticate a potential user of the TiddlyWeb system. Once a user is authenticated, [[CredentialsExtractor]]s in future requests will make the user's id available to authorization systems.
+
+The challenger system is extensible by creating new classes that implement the simple ChallengerInterface. At this time there are three challengers:
+* {{{cookie_form}}}: A simple username and password form that validates the username and password against the UserDatabase.
+* {{{openid}}}: A bare bones implementation of version 1 of OpenID.
+* {{{google_user_challenger}}}: For use with GoogleAppEngine: authenticate a google user against the google user database. Located [[outside the core distribution|http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/tiddlyweb-plugins/googleappengine/google_user_challenger.py]].
+
+A TiddlyWeb installation can be configured to present one or more challengers using the {{{tiddlyweb.config.auth_systems}}} key on tiddlyweb.config. If only one challenger is configured, when a GET request requires authentication the user-agent will be redirected to that challenger, otherwise the user-agent will be redirected to a list of available challengers.

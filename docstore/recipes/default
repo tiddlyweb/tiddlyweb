@@ -1,0 +1,5 @@
+desc: 
+policy: {"read": [], "create": [], "manage": [], "write": [], "owner": null, "delete": []}
+
+/bags/system/tiddlers
+/bags/common/tiddlers

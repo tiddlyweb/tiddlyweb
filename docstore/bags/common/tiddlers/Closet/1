@@ -1,0 +1,10 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200810211144
+type: None
+tags: 
+title: Closet
+
+Closet is a Python [[WSGI]] web service written by ChrisDent that operates as a write only data store for things that need to be accessed over the web. Any sorts of things. It's stored at google code: http://code.google.com/p/openclimber/source/browse/closet/trunk
+
+Some of the ideas in Closet have been carried over to TiddlyWeb.

@@ -1,0 +1,10 @@
+modifier: cdent.livejournal.com
+created: 20081229131920
+modified: 20081229131920
+type: None
+tags: 
+title: ChallengerInterface
+
+TiddlyWeb [[Challenger]]s must support the simple ChallengerInterface. The interface is described in the [[tiddlyweb.web.challengers package|http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/core/tiddlyweb/web/challengers/__init__.py]].
+
+The interface is deliberately constrained to a GET request and POST, so that challengers implementors are thinking in terms of the web. The OpenID challenger demonstrates how this simple interface can achieve a fair amount of complex behavior.

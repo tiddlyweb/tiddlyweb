@@ -1,0 +1,11 @@
+modifier: YourName
+created: 200803260251
+modified: 200803260251
+type: None
+tags: 
+title: ServerSide
+
+
+In the TiddlyWiki context, a ServerSide is a web-server-based application that provides remote storage for [[Tiddlers]], making them accessible from a variety of locations, a variety of platforms and by a variety of people.
+
+Storing Tiddlers on a server can help a team collaborate, provide a convenient backup, and allow a TiddlyWiki user to share their content with others.

@@ -1,0 +1,16 @@
+modifier: ChrisDent
+created: 200803271705
+modified: 200803271705
+type: None
+tags: 
+title: WSGI
+
+WSGI is a Web Server Gateway Interface.
+
+The [[WSGI Wiki|http://www.wsgi.org/wsgi/What_is_WSGI]] says:
+
+"It is a specification for web servers and application servers to communicate with web applications (though it can also be used for more than that). It is a Python standard, described in detail in [[PEP 333|http://www.python.org/dev/peps/pep-0333/]]."
+
+WSGI is useful to TiddlyWeb for two reasons:
+* It makes it easy to create web applications and services independent of the web server through which the services will run. This means it is easy to run simple servers for development and debugging as well as very powerful servers for high load situations.
+* It makes it easy to layer web applications to add functionality that is decoupled. This concept is called [[WSGI Middleware]].

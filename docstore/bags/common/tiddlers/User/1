@@ -1,0 +1,12 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229131017
+type: None
+tags: 
+title: User
+
+In TiddlyWiki it is possible to create Users, save them to the system, and later use the associated username to control access. See UsersAndSecurity and HowToBuiltInUsers for examples of how to use them.
+
+Users are not required. For an example of how to do access control without them, see HowToOpenID.
+
+A User may be involved in the code run by a [[Challenger]] or [[CredentialsExtractor]].

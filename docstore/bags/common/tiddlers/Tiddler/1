@@ -1,0 +1,10 @@
+modifier: cdent.livejournal.com
+created: 200808291100
+modified: 20081229132819
+type: None
+tags: 
+title: Tiddler
+
+A Tiddler is the fundamental piece of content in a TiddlyWiki. You are reading a Tiddler right now. A Tiddler can contain human readable content, data, or javascript code that makes up a plugin.
+
+In basic TiddlyWiki Tiddlers are limited to living in the one HTML file that makes up the TiddlyWiki. With TiddlyWeb Tiddlers have the option of travelling around the internet to be used by multiple people in different [[TiddlyWiki]]s.

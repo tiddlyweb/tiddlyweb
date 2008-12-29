@@ -1,0 +1,23 @@
+modifier: ChrisDent
+created: 200803261606
+modified: 200803261606
+type: None
+tags: 
+title: FilterStrings
+
+A [[Recipe]] is made of a list of a [[Bag]]s modified by strings representing filters. The list of bags is processed to create a workspace (a collection of tiddlers). The filters are used to select or remove one or more tiddlers based on name or tag from the building list of tiddlers.
+
+Here's the code: http://trac.tiddlywiki.org/browser/Trunk/contributors/ChrisDent/experimental/TiddlyWeb/tiddlyweb/filter.py
+
+In TiddlyWeb you can experiment with filters directly from the URL line:
+
+[[click this example|http://peermore.com:8080/bags/TiddlyWeb/tiddlers?%5Btag%5BsystemConfig%5D%5D]] (tiddlers in the bag TiddlyWeb tagged systemConfig)
+
+[[or this one|http://peermore.com:8080/bags/TiddlyWeb/tiddlers?%5Bcount%5B5%5D%5D]] (5 tiddlers from the bag, unknown sort)
+
+[[or recent changes|http://peermore.com:8080/bags/TiddlyWeb/tiddlers?%5Bsort%5B-modified%5D%5D%20%5Bcount%5B5%5D%5D]] (top five of the all the tiddlers sorted by descending modified time)
+
+
+The syntax used is the same as the syntax used in filterTiddlers in the client.
+
+If you add some content with various tags the power of this will become more clear.

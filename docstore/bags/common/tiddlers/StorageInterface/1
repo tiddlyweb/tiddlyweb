@@ -1,0 +1,10 @@
+modifier: cdent.livejournal.com
+created: 20081229130350
+modified: 20081229130900
+type: None
+tags: 
+title: StorageInterface
+
+The StorageInterface is defined in http://svn.tiddlywiki.org/Trunk/association/serversides/tiddlyweb/core/tiddlyweb/stores/__init__.py
+
+Any [[Store]] must implement at least some of the methods in StorageInterface. Which it chooses to implement is up to the author, but leaving some out will limit the functionality of the server that uses the store.

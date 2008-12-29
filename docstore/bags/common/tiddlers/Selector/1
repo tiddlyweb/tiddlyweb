@@ -1,0 +1,14 @@
+modifier: cdent.livejournal.com
+created: 200803281333
+modified: 20081229133140
+type: None
+tags: 
+title: Selector
+
+Selector is a [[Python]] tool that does URL to code dispatching (or delegation) for [[WSGI]] applications.
+
+http://lukearno.com/projects/selector/
+
+It allows delegation through configuration.
+
+TiddlyWeb uses Selector to control what URLs are made available. The UrlMap lists the default URLs but this list can be extended in plugins.

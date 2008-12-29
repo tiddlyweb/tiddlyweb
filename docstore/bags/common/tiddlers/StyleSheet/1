@@ -1,0 +1,43 @@
+modifier: ChrisDent
+created: 200803250000
+modified: 200803250000
+type: None
+tags: 
+title: StyleSheet
+
+#displayArea {
+    margin: 1em 15.5em 0em 1em; /* neutralize default margins */
+}
+
+#mainMenu {
+    position: static; /* neutralize default settings */
+    width: auto; /* neutralize default settings */
+    overflow: auto; /* contain floats */
+    border-bottom: 2px solid [[ColorPalette::PrimaryDark]];
+    padding: 0;
+    text-align: left;
+    color: [[ColorPalette::PrimaryPale]];
+    background-color: [[ColorPalette::PrimaryMid]];
+}
+
+#mainMenu a,
+#mainMenu .button,
+#mainMenu .tiddlyLink {
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 0.2em 0.75em;
+    font-size: 1.15em;
+    font-weight: bold;
+    color: [[ColorPalette::PrimaryPale]];
+}
+
+#mainMenu a:hover,
+#mainMenu .button:hover,
+#mainMenu .tiddlyLink:hover {
+    background-color: [[ColorPalette::PrimaryDark]];
+}
+
+#mainMenu br {
+    display: none;
+}

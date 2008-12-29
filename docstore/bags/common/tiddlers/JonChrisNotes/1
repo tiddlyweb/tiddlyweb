@@ -1,0 +1,13 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200810211143
+type: None
+tags: 
+title: JonChrisNotes
+
+* Might be useful to have a 'tiddlers' link on the HTML representation of a [[Recipe]]. ''done''
+* Would be useful to have a static file store for storing random stuff (and how do 'data:' schemes work with that). ''done'' See the twstatic plugin and the recent binary tiddler work.
+* Does [[Closet]] fit in here for a place to store stuff? Maybe more relevant now that the binary tiddler work has been done.
+* We need a test in the python code that demonstrates a complete run through of the API, as an instructional tool. ''Still need this.''
+
+test

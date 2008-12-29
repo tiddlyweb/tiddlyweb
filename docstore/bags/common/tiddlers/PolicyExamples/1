@@ -1,0 +1,37 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200808291100
+type: None
+tags: 
+title: PolicyExamples
+
+''Note'': This is a TiddlyWebHalfStep.
+
+Here are some examples of how a [[Policy]] on a [[Bag]] can be used to control access for specific purposes.
+
+A bag for storing comments in an environment managed by {{{foobar.example.com}}} where all other visitors need to authenticate to create a comment and may not edit their comments once they have been created:
+
+{{{
+    "read": [],
+    "write": ["foobar.example.com"],
+    "create": ["ANY"],
+    "delete": ["foobar.example.com"],
+}}}
+
+Another [[Bag]] in the same [[Recipe]] contains main entries (upon which comments are made). Only the manage can write here:
+
+{{{
+    "read": [],
+    "write": ["foobar.example.com"],
+    "create": ["foobar.example.com"],
+    "delete": ["foobar.example.com"],
+}}}
+
+Another [[Bag]] contains the plugins and associated tiddlers required for the entry and commenting system. It is managed by the creator of the system:
+
+{{{
+    "read": [],
+    "write": ["jj.example.com"],
+    "create": ["jj.example.com"],
+    "delete": ["jj.example.com"],
+}}}

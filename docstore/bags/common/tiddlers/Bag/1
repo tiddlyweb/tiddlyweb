@@ -1,0 +1,15 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200808291100
+type: None
+tags: 
+title: Bag
+
+A bag is a container of [[Tiddler]]s with a [[Policy]] that constrains the actions that can be performed on that bag: read, write, create and delete tiddlers.
+
+A bag may also have a description field, containing text that may describe the purpose of the bag or the meaning of the tiddlers contained within.
+
+The combination of a bag's name and a tiddler's name is the unique name of a [[Tiddler]].
+
+* HowToWriteABag
+* HowToReadABag

@@ -1,0 +1,12 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200810211143
+type: None
+tags: 
+title: Recipe
+
+A recipe is an ordered list of [[Bag]]s and FilterStrings that result to a list of tiddlers.
+
+They are used to create [[TiddlyWiki]]s with a set of plugins and content customized for a particular use case.
+
+If a recipe results in more than one instance of a Tiddler with the same name, the Tiddler from the recent [[Bag]] is the one used.

@@ -1,0 +1,39 @@
+modifier: ChrisDent
+created: 200808291100
+modified: 200808291100
+type: None
+tags: 
+title: Policy
+
+A Policy is information associated with a [[Bag]] to constrain actions which may be performed on the [[Tiddler]]s in the bag. See UsersAndSecurity overview.
+
+A Policy has six attributes:
+
+# read
+# write
+# create
+# delete
+# manage
+# owner
+
+Attributes one through four take a list as their argument. The elements in the lists are strings which may be one of the following:
+
+# "ANY": action possible for any authenticated user
+# "NONE": action impossible for all requests
+# []: action possible for all requests
+# List of strings representing users
+
+"owner" and "manage" are for future expansion.
+
+A [[Bag]] Policy is set by making a PUT request to a Bag of JSON in the form:
+
+{{{
+{"policy": {
+    "read": [<elements>],
+    [other attributes]
+}}
+}}}
+
+Any attributes not set will be set to the default. A PUT request is ''not'' a modify it is a replace so to do a modify it is import to GET the Bag, adjust the dataset and then PUT it. This is the [[REST]] way.
+
+See PolicyExamples.

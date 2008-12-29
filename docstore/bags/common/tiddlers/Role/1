@@ -1,0 +1,11 @@
+modifier: cdent.livejournal.com
+created: 20081229132425
+modified: 20081229132425
+type: None
+tags: 
+title: Role
+
+
+''Note'': this is a TiddlyWebHalfStep.
+
+Any TiddlyWeb [[User]] can be associated with any number of arbitrary roles. Roles may then be listed in [[Policy]] statements to control access. There are few constraints on roles: they are just strings associated with users.

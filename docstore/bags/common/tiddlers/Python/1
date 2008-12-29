@@ -1,0 +1,11 @@
+modifier: ChrisDent
+created: 200803271705
+modified: 200803271705
+type: None
+tags: 
+title: Python
+
+
+[[Python|http://www.python.org/]] is a clean and clear multi-platform programming language with good support for both object oriented and functional programming paradigms.
+
+It was chosen for TiddlyWeb because of its readable code, its good support for test driven design and development and [[WSGI]].

@@ -1,0 +1,14 @@
+modifier: cdent.livejournal.com
+created: 200803281333
+modified: 20081229133038
+type: None
+tags: 
+title: URLs
+
+The TiddlyWeb system is based around what should be clean and meaningful URLs. You can find a map of those URLs in UrlMap. The URLs point to the resources that are made available by the system. Every working URL in TiddlyWeb is, with specific ntent, a noun. If an action is performed on that noun it is through the HTTP method being called on the URL. Some examples:
+
+{{{GET /recipes}}} Get a list of recipes
+{{{GET /recipes/TiddlyWeb/tiddlers}}} Get a list of the tiddlers in the TiddlyWeb recipe
+{{{PUT /bags/NewContent/tiddlers/MyNewTiddler}}} Put a tiddler named MyNewTiddler in the NewContent bag
+
+The web is the nouns, HTTP is the verbs.
