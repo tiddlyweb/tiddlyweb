@@ -128,7 +128,7 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, P
 # using code, its contents will be merged with these defaults.
 DEFAULT_CONFIG = {
         'system_plugins': [],
-        'twanager_plugins': ['tiddlyweb.fromsvn', 'tiddlyweb.instancer'],
+        'twanager_plugins': [],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,

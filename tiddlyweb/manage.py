@@ -10,6 +10,8 @@ from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
 from tiddlyweb.model.user import User
 
+INTERNAL_PLUGINS = ['tiddlyweb.fromsvn', 'tiddlyweb.instancer']
+
 COMMANDS = {}
 
 
@@ -174,8 +176,9 @@ def handle(args):
     Dispatch to the proper function for the command
     given in a args[1].
     """
+    plugins = INTERNAL_PLUGINS
     try:
-        plugins = config['twanager_plugins']
+        plugins.extend(config['twanager_plugins'])
         for plugin in plugins:
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
