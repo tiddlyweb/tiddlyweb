@@ -31,7 +31,6 @@ def send_tiddlers(environ, start_response, bag):
     response = [content_header, cache_header]
 
     if serialize_type == 'wiki':
-        response.append(('Set-Cookie', 'chkHttpReadOnly=false'))
         if download:
             response.append(('Content-Disposition', 'attachment; filename="%s"' % download))
     if last_modified:
