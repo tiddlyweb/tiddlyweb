@@ -1,3 +1,14 @@
+0.9.5 Thu Jan  8 22:45:37 GMT 2009
+
+  * Correct the handling of from_svn and instance plugins
+    when external plugins are used.
+  * No longer Set-Cookie with chkHttpReadOnly set to false,
+    ServerSideSavingPlugin now does this.
+  * No longer have a server failure when trying to use a sort
+    filter on an attribute that does not exist. Instead send
+    and HTTP 400.
+  * Add an "update" twanager command. See the help.
+
 0.9.4 Mon Dec 29 14:45:35 GMT 2008
 
   * Use the latest TiddlyWiki 2.4.2 beta.
