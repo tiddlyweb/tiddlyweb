@@ -29,12 +29,6 @@ config = {
 }
 """
 
-PLUGINS = [
-        'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
-        'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
-        'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js'
-        ]
-
 
 @make_command()
 def instance(args):
@@ -47,10 +41,16 @@ def instance(args):
     os.mkdir(directory)
     os.chdir(directory)
     _make_bag('system')
-    import_list('system', PLUGINS)
+    import_list('system', config['instance_tiddlers'])
     _make_bag('common')
     _make_recipe('default', ['system','common'])
     _empty_config()
+
+
+@make_command()
+def update(args):
+    """Update the default plugins in the current instance."""
+    import_list('system', config['instance_tiddlers'])
 
 
 def _empty_config():

@@ -24,6 +24,11 @@ twanager_plugins -- A list of Python module names that
 act as plugins for twanager, adding command line functionality.
 As with system_plugins init(config) is called.
 
+instance_tiddlers -- A list of URLs pointing to tiddlers
+in tiddlywiki svn to be imported by from_svn during
+the instance and instance_update twanager commands.
+(This format is subject to change.)
+
 server_store -- The name of a module implementing 
 tiddlyweb.stores.StorageInterface. First the module name
 is looked up in the tiddlyweb.stores package space, if
@@ -129,6 +134,11 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, P
 DEFAULT_CONFIG = {
         'system_plugins': [],
         'twanager_plugins': [],
+        'instance_tiddlers': [
+            'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
+            'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
+            'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js'
+            ],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,
