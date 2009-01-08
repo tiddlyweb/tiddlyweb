@@ -6,6 +6,7 @@ produced by a recipe.
 
 import urllib
 
+from tiddlyweb.filter import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import create_policy_check, UserRequiredError, ForbiddenError
@@ -80,7 +81,10 @@ def get_tiddlers(environ, start_response):
         tmp_bag.add_tiddler(tiddler)
 
     # then filter those tiddlers
-    tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
+    try:
+        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
+    except FilterError, exc:
+        raise HTTP400('malformed filter: %s' % exc)
     tmp_bag = Bag('tmp_bag2', tmpbag=True)
 
     # Make an optimization so we are not going

@@ -99,6 +99,14 @@ def test_get_bag_tiddler_list_filtered():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert len(content.rstrip().split('\n')) == 1, 'len tiddlers should be 1 is %s' % len(content.rstrip().split('\n'))
 
+def test_get_bag_tiddler_list_bogus_filter():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt?filter=[sort[-monkey]]',
+            method='GET')
+
+    assert response['status'] == '400'
+    assert 'malformed filter' in content
+
 def test_get_bags_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags',

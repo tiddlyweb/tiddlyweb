@@ -8,6 +8,7 @@ These need some refactoring.
 
 import urllib
 
+from tiddlyweb.filter import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import create_policy_check, UserRequiredError, ForbiddenError
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
@@ -85,7 +86,10 @@ def get_tiddlers(environ, start_response):
     # will raise exception if there are problems
     bag.policy.allows(usersign, 'read')
 
-    tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
+    try:
+        tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
+    except FilterError, exc:
+        raise HTTP400('malformed filter: %s' % exc)
     tmp_bag = Bag('tmp_bag', tmpbag=True)
     for tiddler in tiddlers:
         tmp_bag.add_tiddler(tiddler)

@@ -11,6 +11,9 @@ coming in here.
 
 import re
 
+class FilterError(Exception):
+    pass
+
 
 def compose_from_string(filter_string):
     """
@@ -183,7 +186,10 @@ def make_sort():
         elif field.find('+') == 0:
             field = field[1:]
 
-        new_tiddlers = sorted(tiddlers, key=lambda x: str(getattr(x, field)).lower(), reverse=reverse)
+        try:
+            new_tiddlers = sorted(tiddlers, key=lambda x: str(getattr(x, field)).lower(), reverse=reverse)
+        except AttributeError, exc:
+            raise FilterError('Unable to filter: %s' % exc)
         return new_tiddlers
 
     sort_filter.totaller = 1

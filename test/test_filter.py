@@ -9,10 +9,13 @@ import sys
 sys.path.append('.')
 
 from tiddlyweb import filter
+from tiddlyweb.filter import FilterError
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
 from fixtures import tiddlers
+
+import py.test
 
 # cook up some bagged tiddlers
 for tiddler in tiddlers:
@@ -79,6 +82,13 @@ def test_sort_filter_by_title():
     filter_function = filter.make_sort()
     found_tiddlers = filter_function('+title', tiddlers)
     assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerThree', 'TiddlerTwo']
+
+def test_sort_filter_by_bogus():
+    """
+    Attempt to sort by a field that does not exist. Get an error.
+    """
+    filter_function = filter.make_sort()
+    py.test.raises(FilterError, 'filter_function("+monkey", tiddlers)')
 
 def test_count_filter():
     """

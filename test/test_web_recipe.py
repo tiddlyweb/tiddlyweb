@@ -137,6 +137,13 @@ def test_get_recipe_tiddler_list_filtered_empty():
 
     assert response['status'] == '404'
 
+def test_get_recipe_tiddler_list_bogus_filter():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=[sort[+monkey]]',
+            method='GET')
+    assert response['status'] == '400'
+    assert 'malformed filter' in content
+
 def test_get_recipes_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes',
