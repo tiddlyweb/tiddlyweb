@@ -108,7 +108,9 @@ of user can create new recipes on the system through the web
 API. See bag_create_policy.
 """
 
+import logging
 import os
+import sys
 
 try:
     from pkg_resources import resource_filename
@@ -124,6 +126,12 @@ from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, PermissionsExceptor
+
+# Establish basic logging functionality.
+logging.basicConfig(level=logging.DEBUG,
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        filename='./tiddlyweb.log')
+logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
 
 
 # A dict containing the configuration of TiddlyWeb, both 
@@ -201,6 +209,7 @@ def read_config():
     global config
     config = DEFAULT_CONFIG
     for key in custom_config:
+        logging.debug('updating key %s in config' % key)
         try:
             # If this config item is a dict, update to update it
             # XXX: using exceptions for conditionals, a bit squiffy?

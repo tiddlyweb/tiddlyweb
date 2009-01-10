@@ -2,6 +2,7 @@
 WSGI Middleware to do pseudo-content negotiation
 and put the type in tiddlyweb.type.
 """
+import logging
 
 
 class Negotiate(object):
@@ -38,6 +39,7 @@ class Negotiate(object):
         """
         content_type = environ.get('CONTENT_TYPE', None)
         if content_type:
+            logging.debug('negotiating for content-type %s' % content_type)
             content_type = content_type.split(';')[0]
             environ['tiddlyweb.type'] = content_type
 
@@ -68,6 +70,8 @@ class Negotiate(object):
 
         if accept_header:
             our_types.extend(self._parse_accept_header(accept_header))
+
+        logging.debug('negotiating for accept and extensions %s' % our_types)
 
         environ['tiddlyweb.type'] = our_types
 

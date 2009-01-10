@@ -4,6 +4,7 @@ like starting a server, creating a user,
 importing a wiki, etc.
 """
 
+import logging
 import sys
 
 from tiddlyweb.web.serve import config
@@ -180,6 +181,7 @@ def handle(args):
     try:
         plugins.extend(config['twanager_plugins'])
         for plugin in plugins:
+            logging.debug('attempting to import twanager plugin %s' % plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -199,6 +201,7 @@ def handle(args):
         args = []
 
     if candidate_command and candidate_command in COMMANDS:
+        logging.debug('running command %s with %s' % (candidate_command, args))
         COMMANDS[candidate_command](args)
     else:
         usage(args)

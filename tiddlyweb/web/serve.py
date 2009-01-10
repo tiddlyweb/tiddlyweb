@@ -2,6 +2,7 @@
 Functions and Classes for running the TiddlyWeb
 web server.
 """
+import logging
 import os
 import selector
 
@@ -22,6 +23,7 @@ def load_app(host, port, map_filename):
     try:
         plugins = config['system_plugins']
         for plugin in plugins:
+            logging.debug('attempt to import system plugin %s' % plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -35,6 +37,7 @@ def load_app(host, port, map_filename):
     wrappers.extend(config['server_response_filters'])
     if wrappers:
         for wrapper in wrappers:
+            logging.debug('wrapping app with %s' % wrapper)
             app = wrapper(app)
     return app
 
@@ -66,7 +69,8 @@ def start_cherrypy(filename, hostname, port):
     server = wsgiserver.CherryPyWSGIServer((hostname, port),
             load_app(hostname, port, filename))
     try:
-        print "Starting CherryPy"
+        logging.debug('starting cherrypy at %s:%s' % (hostname, port))
+        print "Starting CherryPy at %s:%s" % (hostname, port)
         server.start()
     except KeyboardInterrupt:
         server.stop()
@@ -82,5 +86,6 @@ class Configurator(object):
         self.application = application
 
     def __call__(self, environ, start_response):
+        logging.debug('initial request environment is %s' % environ)
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
