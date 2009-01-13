@@ -188,7 +188,7 @@ DEFAULT_CONFIG = {
         'urls_map': urls_map,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
-        'debug_level': 'DEBUG',
+        'debug_level': 'INFO',
         }
 
 
