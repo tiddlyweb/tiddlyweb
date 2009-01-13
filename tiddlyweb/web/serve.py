@@ -86,6 +86,9 @@ class Configurator(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        logging.debug('initial request environment is %s' % environ)
+        logging.debug('starting "%s" request with path "%s" and query "%s"' % (
+            environ['REQUEST_METHOD'],
+            environ['PATH_INFO'],
+            environ['QUERY_STRING']))
         environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)

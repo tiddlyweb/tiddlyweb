@@ -97,5 +97,6 @@ class HTTPExceptor(object):
             etype, value, traceb = sys.exc_info()
             exception_text = ''.join(traceback.format_exception(etype, value, traceb, None))
             print >> environ['wsgi.errors'], exception_text
+            logging.warn(exception_text)
             start_response('500 server error', [('Content-Type', 'text/plain')], sys.exc_info())
             return [exception_text]

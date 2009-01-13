@@ -128,6 +128,7 @@ from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, PermissionsExceptor
 
 # Establish basic logging functionality.
+# XXX don't do a file if we can't write disk (what's the test for that?)
 logging.basicConfig(level=logging.DEBUG,
         format='%(asctime)s %(levelname)-8s %(message)s',
         filename='./tiddlyweb.log')

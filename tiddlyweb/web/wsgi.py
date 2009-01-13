@@ -3,6 +3,7 @@ WSGI Middleware apps that haven't gotten around
 to being extracted to their own modules.
 """
 
+import logging
 import sys
 import time
 import urllib
@@ -145,8 +146,7 @@ class SimpleLog(object):
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
                 }
         message = self.format % log_format
-        print message
-        sys.stdout.flush()
+        logging.info(message)
 
 
 class StoreSet(object):
