@@ -47,6 +47,6 @@ class UserExtract(object):
             extractor = imported_module.Extractor()
             extracted_user = extractor.extract(environ, start_response)
             if extracted_user:
-                logging.debug('UserExtract:%s found %s' % (extractor_name, userinfo))
+                logging.debug('UserExtract:%s found %s' % (extractor_name, extracted_user))
                 return extracted_user
         return False

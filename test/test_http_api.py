@@ -86,6 +86,7 @@ def test_the_TESTS():
     for test_data in TESTS:
         test = dict(EMPTY_TEST)
         test.update(test_data)
+        print test['name']
         full_url = base_url + test['url']
         if test['method'] == 'GET' or test['method'] == 'DELETE':
             response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
@@ -96,6 +97,7 @@ def test_the_TESTS():
 
 
 def assert_response(response, content, status, headers=None, expected=None):
+    if response['status'] == '500': print content
     assert response['status'] == '%s' % status
 
     if headers:
