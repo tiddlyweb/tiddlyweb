@@ -106,6 +106,9 @@ any user with role ADMIN can. '' means anyone can.
 recipe_create_policy -- A policy statement on who or what kind
 of user can create new recipes on the system through the web
 API. See bag_create_policy.
+
+debug_level -- String of loglevel to log. Pick one of 
+'CRITICAL', 'DEBUG', 'ERROR', 'INFO', 'WARNING'.
 """
 
 import logging
@@ -126,14 +129,6 @@ from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, PermissionsExceptor
-
-# Establish basic logging functionality.
-# XXX don't do a file if we can't write disk (what's the test for that?)
-logging.basicConfig(level=logging.DEBUG,
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        filename='./tiddlyweb.log')
-logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
-
 
 # A dict containing the configuration of TiddlyWeb, both 
 # as a server and as a library. This dictionary can contain
@@ -193,6 +188,7 @@ DEFAULT_CONFIG = {
         'urls_map': urls_map,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
+        'debug_level': 'DEBUG',
         }
 
 
@@ -210,7 +206,6 @@ def read_config():
     global config
     config = DEFAULT_CONFIG
     for key in custom_config:
-        logging.debug('updating key %s in config' % key)
         try:
             # If this config item is a dict, update to update it
             # XXX: using exceptions for conditionals, a bit squiffy?
@@ -219,7 +214,14 @@ def read_config():
         except AttributeError:
             config[key] = custom_config[key]
 
+
 if os.path.exists('tiddlywebconfig.py'):
     read_config()
 else:
     config = DEFAULT_CONFIG
+
+logging.basicConfig(level=getattr(logging, config['debug_level']),
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        filename='./tiddlyweb.log')
+logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
+

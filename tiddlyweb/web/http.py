@@ -10,6 +10,7 @@ XXX: The Exceptor should log errors for each of
 these exceptions as in the finall except clause.
 """
 
+import logging
 import sys
 import traceback
 
