@@ -178,7 +178,7 @@ adaptor.getTiddlerRevisionListCallback = function(status, context, responseText,
 			tiddler.assign(t.title, null, t.modifier, Date.convertFromYYYYMMDDHHMM(t.modified),
 				t.tags, Date.convertFromYYYYMMDDHHMM(t.created), t.fields);
 			tiddler.fields["server.page.revision"] = t.revision;
-			tiddler.fields["server.workspace"] = t.bag ? "bags/" + t.bag : "recipes/" + t.recipe; // XXX: bag is always supplied!?
+			tiddler.fields["server.workspace"] = "bags/" + t.bag;
 			context.revisions.push(tiddler);
 		}
 		var sortField = "server.page.revision";
@@ -242,7 +242,7 @@ adaptor.getTiddlerCallback = function(status, context, responseText, uri, xhr) {
 		context.tiddler.assign(context.tiddler.title, t.text, t.modifier,
 			Date.convertFromYYYYMMDDHHMM(t.modified), t.tags || [],
 			Date.convertFromYYYYMMDDHHMM(t.created), context.tiddler.fields); // XXX: merge extended fields!?
-		tiddler.fields["server.workspace"] = "bags/" + t.bag;
+		tiddler.fields["server.workspace"] = t.bag ? "bags/" + t.bag : "recipes/" + t.recipe; // XXX: bag is always supplied!?
 		context.tiddler.fields["server.page.revision"] = t.revision;
 	}
 	if(context.callback) {
@@ -388,7 +388,7 @@ adaptor.prototype.generateTiddlerInfo = function(tiddler) {
 	var host = this.host || tiddler.fields["server.host"]; // XXX: this.host obsolete?
 	host = this.fullHostName(host);
 	var workspace = adaptor.resolveWorkspace(tiddler.fields["server.workspace"]);
-	info.uri = uriTemplate.format([context.host, workspace.type + "s",
+	info.uri = uriTemplate.format([host, workspace.type + "s",
 		adaptor.normalizeTitle(workspace.name),
 		adaptor.normalizeTitle(tiddler.title)]);
 	return info;

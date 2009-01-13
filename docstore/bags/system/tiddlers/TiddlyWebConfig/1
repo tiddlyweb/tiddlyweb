@@ -36,7 +36,7 @@ config.extensions.ServerSideSavingPlugin = {
 config.defaultCustomFields = {
 	"server.type": "tiddlyweb",
 	"server.host": store.getTiddler("ServerConfig").fields["server.host"],
-	"server.bag": "common"
+	"server.workspace": "bags/common"
 };
 
 } //# end of "install only once"
