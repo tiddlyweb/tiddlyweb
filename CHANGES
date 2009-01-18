@@ -1,3 +1,10 @@
+0.9.6 Sun Jan 18 11:43:28 GMT 2009
+
+  * Add support for Python logging using the logging
+    module. See 'debug_level' in tiddlyweb/config.py.
+  * Request logging now goes to tiddlyweb.log instead
+    of stderr.
+
 0.9.5 Thu Jan  8 22:45:37 GMT 2009
 
   * Correct the handling of from_svn and instance plugins

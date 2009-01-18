@@ -261,11 +261,20 @@ on the server, as HTML, by going to:
 7. What Next?
 
 Now you have a working TiddlyWeb server. You can stop and start it
-whenever you like. If you want to start it and keep a record of the log
-you may, depending on operating system and shell choices, do something
-like this:
+whenever you like. TiddlyWeb will, by default, log requests to a 
+file called 'tiddlyweb.log'. That file will be created in the same 
+directory from which you start the server. If you would like to log
+debugging information as well as requests change tiddlywebconfig.py
+to look like this:
 
-  $ twanager server <ip number> <port> &> server.log &
+    config = {
+        debug_level: 'DEBUG'
+    }
+
+If you want to start the server and let it run in the background,
+if you are on a Unix-based OS you can do this:
+
+  $ twanager server <ip number> <port> &
 
 If you encounter difficulties using TiddlyWeb contact the TiddlyWikiDev
 Google Group, or contact the first author Chris Dent, <cdent@peermore.com>.
