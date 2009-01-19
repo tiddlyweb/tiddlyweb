@@ -7,6 +7,7 @@ from base64 import b64encode
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url, tiddler_url
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
@@ -59,6 +60,11 @@ class Serialization(SerializationInterface):
         adjusting content for title, subtite, and the various pre and post
         head sections of the file.
         """
+
+        if len(tiddlers) == 1:
+            default_tiddler = Tiddler('DefaultTiddlers')
+            default_tiddler.text = tiddlers[0].title
+            tiddlers = [tiddlers[0], default_tiddler]
 
         # figure out the content to be pushed into the
         # wiki and calculate the title
