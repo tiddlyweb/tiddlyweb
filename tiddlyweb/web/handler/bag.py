@@ -54,7 +54,7 @@ def get(environ, start_response):
     bag_name = web.handle_extension(environ, bag_name)
     bag = _get_bag(environ, bag_name)
 
-    bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
+    bag.policy.allows(environ['tiddlyweb.usersign'], 'manage')
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
