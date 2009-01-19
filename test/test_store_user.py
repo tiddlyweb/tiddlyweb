@@ -49,3 +49,12 @@ def test_list_users():
     assert 'test2' in usernames
     assert 'cdent' in usernames
     assert 'laramie' not in usernames
+
+def test_delete_users():
+    user = User('test1')
+    store.delete(user)
+
+    users = store.list_users()
+    assert len(users) == 2
+    usernames = [user.usersign for user in users]
+    assert 'test1' not in usernames

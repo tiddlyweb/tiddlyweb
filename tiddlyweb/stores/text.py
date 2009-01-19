@@ -220,6 +220,20 @@ class Store(StorageInterface):
         tiddler_file.close()
         self.tiddler_written(tiddler)
 
+    def user_delete(self, user):
+        """
+        Delete a user from the store.
+        """
+        try:
+            user_path = self._user_path(user)
+            if not os.path.exists(user_path):
+                raise NoUserError('%s not present' % user_path)
+            os.unlink(user_path)
+        except NoUserError:
+            raise
+        except Exception, exc:
+            raise IOError('unable to delete %s: %s' % (user.usersign, exc))
+
     def user_get(self, user):
         """
         Read a user from the store.

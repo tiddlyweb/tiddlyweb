@@ -88,6 +88,12 @@ class StorageInterface(object):
         """
         raise StoreMethodNotImplemented
 
+    def user_delete(self, user):
+        """
+        Delete a user from the store.
+        """
+        raise StoreMethodNotImplemented
+
     def user_get(self, user):
         """
         Get a user from the store,
