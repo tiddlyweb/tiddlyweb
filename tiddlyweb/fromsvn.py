@@ -27,7 +27,7 @@ and use the importer to import it.
 
 import sys
 
-from urllib2 import urlopen
+from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
 from BeautifulSoup import BeautifulSoup
 
@@ -83,11 +83,16 @@ def import_via_recipe(bag, url):
 
 
 def get_url(url):
-    """Get the content at url, raising HTTPProblem if there is one."""
-
-    getter = urlopen(url)
-    content = getter.read()
-    return unicode(content, 'utf-8')
+    """
+    Get the content at url, raising HTTPProblem if there is one.
+    """
+    try:
+        getter = urlopen(url)
+        content = getter.read()
+        return unicode(content, 'utf-8')
+    except HTTPError, exc:
+        print >> sys.stderr, "HTTP Error while getting %s: %s" % (url, exc)
+        sys.exit(1)
 
 
 def import_tiddler(bag, url):
