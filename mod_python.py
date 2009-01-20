@@ -6,7 +6,7 @@ provide that application (named application) as a
 callable to a WSGI handler running under mod_python.
 
 The required modpython_gateway can be found at
-http://www.aminus.net//wiki/ModPythonGateway
+http://www.aminus.net/wiki/ModPythonGateway
 
 (There are other options as well if you are stuck
 with mod_python. If you are not but wish to use
@@ -29,8 +29,8 @@ You will need a custom tiddlywebconfig.py to
 set some of the options used in this script.
 'hostname' and 'server_prefix' being of particular import.
 
-You will need to fill in values for some of the
-variables below.
+'server_prefix' would be set to '/twtest' in the example
+above.
 """
 
 import os
