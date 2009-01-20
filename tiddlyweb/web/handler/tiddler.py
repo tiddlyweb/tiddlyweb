@@ -225,7 +225,9 @@ def _put_tiddler(environ, start_response, tiddler):
         else:
             tiddler.text = content
 
-        tiddler.modifier = environ['tiddlyweb.usersign']['name']
+        user = environ['tiddlyweb.usersign']['name']
+        if not user == 'GUEST':
+            tiddler.modifier = user
 
         store.put(tiddler)
     except NoBagError, exc:
