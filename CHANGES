@@ -1,3 +1,11 @@
+0.9.7 Tue Jan 20 15:59:01 GMT 2009
+
+  * support for user_delete from text store
+  * reading the policy of a bag now requires the manage permission
+    (instead of read)
+  * set DefaultTiddlers when sending one tiddler as a wiki
+  * correctly escape '/' in server side generation of etags
+
 0.9.6 Sun Jan 18 11:43:28 GMT 2009
 
   * Add support for Python logging using the logging
