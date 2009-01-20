@@ -3,6 +3,7 @@ Access to Tiddlers via the web. GET and PUT
 a Tiddler, GET a list of revisions of a Tiddler.
 """
 
+import logging
 import urllib
 
 from tiddlyweb.model.bag import Bag
@@ -266,6 +267,7 @@ def _validate_tiddler(environ, tiddler):
 
     elif request_method == 'PUT':
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
+        logging.debug('attempting to validate incoming etag: %s against %s' % (incoming_etag, tiddler_etag))
         if incoming_etag and incoming_etag != tiddler_etag:
             raise HTTP412('Etag no match')
     etag = ('Etag', tiddler_etag)
@@ -350,5 +352,5 @@ def _tiddler_etag(tiddler):
     Calculate the ETAG of a tiddler, based on 
     bag name, tiddler title and revision.
     """
-    return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8')),
-        urllib.quote(tiddler.title.encode('utf-8')), tiddler.revision))
+    return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
+        urllib.quote(tiddler.title.encode('utf-8'), safe=''), tiddler.revision))

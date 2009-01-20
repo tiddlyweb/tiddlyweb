@@ -281,6 +281,29 @@ def test_put_tiddler_via_recipe():
     assert tiddler_dict['bag'] == 'bag1'
     assert response['etag'] == 'bag1/FantasticVoyage/1'
 
+def test_slash_in_etag():
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test%2FTwo/1'}, body=json)
+    assert response['status'] == '204'
+    print response['location']
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test/Two/2'}, body=json)
+    assert response['status'] == '412'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test%2FTwo/2'}, body=json)
+    assert response['status'] == '204'
+
+
 def test_get_tiddler_text_created():
     """
     Make sure the tiddler comes back to us as we expect.
