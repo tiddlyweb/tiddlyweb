@@ -123,6 +123,10 @@ except ImportError:
     base_tiddlywiki = 'tiddlyweb/empty.html'
     urls_map = 'tiddlyweb/urls.map'
 
+# XXX override urllib.quote's broken-ness compared with browsers
+import urllib
+urllib.always_safe += (".!~*'()")
+
 # The server filters (the WSGI MiddleWare)
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
