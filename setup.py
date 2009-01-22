@@ -18,7 +18,7 @@ setup(name = 'tiddlyweb',
         packages = ['tiddlyweb', 'tiddlyweb.model', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler', 'cherrypy', 'cherrypy.wsgiserver'],
         scripts = ['twanager',],
         platforms = 'Posix; MacOS X; Windows',
-        install_requires = ['selector', 'simplejson', 'BeautifulSoup', 'wikklytext'],
+        install_requires = ['selector', 'simplejson', 'BeautifulSoup<=3.0.7a', 'wikklytext'],
         include_package_data = True,
         )
 
