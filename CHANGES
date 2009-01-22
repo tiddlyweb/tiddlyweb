@@ -1,3 +1,13 @@
+0.9.8 Thu Jan 22 17:07:34 GMT 2009
+
+  * Make sure that we enforce the use of an older BeautifulSoup
+    to avoid errors while parsing TiddlyWiki files
+  * urllib.quote escapes () but javascript encodeURIComponent does
+    not, leading to Etag comparison errors. Fixed.
+  * If the tiddlyweb.usersign is GUEST accept modifier value
+    in PUT Tiddlers.
+  * Add some code that shows how to use mod_wsgi to mount TiddlyWeb.
+
 0.9.7 Tue Jan 20 15:59:01 GMT 2009
 
   * support for user_delete from text store
