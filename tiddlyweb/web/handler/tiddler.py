@@ -150,7 +150,6 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     We have a list of revisions, put them in a new place.
     """
     content_type = environ['tiddlyweb.type']
-    previous_title = environ['tiddlyweb.query'].get('previous', [None])[0]
 
     if content_type != 'application/json':
         raise HTTP415('application/json required')
@@ -177,8 +176,6 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     for json_tiddler in reversed(json_tiddlers):
         json_string = simplejson.dumps(json_tiddler)
         serializer.from_string(json_string.decode('UTF-8'))
-        if previous_title:
-            tiddler.fields['previous'] = previous_title
         store.put(tiddler)
     # __HERE__
 

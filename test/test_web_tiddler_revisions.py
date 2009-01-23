@@ -132,10 +132,9 @@ def test_tiddler_revision_list_json_fat():
     assert info[0]['revision'] == 3
     assert 'I have something to sell' in info[0]['text']
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json?previous=long:TestOne',
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='POST', headers={'content-type': 'application/json'}, body=content)
 
-    print content
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
 
@@ -144,5 +143,3 @@ def test_tiddler_revision_list_json_fat():
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
-
-    assert info[0]['fields']['previous'] == 'long:TestOne'
