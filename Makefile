@@ -5,7 +5,7 @@
 .PHONY: test dist upload
 
 clean:
-	rm -r dist
+	rm -r dist || true
 
 test: 
 	py.test -x test
