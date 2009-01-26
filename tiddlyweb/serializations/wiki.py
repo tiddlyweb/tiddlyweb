@@ -213,12 +213,7 @@ class Serialization(SerializationInterface):
         """
         b64text = b64encode(tiddler.text)
         if b64text < 32 * 1024:
-            if tiddler.type.startswith('image'):
-                return '\n<html><img src="data:%s;base64,%s" /></html>\n' % \
-                        (tiddler.type, b64text)
-            else:
-                return '\n<html><a href="data:%s;base64,%s">%s</a></html>\n' % \
-                        (tiddler.type, b64text, tiddler.title)
+            return 'data:$s;base64,%s' % (tiddler.type, b64text)
         else:
             if tiddler.type.startswith('image'):
                 return '\n<html><img src="%s" /></html>\n' % tiddler_url(self.environ, tiddler)
