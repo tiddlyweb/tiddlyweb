@@ -1,3 +1,10 @@
+0.9.9 Mon Jan 26 11:46:30 GMT 2009
+
+  * Add server.title attribute to wiki serialization of 
+    tiddlers to support client side renaming.
+  * Add Etag handling when POST to revisions collection.
+  * Add optional Etag handling when DELETE a tiddler.
+
 0.9.8 Thu Jan 22 17:07:34 GMT 2009
 
   * Make sure that we enforce the use of an older BeautifulSoup
