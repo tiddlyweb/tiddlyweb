@@ -58,3 +58,11 @@ def test_get_tiddler_with_fields():
     assert tiddler_dict['fields']['field1'] == 'value1'
     assert tiddler_dict['fields']['field2'] == 'value2'
     assert not tiddler_dict['fields'].has_key('server.first')
+
+def test_get_tidler_wiki_servertitle_field():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/feebles.wiki',
+            method='GET')
+    assert 'server.title="feebles"' in content
+
+
