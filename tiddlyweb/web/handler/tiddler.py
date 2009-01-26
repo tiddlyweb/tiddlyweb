@@ -81,6 +81,12 @@ def _delete_tiddler(environ, start_response, tiddler):
     """
     store = environ['tiddlyweb.store']
 
+    try:
+        store.get(tiddler)
+    except NoTiddlerError:
+        tiddler.revision = 0
+    _validate_tiddler(environ, tiddler)
+
     bag = Bag(tiddler.bag)
     # this will raise 403 if constraint does not pass
     _check_bag_constraint(environ, bag, 'delete')

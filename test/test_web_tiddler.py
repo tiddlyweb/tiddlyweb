@@ -480,6 +480,22 @@ def test_delete_tiddler_in_bag():
             method='DELETE')
     assert response['status'] == '404'
 
+
+def test_delete_tiddler_etag():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',
+            method='DELETE', headers={'If-Match': 'bag5/tiddler0/9'})
+    assert response['status'] == '412'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',
+            method='DELETE', headers={'If-Match': 'bag5/tiddler0/1'})
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',
+            method='DELETE')
+    assert response['status'] == '404'
+
+
 def test_delete_tiddler_in_bag_perms():
     _put_policy('bag0', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['cdent'],delete=['cdent'])))
     http = httplib2.Http()
