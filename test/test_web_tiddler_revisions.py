@@ -133,7 +133,7 @@ def test_tiddler_revision_list_json_fat():
     assert 'I have something to sell' in info[0]['text']
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
-            method='POST', headers={'content-type': 'application/json'}, body=content)
+            method='POST', headers={'if-match': 'bag28/tiddler0/1', 'content-type': 'application/json'}, body=content)
 
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
@@ -143,3 +143,40 @@ def test_tiddler_revision_list_json_fat():
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
+
+
+def test_etag_generation():
+    from tiddlyweb.web.handler.tiddler import _tiddler_etag
+    from tiddlyweb.model.bag import Bag
+    from tiddlyweb.model.tiddler import Tiddler
+
+    tiddler = Tiddler('monkey', 'bar')
+    etag = _tiddler_etag(tiddler)
+
+    assert etag == 'bar/monkey/0'
+
+    bag = Bag('bar')
+    store.put(bag)
+    store.put(tiddler)
+    etag = _tiddler_etag(tiddler)
+    assert etag == 'bar/monkey/1'
+
+
+def test_post_revision_etag_handling():
+    # GET a list of revisions
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
+            method='GET')
+
+    json_content = content
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
+            method='POST', headers={'content-type': 'application/json'}, body=json_content)
+
+    assert response['status'] == '412'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
+            method='POST', headers={'If-Match': 'bag28/newone/0', 'content-type': 'application/json'}, body=json_content)
+
+    print content
+    assert response['status'] == '204'

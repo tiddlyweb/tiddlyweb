@@ -99,7 +99,7 @@ class Tiddler(object):
         self.fields = {}
         self.text = None
         self.type = None
-        self.revision = None
+        self.revision = 0
         self.recipe = None
         # reference to the store which 'got' us
         # this is can be used in serialization

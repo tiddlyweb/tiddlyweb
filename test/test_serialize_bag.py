@@ -18,9 +18,9 @@ expected_string = """TiddlerOne
 TiddlerTwo
 TiddlerThree"""
 
-expected_revbag_string = """TiddlerOne:None
-TiddlerTwo:None
-TiddlerThree:None"""
+expected_revbag_string = """TiddlerOne:0
+TiddlerTwo:0
+TiddlerThree:0"""
 
 expected_html_string = """<ul id="tiddlers" class="listing">
 <li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>
@@ -35,9 +35,9 @@ prefix_expected_html_string = """<ul id="tiddlers" class="listing">
 </ul>"""
 
 expected_html_revbag_string = """<ul id="tiddlers" class="listing">
-<li><a href="/bags/bagfour/tiddlers/TiddlerOne/revisions/None">TiddlerOne:None</a></li>
-<li><a href="/bags/bagfour/tiddlers/TiddlerTwo/revisions/None">TiddlerTwo:None</a></li>
-<li><a href="/bags/bagfour/tiddlers/TiddlerThree/revisions/None">TiddlerThree:None</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerOne/revisions/0">TiddlerOne:0</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerTwo/revisions/0">TiddlerTwo:0</a></li>
+<li><a href="/bags/bagfour/tiddlers/TiddlerThree/revisions/0">TiddlerThree:0</a></li>
 </ul>"""
 
 expected_bag_html = """

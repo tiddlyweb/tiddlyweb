@@ -109,14 +109,14 @@ def _determine_tiddler(environ, bag_finder):
     else:
         tiddler_name = web.handle_extension(environ, tiddler_name)
 
+    tiddler = Tiddler(tiddler_name)
     if revision:
         try:
             revision = int(revision)
+            tiddler.revision = revision
         except ValueError, exc:
             raise HTTP404('%s not a revision of %s: %s' % (revision, tiddler_name, exc))
 
-    tiddler = Tiddler(tiddler_name)
-    tiddler.revision = revision
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
@@ -153,6 +153,10 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
 
     if content_type != 'application/json':
         raise HTTP415('application/json required')
+
+    # we need a matching etag in order to be able to do
+    # this operation
+    last_modified, etag = _require_valid_etag_for_write(environ, tiddler)
 
     bag = Bag(tiddler.bag)
     #  both create and write required for this action
@@ -242,6 +246,22 @@ def _put_tiddler(environ, start_response, tiddler):
     return []
 
 
+def _require_valid_etag_for_write(environ, tiddler):
+    """
+    Unless there is an etag and it is valid
+    we send a 412.
+    """
+    incoming_etag = environ.get('HTTP_IF_MATCH', None)
+    if not incoming_etag:
+        raise HTTP412('If Match header required')
+    tiddler_copy = Tiddler(tiddler.title, tiddler.bag)
+    try:
+        environ['tiddlyweb.store'].get(tiddler_copy)
+    except NoTiddlerError:
+        tiddler_copy.revision = 0
+    return _validate_tiddler(environ, tiddler_copy)
+
+
 def _validate_tiddler(environ, tiddler):
     """
     Check ETAG and last modified information to
@@ -250,6 +270,8 @@ def _validate_tiddler(environ, tiddler):
     """
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
+
+    logging.debug('attempting to validate %s with revision %s' % (tiddler.title, tiddler.revision))
 
     etag = None
     last_modified = None
@@ -264,7 +286,7 @@ def _validate_tiddler(environ, tiddler):
                 (web.datetime_from_http_date(incoming_modified) >= web.datetime_from_http_date(last_modified_string)):
             raise HTTP304('')
 
-    elif request_method == 'PUT':
+    else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         logging.debug('attempting to validate incoming etag: %s against %s' % (incoming_etag, tiddler_etag))
         if incoming_etag and incoming_etag != tiddler_etag:
