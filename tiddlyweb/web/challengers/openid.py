@@ -9,7 +9,9 @@ import Cookie
 import random
 import urllib
 
-from BeautifulSoup import BeautifulSoup
+import html5lib
+from html5lib import treebuilders
+
 from sha import sha
 
 import tiddlyweb.web.util as web
@@ -140,7 +142,8 @@ OpenID: <input name="openid" size="60" />
             openid = openid.rstrip('/')
 
         htmlpage = urllib.urlopen(openid).read()
-        soup = BeautifulSoup(htmlpage)
+        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+        soup = parser.parse(htmlpage)
         try:
             link = soup.find('link', rel='openid.server')['href']
         except TypeError:

@@ -29,7 +29,6 @@ import sys
 
 from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
-from BeautifulSoup import BeautifulSoup
 
 from tiddlyweb.manage import make_command
 

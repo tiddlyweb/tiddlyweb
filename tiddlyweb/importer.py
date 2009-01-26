@@ -5,7 +5,8 @@ work to import it into a named bag.
 
 import codecs
 
-from BeautifulSoup import BeautifulSoup
+import html5lib
+from html5lib import treebuilders
 
 from tiddlyweb.model.tiddler import Tiddler, string_to_tags_list
 
@@ -25,7 +26,8 @@ def import_wiki(store, wikitext, bagname='wiki'):
     Import the wiki provided as a string and import all the tiddlers
     into a bag.
     """
-    soup = BeautifulSoup(wikitext)
+    parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+    soup = parser.parse(wikitext)
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 

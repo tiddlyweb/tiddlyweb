@@ -1,5 +1,7 @@
 
-from BeautifulSoup import BeautifulSoup
+import html5lib
+from html5lib import treebuilders
+
 
 import sys
 sys.path.append('.')
@@ -18,7 +20,8 @@ def import_wiki(filename='wiki', hostname='localhost', port=8080):
     wikitext = f.read()
     f.close()
 
-    soup = BeautifulSoup(wikitext)
+    parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+    soup = parser.parse(wikitext)
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 

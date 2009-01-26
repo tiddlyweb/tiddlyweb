@@ -2,6 +2,8 @@
 Serialize into a fullblown tiddlywiki wiki.
 """
 
+import logging
+
 from base64 import b64encode
 
 from tiddlyweb.serializer import NoSerializationError
@@ -117,11 +119,14 @@ class Serialization(SerializationInterface):
             from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
             output = wikitext_to_wikklyhtml('', '', unicode(title))
 
-            from BeautifulSoup import BeautifulSoup
-            soup = BeautifulSoup(output)
+            import html5lib
+            from html5lib import treebuilders
+            parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+            soup = parser.parse(output)
             title = soup.findAll(text=True)
             return ''.join(title).rstrip().lstrip()
-        except ImportError:
+        except ImportError, exc:
+            logging.debug('error importing: %s' % exc)
             # If we have been unable to load BeautifilSoup then
             # fall back to the original wikitext
             return title
