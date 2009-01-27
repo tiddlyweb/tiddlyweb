@@ -1,9 +1,10 @@
-0.9.9 Mon Jan 26 11:46:30 GMT 2009
+0.9.9 Tue Jan 27 10:19:17 GMT 2009
 
-  * Add server.title attribute to wiki serialization of 
-    tiddlers to support client side renaming.
-  * Add Etag handling when POST to revisions collection.
-  * Add optional Etag handling when DELETE a tiddler.
+  * Various changes to enable client side rename of tiddlers:
+  ** Add server.title attribute to wiki serialization of 
+     tiddlers to support client side renaming.
+  ** Add Etag handling when POST to revisions collection.
+  ** Add optional Etag handling when DELETE a tiddler.
   * Use html5lib to parse tiddly content (into a 
     BeautifulSoup tree).
 
