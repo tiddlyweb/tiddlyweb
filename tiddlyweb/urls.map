@@ -162,7 +162,7 @@
 #               text/html: a list of links to the tiddlers
 #               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 #               text/x-tiddlywiki: the tiddlers in this recipe wrapped up as a TiddlyWiki
-#         POST: application/json: a JSON list of _fat_ tiddlers
+#         POST: application/json: a JSON list of tiddlers which have content set (a text key and value)
 
 
 /search[.{format}]

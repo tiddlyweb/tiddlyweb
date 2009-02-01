@@ -46,8 +46,9 @@ def delete(environ, start_response):
 
 def post_revisions(environ, start_response):
     """
-    Take a fat collect of JSON tiddlers and process
-    them into the store.
+    Take a collection of JSON tiddlers, each with a 
+    text key and value, and process them into the store.
+    That collection is known as a TiddlerChronicle.
     """
     tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
     return _post_tiddler_revisions(environ, start_response, tiddler)
