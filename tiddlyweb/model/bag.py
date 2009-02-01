@@ -9,7 +9,7 @@ from tiddlyweb.model.policy import Policy
 
 class Bag(dict):
     """
-    XXX: We should subclass for tmpbag and revbag.
+    XXX: Should we subclass for tmpbag and revbag?
 
     A Bag is a collection of tiddlers, usually unique by
     the title of the tiddler. A bag can have tiddlers added, removed,

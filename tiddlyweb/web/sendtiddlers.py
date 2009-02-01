@@ -13,6 +13,11 @@ from tiddlyweb.web.http import HTTP404, HTTP304
 
 
 def send_tiddlers(environ, start_response, bag):
+    """
+    Output the tiddlers contained in the provided
+    bag in a Negotiated representation. Often, but
+    not always, a wiki.
+    """
     last_modified = None
     etag = None
     bags_tiddlers = bag.list_tiddlers()

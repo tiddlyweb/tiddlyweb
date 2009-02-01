@@ -22,7 +22,6 @@ def get_serialize_type(environ):
             pass
     if not serialize_type:
         if ext:
-            # XXX required?
             raise HTTP415('%s type unsupported' % ext)
         serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type

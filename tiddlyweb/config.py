@@ -123,7 +123,7 @@ except ImportError:
     BASE_TIDDLYWIKI = 'tiddlyweb/empty.html'
     URLS_MAP = 'tiddlyweb/urls.map'
 
-# XXX override urllib.quote's broken-ness compared with browsers
+# override urllib.quote's broken-ness compared with browsers
 import urllib
 urllib.always_safe += (".!~*'()")
 
@@ -212,7 +212,6 @@ def read_config():
     for key in custom_config:
         try:
             # If this config item is a dict, update to update it
-            # XXX: using exceptions for conditionals, a bit squiffy?
             custom_config[key].keys()
             config[key].update(custom_config[key])
         except AttributeError:

@@ -91,9 +91,6 @@ class Store(object):
     def get(self, thing):
         """
         Get a thing, recipe, bag or tiddler
-
-        XXX: Should there be handling here for things of
-        wrong type?
         """
         func = self._figure_function('get', thing)
         thing.store = self

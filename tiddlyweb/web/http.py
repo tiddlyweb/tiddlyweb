@@ -5,9 +5,6 @@ exceptions into proper HTTP headers.
 
 These exception need messages and a base class so
 we don't need all the code in HTTPExceptor.
-
-XXX: The Exceptor should log errors for each of
-these exceptions as in the finall except clause.
 """
 
 import logging

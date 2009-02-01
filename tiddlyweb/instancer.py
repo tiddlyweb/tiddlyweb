@@ -43,7 +43,7 @@ def instance(args):
     _make_bag('system')
     import_list('system', config['instance_tiddlers'])
     _make_bag('common')
-    _make_recipe('default', ['system','common'])
+    _make_recipe('default', ['system', 'common'])
     _empty_config()
 
 
