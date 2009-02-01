@@ -22,7 +22,9 @@ class StorageInterface(object):
     methods for presenting a collection.
     """
 
-    def __init__(self, environ={}):
+    def __init__(self, environ=None):
+        if environ is None:
+            environ = {}
         self.environ = environ
 
     def recipe_delete(self, recipe):

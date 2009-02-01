@@ -4,7 +4,6 @@ to being extracted to their own modules.
 """
 
 import logging
-import sys
 import time
 import urllib
 

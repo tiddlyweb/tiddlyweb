@@ -33,8 +33,20 @@ class Policy(object):
     """
 
     def __init__(self, owner=None,
-            read=[], write=[], create=[], delete=[],
-            manage=[]):
+            read=None, write=None, create=None, delete=None,
+            manage=None):
+        # avoid "dangerous" warnings from pylint and
+        # and possible memory leaks
+        if read is None:
+            read = []
+        if write is None:
+            write = []
+        if create is None:
+            create = []
+        if delete is None:
+            delete = []
+        if manage is None:
+            manage = []
         self.owner = owner
         self.read = read
         self.write = write

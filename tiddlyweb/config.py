@@ -117,11 +117,11 @@ import sys
 
 try:
     from pkg_resources import resource_filename
-    base_tiddlywiki = resource_filename('tiddlyweb', 'empty.html')
-    urls_map = resource_filename('tiddlyweb', 'urls.map')
+    BASE_TIDDLYWIKI = resource_filename('tiddlyweb', 'empty.html')
+    URLS_MAP = resource_filename('tiddlyweb', 'urls.map')
 except ImportError:
-    base_tiddlywiki = 'tiddlyweb/empty.html'
-    urls_map = 'tiddlyweb/urls.map'
+    BASE_TIDDLYWIKI = 'tiddlyweb/empty.html'
+    URLS_MAP = 'tiddlyweb/urls.map'
 
 # XXX override urllib.quote's broken-ness compared with browsers
 import urllib
@@ -188,8 +188,8 @@ DEFAULT_CONFIG = {
         'secret': 'this should come from a file',
         # XXX this should allow a URL, but not doing that
         # yet because of google app engine
-        'base_tiddlywiki': base_tiddlywiki,
-        'urls_map': urls_map,
+        'base_tiddlywiki': BASE_TIDDLYWIKI,
+        'urls_map': URLS_MAP,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'debug_level': 'INFO',

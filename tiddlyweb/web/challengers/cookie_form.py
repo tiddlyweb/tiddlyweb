@@ -3,7 +3,6 @@ Present or validate a form for getting a username
 and password.
 """
 
-import cgi
 import Cookie
 
 from tiddlyweb.web.challengers import ChallengerInterface

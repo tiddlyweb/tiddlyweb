@@ -29,7 +29,9 @@ class Store(StorageInterface):
     directory hierarchy implementation of a StorageInterface.
     """
 
-    def __init__(self, environ={}):
+    def __init__(self, environ=None):
+        if environ is None:
+            environ = {}
         self.environ = environ
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())

@@ -27,6 +27,8 @@ and use the importer to import it.
 
 import sys
 
+import BeautifulSoup
+
 from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
 

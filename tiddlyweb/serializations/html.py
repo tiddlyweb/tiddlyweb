@@ -14,7 +14,9 @@ class Serialization(SerializationInterface):
     to create browser based presentations.
     """
 
-    def __init__(self, environ={}):
+    def __init__(self, environ=None):
+        if environ is None:
+            environ = {}
         self.environ = environ
         self.environ['tiddlyweb.title'] = ''
         self.environ['tiddlyweb.links'] = []

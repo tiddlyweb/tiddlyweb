@@ -22,7 +22,9 @@ class Serializer(object):
     You must set object after initialization.
     """
 
-    def __init__(self, format, environ={}):
+    def __init__(self, format, environ=None):
+        if environ is None:
+            environ = {}
         self.format = format
         self.object = None
         self.environ = environ
