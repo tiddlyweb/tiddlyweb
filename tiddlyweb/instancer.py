@@ -15,6 +15,9 @@ This will create a foo directory containing:
 """
 
 import os
+import random
+import sha
+import time
 
 from tiddlyweb.fromsvn import import_list
 from tiddlyweb.model.bag import Bag
@@ -24,10 +27,22 @@ from tiddlyweb.store import Store
 
 CONFIG_NAME = 'tiddlywebconfig.py'
 
-EMPTY_CONFIG = """# A default empty config, make your changes here.
+def _generate_secret():
+    """
+    Create a somewhat random secret to be used
+    for message authentication.
+    """
+    digest = sha.sha(str(time.time()))
+    digest.update(str(random.random()))
+    digest.update('tiddlyweb and tiddlywiki are rad')
+    return digest.hexdigest()
+
+
+EMPTY_CONFIG = """# A default config, make your own changes here.
 config = {
+    'secret': '%s',
 }
-"""
+""" % _generate_secret()
 
 
 @make_command()
