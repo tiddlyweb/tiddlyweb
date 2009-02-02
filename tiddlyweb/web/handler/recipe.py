@@ -9,7 +9,8 @@ import urllib
 from tiddlyweb.filter import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.model.policy import create_policy_check, UserRequiredError, ForbiddenError
+from tiddlyweb.model.policy import \
+        create_policy_check, UserRequiredError, ForbiddenError
 from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
@@ -121,6 +122,8 @@ def list(environ, start_response):
             recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_recipes.append(recipe)
         except(UserRequiredError, ForbiddenError):
+            # if we got a perm error, just pass
+            # and don't add anything to the kept recipes
             pass
 
     serialize_type, mime_type = web.get_serialize_type(environ)
@@ -154,7 +157,7 @@ def put(environ, start_response):
         create_policy_check(environ, 'recipe', usersign)
 
     try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
+        serialize_type = web.get_serialize_type(environ)[0]
         serializer = Serializer(serialize_type, environ)
         serializer.object = recipe
         content = environ['wsgi.input'].read(int(length))

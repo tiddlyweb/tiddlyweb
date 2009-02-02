@@ -10,7 +10,8 @@ import urllib
 
 from tiddlyweb.filter import FilterError
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.policy import create_policy_check, UserRequiredError, ForbiddenError
+from tiddlyweb.model.policy import \
+        create_policy_check, UserRequiredError, ForbiddenError
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb import control
@@ -176,7 +177,7 @@ def put(environ, start_response):
         create_policy_check(environ, 'bag', usersign)
 
     try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
+        serialize_type = web.get_serialize_type(environ)[0]
         serializer = Serializer(serialize_type, environ)
         serializer.object = bag
         content = environ['wsgi.input'].read(int(length))
