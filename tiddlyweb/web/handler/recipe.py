@@ -75,11 +75,10 @@ def get_tiddlers(environ, start_response):
     # get the tiddlers from the recipe and uniquify them
     try:
         tiddlers = control.get_tiddlers_from_recipe(recipe)
+        tmp_bag = Bag('tmp_bag1', tmpbag=True)
+        tmp_bag.add_tiddlers(tiddlers)
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' % (recipe.name, exc))
-    tmp_bag = Bag('tmp_bag1', tmpbag=True)
-    for tiddler in tiddlers:
-        tmp_bag.add_tiddler(tiddler)
 
     # then filter those tiddlers
     try:

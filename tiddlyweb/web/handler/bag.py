@@ -92,8 +92,7 @@ def get_tiddlers(environ, start_response):
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
     tmp_bag = Bag('tmp_bag', tmpbag=True)
-    for tiddler in tiddlers:
-        tmp_bag.add_tiddler(tiddler)
+    tmp_bag.add_tiddlers(tiddlers)
 
     return send_tiddlers(environ, start_response, tmp_bag)
 

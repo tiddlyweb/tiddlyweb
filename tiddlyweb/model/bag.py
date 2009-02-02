@@ -88,6 +88,14 @@ class Bag(dict):
         self.order.append(self._tiddler_key(tiddler))
         self.__setitem__(tiddler)
 
+    def add_tiddlers(self, tiddlers):
+        """
+        Call add_tiddler() on a list of tiddlers.
+        For convenience.
+        """
+        for tiddler in tiddlers:
+            self.add_tiddler(tiddler)
+
     def remove_tiddler(self, tiddler):
         """
         Remove the provided tiddler from the bag.
