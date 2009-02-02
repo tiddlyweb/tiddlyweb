@@ -13,12 +13,22 @@ import traceback
 
 
 class HTTPException(Exception):
+    """
+    Base class of an HTTP exception, which in
+    this context is a non 2xx response code.
+    """
     status = ''
 
     def headers(self):
+        """
+        Set the content type of the response.
+        """
         return [('Content-Type', 'text/plain; charset=UTF-8')]
 
     def output(self):
+        """
+        Output an error message.
+        """
         if not hasattr(self, 'message'):
             self.message = '%s' % self
         if isinstance(self.message, unicode):
@@ -81,6 +91,14 @@ class HTTP415(HTTPException):
 
 
 class HTTPExceptor(object):
+    """
+    WSGI application that wraps internal WSGI
+    applications and traps HTTPExceptionS and
+    other exceptions. If the exceptions is an 
+    HTTPException we send a reasonable response 
+    to the browser. If the exception is some other
+    form we do an HTTP 500 and send a traceback.
+    """
 
     def __init__(self, application):
         self.application = application
@@ -93,8 +111,10 @@ class HTTPExceptor(object):
             return exc.output()
         except:
             etype, value, traceb = sys.exc_info()
-            exception_text = ''.join(traceback.format_exception(etype, value, traceb, None))
+            exception_text = ''.join(traceback.format_exception(
+                etype, value, traceb, None))
             print >> environ['wsgi.errors'], exception_text
             logging.warn(exception_text)
-            start_response('500 server error', [('Content-Type', 'text/plain')], sys.exc_info())
+            start_response('500 server error',
+                    [('Content-Type', 'text/plain')], sys.exc_info())
             return [exception_text]

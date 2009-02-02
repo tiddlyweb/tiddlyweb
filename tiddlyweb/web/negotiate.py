@@ -110,10 +110,10 @@ class Negotiate(object):
                 prefs[-1]['score'] = default_weight
                 default_weight -= 0.001
 
-        def sorter(x, y):
-            return cmp(y['score'], x['score']) \
+        def sorter(cmp_a, cmp_b):
+            return cmp(cmp_b['score'], cmp_a['score']) \
                     or \
-                    cmp(x['order'], y['order'])
+                    cmp(cmp_a['order'], cmp_b['order'])
 
         prefs.sort(cmp=sorter)
         prefs = [pref['name'] for pref in prefs]

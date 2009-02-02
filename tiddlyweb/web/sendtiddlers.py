@@ -8,7 +8,8 @@ a TiddlyWiki out.
 """
 
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp, datetime_from_http_date
+from tiddlyweb.web.util import \
+        get_serialize_type, http_date_from_timestamp, datetime_from_http_date
 from tiddlyweb.web.http import HTTP404, HTTP304
 
 
@@ -37,7 +38,8 @@ def send_tiddlers(environ, start_response, bag):
 
     if serialize_type == 'wiki':
         if download:
-            response.append(('Content-Disposition', 'attachment; filename="%s"' % download))
+            response.append(('Content-Disposition',
+                'attachment; filename="%s"' % download))
     if last_modified:
         response.append(last_modified)
     if etag:
@@ -63,7 +65,8 @@ def _validate_tiddler_list(environ, tiddlers):
     else:
         incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
         if incoming_modified and \
-                (datetime_from_http_date(incoming_modified) >= datetime_from_http_date(last_modified_string)):
+                (datetime_from_http_date(incoming_modified) >= \
+                datetime_from_http_date(last_modified_string)):
             raise HTTP304('')
 
     return last_modified, etag
