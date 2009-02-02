@@ -94,8 +94,8 @@ class HTTPExceptor(object):
     """
     WSGI application that wraps internal WSGI
     applications and traps HTTPExceptionS and
-    other exceptions. If the exceptions is an 
-    HTTPException we send a reasonable response 
+    other exceptions. If the exceptions is an
+    HTTPException we send a reasonable response
     to the browser. If the exception is some other
     form we do an HTTP 500 and send a traceback.
     """

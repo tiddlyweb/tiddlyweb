@@ -53,7 +53,7 @@ def delete(environ, start_response):
 
 def post_revisions(environ, start_response):
     """
-    Take a collection of JSON tiddlers, each with a 
+    Take a collection of JSON tiddlers, each with a
     text key and value, and process them into the store.
     That collection is known as a TiddlerChronicle.
     """
@@ -191,9 +191,10 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
 
     return []
 
+
 def _store_tiddler_revisions(environ, content, tiddler):
     """
-    Given json revisions in content, store them 
+    Given json revisions in content, store them
     as a revision history to tiddler.
     """
     try:
@@ -396,7 +397,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
 
 def _tiddler_etag(tiddler):
     """
-    Calculate the ETAG of a tiddler, based on 
+    Calculate the ETAG of a tiddler, based on
     bag name, tiddler title and revision.
     """
     return str('%s/%s/%s' %

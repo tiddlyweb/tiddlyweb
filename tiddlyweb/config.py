@@ -227,4 +227,3 @@ logging.basicConfig(level=getattr(logging, config['debug_level']),
         format='%(asctime)s %(levelname)-8s %(message)s',
         filename='./tiddlyweb.log')
 logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
-

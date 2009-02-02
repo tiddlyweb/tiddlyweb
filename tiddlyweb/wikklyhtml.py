@@ -27,16 +27,14 @@ def wikitext_to_wikklyhtml(base_url, path_url, wikitext):
 
     link_context = {
             '$BASE_URL': '%s%s' % (base_url, path_url),
-            '$REFLOW': 0
-            }
+            '$REFLOW': 0}
     html, context = wikklytext.WikklyText_to_InnerHTML(
             text=wikitext,
             setvars=link_context,
             encoding='utf-8',
             safe_mode=True,
             url_resolver=our_resolver,
-            tree_posthook=posthook.treehook
-            )
+            tree_posthook=posthook.treehook)
     return html
 
 

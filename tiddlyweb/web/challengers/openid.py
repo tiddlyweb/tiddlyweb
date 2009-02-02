@@ -102,10 +102,9 @@ class Challenger(ChallengerInterface):
             secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
             cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
             cookie['tiddlyweb_user']['path'] = '/'
-            start_response('303 See Other', [
-                ('Set-Cookie', cookie.output(header='')),
-                ('Location', uri)
-                ])
+            start_response('303 See Other',
+                    [('Set-Cookie', cookie.output(header='')),
+                        ('Location', uri)])
             return [uri]
         return self._send_openid_form(environ, start_response, redirect, status='401 Unauthorized', message=response)
 
@@ -113,9 +112,7 @@ class Challenger(ChallengerInterface):
         """
         Send a form requesting an openid to the client.
         """
-        start_response(status, [
-            ('Content-Type', 'text/html')
-            ])
+        start_response(status, [('Content-Type', 'text/html')])
         environ['tiddlyweb.title'] = 'OpenID Login'
         return [
 """
@@ -161,9 +158,7 @@ OpenID: <input name="openid" size="60" />
                 % (link, urllib.quote(openid),
                         urllib.quote(self._return_to(environ, redirect, link, original_openid)))
 
-        start_response('303 See Other', [
-            ('Location', request_uri)
-            ])
+        start_response('303 See Other', [('Location', request_uri)])
 
         return []
 

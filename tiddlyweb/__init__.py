@@ -15,7 +15,7 @@ package. urls.map may be located in another place by
 changing the urls_map key in tiddlywebconfig. There
 are also mechanisms for overriding storage (see
 tiddlyweb.store), serialization (see tiddlyweb.serializer)
-and authentication (see tiddlyweb.web.challenger and 
+and authentication (see tiddlyweb.web.challenger and
 tiddlyweb.web.extractor) systems. There are also
 system_plugins and twanager_plugins for further
 extensibility.

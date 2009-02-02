@@ -32,9 +32,7 @@ def base(environ, start_response):
     auth_systems = environ['tiddlyweb.config']['auth_systems']
     if len(auth_systems) == 1:
         raise HTTP302(_challenger_url(environ, auth_systems[0]))
-    start_response('401 Unauthorized', [
-        ('Content-Type', 'text/html')
-        ])
+    start_response('401 Unauthorized', [('Content-Type', 'text/html')])
     environ['tiddlyweb.title'] = 'Login Challengers'
     return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in \
             [_challenger_url(environ, system)  for system in auth_systems]]

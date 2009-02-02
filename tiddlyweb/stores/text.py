@@ -309,14 +309,13 @@ class Store(StorageInterface):
 
     def list_tiddler_revisions(self, tiddler):
         """
-        List all the revisions of one tiddler, 
+        List all the revisions of one tiddler,
         returning a list of ints.
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try:
-            revisions = sorted([
-                int(x) for x in self._numeric_files_in_dir(tiddler_base_filename)
-                ])
+            revisions = sorted(
+                    [int(x) for x in self._numeric_files_in_dir(tiddler_base_filename)])
         except OSError, exc:
             raise NoTiddlerError('unable to list revisions in tiddler: %s' % exc)
         revisions.reverse()
@@ -345,9 +344,8 @@ class Store(StorageInterface):
                     if query in tiddler.title.lower():
                         found_tiddlers.append(tiddler)
                         continue
-                    tiddler_file = codecs.open(os.path.join(
-                        tiddler_dir, tiddler_name, str(revision_id)
-                        ), encoding='utf-8')
+                    tiddler_file = codecs.open(os.path.join(tiddler_dir,
+                        tiddler_name, str(revision_id)), encoding='utf-8')
                     for line in tiddler_file:
                         if query in line.lower():
                             found_tiddlers.append(tiddler)

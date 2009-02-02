@@ -11,9 +11,10 @@ coming in here.
 
 import re
 
+
 class FilterError(Exception):
     """
-    An exception to throw when an attempt is made to 
+    An exception to throw when an attempt is made to
     filter on an unavailable attribute.
     """
     pass

@@ -49,9 +49,7 @@ class Challenger(ChallengerInterface):
         Send a simple form to the client asking for a username
         and password.
         """
-        start_response(status, [
-            ('Content-Type', 'text/html')
-            ])
+        start_response(status, [('Content-Type', 'text/html')])
         environ['tiddlyweb.title'] = 'Cookie Based Login'
         return [
 """
@@ -83,10 +81,9 @@ Password <input type="password" name="password" size="40" />
                 secret_string = sha('%s%s' % (user.usersign, secret)).hexdigest()
                 cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign, secret_string)
                 cookie['tiddlyweb_user']['path'] = '/'
-                start_response('303 See Other', [
-                    ('Set-Cookie', cookie.output(header='')),
-                    ('Location', uri)
-                    ])
+                start_response('303 See Other',
+                        [('Set-Cookie', cookie.output(header='')),
+                            ('Location', uri)])
                 return [uri]
         except KeyError:
             pass
