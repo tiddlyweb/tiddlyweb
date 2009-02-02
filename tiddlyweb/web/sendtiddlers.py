@@ -7,6 +7,8 @@ These are important because this is what sends
 a TiddlyWiki out.
 """
 
+from sha import sha
+
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
@@ -55,7 +57,7 @@ def _validate_tiddler_list(environ, tiddlers):
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '%s:%s' % (len(tiddlers), last_modified_number)
+    etag_string = '%s:%s' % (_sha_tiddler_titles(tiddlers), last_modified_number)
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
@@ -70,6 +72,13 @@ def _validate_tiddler_list(environ, tiddlers):
             raise HTTP304('')
 
     return last_modified, etag
+
+
+def _sha_tiddler_titles(tiddlers):
+    digest = sha()
+    for tiddler in tiddlers:
+        digest.update(tiddler.title.encode('utf-8'))
+    return digest.hexdigest()
 
 
 def _last_modified_tiddler(tiddlers):
