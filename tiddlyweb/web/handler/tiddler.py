@@ -6,12 +6,16 @@ a Tiddler, GET a list of revisions of a Tiddler.
 import logging
 import urllib
 
+import simplejson
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.store import NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
+from tiddlyweb.store import \
+        NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
-from tiddlyweb.web.http import HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
+from tiddlyweb.web.http import \
+        HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
@@ -23,7 +27,8 @@ def get(environ, start_response):
     dependent on the chosen serialization and permissions of the
     containing bag.
     """
-    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    tiddler = _determine_tiddler(environ,
+            control.determine_tiddler_bag_from_recipe)
     return _send_tiddler(environ, start_response, tiddler)
 
 
@@ -31,7 +36,8 @@ def get_revisions(environ, start_response):
     """
     Get the list of revisions for this tiddler.
     """
-    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    tiddler = _determine_tiddler(environ,
+            control.determine_tiddler_bag_from_recipe)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
 
@@ -40,7 +46,8 @@ def delete(environ, start_response):
     Delete this tiddler from the store. What
     delete means is up to the store.
     """
-    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    tiddler = _determine_tiddler(environ,
+            control.determine_tiddler_bag_from_recipe)
     return _delete_tiddler(environ, start_response, tiddler)
 
 
@@ -50,7 +57,8 @@ def post_revisions(environ, start_response):
     text key and value, and process them into the store.
     That collection is known as a TiddlerChronicle.
     """
-    tiddler = _determine_tiddler(environ, control.determine_tiddler_bag_from_recipe)
+    tiddler = _determine_tiddler(environ,
+            control.determine_tiddler_bag_from_recipe)
     return _post_tiddler_revisions(environ, start_response, tiddler)
 
 
@@ -58,7 +66,8 @@ def put(environ, start_response):
     """
     Put a tiddler into the store.
     """
-    tiddler = _determine_tiddler(environ, control.determine_bag_for_tiddler)
+    tiddler = _determine_tiddler(environ,
+            control.determine_bag_for_tiddler)
     return _put_tiddler(environ, start_response, tiddler)
 
 
@@ -122,7 +131,8 @@ def _determine_tiddler(environ, bag_finder):
             revision = int(revision)
             tiddler.revision = revision
         except ValueError, exc:
-            raise HTTP404('%s not a revision of %s: %s' % (revision, tiddler_name, exc))
+            raise HTTP404('%s not a revision of %s: %s' %
+                    (revision, tiddler_name, exc))
 
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
@@ -162,8 +172,9 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
         raise HTTP415('application/json required')
 
     # we need a matching etag in order to be able to do
-    # this operation
-    last_modified, etag = _require_valid_etag_for_write(environ, tiddler)
+    # this operation. This will raise exception if there
+    # isn't a valid etag.
+    _require_valid_etag_for_write(environ, tiddler)
 
     bag = Bag(tiddler.bag)
     #  both create and write required for this action
@@ -173,10 +184,19 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
 
-    # this code (to __HERE__) should not be here, but not sure
-    # it should be in the serializer either
+    _store_tiddler_revisions(environ, content, tiddler)
+
+    response = [('Location', web.tiddler_url(environ, tiddler))]
+    start_response("204 No Content", response)
+
+    return []
+
+def _store_tiddler_revisions(environ, content, tiddler):
+    """
+    Given json revisions in content, store them 
+    as a revision history to tiddler.
+    """
     try:
-        import simplejson
         json_tiddlers = simplejson.loads(content)
     except ValueError, exc:
         raise HTTP409('unable to handle json: %s' % exc)
@@ -188,12 +208,6 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
         json_string = simplejson.dumps(json_tiddler)
         serializer.from_string(json_string.decode('UTF-8'))
         store.put(tiddler)
-    # __HERE__
-
-    response = [('Location', web.tiddler_url(environ, tiddler))]
-    start_response("204 No Content", response)
-
-    return []
 
 
 def _put_tiddler(environ, start_response, tiddler):
@@ -208,8 +222,6 @@ def _put_tiddler(environ, start_response, tiddler):
     if content_type != 'text/plain' and content_type != 'application/json':
         tiddler.type = content_type
 
-    last_modified = None
-    etag = None
     try:
         bag = Bag(tiddler.bag)
         try:
@@ -218,15 +230,17 @@ def _put_tiddler(environ, start_response, tiddler):
             except StoreMethodNotImplemented:
                 revision = 1
             tiddler.revision = revision
+            # These both next will raise exceptions if
+            # the contraints don't match.
             _check_bag_constraint(environ, bag, 'write')
-            last_modified, etag = _validate_tiddler(environ, tiddler)
+            _validate_tiddler(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
 
         content = environ['wsgi.input'].read(int(length))
 
         if not tiddler.type:
-            serialize_type, mime_type = web.get_serialize_type(environ)
+            serialize_type = web.get_serialize_type(environ)[0]
             serializer = Serializer(serialize_type, environ)
             serializer.object = tiddler
             serializer.from_string(content.decode('UTF-8'))
@@ -239,7 +253,8 @@ def _put_tiddler(environ, start_response, tiddler):
 
         store.put(tiddler)
     except NoBagError, exc:
-        raise HTTP409("Unable to put tiddler, %s. There is no bag named: %s (%s). Create the bag." %
+        raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
+                "%s (%s). Create the bag." %
                 (tiddler.title, tiddler.bag, exc))
     except NoTiddlerError, exc:
         raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
@@ -278,7 +293,8 @@ def _validate_tiddler(environ, tiddler):
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
 
-    logging.debug('attempting to validate %s with revision %s' % (tiddler.title, tiddler.revision))
+    logging.debug('attempting to validate %s with revision %s' %
+            (tiddler.title, tiddler.revision))
 
     etag = None
     last_modified = None
@@ -290,12 +306,14 @@ def _validate_tiddler(environ, tiddler):
         last_modified = ('Last-Modified', last_modified_string)
         incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
         if incoming_modified and \
-                (web.datetime_from_http_date(incoming_modified) >= web.datetime_from_http_date(last_modified_string)):
+                (web.datetime_from_http_date(incoming_modified) >=
+                        web.datetime_from_http_date(last_modified_string)):
             raise HTTP304('')
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
-        logging.debug('attempting to validate incoming etag: %s against %s' % (incoming_etag, tiddler_etag))
+        logging.debug('attempting to validate incoming etag: %s against %s' %
+                (incoming_etag, tiddler_etag))
         if incoming_etag and incoming_etag != tiddler_etag:
             raise HTTP412('Etag no match')
     etag = ('Etag', tiddler_etag)
@@ -364,7 +382,8 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
                 store.get(tmp_tiddler)
             except NoTiddlerError, exc:
                 # If a particular revision is not present in the store.
-                raise HTTP404('tiddler %s at revision % not found, %s' % (tiddler.title, revision, exc))
+                raise HTTP404('tiddler %s at revision % not found, %s' %
+                        (tiddler.title, revision, exc))
             tmp_bag.add_tiddler(tmp_tiddler)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
@@ -380,5 +399,7 @@ def _tiddler_etag(tiddler):
     Calculate the ETAG of a tiddler, based on 
     bag name, tiddler title and revision.
     """
-    return str('%s/%s/%s' % (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
-        urllib.quote(tiddler.title.encode('utf-8'), safe=''), tiddler.revision))
+    return str('%s/%s/%s' %
+            (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
+                urllib.quote(tiddler.title.encode('utf-8'), safe=''),
+                tiddler.revision))
