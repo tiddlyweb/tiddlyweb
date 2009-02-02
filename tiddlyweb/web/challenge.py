@@ -67,11 +67,13 @@ def _determine_challenger(environ):
     if challenger_name not in environ['tiddlyweb.config']['auth_systems']:
         raise HTTP404('Challenger Not Found')
     try:
-        imported_module = __import__('tiddlyweb.web.challengers.%s' % challenger_name,
-                {}, {}, ['Challenger'])
+        imported_module = __import__('tiddlyweb.web.challengers.%s' %
+                challenger_name, {}, {}, ['Challenger'])
     except ImportError:
         try:
-            imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
+            imported_module = __import__(challenger_name, {}, {},
+                    ['Challenger'])
         except ImportError, exc:
-            raise HTTP404('Unable to import challenger %s: %s' % (challenger_name, exc))
+            raise HTTP404('Unable to import challenger %s: %s' %
+                    (challenger_name, exc))
     return imported_module.Challenger()

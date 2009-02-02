@@ -21,7 +21,7 @@ class UserExtract(object):
     def __call__(self, environ, start_response):
         userinfo = {"name": 'GUEST'}
 
-        candidate_userinfo = self._try_extractors(environ, start_response)
+        candidate_userinfo = _try_extractors(environ, start_response)
 
         if candidate_userinfo:
             userinfo = candidate_userinfo
@@ -29,24 +29,28 @@ class UserExtract(object):
 
         return self.application(environ, start_response)
 
-    def _try_extractors(self, environ, start_response):
-        """
-        Loop through the available extractors until
-        one returns a usersign instead of undef, or we
-        run out of extractors.
-        """
-        for extractor_name in environ['tiddlyweb.config']['extractors']:
+
+def _try_extractors(environ, start_response):
+    """
+    Loop through the available extractors until
+    one returns a usersign instead of undef, or we
+    run out of extractors.
+    """
+    for extractor_name in environ['tiddlyweb.config']['extractors']:
+        try:
+            imported_module = __import__('tiddlyweb.web.extractors.%s' %
+                    extractor_name, {}, {}, ['Extractor'])
+        except ImportError:
             try:
-                imported_module = __import__('tiddlyweb.web.extractors.%s' % extractor_name,
-                        {}, {}, ['Extractor'])
-            except ImportError:
-                try:
-                    imported_module = __import__(extractor_name, {}, {}, ['Extractor'])
-                except ImportError, exc:
-                    raise ImportError('could not load extractor %s: %s' % (extractor_name, exc))
-            extractor = imported_module.Extractor()
-            extracted_user = extractor.extract(environ, start_response)
-            if extracted_user:
-                logging.debug('UserExtract:%s found %s' % (extractor_name, extracted_user))
-                return extracted_user
-        return False
+                imported_module = __import__(extractor_name, {}, {},
+                        ['Extractor'])
+            except ImportError, exc:
+                raise ImportError('could not load extractor %s: %s' %
+                        (extractor_name, exc))
+        extractor = imported_module.Extractor()
+        extracted_user = extractor.extract(environ, start_response)
+        if extracted_user:
+            logging.debug('UserExtract:%s found %s' %
+                    (extractor_name, extracted_user))
+            return extracted_user
+    return False
