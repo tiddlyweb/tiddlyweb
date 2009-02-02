@@ -166,10 +166,12 @@ class Serialization(SerializationInterface):
         """
         The string that starts the div that contains a tiddler.
         """
-        return u'<div class="tiddler" title="%s" server.page.revision="%s" modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
-        (tiddler.title, tiddler.revision, tiddler.modifier, tiddler.modified,
-        tiddler.created, self.tags_as(tiddler.tags),
-        self._tiddler_fields(tiddler.fields))
+        return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
+                'modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
+                (tiddler.title, tiddler.revision, tiddler.modifier,
+                        tiddler.modified, tiddler.created,
+                        self.tags_as(tiddler.tags),
+                        self._tiddler_fields(tiddler.fields))
 
     def _tiddler_fields(self, fields):
         """

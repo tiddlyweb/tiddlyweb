@@ -191,10 +191,18 @@ class Serialization(SerializationInterface):
         else:
             tiddler_output = tiddler.text
 
-        return '<div title="%s" server.title="%s" server.page.revision="%s" modifier="%s" server.workspace="bags/%s" server.type="tiddlyweb" server.host="%s" server.recipe="%s" server.bag="%s" server.permissions="%s" modified="%s" created="%s" tags="%s" %s>\n<pre>%s</pre>\n</div>\n' \
-                % (tiddler.title, tiddler.title, tiddler.revision, tiddler.modifier, tiddler.bag,
-                        host, recipe_name, tiddler.bag, self._tiddler_permissions(tiddler), tiddler.modified, tiddler.created,
-                        self.tags_as(tiddler.tags), self._tiddler_fields(tiddler.fields),
+        return '<div title="%s" server.title="%s" server.page.revision="%s" ' \
+                'modifier="%s" server.workspace="bags/%s" ' \
+                'server.type="tiddlyweb" server.host="%s" ' \
+                'server.recipe="%s" server.bag="%s" server.permissions="%s" ' \
+                'modified="%s" created="%s" tags="%s" %s>\n' \
+                '<pre>%s</pre>\n</div>\n' \
+                % (tiddler.title, tiddler.title, tiddler.revision,
+                        tiddler.modifier, tiddler.bag, host, recipe_name,
+                        tiddler.bag, self._tiddler_permissions(tiddler),
+                        tiddler.modified, tiddler.created,
+                        self.tags_as(tiddler.tags),
+                        self._tiddler_fields(tiddler.fields),
                         self._html_encode(tiddler_output))
 
     def _tiddler_permissions(self, tiddler):
