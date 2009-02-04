@@ -27,6 +27,9 @@ REQUIREMENTS:
 * simplejson: http://undefined.org/python/#simplejson
 * BeautifulSoup (for importing wikis):
   http://www.crummy.com/software/BeautifulSoup/
+* html5lib (also used for importing wikis due to changes
+  in BeautifulSoup):
+  http://code.google.com/p/html5lib/
 * wikklytext (provides server side rendering of wikitext to
   HTML): http://wikklytext.com/wiki/InstallPythonPackage.html
 
