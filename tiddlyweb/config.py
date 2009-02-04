@@ -35,7 +35,7 @@ is looked up in the tiddlyweb.stores package space, if
 it is not found there, sys.path is searched. Following the
 name of the module is an arbitrary dictionary of configuration
 information that is passed to the store. This could, for
-example, include databse username and password information.
+example, include database username and password information.
 
 server_request_filters -- A list of WSGI applications 
 which, in order, process the incoming requests made to the
@@ -48,7 +48,8 @@ server. This can transform, log, or handle exceptions as
 necessary.
 
 server_host -- The hostname of this server, usually set
-from whatever starts the server.
+from whatever starts the server. This is a dictionary
+with keys: scheme, host, port.
 
 server_prefix -- A URL path portion which is a prefix to
 every URL the system uses and produces. Use this to host
@@ -85,7 +86,8 @@ extractor can extract.
 secret -- A string used to encrypt the cookie installed by
 some of the challengers and used by the cookie extractor.
 NOTE: EVERY INSTALLATION SHOULD CHANGE THIS IN ITS OWN
-CONFIGURATION.
+CONFIGURATION. When using twanager instance, a random
+secret will be created in tiddlywebconfig.py.
 
 base_tiddlywiki -- the file location of the tiddlywiki
 file into which Tiddlers are pushed when creating
@@ -109,6 +111,11 @@ API. See bag_create_policy.
 
 debug_level -- String of loglevel to log. Pick one of 
 'CRITICAL', 'DEBUG', 'ERROR', 'INFO', 'WARNING'.
+
+css_uri -- A url of a css file that can be used to style
+the HTML output of the server. See
+tiddlyweb.web.wsgi.HTMLPresenter and tiddlyweb.serializations.html
+for the classes and ids used.
 """
 
 import logging
@@ -161,7 +168,11 @@ DEFAULT_CONFIG = {
             EncodeUTF8,
             SimpleLog
             ],
-        'server_host': {},
+        'server_host': {
+            'scheme': 'http',
+            'host': '0.0.0.0',
+            'port': '8080',
+            },
         'server_prefix': '',
         'extension_types': {
             'txt': 'text/plain',
@@ -193,6 +204,7 @@ DEFAULT_CONFIG = {
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'debug_level': 'INFO',
+        'css_uri': '',
         }
 
 

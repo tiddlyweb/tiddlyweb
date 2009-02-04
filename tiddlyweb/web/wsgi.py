@@ -37,8 +37,9 @@ class HTMLPresenter(object):
         Wrap the HTML in an HTML header.
         """
         css = ''
-        if 'css_uri' in environ['tiddlyweb.config']:
-            css = '<link rel="stylesheet" href="%s" type="text/css" />' % environ['tiddlyweb.config']['css_uri']
+        if environ['tiddlyweb.config'].get('css_uri', ''):
+            css = '<link rel="stylesheet" href="%s" type="text/css" />' % \
+                    environ['tiddlyweb.config']['css_uri']
         try:
             links = '\n'.join(environ['tiddlyweb.links'])
         except KeyError:
