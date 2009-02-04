@@ -5,12 +5,16 @@ Serialize into a fullblown tiddlywiki wiki.
 import logging
 
 from base64 import b64encode
+            
+import html5lib
+from html5lib import treebuilders
 
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url, tiddler_url
+from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
 
@@ -112,24 +116,11 @@ class Serialization(SerializationInterface):
         into plain text by finding all the included
         text.
         """
-        try:
-            # If the HTML serialization doesn't have wikklytext
-            # we will get back wikitext inside the div classed
-            # 'tiddler' instead of HTML
-            from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
-            output = wikitext_to_wikklyhtml('', '', unicode(title))
-
-            import html5lib
-            from html5lib import treebuilders
-            parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
-            soup = parser.parse(output)
-            title = soup.findAll(text=True)
-            return ''.join(title).rstrip().lstrip()
-        except ImportError, exc:
-            logging.debug('error importing: %s' % exc)
-            # If we have been unable to load BeautifilSoup then
-            # fall back to the original wikitext
-            return title
+        output = wikitext_to_wikklyhtml('', '', unicode(title))
+        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+        soup = parser.parse(output)
+        title = soup.findAll(text=True)
+        return ''.join(title).rstrip().lstrip()
 
     def _determine_title(self, title, candidate_title, candidate_subtitle):
         """
@@ -191,19 +182,19 @@ class Serialization(SerializationInterface):
         else:
             tiddler_output = tiddler.text
 
-        return '<div title="%s" server.title="%s" server.page.revision="%s" ' \
-                'modifier="%s" server.workspace="bags/%s" ' \
-                'server.type="tiddlyweb" server.host="%s" ' \
-                'server.recipe="%s" server.bag="%s" server.permissions="%s" ' \
-                'modified="%s" created="%s" tags="%s" %s>\n' \
-                '<pre>%s</pre>\n</div>\n' \
+        return ('<div title="%s" server.title="%s" server.page.revision="%s" '
+                'modifier="%s" server.workspace="bags/%s" '
+                'server.type="tiddlyweb" server.host="%s" '
+                'server.recipe="%s" server.bag="%s" server.permissions="%s" '
+                'modified="%s" created="%s" tags="%s" %s>\n'
+                '<pre>%s</pre>\n</div>\n'
                 % (tiddler.title, tiddler.title, tiddler.revision,
                         tiddler.modifier, tiddler.bag, host, recipe_name,
                         tiddler.bag, self._tiddler_permissions(tiddler),
                         tiddler.modified, tiddler.created,
                         self.tags_as(tiddler.tags),
                         self._tiddler_fields(tiddler.fields),
-                        self._html_encode(tiddler_output))
+                        self._html_encode(tiddler_output)))
 
     def _tiddler_permissions(self, tiddler):
         """
@@ -212,10 +203,8 @@ class Serialization(SerializationInterface):
         """
         perms = []
         bag = Bag(tiddler.bag)
-        if tiddler.store:
-            tiddler.store.get(bag)
-            if 'tiddlyweb.usersign' in self.environ:
-                perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
+        if 'tiddlyweb.usersign' in self.environ:
+            perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
         return ', '.join(perms)
 
     def _binary_tiddler(self, tiddler):
