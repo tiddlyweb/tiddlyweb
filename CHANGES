@@ -1,3 +1,10 @@
+0.9.11 Wed Feb  4 20:40:47 GMT 2009
+
+  * Fairly critical performance fix when loading large TiddlyWikis.
+  * Change the twanager server command and tiddlyweb.config so
+    it is possible to run just 'twanager server' and get some
+    reasonable defaults.
+
 0.9.10 Wed Feb  4 13:36:03 GMT 2009
 
   * When creating an instance, establish a unique MAC secret.
