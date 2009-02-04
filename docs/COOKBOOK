@@ -216,14 +216,20 @@ start the server.
 
 TiddlyWeb comes with its own built in web server. TiddlyWeb can be run with any
 sever you like, with some scripting, but for these current purposes the
-built in server should work fine. You need to decide the hostname or ip
-number and port on which your server is going to run. If you're just
-experimenting on your local machine, for now you can use 0.0.0.0 (or if
-that doesn't work, 127.0.0.1) for the ip number and 8080 for the port
-number. If you are running TiddlyWeb on a remote server you need to
+built in server should work fine. By default the server runs on IP 0.0.0.0
+and port 8080. You can choose different IP and port if you like. If you're
+just experimenting on your local machine, the defaults should be fine. If 
+for some reason 0.0.0.0 doesn't work, try 127.0.0.1. 
+
+If you are running TiddlyWeb on a remote server you need to
 choose the hostname of that server, and an available port.
 
-Once you have figured these bits out you can start the server:
+Once you have figured these bits out you can start the server. If you are
+using the defaults just do:
+
+  $ twanager server
+
+If you are using a custom IP number and port do:
 
   $ twanager server <ip number> <port>
 
@@ -268,13 +274,32 @@ debugging information as well as requests change tiddlywebconfig.py
 to look like this:
 
     config = {
-        debug_level: 'DEBUG'
+        'debug_level': 'DEBUG'
     }
 
 If you want to start the server and let it run in the background,
-if you are on a Unix-based OS you can do this:
+if you are on a Unix-based OS you can do this if you are using a
+custom IP and port
 
   $ twanager server <ip number> <port> &
+
+or this if you are using the defaults:
+
+  $ twanager server
+
+If you are not using the defaults but you don't want to type in the
+IP number and port all the time you can add your choices to
+tiddlywebconfig.py:
+
+    config = {
+        'debug_level': 'DEBUG',
+        'server_host': {
+            'scheme': 'http',
+            'host': 'example.com',
+            'port': '80',
+        },
+    }
+
 
 If you encounter difficulties using TiddlyWeb contact the TiddlyWikiDev
 Google Group, or contact the first author Chris Dent, <cdent@peermore.com>.
