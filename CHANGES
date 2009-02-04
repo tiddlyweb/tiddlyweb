@@ -1,3 +1,13 @@
+0.9.10 Wed Feb  4 13:36:03 GMT 2009
+
+  * When creating an instance, establish a unique MAC secret.
+  * Rejigger how Etags are created for collections of tiddlers
+    to address a caching related bug when renaming.
+  * Lots of code reformatting based on pep8.py and pylint.
+  * Potentially memory management bug fixes.
+  * Cache bag permissions when performing a search in the 
+    text store.
+  
 0.9.9 Tue Jan 27 10:19:17 GMT 2009
 
   * Various changes to enable client side rename of tiddlers:
