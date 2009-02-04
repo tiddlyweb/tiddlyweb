@@ -9,7 +9,7 @@ import selector
 from tiddlyweb.config import config
 
 
-def load_app(host, port, map_filename):
+def load_app():
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
@@ -17,7 +17,8 @@ def load_app(host, port, map_filename):
     environment or modify the request, or transform output.
     """
 
-    app = selector.Selector(mapfile=map_filename)
+    mapfile = config['urls_map']
+    app = selector.Selector(mapfile=mapfile)
     config['selector'] = app
 
     try:
@@ -30,7 +31,6 @@ def load_app(host, port, map_filename):
     except KeyError:
         pass # no plugins
 
-    config['server_host'] = dict(scheme='http', host=host, port=port)
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
     wrappers.append(Configurator) # required as the first app
@@ -51,13 +51,15 @@ def start_simple(filename, hostname, port):
     """
     os.environ = {}
     from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
+    hostname = config['server_host']['host']
+    port = int(config['server_host']['port'])
     httpd = WSGIServer((hostname, port), WSGIRequestHandler)
-    httpd.set_app(load_app(hostname, port, filename))
+    httpd.set_app(load_app())
     print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
 
-def start_cherrypy(filename, hostname, port):
+def start_cherrypy():
     """
     Start a cherrypy webserver to run our app.
 
@@ -66,8 +68,10 @@ def start_cherrypy(filename, hostname, port):
     """
     os.environ = {}
     from cherrypy import wsgiserver
+    hostname = config['server_host']['host']
+    port = int(config['server_host']['port'])
     server = wsgiserver.CherryPyWSGIServer((hostname, port),
-            load_app(hostname, port, filename))
+            load_app())
     try:
         logging.debug('starting cherrypy at %s:%s' % (hostname, port))
         print "Starting CherryPy at %s:%s" % (hostname, port)

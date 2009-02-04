@@ -18,7 +18,7 @@ def setup_module(module):
     from tiddlyweb.web import serve
     serve.config['extractors'].append('saliva')
     def app_fn():
-        return serve.load_app('our_test_domain', 8001, 'tiddlyweb/urls.map')
+        return serve.load_app()
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
     module.store = teststore()

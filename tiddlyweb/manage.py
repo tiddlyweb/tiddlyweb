@@ -37,15 +37,25 @@ def make_command():
 @make_command()
 def server(args):
     """Start the server: <host name or IP number> <port>"""
+    hostname = port = ''
     try:
         hostname, port = args[0:2]
-    except IndexError:
-        usage()
-    except ValueError:
-        usage()
+    except(IndexError, ValueError), exc:
+        if len(args) < 2:
+            print "you must include both a hostname or ip number and a port if using arguments: %s" % exc
+            return usage()
+        else:
+            pass
+
+    if hostname and port:
+        config['server_host'] = {
+                'scheme': 'http',
+                'host': hostname,
+                'port': port,
+                }
 
     from tiddlyweb.web import serve
-    serve.start_cherrypy(config['urls_map'], hostname, int(port))
+    serve.start_cherrypy()
 
 
 def _store():
@@ -59,7 +69,8 @@ def adduser(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        usage()
+        print "you must include at least a username and password: %s" % exc
+        return usage()
 
     roles = []
     try:
@@ -93,10 +104,10 @@ def imwiki(args):
         import_wiki_file(store, filename, bag_name)
     except IndexError, exc:
         print "index error: %s" % exc
-        usage()
+        return usage()
     except ValueError, exc:
         print "value error: %s" % exc
-        usage()
+        return usage()
 
 
 @make_command()
@@ -104,8 +115,9 @@ def recipe(args):
     """Create or update a recipe with the recipe text on stdin: <recipe>"""
     try:
         recipe_name = args[0]
-    except IndexError:
-        usage()
+    except IndexError, exc:
+        print "you must include a recipe name: %s" % exc
+        return usage()
 
     from tiddlyweb.model.recipe import Recipe
     from tiddlyweb.serializer import Serializer
@@ -125,8 +137,9 @@ def bag(args):
     """Create or update a bag with the json text on stdin: <bag>"""
     try:
         bag_name = args[0]
-    except IndexError:
-        usage()
+    except IndexError, exc:
+        print "you must include a bag name: %s" % exc
+        return usage()
 
     from tiddlyweb.model.bag import Bag
     from tiddlyweb.serializer import Serializer
@@ -148,8 +161,9 @@ def tiddler(args):
     """Import a single tiddler into an existing bag from stdin: <tiddler> <bag>"""
     try:
         tiddler_name, bag_name = args[0:3]
-    except (IndexError, ValueError):
-        usage()
+    except (IndexError, ValueError), exc:
+        print "you must include a tiddler and bag name: %s" % exc
+        return usage()
 
     from tiddlyweb.model.tiddler import Tiddler
     from tiddlyweb.serializer import Serializer
@@ -192,8 +206,7 @@ def handle(args):
     try:
         candidate_command = args[1]
     except IndexError:
-        usage([])
-        return
+        return usage([])
 
     try:
         args = args[2:]
@@ -204,4 +217,4 @@ def handle(args):
         logging.debug('running command %s with %s' % (candidate_command, args))
         COMMANDS[candidate_command](args)
     else:
-        usage(args)
+        return usage(args)
