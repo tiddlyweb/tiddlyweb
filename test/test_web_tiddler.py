@@ -100,6 +100,7 @@ def test_get_tiddler_wiki():
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
     assert '<title> tiddler8 </title>' in content
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+    assert 'server.permissions="read, write, create, delete"' in content
 
 def test_get_tiddler_revision_wiki():
     http = httplib2.Http()
@@ -402,11 +403,12 @@ def test_tiddler_bag_constraints():
     assert 'may not read' in content
 
     # update the policy so we can read and GET the thing
-    _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['NONE'])))
-    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
+    _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['NONE'],delete=['NONE'])))
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne.wiki',
             method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '200'
     assert 'John Smith' in content
+    assert 'server.permissions="read, create"' in content
 
 def test_get_tiddler_via_recipe_with_perms():
 

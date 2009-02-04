@@ -201,10 +201,28 @@ class Serialization(SerializationInterface):
         Make a list of the permissions the current user has
         on this tiddler.
         """
+
+        def _read_bag_perms(environ, tiddler):
+            perms = []
+            if 'tiddlyweb.usersign' in environ:
+                store = tiddler.store
+                if store:
+                    bag = Bag(tiddler.bag)
+                    store.get(bag)
+                    perms = bag.policy.user_perms(environ['tiddlyweb.usersign'])
+            return perms
+
         perms = []
-        bag = Bag(tiddler.bag)
-        if 'tiddlyweb.usersign' in self.environ:
-            perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
+        bag_name = tiddler.bag
+        if hasattr(self, 'bag_perms_cache'):
+            if bag_name in self.bag_perms_cache:
+                perms = self.bag_perms_cache[bag_name]
+            else:
+                perms = _read_bag_perms(self.environ, tiddler)
+        else:
+            self.bag_perms_cache = {}
+            perms = _read_bag_perms(self.environ, tiddler)
+        self.bag_perms_cache[bag_name] = perms
         return ', '.join(perms)
 
     def _binary_tiddler(self, tiddler):
