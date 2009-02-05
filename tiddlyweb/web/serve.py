@@ -91,8 +91,19 @@ class Configurator(object):
 
     def __call__(self, environ, start_response):
         logging.debug('starting "%s" request with path "%s" and query "%s"' % (
-            environ['REQUEST_METHOD'],
-            environ['PATH_INFO'],
-            environ['QUERY_STRING']))
+            environ.get('REQUEST_METHOD',''),
+            environ.get('PATH_INFO', ''),
+            environ.get('QUERY_STRING', '')))
         environ['tiddlyweb.config'] = config
+        # XXX do this somewhere else
+        # clean up the environment to protect against
+        # different web servers on which we are mounted
+        if environ.get('SCRIPT_NAME', '') != config['server_prefix']:
+            if not environ.get('QUERY_STRING', ''):
+                logging.debug('setting path info to %s' % environ['REQUEST_URI'])
+                environ['PATH_INFO'] = environ['REQUEST_URI']
+                environ['SCRIPT_NAME'] = ''
+            else:
+                environ['PATH_INFO'] = environ.get('SCRIPT_NAME', '') + environ.get('PATH_INFO', '')
+                environ['SCRIPT_NAME'] = ''
         return self.application(environ, start_response)

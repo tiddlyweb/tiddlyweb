@@ -36,17 +36,9 @@ os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 sys.path.extend(dirname)
 
 from tiddlyweb.web import serve
-from tiddlyweb.config import config
 
 def start():
-    # What is our hostname
-    hostname = config['hostname']
-
-    port = 80
-    if ':' in hostname:
-        hostname, port = hostname.split(':')
-
-    app = serve.load_app(hostname, port, config['urls_map'])
+    app = serve.load_app()
     return app
 
 # the mod_python wsgi handler will look for the callable 

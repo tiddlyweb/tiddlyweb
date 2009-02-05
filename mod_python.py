@@ -37,6 +37,8 @@ import os
 import os.path
 import sys
 
+os.environ['PYTHON_EGG_CACHE'] = '/tmp'
+
 # chdir to the location of this running script so we have access 
 # to tiddlywebconfig.py
 dirname = os.path.dirname(__file__)
@@ -44,17 +46,9 @@ if dirname:
     os.chdir(dirname)
 
 from tiddlyweb.web import serve
-from tiddlyweb.config import config
 
 def start():
-    # What is our hostname
-    hostname = config['hostname']
-
-    port = 80
-    if ':' in hostname:
-        hostname, port = hostname.split(':')
-
-    app = serve.load_app(hostname, port, config['urls_map'])
+    app = serve.load_app()
     return app
 
 # the mod_python wsgi handler will look for the callable 

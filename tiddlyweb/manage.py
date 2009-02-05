@@ -41,7 +41,7 @@ def server(args):
     try:
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
-        if len(args) < 2:
+        if 0 < len(args) < 2:
             print "you must include both a hostname or ip number and a port if using arguments: %s" % exc
             return usage()
         else:
