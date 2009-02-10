@@ -8,6 +8,8 @@ tiddler data store. And the rest of the underneath the web code.
 import sys
 sys.path.append('.')
 
+import copy
+
 from tiddlyweb import filter
 from tiddlyweb.filter import FilterError
 from tiddlyweb.model.tiddler import Tiddler
@@ -18,6 +20,7 @@ from fixtures import tiddlers
 import py.test
 
 # cook up some bagged tiddlers
+tiddlers = copy.deepcopy(tiddlers)
 for tiddler in tiddlers:
     tiddler.bag = tiddler.title
 

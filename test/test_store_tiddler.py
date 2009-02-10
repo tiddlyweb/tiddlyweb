@@ -49,16 +49,12 @@ def test_simple_put():
     tiddler.modified = '200803030303'
     store.put(tiddler)
 
-    assert os.path.exists(expected_stored_filename), \
-            'path %s should be created' \
-            % expected_stored_filename
+    assert os.path.exists(expected_stored_filename)
 
     f = file(expected_stored_filename)
     text = f.read()
 
-    assert text == expected_stored_text, \
-            'stored text should be %s, got %s' \
-            % (expected_stored_text, text)
+    assert text == expected_stored_text
 
 def test_simple_get():
     """
