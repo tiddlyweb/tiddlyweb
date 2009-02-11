@@ -42,7 +42,7 @@ from tiddlyweb.importer import _do_tiddler
 
 @make_command()
 def from_svn(args):
-    """Import one or more plugins, tiddlers or recipes from tiddlywiki subversion: <bag> <URI>"""
+    """Import one or more plugins, tiddlers or recipes in cook format: <bag> <http or file URL>"""
     bag = args[0]
     urls = args[1:]
     if not bag:
