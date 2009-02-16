@@ -425,8 +425,7 @@ class Store(StorageInterface):
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         tiddler_revision = self._tiddler_revision_filename(tiddler, index=index)
-        tiddler_filename = os.path.join(tiddler_base_filename,
-                str(tiddler_revision))
+        tiddler_filename = self._tiddler_full_filename(tiddler, tiddler_revision)
         tiddler = self._read_tiddler_file(tiddler, tiddler_filename)
         tiddler.revision = tiddler_revision
         return tiddler
