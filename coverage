@@ -7,5 +7,6 @@
 
 find tiddlyweb -name "*.py" > interesting_files.txt
 rm -rf html
-figleaf /usr/local/bin/py.test
+rm .figleaf
+figleaf /usr/local/bin/py.test test
 figleaf2html -f interesting_files.txt
