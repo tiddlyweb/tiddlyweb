@@ -70,7 +70,7 @@ class Tiddler(object):
            this tiddler from persistent storage.
     """
 
-    __slots__ = ['title',
+    slots = ['title',
             'created',
             'modified',
             'modifier',

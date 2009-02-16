@@ -122,9 +122,9 @@ class Serialization(SerializationInterface):
         for field, value in [x.split(': ', 1) for x in headers]:
             if value == '':
                 continue
-            try:
+            if hasattr(tiddler, field):
                 setattr(tiddler, field, value)
-            except AttributeError:
+            else:
                 tiddler.fields[field] = value
 
         # we used to raise TiddlerFormatError but there are

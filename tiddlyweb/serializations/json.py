@@ -124,7 +124,7 @@ class Serialization(SerializationInterface):
         a dictonary.
         """
         unwanted_keys = ['text', 'store']
-        wanted_keys = [attribute for attribute in tiddler.__slots__ if attribute not in unwanted_keys]
+        wanted_keys = [attribute for attribute in tiddler.slots if attribute not in unwanted_keys]
         wanted_info = {}
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute, None)
