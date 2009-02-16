@@ -69,7 +69,7 @@ class Serialization(SerializationInterface):
 
         if len(tiddlers) == 1:
             default_tiddler = Tiddler('DefaultTiddlers')
-            default_tiddler.text = tiddlers[0].title
+            default_tiddler.text = '[[' + tiddlers[0].title + ']]'
             tiddlers = [tiddlers[0], default_tiddler]
 
         # figure out the content to be pushed into the
