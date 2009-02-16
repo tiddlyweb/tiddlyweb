@@ -145,7 +145,7 @@ class Serialization(SerializationInterface):
         perms = []
         bag = Bag(tiddler.bag)
         if tiddler.store:
-            tiddler.store.get(bag)
+            bag = tiddler.store.get(bag)
             if 'tiddlyweb.usersign' in self.environ:
                 perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
         return perms

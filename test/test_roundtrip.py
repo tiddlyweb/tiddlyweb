@@ -84,8 +84,8 @@ def test_tiddler_unique_by_bags():
     assert tiddler_one.text == tiddler_two.text == None, \
             'empty tiddlers have equally empty content'
 
-    store.get(tiddler_one)
-    store.get(tiddler_two)
+    tiddler_one = store.get(tiddler_one)
+    tiddler_two = store.get(tiddler_two)
 
     assert tiddler_one.text != tiddler_two.text, \
             'empty tiddlers have different content'
@@ -108,7 +108,7 @@ def test_where_this_tiddler():
     tiddler_lonely.text = 'tiddlerincookiesyay'
 
     recipe = Recipe('cookies')
-    store.get(recipe)
+    recipe = store.get(recipe)
 
     bag = control.determine_bag_for_tiddler(recipe, tiddler_lonely)
 

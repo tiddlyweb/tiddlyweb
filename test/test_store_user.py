@@ -26,7 +26,7 @@ def test_simple_put():
 
 def test_simple_get():
     user = User('cdent')
-    store.get(user)
+    user = store.get(user)
 
     assert user.note == 'foo'
     assert user.check_password('cowpig')

@@ -19,7 +19,7 @@ def setup_module(module):
 
 def test_filter_by_text():
     bag = Bag('bag0')
-    store.get(bag)
+    bag = store.get(bag)
 
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10
@@ -30,7 +30,7 @@ def test_filter_by_text():
 
 def test_filter_by_text_string():
     bag = Bag('bag0')
-    store.get(bag)
+    bag = store.get(bag)
 
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10
@@ -41,7 +41,7 @@ def test_filter_by_text_string():
 
 def test_filter_by_text_string_negate():
     bag = Bag('bag0')
-    store.get(bag)
+    bag = store.get(bag)
 
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10

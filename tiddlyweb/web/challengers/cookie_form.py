@@ -74,7 +74,7 @@ Password <input type="password" name="password" size="40" />
             store = environ['tiddlyweb.store']
             secret = environ['tiddlyweb.config']['secret']
             user = User(username)
-            store.get(user)
+            user = store.get(user)
             if user.check_password(password):
                 uri = '%s%s' % (server_host_url(environ), redirect)
                 cookie = Cookie.SimpleCookie()

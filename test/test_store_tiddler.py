@@ -64,7 +64,7 @@ def test_simple_get():
     stored_tiddler = Tiddler(title='TiddlerOne')
     stored_tiddler.bag = 'bagone'
     stored_tiddler.modified = '200803030303'
-    store.get(stored_tiddler)
+    stored_tiddler = store.get(stored_tiddler)
 
     assert stored_tiddler.title == 'TiddlerOne', 'retrieved tiddler has correct title'
     assert stored_tiddler.bag == 'bagone', 'retrieve tiddler has correct bag'
@@ -88,14 +88,14 @@ def test_get_revision():
     store.put(tiddler)
 
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
 
     assert tiddler.text == 'how now 3'
     assert tiddler.revision == 3
 
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
     tiddler.revision = 2
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
 
     assert tiddler.text == 'how now 2'
     assert tiddler.revision == 2

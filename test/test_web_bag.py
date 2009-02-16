@@ -281,7 +281,7 @@ def test_roundtrip_unicode_bag():
     assert response['status'] == '204'
 
     bag = Bag(bag_name)
-    store.get(bag)
+    bag = store.get(bag)
     assert bag.name == bag_name
 
     response, content = http.request('http://our_test_domain:8001/bags/%s.json' % encoded_bag_name,

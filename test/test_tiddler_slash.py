@@ -30,7 +30,7 @@ def test_tiddler_title_with_slash():
     tiddler2 = Tiddler('hello/monkey')
     tiddler2.bag = 'bag/puss'
 
-    store.get(tiddler2)
+    tiddler2 = store.get(tiddler2)
 
     assert tiddler2.title == 'hello/monkey'
     assert tiddler2.text == 'artifice'

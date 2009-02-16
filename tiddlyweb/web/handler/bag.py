@@ -134,7 +134,7 @@ def list(environ, start_response):
     kept_bags = []
     for bag in bags:
         try:
-            store.get(bag)
+            bag = store.get(bag)
             bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_bags.append(bag)
         except(UserRequiredError, ForbiddenError):
@@ -170,7 +170,7 @@ def put(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     try:
-        store.get(bag)
+        bag = store.get(bag)
         bag.policy.allows(usersign, 'manage')
     except NoBagError:
         create_policy_check(environ, 'bag', usersign)
@@ -212,7 +212,7 @@ def _get_bag(environ, bag_name):
     bag = Bag(bag_name)
     store = environ['tiddlyweb.store']
     try:
-        store.get(bag)
+        bag = store.get(bag)
     except NoBagError, exc:
         raise HTTP404('%s not found, %s' % (bag.name, exc))
     return bag

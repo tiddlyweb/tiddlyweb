@@ -45,7 +45,7 @@ def test_put_unicode_bag():
     assert response['status'] == '204'
 
     bag = Bag(bag_name)
-    store.get(bag)
+    bag = store.get(bag)
     assert bag.policy.delete == bag_policy['delete']
     assert bag.name == bag_name
     assert type(bag.name) == unicode
@@ -64,7 +64,7 @@ def test_put_unicode_tiddler():
             method='PUT', body=tiddler_json, headers={'Content-Type':'application/json'})
 
     tiddler = Tiddler(tiddler_name, bag=bag_name)
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
     assert tiddler.title == tiddler_name
     assert tiddler.text == tiddler_text
     assert tiddler.tags == [name]
@@ -83,7 +83,7 @@ def test_put_unicode_recipe():
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)
-    store.get(recipe)
+    recipe = store.get(recipe)
     assert recipe.get_recipe() == recipe_list
     assert recipe.name == recipe_name
 

@@ -44,7 +44,7 @@ def test_construct_from_recipe():
     """
 
     recipe = Recipe('long')
-    store.get(recipe)
+    recipe = store.get(recipe)
 
     serializer = Serializer('html')
     serializer.object = recipe
@@ -57,7 +57,7 @@ def test_get_tiddlers_from_bag():
     Make sure a bag comes to life as expected.
     """
     bag = Bag('bag0')
-    store.get(bag)
+    bag = store.get(bag)
 
     tiddlers = control.get_tiddlers_from_bag(bag)
 
@@ -72,7 +72,7 @@ def test_filter_tiddlers_from_bag():
     Make sure a bag comes to life and filters as expect.
     """
     bag = Bag('bag0')
-    store.get(bag)
+    bag = store.get(bag)
 
     tiddlers = control.filter_tiddlers_from_bag(bag, '[tag[tagfour]]')
     assert len(tiddlers) == 3, 'there are 3 tiddlers when filters on tagfour'

@@ -43,7 +43,7 @@ def test_simple_get():
     store.put(tiddler)
 
     bag = Bag(name='bagone')
-    store.get(bag)
+    bag = store.get(bag)
 
     assert bag.list_tiddlers()[0].title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
     assert bag.list_tiddlers()[0].text == None
@@ -57,7 +57,7 @@ def test_simple_get():
     assert bag.desc == 'I enjoy being stored'
     
     the_tiddler = bag.list_tiddlers()[0]
-    store.get(the_tiddler)
+    the_tiddler = store.get(the_tiddler)
     assert the_tiddler.title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
     assert sorted(the_tiddler.tags) == sorted(tiddler.tags)
 

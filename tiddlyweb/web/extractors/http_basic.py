@@ -31,7 +31,7 @@ class Extractor(ExtractorInterface):
             try:
                 store = environ['tiddlyweb.store']
                 user = User(candidate_username)
-                store.get(user)
+                user = store.get(user)
                 if user.check_password(password):
                     return {"name": user.usersign, "roles": user.list_roles()}
             except (NoUserError, StoreMethodNotImplemented):

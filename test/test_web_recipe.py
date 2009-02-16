@@ -314,7 +314,7 @@ def test_roundtrip_unicode_recipe():
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)
-    store.get(recipe)
+    recipe = store.get(recipe)
     assert recipe.get_recipe() == recipe_list
 
     response, content = http.request('http://our_test_domain:8001/recipes/%s.json' % encoded_recipe_name,

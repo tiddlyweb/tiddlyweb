@@ -44,7 +44,7 @@ def test_tiddler_fields_are_stored():
     store.put(tiddler)
 
     tiddler_second = Tiddler('feebles', bag='bag0')
-    store.get(tiddler_second)
+    tiddler_second = store.get(tiddler_second)
     assert tiddler_second.fields['field1'] == 'value1'
     assert tiddler_second.fields['field2'] == 'value2'
 
@@ -56,7 +56,7 @@ def test_tiddler_fields_ignore_server():
     store.put(tiddler)
 
     tiddler_second = Tiddler('serverimpostor', bag='bag0')
-    store.get(tiddler_second)
+    tiddler_second = store.get(tiddler_second)
     assert tiddler_second.fields['field1'] == 'value1'
     assert 'server.host' not in tiddler_second.fields.keys()
     assert 'server.type' not in tiddler_second.fields.keys()
@@ -64,7 +64,7 @@ def test_tiddler_fields_ignore_server():
 # these following rely on the previous
 def test_tiddler_fields_as_text():
     tiddler = Tiddler('feebles', bag='bag0')
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
     serializer = Serializer('text')
     serializer.object = tiddler
     text_of_tiddler = serializer.to_string()
@@ -73,7 +73,7 @@ def test_tiddler_fields_as_text():
 
 def test_tiddler_fields_as_json():
     tiddler = Tiddler('feebles', bag='bag0')
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
     serializer = Serializer('json')
     serializer.object = tiddler
     json_string = serializer.to_string()
@@ -92,7 +92,7 @@ def test_tiddler_fields_as_json():
 
 def test_tiddler_fields_as_wiki():
     tiddler = Tiddler('feebles', bag='bag0')
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
     environ = {'tiddlyweb.config': config}
     serializer = Serializer('wiki', environ)
     serializer.object = tiddler
@@ -104,7 +104,7 @@ def test_tiddler_fields_as_wiki():
 
 def test_tiddler_fields_as_html():
     tiddler = Tiddler('feebles', bag='bag0')
-    store.get(tiddler)
+    tiddler = store.get(tiddler)
     serializer = Serializer('html')
     serializer.object = tiddler
     wiki_string = serializer.to_string()

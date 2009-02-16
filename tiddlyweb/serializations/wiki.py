@@ -208,7 +208,7 @@ class Serialization(SerializationInterface):
                 store = tiddler.store
                 if store:
                     bag = Bag(tiddler.bag)
-                    store.get(bag)
+                    bag = store.get(bag)
                     perms = bag.policy.user_perms(environ['tiddlyweb.usersign'])
             return perms
 

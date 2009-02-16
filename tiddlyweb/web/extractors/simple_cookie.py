@@ -35,7 +35,7 @@ class Extractor(ExtractorInterface):
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
                 user = User(usersign)
                 try:
-                    store.get(user)
+                    user = store.get(user)
                 except (StoreMethodNotImplemented, NoUserError):
                     pass
                 return {"name": user.usersign, "roles": user.list_roles()}

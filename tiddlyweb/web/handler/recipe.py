@@ -97,7 +97,7 @@ def get_tiddlers(environ, start_response):
             policies[bag_name].allows(usersign, 'read')
         except KeyError:
             bag = Bag(tiddler.bag)
-            store.get(bag)
+            bag = store.get(bag)
             policy = bag.policy
             policies[bag_name] = policy
             policies[bag_name].allows(usersign, 'read')
@@ -117,7 +117,7 @@ def list(environ, start_response):
     kept_recipes = []
     for recipe in recipes:
         try:
-            store.get(recipe)
+            recipe = store.get(recipe)
             recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_recipes.append(recipe)
         except(UserRequiredError, ForbiddenError):
@@ -150,7 +150,7 @@ def put(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     try:
-        store.get(recipe)
+        recipe = store.get(recipe)
         recipe.policy.allows(usersign, 'manage')
     except NoRecipeError:
         create_policy_check(environ, 'recipe', usersign)
@@ -186,7 +186,7 @@ def _determine_recipe(environ):
     store = environ['tiddlyweb.store']
 
     try:
-        store.get(recipe)
+        recipe = store.get(recipe)
     except NoRecipeError, exc:
         raise HTTP404('%s not found, %s' % (recipe.name, exc))
 

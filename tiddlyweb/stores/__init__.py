@@ -37,7 +37,7 @@ class StorageInterface(object):
     def recipe_get(self, recipe):
         """
         Get a recipe from the store,
-        populating the provided recipe
+        returning a populated recipe
         object.
         """
         raise StoreMethodNotImplemented
@@ -59,7 +59,7 @@ class StorageInterface(object):
     def bag_get(self, bag):
         """
         Get a bag from the store,
-        populating the provided bag
+        returning a populated  bag
         object.
         """
         raise StoreMethodNotImplemented
@@ -79,7 +79,7 @@ class StorageInterface(object):
     def tiddler_get(self, tiddler):
         """
         Get a tiddler from the store,
-        populating the provided tiddler
+        returning a populated tiddler
         object.
         """
         raise StoreMethodNotImplemented
@@ -99,7 +99,7 @@ class StorageInterface(object):
     def user_get(self, user):
         """
         Get a user from the store,
-        populating the provided user
+        returning a populated user
         object.
         """
         raise StoreMethodNotImplemented
