@@ -25,11 +25,12 @@ def delete(environ, start_response):
     depends on the store used.
     """
     recipe = _determine_recipe(environ)
+    store = environ['tiddlyweb.store']
 
     recipe.policy.allows(environ['tiddlyweb.usersign'], 'manage')
 
     try:
-        recipe.store.delete(recipe)
+        store.delete(recipe)
     except StoreMethodNotImplemented:
         raise HTTP400('Recipe DELETE not supported')
 

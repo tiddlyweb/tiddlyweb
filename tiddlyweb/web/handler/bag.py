@@ -38,7 +38,8 @@ def delete(environ, start_response):
     # we don't need to check for existence here because
     # the above get already did
     try:
-        bag.store.delete(bag)
+        store = environ['tiddlyweb.store']
+        store.delete(bag)
     except StoreMethodNotImplemented:
         raise HTTP400('Bag DELETE not supported')
 
