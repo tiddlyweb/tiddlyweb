@@ -67,7 +67,7 @@ class textstore:
     user_store = os.path.join(store_dirname, 'users')
 
 def teststore():
-    return Store('text', environ={'tiddlyweb.config': config})
+    return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
 def reset_textstore():
     if os.path.exists(textstore.store_dirname):

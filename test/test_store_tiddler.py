@@ -128,7 +128,7 @@ def test_store_lock():
     Make the sure the locking system throws the proper lock.
     """
 
-    texter = Texter(environ={'tiddlyweb.config': config})
+    texter = Texter(environ={'tiddlyweb.config': {'server_store': ['text', {'store_root': 'store'}]}})
     texter.write_lock(textstore.bag_store)
     py.test.raises(StoreLockError, 'texter.write_lock(textstore.bag_store)')
 

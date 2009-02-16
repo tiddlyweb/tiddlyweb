@@ -56,7 +56,6 @@ def test_simple_recipe():
     serializer = Serializer('text')
     serializer.object = recipe
     string = serializer.to_string()
-    print string
 
     new_recipe = Recipe('other')
     serializer.object = new_recipe
@@ -82,7 +81,6 @@ def test_json_recipe():
     serializer = Serializer('json')
     serializer.object = recipe
     string = serializer.to_string()
-    print string
 
     other_recipe = Recipe('other')
     serializer.object = other_recipe
@@ -92,7 +90,6 @@ def test_json_recipe():
 
     serializer.object = other_recipe
     other_string = serializer.to_string()
-    print other_string
 
     assert string == other_string
 

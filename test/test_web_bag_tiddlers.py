@@ -35,6 +35,8 @@ def test_post_wiki_to_bag():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.wiki',
             method='GET')
 
+    assert response['status'] == '200'
+
     response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
 
