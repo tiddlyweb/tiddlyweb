@@ -65,3 +65,11 @@ def test_failed_get():
     bag = Bag(name='bagnine')
     py.test.raises(NoBagError, 'store.get(bag)')
 
+def test_list():
+    bag = Bag('bagtwo')
+    store.put(bag)
+    bags = store.list_bags()
+
+    assert len(bags) == 2
+    assert u'bagone' in [bag.name for bag in bags]
+    assert u'bagtwo' in [bag.name for bag in bags]

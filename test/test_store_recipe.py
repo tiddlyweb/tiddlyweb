@@ -71,3 +71,12 @@ def test_recipe_no_recipe():
 
     assert stored_recipe.desc == recipe.desc
 
+def test_list():
+    recipe = Recipe('testrecipe3')
+    store.put(recipe)
+    recipes = store.list_recipes()
+
+    assert len(recipes) == 3
+    assert u'testrecipe' in [recipe.name for recipe in recipes]
+    assert u'testrecipe2' in [recipe.name for recipe in recipes]
+    assert u'testrecipe3' in [recipe.name for recipe in recipes]

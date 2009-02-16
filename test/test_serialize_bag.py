@@ -126,3 +126,18 @@ def test_bag_to_html():
     html = serializer.to_string()
 
     assert html == expected_bag_html
+
+def test_text_list():
+    serializer = Serializer('text')
+    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    string = serializer.list_bags(bags)
+
+    assert string == 'bag0\nbag1'
+
+def test_html_list():
+    serializer = Serializer('html')
+    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    string = serializer.list_bags(bags)
+
+    assert 'href="bags/bag0' in string
+    assert 'href="bags/bag1' in string

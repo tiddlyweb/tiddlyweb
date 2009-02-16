@@ -12,6 +12,7 @@ import py.test
 
 jeremy_info = {'name':'jeremy'}
 chris_info = {'name':'chris','roles':['ADMIN']}
+roller_info = {'name':'chris','roles':['ROLLER']}
 none_info = {'name':'NONE'}
 barnabas_info = {'name':'barnabas'}
 randomer_info = {'name':'randomer'}
@@ -103,4 +104,5 @@ def test_create_policy_check():
     py.test.raises(UserRequiredError, 'create_policy_check(any_environ, "recipe", {"name":"GUEST"})')
     assert create_policy_check(admin_environ, "recipe", chris_info)
     py.test.raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", jeremy_info)')
+    py.test.raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", roller_info)')
     py.test.raises(ForbiddenError, 'create_policy_check(weird_environ, "recipe", jeremy_info)')
