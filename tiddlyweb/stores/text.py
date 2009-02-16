@@ -33,6 +33,7 @@ class Store(StorageInterface):
         if environ is None:
             environ = {}
         self.environ = environ
+        self.serializer = Serializer('text')
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())
             for name in ['bags', 'recipes', 'users']:
@@ -64,8 +65,7 @@ class Store(StorageInterface):
         try:
             recipe_path = self._recipe_path(recipe)
             recipe_file = codecs.open(recipe_path, encoding='utf-8')
-            serializer = Serializer('text')
-            serializer.object = recipe
+            self.serializer.object = recipe
             recipe_string = recipe_file.read()
             recipe_file.close()
         except StoreEncodingError, exc:
@@ -73,7 +73,7 @@ class Store(StorageInterface):
         except IOError, exc:
             raise NoRecipeError('unable to get recipe %s: %s' % (recipe.name, exc))
 
-        return serializer.from_string(recipe_string)
+        return self.serializer.from_string(recipe_string)
 
     def recipe_put(self, recipe):
         """
@@ -82,14 +82,9 @@ class Store(StorageInterface):
 
         try:
             recipe_path = self._recipe_path(recipe)
-
             recipe_file = codecs.open(recipe_path, 'w', encoding='utf-8')
-
-            serializer = Serializer('text')
-            serializer.object = recipe
-
-            recipe_file.write(serializer.to_string())
-
+            self.serializer.object = recipe
+            recipe_file.write(self.serializer.to_string())
             recipe_file.close()
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
@@ -211,12 +206,8 @@ class Store(StorageInterface):
 
         if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64encode(tiddler.text)
-
-        serializer = Serializer('text')
-        serializer.object = tiddler
-
-        tiddler_file.write(serializer.to_string())
-
+        self.serializer.object = tiddler
+        tiddler_file.write(self.serializer.to_string())
         self.write_unlock(tiddler_base_filename)
         tiddler.revision = revision
         tiddler_file.close()
@@ -422,11 +413,10 @@ class Store(StorageInterface):
         a tiddler object.
         """
         tiddler_file = codecs.open(tiddler_filename, encoding='utf-8')
-        serializer = Serializer('text')
-        serializer.object = tiddler
         tiddler_string = tiddler_file.read()
         tiddler_file.close()
-        tiddler = serializer.from_string(tiddler_string)
+        self.serializer.object = tiddler
+        tiddler = self.serializer.from_string(tiddler_string)
         return tiddler
 
     def _read_tiddler_revision(self, tiddler, index=0):
