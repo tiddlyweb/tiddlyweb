@@ -201,7 +201,7 @@ class Store(StorageInterface):
                 time.sleep(.1)
 
         revision = self._tiddler_revision_filename(tiddler) + 1
-        tiddler_filename = os.path.join(tiddler_base_filename, '%s' % revision)
+        tiddler_filename = self._tiddler_full_filename(tiddler, revision)
         tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
 
         if tiddler.type and tiddler.type != 'None':
@@ -324,8 +324,7 @@ class Store(StorageInterface):
         query = search_query.lower()
 
         for bagname in bags:
-            tiddler_dir = os.path.join(self._store_root(),
-                    'bags', bagname, 'tiddlers')
+            tiddler_dir = self._tiddlers_dir(bagname)
             tiddler_files = self._files_in_dir(tiddler_dir)
             for tiddler_name in tiddler_files:
                 tiddler = Tiddler(title=urllib.unquote(tiddler_name).decode('utf-8'),
@@ -335,8 +334,9 @@ class Store(StorageInterface):
                     if query in tiddler.title.lower():
                         found_tiddlers.append(tiddler)
                         continue
-                    tiddler_file = codecs.open(os.path.join(tiddler_dir,
-                        tiddler_name, str(revision_id)), encoding='utf-8')
+                    tiddler_file = codecs.open(
+                        self._tiddler_full_filename(tiddler, revision_id),
+                        encoding='utf-8')
                     for line in tiddler_file:
                         if query in line.lower():
                             found_tiddlers.append(tiddler)
@@ -487,6 +487,13 @@ class Store(StorageInterface):
             return os.path.join(store_dir, _encode_filename(tiddler.title))
         except StoreEncodingError, exc:
             raise NoTiddlerError(exc)
+
+    def _tiddler_full_filename(self, tiddler, revision):
+        """
+        Return the full path to the respective tiddler file.
+        """
+        return os.path.join(self._tiddlers_dir(tiddler.bag),
+            _encode_filename(tiddler.title), str(revision))
 
     def _tiddlers_dir(self, bag_name):
         """
