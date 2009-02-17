@@ -33,7 +33,8 @@ def load_app():
 
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
-    wrappers.append(Configurator) # required as the first app
+    wrappers.append(Environator) # required as the first app
+    wrappers.append(Configurator) # required as the second app
     wrappers.extend(config['server_response_filters'])
     if wrappers:
         for wrapper in wrappers:
@@ -80,10 +81,13 @@ def start_cherrypy():
         server.stop()
 
 
-class Configurator(object):
+class Environator(object):
     """
-    WSGI Middleware to handle setting a config dict
-    for every request.
+    WSGI Middleware that doctors the environment
+    to make it satisfactory to Selector no matter
+    what server has mounted us. This is likely to 
+    be riddled with bugs, especially in the case where
+    we have a server_prefix.
     """
 
     def __init__(self, application):
@@ -94,10 +98,6 @@ class Configurator(object):
             environ.get('REQUEST_METHOD',''),
             environ.get('PATH_INFO', ''),
             environ.get('QUERY_STRING', '')))
-        environ['tiddlyweb.config'] = config
-        # XXX do this somewhere else
-        # clean up the environment to protect against
-        # different web servers on which we are mounted
         if environ.get('SCRIPT_NAME', '') != config['server_prefix']:
             if not environ.get('QUERY_STRING', ''):
                 logging.debug('setting path info to %s' % environ['REQUEST_URI'])
@@ -106,4 +106,17 @@ class Configurator(object):
             else:
                 environ['PATH_INFO'] = environ.get('SCRIPT_NAME', '') + environ.get('PATH_INFO', '')
                 environ['SCRIPT_NAME'] = ''
+        return self.application(environ, start_response)
+
+class Configurator(object):
+    """
+    WSGI Middleware to handle setting a config dict
+    for every request.
+    """
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        environ['tiddlyweb.config'] = config
         return self.application(environ, start_response)
