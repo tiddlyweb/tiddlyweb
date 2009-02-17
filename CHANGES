@@ -1,3 +1,9 @@
+0.9.14 Tue Feb 17 18:27:50 GMT 2009
+
+  * Update challengers to work better when config['server_prefix'] is set.
+  * Merge mod_wsgi.py and mod_python.py to apache.py.
+  * Add an Environator WSGI appi which logs parts of the HTTP environment.
+
 0.9.13 Mon Feb 16 22:50:14 GMT 2009
 
   * !!IMPORTANT!! Change StorageInterface so get() calls
