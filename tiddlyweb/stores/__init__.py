@@ -14,8 +14,8 @@ class StorageInterface(object):
 
     The interface is fairly simple: For the data
     entities that exist in the TiddlyWeb system there
-    (optionally) exists <entity_put and <entity>_get methods
-    in each Store.
+    (optionally) exists <entity_put> and <entity>_get
+    methods in each Store.
 
     There are also four supporting methods, list_recipes(),
     list_bags(), list_users(), and list_tiddler_revisions() that provide
