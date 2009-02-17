@@ -4,9 +4,10 @@ and password.
 """
 
 import Cookie
+import logging
 
 from tiddlyweb.web.challengers import ChallengerInterface
-from tiddlyweb.web.util import server_base_url
+from tiddlyweb.web.util import server_host_url
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError
 from sha import sha
@@ -76,12 +77,13 @@ Password <input type="password" name="password" size="40" />
             user = User(username)
             user = store.get(user)
             if user.check_password(password):
-                uri = '%s%s' % (server_base_url(environ), redirect)
+                uri = '%s%s' % (server_host_url(environ), redirect)
                 cookie = Cookie.SimpleCookie()
                 secret_string = sha('%s%s' % (user.usersign, secret)).hexdigest()
                 cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign, secret_string)
                 cookie['tiddlyweb_user']['path'] = '/'
-                start_response('303 See Other',
+                logging.debug('303 to %s' % uri)
+                start_response('303 Other',
                         [('Set-Cookie', cookie.output(header='')),
                             ('Location', uri)])
                 return [uri]

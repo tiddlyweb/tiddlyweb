@@ -6,6 +6,7 @@ Is OpenID 1.
 """
 import cgi
 import Cookie
+import logging
 import random
 import urllib
 
@@ -16,6 +17,8 @@ from sha import sha
 
 import tiddlyweb.web.util as web
 from tiddlyweb.web.challengers import ChallengerInterface
+
+from tiddlyweb.web.http import HTTP302
 
 
 class Challenger(ChallengerInterface):
@@ -96,13 +99,14 @@ class Challenger(ChallengerInterface):
             usersign = parsed_return_to['usersign'][0]
             if 'http' in usersign:
                 usersign = usersign.split('://', 2)[1]
-            uri = '%s%s' % (web.server_base_url(environ), redirect)
+            uri = '%s%s' % (web.server_host_url(environ), redirect)
             cookie = Cookie.SimpleCookie()
             secret = environ['tiddlyweb.config']['secret']
             secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
             cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
             cookie['tiddlyweb_user']['path'] = '/'
-            start_response('303 See Other',
+            logging.debug('303 to %s' % uri)
+            start_response('303 Found',
                     [('Set-Cookie', cookie.output(header='')),
                         ('Location', uri)])
             return [uri]
@@ -158,7 +162,8 @@ OpenID: <input name="openid" size="60" />
                 % (link, urllib.quote(openid),
                         urllib.quote(self._return_to(environ, redirect, link, original_openid)))
 
-        start_response('303 See Other', [('Location', request_uri)])
+        logging.debug('302 to %s' % request_uri)
+        raise HTTP302(request_uri)
 
         return []
 
