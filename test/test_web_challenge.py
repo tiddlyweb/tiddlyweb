@@ -124,18 +124,13 @@ def test_openid():
     assert response['status'] == '200'
     assert 'name="openid"' in content
 
-    raised = 0
-    try:
-        response, content = http.request(
-                'http://our_test_domain:8001/challenge/openid',
-                method='POST',
-                headers={'content-type': 'application/x-www-form-urlencoded'},
-                body='openid=cdent.livejournal.com&tiddlyweb_redirect=http://www.example.com/',
-                redirections=0)
-    except httplib2.RedirectLimit, e:
-        raised = 1
-    assert raised
-    assert e.response['status'] == '303'
+    response, content = http.request(
+            'http://our_test_domain:8001/challenge/openid',
+            method='POST',
+            headers={'content-type': 'application/x-www-form-urlencoded'},
+            body='openid=cdent.livejournal.com&tiddlyweb_redirect=http://www.example.com/',
+            redirections=0)
+    assert response['status'] == '302'
 
 def test_single_challenge_redirect():
     """
