@@ -94,18 +94,14 @@ class Environator(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        logging.debug('starting "%s" request with path "%s" and query "%s"' % (
-            environ.get('REQUEST_METHOD',''),
-            environ.get('PATH_INFO', ''),
-            environ.get('QUERY_STRING', '')))
-        if environ.get('SCRIPT_NAME', '') != config['server_prefix']:
-            if not environ.get('QUERY_STRING', ''):
-                logging.debug('setting path info to %s' % environ['REQUEST_URI'])
-                environ['PATH_INFO'] = environ['REQUEST_URI']
-                environ['SCRIPT_NAME'] = ''
-            else:
-                environ['PATH_INFO'] = environ.get('SCRIPT_NAME', '') + environ.get('PATH_INFO', '')
-                environ['SCRIPT_NAME'] = ''
+        request_method = environ.get('REQUEST_METHOD', None)
+        request_uri = environ.get('REQUEST_URI', None)
+        script_name = environ.get('SCRIPT_NAME', None)
+        path_info = environ.get('PATH_INFO', None)
+        query_string = environ.get('QUERY_STRING', None)
+        logging.debug('starting "%s" request with uri "%s", script_name "%s", path_info "%s" and query "%s"' % (
+            request_method, request_uri, script_name, path_info, query_string))
+        # do no cleaning for now
         return self.application(environ, start_response)
 
 class Configurator(object):
