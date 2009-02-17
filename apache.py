@@ -1,11 +1,11 @@
 """
-This is a handler for running tiddlyweb 
+This is a handler for running tiddlyweb
 under apache using either mod_wsgi or mod_python.
 
 mod_wsgi is a better choice.
 
 ##################################################
-For mod_wsgi 
+For mod_wsgi
 
 Your apache must be configured to use mod_wsgi.
 
@@ -19,7 +19,7 @@ Replace teamtasks.peermore.com with the hostname being used.
 Replace cdent with the user the process should run as. Remove
     the user line if you want to use the apache user.
 Replace /t with the prefix to the tiddlyweb.
-Replace the path after /t with the path to apache.py which 
+Replace the path after /t with the path to apache.py which
     should live in in the tiddlyweb instance directory.
 
 ##################################################
@@ -31,7 +31,7 @@ What this script does is provide a callable
 (named application) to a WSGI handler running under
 mod_python.
 
-A gateway from mod_python to WSGI is required 
+A gateway from mod_python to WSGI is required
 it can be found at
 http://www.aminus.net/wiki/ModPythonGateway
 
@@ -71,7 +71,7 @@ server_host is a complex data structure as follows:
 import os
 import sys
 
-# chdir to the location of this running script so we have access 
+# chdir to the location of this running script so we have access
 # to tiddlywebconfig.py and plugins
 dirname = os.path.dirname(__file__)
 if dirname:
@@ -82,6 +82,7 @@ os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 sys.path.insert(0, dirname)
 
 from tiddlyweb.web import serve
+
 
 def start():
     app = serve.load_app()
