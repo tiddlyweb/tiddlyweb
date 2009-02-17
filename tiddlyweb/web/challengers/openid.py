@@ -96,7 +96,7 @@ class Challenger(ChallengerInterface):
             usersign = parsed_return_to['usersign'][0]
             if 'http' in usersign:
                 usersign = usersign.split('://', 2)[1]
-            uri = '%s%s' % (web.server_host_url(environ), redirect)
+            uri = '%s%s' % (web.server_base_url(environ), redirect)
             cookie = Cookie.SimpleCookie()
             secret = environ['tiddlyweb.config']['secret']
             secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
@@ -168,7 +168,7 @@ OpenID: <input name="openid" size="60" />
         visiting their OpenID server.
         """
         return '%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s&openid_server=%s&usersign=%s' \
-                % (web.server_host_url(environ), self._nonce(), redirect, link, usersign)
+                % (web.server_base_url(environ), self._nonce(), redirect, link, usersign)
 
     def _nonce(self):
         """
