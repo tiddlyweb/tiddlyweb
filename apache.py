@@ -13,13 +13,13 @@ Add the following to server config (in a virtual host section)
 
     WSGIDaemonProcess teamtasks.peermore.com user=cdent processes=2 threads=15
     WSGIProcessGroup teamtasks.peermore.com
-    WSGIScriptAlias /t /home/cdent/public_html/teamtasks.peermore.com/apache.py
+    WSGIScriptAlias /peerwiki /home/cdent/public_html/teamtasks.peermore.com/apache.py
 
 Replace teamtasks.peermore.com with the hostname being used.
 Replace cdent with the user the process should run as. Remove
     the user line if you want to use the apache user.
-Replace /t with the prefix to the tiddlyweb.
-Replace the path after /t with the path to apache.py which
+Replace /peerwiki with the prefix to the tiddlyweb.
+Replace the path after /peerwiki with the path to apache.py which
     should live in in the tiddlyweb instance directory.
 
 ##################################################
@@ -38,9 +38,9 @@ http://www.aminus.net/wiki/ModPythonGateway
 Adjust the apache configuration something like
 the following:
 
-        <Location /t>
-                PythonPath "['/home/cdent/www/t'] + sys.path"
-                PythonOption SCRIPT_NAME /t
+        <Location /peerwiki>
+                PythonPath "['/home/cdent/www/peerwiki'] + sys.path"
+                PythonOption SCRIPT_NAME /peerwiki
                 SetHandler python-program
                 PythonHandler modpython_gateway::handler
                 PythonOption wsgi.application apache::application
@@ -54,7 +54,7 @@ For both
 
 In tiddlywebconfig.py:
 
-    set server_prefix to the prefix above (/t)
+    set server_prefix to the prefix above (/peerwiki)
     set server_host to the scheme, hostname and port being used
     set css_uri to a css file if you have one
 
