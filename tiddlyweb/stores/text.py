@@ -151,6 +151,7 @@ class Store(StorageInterface):
             if not os.path.exists(tiddler_base_filename):
                 raise NoTiddlerError('%s not present' % tiddler_base_filename)
             shutil.rmtree(tiddler_base_filename)
+            self.tiddler_written(tiddler)
         except NoTiddlerError:
             raise
         except Exception, exc:
