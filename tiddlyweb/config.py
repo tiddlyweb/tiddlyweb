@@ -109,7 +109,7 @@ recipe_create_policy -- A policy statement on who or what kind
 of user can create new recipes on the system through the web
 API. See bag_create_policy.
 
-debug_level -- String of loglevel to log. Pick one of 
+log_level -- String of loglevel to log. Pick one of 
 'CRITICAL', 'DEBUG', 'ERROR', 'INFO', 'WARNING'.
 
 css_uri -- A url of a css file that can be used to style
@@ -203,7 +203,7 @@ DEFAULT_CONFIG = {
         'urls_map': URLS_MAP,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
-        'debug_level': 'INFO',
+        'log_level': 'INFO',
         'css_uri': '',
         }
 
@@ -235,7 +235,7 @@ if os.path.exists('tiddlywebconfig.py'):
 else:
     config = DEFAULT_CONFIG
 
-logging.basicConfig(level=getattr(logging, config['debug_level']),
+logging.basicConfig(level=getattr(logging, config['log_level']),
         format='%(asctime)s %(levelname)-8s %(message)s',
         filename='./tiddlyweb.log')
 logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
