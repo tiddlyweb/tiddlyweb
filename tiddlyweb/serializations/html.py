@@ -190,10 +190,10 @@ class Serialization(SerializationInterface):
         server_prefix = self._server_prefix()
         if tiddler.recipe:
             list_link = 'recipes/%s/tiddlers' % tiddler.recipe.encode('utf-8')
-            list_title = 'Recent Changes in Recipe %s' % tiddler.recipe
+            list_title = 'Tiddlers in Recipe %s' % tiddler.recipe
         else:
             list_link = 'bags/%s/tiddlers' % tiddler.bag.encode('utf-8')
-            list_title = 'Recent Changes in Bag %s' % tiddler.bag
+            list_title = 'Tiddlers in Bag %s' % tiddler.bag
 
         from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
         html = wikitext_to_wikklyhtml('%s/' % server_prefix,
@@ -206,7 +206,7 @@ class Serialization(SerializationInterface):
 %s
 %s
 </div>
-""" % (urllib.quote('%s/%s?filter=[sort[-modified]]' % (server_prefix, list_link), safe='/?'),
+""" % (urllib.quote('%s/%s' % (server_prefix, list_link), safe='/'),
         list_title.encode('utf-8'),
         self._tiddler_div(tiddler).encode('utf-8'),
         html)
