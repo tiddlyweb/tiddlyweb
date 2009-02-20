@@ -3,7 +3,7 @@
 <head>
 <script id="versionArea" type="text/javascript">
 //<![CDATA[
-var version = {title: "TiddlyWiki", major: 2, minor: 4, revision: 2, beta: 1, date: new Date("Dec 16, 2008"), extensions: {}};
+var version = {title: "TiddlyWiki", major: 2, minor: 4, revision: 3, date: new Date("Jan 9, 2009"), extensions: {}};
 //]]>
 </script>
 <script id="jsheadArea" type="text/javascript">
@@ -15,7 +15,7 @@ var version = {title: "TiddlyWiki", major: 2, minor: 4, revision: 2, beta: 1, da
 <meta name="copyright" content="
 TiddlyWiki created by Jeremy Ruston, (jeremy [at] osmosoft [dot] com)
 
-Copyright (c) UnaMesa Association 2004-2008
+Copyright (c) UnaMesa Association 2004-2009
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -47,7 +47,9 @@ DAMAGE.
 <link rel='alternate' type='application/rss+xml' title='RSS' href='index.xml' />
 <!--}}}-->
 <!--PRE-HEAD-END-->
-<title> My TiddlyWiki - a reusable non-linear personal web notebook </title>
+<title>
+
+</title>
 <style id="styleArea" type="text/css">
 #saveTest {display:none;}
 #messageArea {display:none;}
@@ -58,12 +60,10 @@ DAMAGE.
 #javascriptWarning {width:100%; text-align:center; font-weight:bold; background-color:#dd1100; color:#fff; padding:1em 0em;}
 </style>
 <!--POST-HEAD-START-->
-
 <!--POST-HEAD-END-->
 </head>
 <body onload="main();" onunload="if(window.checkUnsavedChanges) checkUnsavedChanges(); if(window.scrubNodes) scrubNodes(document.body);">
 <!--PRE-BODY-START-->
-
 <!--PRE-BODY-END-->
 <div id="copyright">
 Welcome to TiddlyWiki created by Jeremy Ruston, Copyright &copy; 2007 UnaMesa Association
@@ -513,7 +513,6 @@ Also see AdvancedOptions</pre>
 </div>
 <!--POST-SHADOWAREA-->
 <div id="storeArea">
-
 </div>
 <!--POST-STOREAREA-->
 <!--POST-BODY-START-->
@@ -815,7 +814,7 @@ merge(config.messages,{
 	pluginForced: "Executed because forced via 'systemConfigForce' tag",
 	pluginVersionError: "Not executed because this plugin needs a newer version of TiddlyWiki",
 	nothingSelected: "Nothing is selected. You must select one or more items first",
-	savedSnapshotError: "It appears that this TiddlyWiki has been incorrectly saved. Please see http://www.tiddlywiki.com/#DownloadSoftware for details",
+	savedSnapshotError: "It appears that this TiddlyWiki has been incorrectly saved. Please see http://www.tiddlywiki.com/#Download for details",
 	subtitleUnknown: "(unknown)",
 	undefinedTiddlerToolTip: "The tiddler '%0' doesn't yet exist",
 	shadowedTiddlerToolTip: "The tiddler '%0' doesn't yet exist, but has a pre-defined shadow value",
@@ -1458,10 +1457,14 @@ function invokeMacro(place,macro,params,wikifier,tiddler)
 {
 	try {
 		var m = config.macros[macro];
-		if(m && m.handler)
+		if(m && m.handler) {
+			var tiddlerElem = story.findContainingTiddler(place);
+			window.tiddler = tiddlerElem ? store.getTiddler(tiddlerElem.getAttribute("tiddler")) : null;
+			window.place = place;
 			m.handler(place,macro,params.readMacroParams(),wikifier,params,tiddler);
-		else
+		} else {
 			createTiddlyError(place,config.messages.macroError.format([macro]),config.messages.macroErrorDetails.format([macro,config.messages.missingMacro]));
+		}
 	} catch(ex) {
 		createTiddlyError(place,config.messages.macroError.format([macro]),config.messages.macroErrorDetails.format([macro,ex.toString()]));
 	}
@@ -6260,6 +6263,11 @@ function saveOptionCookie(name)
 	document.cookie = c;
 }
 
+function removeCookie(name)
+{
+	document.cookie = name + "=; expires=Thu, 01-Jan-1970 00:00:01 UTC; path=/;";
+}
+
 function encodeCookie(s)
 {
 	return escape(convertUnicodeToHtmlEntities(s));
@@ -9393,7 +9401,6 @@ if(useJavaSaver)
 //]]>
 </script>
 <!--POST-SCRIPT-START-->
-
 <!--POST-SCRIPT-END-->
 </body>
 </html>
