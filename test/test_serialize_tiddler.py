@@ -114,3 +114,10 @@ def test_tiddler_json_base64():
 
     tiddler = serializer.from_string(string)
     assert tiddler.text == bininfo
+
+def test_tiddler_no_text():
+    serializer = Serializer('text')
+    tiddler = Tiddler('hello')
+    serializer.object = tiddler
+    header, body = serializer.to_string().split('\n\n')
+    assert 'None' not in body
