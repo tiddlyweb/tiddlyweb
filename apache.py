@@ -17,7 +17,7 @@ Add the following to server config (in a virtual host section)
 
 Replace teamtasks.peermore.com with the hostname being used.
 Replace cdent with the user the process should run as. Remove
-    the user line if you want to use the apache user.
+    the user=cdent part if you want to run as the the apache user.
 Replace /peerwiki with the prefix to the tiddlyweb.
 Replace the path after /peerwiki with the path to apache.py which
     should live in in the tiddlyweb instance directory.
