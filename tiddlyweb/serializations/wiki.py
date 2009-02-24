@@ -3,6 +3,7 @@ Serialize into a fullblown tiddlywiki wiki.
 """
 
 import logging
+import urllib
 
 from base64 import b64encode
             
@@ -60,12 +61,27 @@ class Serialization(SerializationInterface):
         """
         return self._put_tiddlers_in_tiddlywiki([tiddler], title=tiddler.title)
 
+    def _no_script(self, url):
+        return """
+<div id="javascriptWarning">
+This page requires JavaScript to function properly.<br /><br />
+If you do not use JavaScript you may still <a href="%s">browse
+the content of this wiki</a>.
+</div>
+""" % url
+
     def _put_tiddlers_in_tiddlywiki(self, tiddlers, title='TiddlyWeb Loading'):
         """
         Take the provided tiddlers and inject them into the base_tiddlywiki,
         adjusting content for title, subtite, and the various pre and post
         head sections of the file.
         """
+
+        if tiddlers[0].recipe:
+            workspace = '/recipes/%s/tiddlers' % urllib.quote(tiddlers[0].recipe.encode('UTF-8'))
+        else:
+            workspace = '/bags/%s/tiddlers' % urllib.quote(tiddlers[0].bag.encode('UTF-8'))
+        browsable_url = server_base_url(self.environ) + workspace
 
         if len(tiddlers) == 1:
             default_tiddler = Tiddler('DefaultTiddlers')
@@ -97,6 +113,8 @@ class Serialization(SerializationInterface):
         wiki = self._get_wiki()
         # put the title in place
         wiki = self._inject_title(wiki, title)
+
+        wiki = self._replace_chunk(wiki, '\n<noscript>\n', '\n</noscript>\n', self._no_script(browsable_url))
 
         # replace the markup bits
         if len(found_markup_tiddlers):
