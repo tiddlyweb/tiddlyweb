@@ -1,6 +1,10 @@
-0.9.15 IN PROGRESS
+0.9.15 Tue Feb 24 11:21:16 GMT 2009
 
   * rename config['debug_level'] to 'log_level'.
+  * link to HTML list of tiddlers on server in <noscript> section
+  * TiddlyWiki 2.4.3 for empty.html
+  * updates to apache.py to better document itself
+  * update docs to point to http://tiddlyweb.peermore.com/
 
 0.9.14 Tue Feb 17 18:27:50 GMT 2009
 
