@@ -4,6 +4,7 @@ named 'tiddlyweb_user'.
 """
 
 import Cookie
+import logging
 
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
@@ -25,6 +26,7 @@ class Extractor(ExtractorInterface):
         """
         try:
             user_cookie = environ['HTTP_COOKIE']
+            logging.debug('simple_cookie looking at cookie string: %s' % user_cookie)
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)
             cookie_value = cookie['tiddlyweb_user'].value
