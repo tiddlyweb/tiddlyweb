@@ -9,6 +9,7 @@ import logging
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 from tiddlyweb.web.extractors import ExtractorInterface
+from tiddlyweb.web.http import HTTP400
 from sha import sha
 
 
@@ -41,6 +42,8 @@ class Extractor(ExtractorInterface):
                 except (StoreMethodNotImplemented, NoUserError):
                     pass
                 return {"name": user.usersign, "roles": user.list_roles()}
+        except Cookie.CookieError, exc:
+            raise HTTP400('malformed cookie: %s' % exc)
         except KeyError:
             pass
         return False
