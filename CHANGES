@@ -1,3 +1,7 @@
+0.9.17 Tue Mar 10 18:27:26 GMT 2009
+
+  * Correct a bug in form processing when there is a POST.
+
 0.9.16 Wed Mar  4 18:44:23 GMT 2009
 
   * Add some debugging info in cookie extraction.

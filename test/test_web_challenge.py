@@ -98,9 +98,34 @@ def test_malformed_post():
             'http://our_test_domain:8001/challenge/cookie_form',
             method='POST',
             body='user=cdent&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
             redirections=0)
     assert response['status'] == '401'
     assert '<form' in content
+
+def test_charset_in_content_type():
+    """
+    Make sure we are okay with charset being set in the content type.
+    """
+    raised = 0
+    try:
+        http = httplib2.Http()
+        response, content = http.request(
+                'http://our_test_domain:8001/challenge/cookie_form',
+                method='POST',
+                headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+                redirections=0)
+    except httplib2.RedirectLimit, e:
+        raised = 1
+
+    assert raised
+    assert e.response['status'] == '303'
+    headers = {}
+    headers['cookie'] = e.response['set-cookie']
+    response, content = http.request(e.response['location'], method='GET', headers=headers)
+    assert response['status'] == '200'
+    assert 'i am tiddler 8' in content
 
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
