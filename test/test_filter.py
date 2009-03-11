@@ -255,3 +255,39 @@ def test_string_composed_filter_with_count():
     filters = filter.compose_from_string(filter_string)
     found_tiddlers = filter.by_composition(filters, tiddlers)
     assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerTwo', 'TiddlerThree']
+
+def test_field_composed_filter():
+    """
+    Add a field to a tiddler and then make sure we can filter for it.
+    """
+
+    tiddler1 = Tiddler('one')
+    tiddler1.fields = {'status': 'hot'}
+    tiddler2 = Tiddler('two')
+    tiddler2.fields = {'status': 'cold'}
+    tiddler3 = Tiddler('three')
+
+    filter_string = '[status[hot]]'
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, [tiddler1, tiddler2, tiddler3])
+    assert [tiddler.title for tiddler in found_tiddlers] == ['one']
+
+    filter_string = '[!status[hot]]'
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, [tiddler1, tiddler2, tiddler3])
+    assert [tiddler.title for tiddler in found_tiddlers] == ['two', 'three']
+
+    filter_string = '[status[cold]]'
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, [tiddler1, tiddler2, tiddler3])
+    assert [tiddler.title for tiddler in found_tiddlers] == ['two']
+
+    filter_string = '[barnabas[monkey]]'
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, [tiddler1, tiddler2, tiddler3])
+    assert [tiddler.title for tiddler in found_tiddlers] == []
+
+    filter_string = '[!barnabas[monkey]]'
+    filters = filter.compose_from_string(filter_string)
+    found_tiddlers = filter.by_composition(filters, [tiddler1, tiddler2, tiddler3])
+    assert [tiddler.title for tiddler in found_tiddlers] == ['one', 'two', 'three']

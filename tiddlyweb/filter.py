@@ -47,7 +47,10 @@ def compose_from_string(filter_string):
         elif match.group(2):
             flag = match.group(2)
             argument = match.group(3)
-            filters.append([FILTER_MAP[flag], argument])
+            try:
+                filters.append([FILTER_MAP[flag], argument])
+            except KeyError:
+                filters.append([make_field_filter(flag), argument])
     return filters
 
 
@@ -164,6 +167,35 @@ def negate(filter):
         return [tiddler for tiddler in tiddlers if tiddler not in filtered_tiddlers]
 
     return negated_filter
+
+
+def make_field_filter(field):
+    """
+    Limit the number of tiddlers based on the value of a(n extended) field.
+    """
+
+    negator = 0
+    remover = 0
+
+    if field.startswith('!'):
+        field = field.lstrip('!')
+        negator = 1
+
+    if field.startswith('-'):
+        field = field.lstrip('-')
+        remover = 1
+
+    def field_filter(argument, tiddlers):
+        return [tiddler for tiddler in tiddlers
+                if field in tiddler.fields and tiddler.fields[field] == argument]
+
+    if negator:
+        return negate(field_filter)
+
+    if remover:
+        return remove(field_filter)
+
+    return field_filter
 
 
 def make_count():
