@@ -1,3 +1,11 @@
+0.9.18 Wed Mar 11 15:22:29 GMT 2009
+
+  * Use TiddlyWiki 2.5 for empty.html
+  * Add experimental support for {{ user }} in recipes.
+    See changeset 9058 for more details.
+  * Enable filtering on tiddler extended fields as:
+    [<field>[<value>]]
+
 0.9.17 Tue Mar 10 18:27:26 GMT 2009
 
   * Correct a bug in form processing when there is a POST.
