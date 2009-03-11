@@ -39,7 +39,7 @@ class Serialization(SerializationInterface):
             policy_dict[key] = getattr(policy, key)
         lines = ['desc: %s' % recipe.desc, 'policy: %s' % simplejson.dumps(policy_dict), '']
 
-        for bag, filter_string in recipe:
+        for bag, filter_string in recipe.get_recipe():
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name

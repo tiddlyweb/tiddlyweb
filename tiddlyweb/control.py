@@ -15,7 +15,7 @@ from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.store import NoBagError
 
 
-def get_tiddlers_from_recipe(recipe):
+def get_tiddlers_from_recipe(recipe, environ=None):
     """
     Return the list of tiddlers that result
     from processing the recipe.
@@ -24,9 +24,11 @@ def get_tiddlers_from_recipe(recipe):
     tiddlers later in the recipe taking precedence
     over those earlier in the recipe.
     """
+
+    template = _recipe_template(environ)
     store = recipe.store
     uniquifier = {}
-    for bag, filter_string in recipe:
+    for bag, filter_string in recipe.get_recipe(template):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
@@ -36,7 +38,7 @@ def get_tiddlers_from_recipe(recipe):
     return uniquifier.values()
 
 
-def determine_tiddler_bag_from_recipe(recipe, tiddler):
+def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
     """
     We have a recipe and a tiddler name. We need to
     know the bag in which this tiddler can be found.
@@ -49,7 +51,8 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
     tiddlers and see if ours is in there.
     """
     store = recipe.store
-    for bag, filter_string in reversed(recipe):
+    template = _recipe_template(environ)
+    for bag, filter_string in reversed(recipe.get_recipe(template)):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
@@ -61,7 +64,7 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler):
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
 
-def determine_bag_for_tiddler(recipe, tiddler):
+def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     """
     Return the bag which this tiddler would be in if we
     were to save it to the recipe rather than to a default
@@ -71,7 +74,8 @@ def determine_bag_for_tiddler(recipe, tiddler):
     if the tiddler is a part of the bag + filter. If bag+filter
     is true, return that bag.
     """
-    for bag, filter_string in reversed(recipe):
+    template = _recipe_template(environ)
+    for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
         tmpbag = Bag(filter_string, tmpbag=True)
         tmpbag.add_tiddler(tiddler)
@@ -122,3 +126,15 @@ def filter_tiddlers_from_bag(bag, filter, filterargs=None):
         if store:
             return fl.by_composition(filters, get_tiddlers_from_bag(bag))
         return fl.by_composition(filters, bag.list_tiddlers())
+
+
+def _recipe_template(environ):
+    template = {}
+    try:
+        if environ:
+            template['user'] = environ['tiddlyweb.usersign']['name']
+    except KeyError:
+        pass
+    return template
+
+

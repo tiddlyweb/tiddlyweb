@@ -53,7 +53,7 @@ class Serialization(SerializationInterface):
         """
         self.environ['tiddlyweb.title'] = 'Recipe %s' % recipe.name
         lines = []
-        for bag, filter_string in recipe:
+        for bag, filter_string in recipe.get_recipe():
             line = '<li><a href="'
             if not isinstance(bag, basestring):
                 bag = bag.name

@@ -75,7 +75,7 @@ def get_tiddlers(environ, start_response):
 
     # get the tiddlers from the recipe and uniquify them
     try:
-        tiddlers = control.get_tiddlers_from_recipe(recipe)
+        tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
         tmp_bag = Bag('tmp_bag1', tmpbag=True)
         tmp_bag.add_tiddlers(tiddlers)
     except NoBagError, exc:

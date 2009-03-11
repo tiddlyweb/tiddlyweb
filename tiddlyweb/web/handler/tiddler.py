@@ -148,7 +148,7 @@ def _determine_tiddler(environ, bag_finder):
             raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
         try:
-            bag = bag_finder(recipe, tiddler)
+            bag = bag_finder(recipe, tiddler, environ)
         except NoBagError, exc:
             raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 

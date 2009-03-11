@@ -38,8 +38,19 @@ class Recipe(list):
         """
         list.__init__(self, recipe_list)
 
-    def get_recipe(self):
+    def get_recipe(self, template=None):
         """
         Return the recipe list, as a list.
         """
-        return self
+        if not template:
+            template = {}
+
+        our_list = self
+        real_list = []
+
+        for bag_name, filter_string in our_list:
+            for key, value in template.items():
+                bag_name = bag_name.replace('{{ ' + key + ' }}', value)
+            real_list.append([bag_name, filter_string])
+
+        return real_list
