@@ -1,0 +1,797 @@
+modifier: FND
+created: 
+modified: 200811260000
+type: None
+tags: systemConfig excludeLists excludeSearch
+
+
+/***
+|''Name''|TiddlyWebAdaptor|
+|''Description''|adaptor for interacting with TiddlyWeb|
+|''Author:''|FND|
+|''Contributors''|Chris Dent, Martin Budden|
+|''Version''|0.5.12|
+|''Status''|stable|
+|''Source''|http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js|
+|''CodeRepository''|http://svn.tiddlywiki.org/Trunk/association/|
+|''License''|[[Creative Commons Attribution-ShareAlike 3.0 License|http://creativecommons.org/licenses/by-sa/3.0/]]|
+|''CoreVersion''|2.4.1|
+|''Keywords''|serverSide TiddlyWeb|
+!Revision History
+!!v0.1 (2008-11-10)
+* refactoring of previous experimental efforts
+!!v0.2 (2008-12-08)
+* encapsulation of bag/recipe distinction
+!!v0.3 (2009-01-23)
+* implemented renaming via tiddler chronicles
+!!v0.4 (2009-02-03)
+* added support for importing TiddlyWiki documents
+!!v0.5 (2009-02-06)
+* keeping track of previous location when renaming/moving tiddlers
+!To Do
+* createWorkspace
+* externalize JSON library (use jQuery?)
+* document custom/optional context attributes (e.g. filters, query, revision) and tiddler fields (e.g. server.title, origin)
+!Code
+***/
+//{{{
+if(!version.extensions.TiddlyWebAdaptorPlugin) { //# ensure that the plugin is only installed once
+version.extensions.TiddlyWebAdaptorPlugin = { installed: true };
+
+(function() { //# set up local scope
+
+var adaptor;
+adaptor = config.adaptors.tiddlyweb = function() {}; //# set up alias
+
+adaptor.prototype = new AdaptorBase();
+adaptor.serverType = "tiddlyweb";
+adaptor.serverLabel = "TiddlyWeb";
+adaptor.mimeType = "application/json";
+
+adaptor.parsingErrorMessage = "Error parsing result from server";
+adaptor.locationIDErrorMessage = "no bag or recipe specified for tiddler"; // TODO: rename
+
+// perform a login -- XXX: experimental; currently limited to cookie_form
+adaptor.prototype.login = function(context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/challenge/cookie_form";
+	var uri = uriTemplate.format([context.host]);
+	var payload = "user=" + encodeURIComponent(context.username) +
+		"&password=" + encodeURIComponent(context.password);
+	var req = httpReq("POST", uri, callback, context, null, payload);
+	return typeof req == "string" ? req : true;
+};
+
+// retrieve a list of workspaces
+adaptor.prototype.getWorkspaceList = function(context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/recipes"; // XXX: bags?
+	var uri = uriTemplate.format([context.host]);
+	var req = httpReq("GET", uri, adaptor.getWorkspaceListCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getWorkspaceListCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		try {
+			eval("var workspaces = " + responseText);
+		} catch(ex) {
+			context.status = false; // XXX: correct?
+			context.statusText = exceptionText(ex, adaptor.parsingErrorMessage);
+			if(context.callback) {
+				context.callback(context, context.userParams);
+			}
+			return;
+		}
+		context.workspaces = workspaces.map(function(itm) { return { title: itm }; });
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// retrieve a list of tiddlers
+adaptor.prototype.getTiddlerList = function(context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/%1/%2/tiddlers%3";
+	var params = context.filters ? "?filter=" + context.filters : "";
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([context.host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name), params]);
+	var req = httpReq("GET", uri, adaptor.getTiddlerListCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getTiddlerListCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		context.tiddlers = [];
+		try {
+			eval("var tiddlers = " + responseText); //# N.B.: not actual tiddler instances
+		} catch(ex) {
+			context.status = false; // XXX: correct?
+			context.statusText = exceptionText(ex, adaptor.parsingErrorMessage);
+			if(context.callback) {
+				context.callback(context, context.userParams);
+			}
+			return;
+		}
+		for(var i = 0; i < tiddlers.length; i++) {
+			var t = tiddlers[i];
+			var tiddler = new Tiddler(t.title);
+			tiddler.assign(t.title, null, t.modifier, t.modified, t.tags, t.created, t.fields);
+			tiddler.fields["server.workspace"] = "bags/" + t.bag;
+			tiddler.fields["server.page.revision"] = t.revision;
+			context.tiddlers.push(tiddler);
+		}
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// perform global search
+adaptor.prototype.getSearchResults = function(context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/search?q=%1%2";
+	var filterString = context.filters ? ";filter=" + context.filters : "";
+	var uri = uriTemplate.format([context.host, context.query, filterString]); // XXX: parameters need escaping?
+	var req = httpReq("GET", uri, adaptor.getSearchResultsCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getSearchResultsCallback = function(status, context, responseText, uri, xhr) {
+	adaptor.getTiddlerListCallback(status, context, responseText, uri, xhr); // XXX: use apply?
+};
+
+// retrieve a particular tiddler's revisions
+adaptor.prototype.getTiddlerRevisionList = function(title, limit, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/%1/%2/tiddlers/%3/revisions";
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([context.host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name), adaptor.normalizeTitle(title)]);
+	var req = httpReq("GET", uri, adaptor.getTiddlerRevisionListCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getTiddlerRevisionListCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		context.revisions = [];
+		try {
+			eval("var tiddlers = " + responseText); //# N.B.: not actual tiddler instances
+		} catch(ex) {
+			context.status = false; // XXX: correct?
+			context.statusText = exceptionText(ex, adaptor.parsingErrorMessage);
+			if(context.callback) {
+				context.callback(context, context.userParams);
+			}
+			return;
+		}
+		for(var i = 0; i < tiddlers.length; i++) {
+			var t = tiddlers[i];
+			var tiddler = new Tiddler(t.title);
+			tiddler.assign(t.title, null, t.modifier, Date.convertFromYYYYMMDDHHMM(t.modified),
+				t.tags, Date.convertFromYYYYMMDDHHMM(t.created), t.fields);
+			tiddler.fields["server.page.revision"] = t.revision;
+			tiddler.fields["server.workspace"] = "bags/" + t.bag;
+			context.revisions.push(tiddler);
+		}
+		var sortField = "server.page.revision";
+		context.revisions.sort(function(a, b) {
+			return a.fields[sortField] < b.fields[sortField] ? 1 :
+				(a.fields[sortField] == b.fields[sortField] ? 0 : -1);
+		 });
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// retrieve an individual tiddler revision -- XXX: breaks with standard arguments list -- XXX: convenience function; simply use getTiddler?
+adaptor.prototype.getTiddlerRevision = function(title, revision, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.revision = revision;
+	return this.getTiddler(title, context, userParams, callback);
+};
+
+// retrieve an individual tiddler
+adaptor.prototype.getTiddler = function(title, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.title = title;
+	if(context.revision) {
+		var uriTemplate = "%0/%1/%2/tiddlers/%3/revisions/%4";
+	} else {
+		uriTemplate = "%0/%1/%2/tiddlers/%3";
+	}
+	if(!context.tiddler) {
+		context.tiddler = new Tiddler(title);
+	}
+	context.tiddler.fields["server.type"] = adaptor.serverType;
+	context.tiddler.fields["server.host"] = AdaptorBase.minHostName(context.host);
+	context.tiddler.fields["server.title"] = title; //# required for detecting renames
+	context.tiddler.fields["server.workspace"] = context.workspace;
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([context.host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name), adaptor.normalizeTitle(title),
+		context.revision]);
+	var req = httpReq("GET", uri, adaptor.getTiddlerCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getTiddlerCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		try {
+			eval("var t = " + responseText); //# N.B.: not an actual tiddler instance
+		} catch(ex) {
+			context.status = false; // XXX: correct?
+			context.statusText = exceptionText(ex, adaptor.parsingErrorMessage);
+			if(context.callback) {
+				context.callback(context, context.userParams);
+			}
+			return;
+		}
+		context.tiddler.assign(context.tiddler.title, t.text, t.modifier,
+			Date.convertFromYYYYMMDDHHMM(t.modified), t.tags || [],
+			Date.convertFromYYYYMMDDHHMM(t.created), context.tiddler.fields); // XXX: merge extended fields!?
+		context.tiddler.fields["server.workspace"] = t.bag ? "bags/" + t.bag : "recipes/" + t.recipe; // XXX: bag is always supplied!?
+		context.tiddler.fields["server.page.revision"] = t.revision;
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// retrieve tiddler chronicle (all revisions)
+adaptor.prototype.getTiddlerChronicle = function(title, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.title = title;
+	var uriTemplate = "%0/%1/%2/tiddlers/%3/revisions.json?fat=1";
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([context.host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name), adaptor.normalizeTitle(title)]);
+	var req = httpReq("GET", uri, adaptor.getTiddlerChronicleCallback,
+		context, { accept: adaptor.mimeType });
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.getTiddlerChronicleCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		context.responseText = responseText;
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// store an individual tiddler
+adaptor.prototype.putTiddler = function(tiddler, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.title = tiddler.title;
+	context.tiddler = tiddler;
+	context.host = context.host || this.fullHostName(tiddler.fields["server.host"]);
+	if(!tiddler.fields["server.title"]) {
+		tiddler.fields["server.title"] = tiddler.title; //# required for detecting subsequent renames
+	} else if(tiddler.title != tiddler.fields["server.title"]) {
+		return this.moveTiddler({ title: tiddler.fields["server.title"] },
+			{ title: tiddler.title }, context, userParams, callback);
+	}
+	var uriTemplate = "%0/%1/%2/tiddlers/%3";
+	try {
+		var workspace = adaptor.resolveWorkspace(tiddler.fields["server.workspace"]);
+	} catch(ex) {
+		return adaptor.locationIDErrorMessage;
+	}
+	var uri = uriTemplate.format([context.host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name),
+		adaptor.normalizeTitle(tiddler.title)]);
+	var etag = adaptor.generateETag(workspace, tiddler);
+	var headers = etag ? { "If-Match": etag } : null;
+	var payload = {
+		title: tiddler.title,
+		text: tiddler.text,
+		modifier: tiddler.modifier,
+		tags: tiddler.tags,
+		fields: merge({}, tiddler.fields)
+	};
+	delete payload.fields.changecount;
+	payload = JSON.stringify(payload);
+	var req = httpReq("PUT", uri, adaptor.putTiddlerCallback,
+		context, headers, payload, adaptor.mimeType);
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.putTiddlerCallback = function(status, context, responseText, uri, xhr) {
+	context.status = xhr.status === 204;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		var etag = xhr.getResponseHeader("Etag");
+		context.tiddler.fields["server.page.revision"] = etag.split("/").pop();
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// store a tiddler chronicle
+adaptor.prototype.putTiddlerChronicle = function(revisions, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.title = revisions[0].title;
+	var headers = null;
+	var uriTemplate = "%0/%1/%2/tiddlers/%3/revisions.json";
+	var host = context.host || this.fullHostName(tiddler.fields["server.host"]);
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name),
+		adaptor.normalizeTitle(context.title)]);
+	if(workspace.type == "bag") { // generat ETag
+		var etag = [adaptor.normalizeTitle(workspace.name),
+			adaptor.normalizeTitle(context.title), 0].join("/"); //# zero-revision prevents overwriting existing contents
+		headers = { "If-Match": etag };
+	}
+	var payload = JSON.stringify(revisions);
+	var req = httpReq("POST", uri, adaptor.putTiddlerChronicleCallback,
+		context, headers, payload, adaptor.mimeType);
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.putTiddlerChronicleCallback = function(status, context, responseText, uri, xhr) {
+	context.status = xhr.status === 204;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(status) {
+		var etag = xhr.getResponseHeader("Etag");
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// store a collection of tiddlers (import TiddlyWiki HTML store)
+adaptor.prototype.putTiddlerStore = function(store, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var uriTemplate = "%0/%1/%2/tiddlers";
+	var host = context.host;
+	var workspace = adaptor.resolveWorkspace(context.workspace);
+	var uri = uriTemplate.format([host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name)]);
+	var req = httpReq("POST", uri, adaptor.putTiddlerStoreCallback,
+		context, null, store, "text/x-tiddlywiki");
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.putTiddlerStoreCallback = function(status, context, responseText, uri, xhr) {
+	context.status = xhr.status === 204;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// rename an individual tiddler or move it to a different workspace -- TODO: make (from|to).title optional
+//# @param {Object} from source tiddler; members title and workspace (optional)
+//# @param {Object} to target tiddler; members title and workspace (optional)
+adaptor.prototype.moveTiddler = function(from, to, context, userParams, callback) { // XXX: rename parameters (old/new)?
+	var _this = this;
+	var newTiddler = store.getTiddler(from.title) || store.getTiddler(to.title); //# local rename might already have occurred
+	var oldTiddler = merge({}, newTiddler); //# required for eventual deletion
+	oldTiddler.fields = merge({}, newTiddler.fields); // TODO: use jQuery.extend for deep copy above
+	oldTiddler.title = from.title; //# required for original tiddler's ETag
+	var _getTiddlerChronicle = function(title, context, userParams, callback) {
+		return _this.getTiddlerChronicle(title, context, userParams, callback);
+	};
+	var _putTiddlerChronicle = function(context, userParams) {
+		if(!context.status) {
+			return callback(context, userParams);
+		}
+		eval("var revisions = " + context.responseText); // XXX: error handling?
+		// change current title while retaining previous location
+		for(var i = 0; i < revisions.length; i++) {
+			if(!revisions[i].fields.origin) { // N.B.: origin = "<workspace>/<title>"
+				revisions[i].fields.origin = ["bags", revisions[i].bag, revisions[i].title].join("/");
+			}
+			revisions[i].title = to.title;
+		}
+		// add new revision
+		var rev = merge({}, revisions[0]);
+		rev.title = to.title;
+		for(i in newTiddler) { // TODO: use jQuery.extend
+			if(typeof i != "function") {
+				rev[i] = newTiddler[i];
+			}
+		}
+		rev.revision++;
+		rev.modified = new Date().convertToYYYYMMDDHHMM();
+		revisions.unshift(rev);
+		if(to.workspace) {
+			context.workspace = to.workspace;
+		}
+		var subCallback = function(context, userparams) {
+			var rev = "server.page.revision";
+			newTiddler.fields[rev] = parseInt(newTiddler.fields[rev], 10) + 1; // XXX: extended fields' values should be strings!?
+			newTiddler.fields["server.title"] = to.title;
+			_deleteTiddler(context, userparams);
+		};
+		return _this.putTiddlerChronicle(revisions, context, context.userParams, subCallback);
+	};
+	var _deleteTiddler = function(context, userParams) {
+		if(!context.status) {
+			return callback(context, userParams);
+		}
+		context.callback = null;
+		return _this.deleteTiddler(oldTiddler, context, context.userParams, callback);
+	};
+	callback = callback || function() {};
+	context = this.setContext(context, userParams);
+	context.workspace = from.workspace || oldTiddler.fields["server.workspace"];
+	return _getTiddlerChronicle(from.title, context, userParams, _putTiddlerChronicle);
+};
+
+// delete an individual tiddler
+adaptor.prototype.deleteTiddler = function(tiddler, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	context.title = tiddler.title; // XXX: not required!?
+	var uriTemplate = "%0/%1/%2/tiddlers/%3";
+	var host = context.host || this.fullHostName(tiddler.fields["server.host"]);
+	try {
+		var workspace = adaptor.resolveWorkspace(tiddler.fields["server.workspace"]);
+	} catch(ex) {
+		return adaptor.locationIDErrorMessage;
+	}
+	var uri = uriTemplate.format([host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name),
+		adaptor.normalizeTitle(tiddler.title)]);
+	var etag = adaptor.generateETag(workspace, tiddler);
+	var headers = etag ? { "If-Match": etag } : null;
+	var req = httpReq("DELETE", uri, adaptor.deleteTiddlerCallback, context, headers);
+	return typeof req == "string" ? req : true;
+};
+
+adaptor.deleteTiddlerCallback = function(status, context, responseText, uri, xhr) {
+	context.status = xhr.status === 204;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// retrieve a diff of tiddler revisions -- XXX: incomplete!?
+adaptor.prototype.getTiddlerDiff = function(title, context, userParams, callback) {
+	context = this.setContext(context, userParams, callback);
+	var tiddler = store.getTiddler(title);
+	var uriTemplate = "%0/%1/%2/tiddlers/%3/diff";
+	var host = context.host || this.fullHostName(tiddler.fields["server.host"]);
+	try {
+		var workspace = adaptor.resolveWorkspace(tiddler.fields["server.workspace"]);
+	} catch(ex) {
+		return adaptor.locationIDErrorMessage;
+	}
+	var uri = uriTemplate.format([host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name), adaptor.normalizeTitle(title)]);
+	if(context.rev1) {
+		uri += "/" + context.rev1;
+		if(context.rev2) {
+			uri += "/" + context.rev2;
+		}
+	}
+	var req = httpReq("GET", uri, adaptor.getTiddlerDiffCallback, context);
+	return typeof req == 'string' ? req : true;
+};
+
+adaptor.getTiddlerDiffCallback = function(status, context, responseText, uri, xhr) {
+	context.status = status;
+	context.statusText = xhr.statusText;
+	context.httpStatus = xhr.status;
+	context.diff = [];
+	if(status) {
+		context.diff = responseText.split("\n");
+	}
+	if(context.callback) {
+		context.callback(context, context.userParams);
+	}
+};
+
+// generate tiddler information
+adaptor.prototype.generateTiddlerInfo = function(tiddler) {
+	var info = {};
+	var uriTemplate = "%0/%1/%2/tiddlers/%3";
+	var host = this.host || tiddler.fields["server.host"]; // XXX: this.host obsolete?
+	host = this.fullHostName(host);
+	var workspace = adaptor.resolveWorkspace(tiddler.fields["server.workspace"]);
+	info.uri = uriTemplate.format([host, workspace.type + "s",
+		adaptor.normalizeTitle(workspace.name),
+		adaptor.normalizeTitle(tiddler.title)]);
+	return info;
+};
+
+adaptor.resolveWorkspace = function(workspace) {
+	var components = workspace.split("/");
+	return {
+		type: components[0] == "bags" ? "bag" : "recipe",
+		name: components[1]
+	};
+};
+
+adaptor.generateETag = function(workspace, tiddler) {
+	var etag = null;
+	if(workspace.type == "bag") { // XXX: what about recipes?
+		var revision = tiddler.fields["server.page.revision"];
+		if(typeof revision == "undefined") {
+			revision = 1;
+		}
+		etag = [adaptor.normalizeTitle(workspace.name),
+			adaptor.normalizeTitle(tiddler.title), revision].join("/");
+	}
+	return etag;
+};
+
+adaptor.normalizeTitle = function(title) {
+	return encodeURIComponent(title);
+};
+
+})(); //# end of local scope
+
+/***
+!JSON Code, used to serialize the data
+***/
+/*
+Copyright (c) 2005 JSON.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The Software shall be used for Good, not Evil.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/*
+	The global object JSON contains two methods.
+
+	JSON.stringify(value) takes a JavaScript value and produces a JSON text.
+	The value must not be cyclical.
+
+	JSON.parse(text) takes a JSON text and produces a JavaScript value. It will
+	throw a 'JSONError' exception if there is an error.
+*/
+var JSON = {
+	copyright: '(c)2005 JSON.org',
+	license: 'http://www.crockford.com/JSON/license.html',
+
+	/*
+	 * Stringify a JavaScript value, producing a JSON text.
+	 */
+	stringify: function (v) {
+	var a = [];
+
+	/*
+	 * Emit a string.
+	 */
+	function e(s) {
+		a[a.length] = s;
+	}
+
+	/*
+	 * Convert a value.
+	 */
+	function g(x) {
+		var c, i, l, v;
+
+		switch (typeof x) {
+		case 'object':
+		if (x) {
+			if (x instanceof Array) {
+			e('[');
+			l = a.length;
+			for (i = 0; i < x.length; i += 1) {
+				v = x[i];
+				if (typeof v != 'undefined' &&
+					typeof v != 'function') {
+				if (l < a.length) {
+					e(',');
+				}
+				g(v);
+				}
+			}
+			e(']');
+			return;
+			} else if (typeof x.toString != 'undefined') {
+			e('{');
+			l = a.length;
+			for (i in x) {
+				v = x[i];
+				if (x.hasOwnProperty(i) &&
+					typeof v != 'undefined' &&
+					typeof v != 'function') {
+				if (l < a.length) {
+					e(',');
+				}
+				g(i);
+				e(':');
+				g(v);
+				}
+			}
+			return e('}');
+			}
+		}
+		e('null');
+		return;
+		case 'number':
+		e(isFinite(x) ? +x : 'null');
+		return;
+		case 'string':
+		l = x.length;
+		e('"');
+		for (i = 0; i < l; i += 1) {
+			c = x.charAt(i);
+			if (c >= ' ') {
+			if (c == '\\' || c == '"') {
+				e('\\');
+			}
+			e(c);
+			} else {
+			switch (c) {
+				case '\b':
+				e('\\b');
+				break;
+				case '\f':
+				e('\\f');
+				break;
+				case '\n':
+				e('\\n');
+				break;
+				case '\r':
+				e('\\r');
+				break;
+				case '\t':
+				e('\\t');
+				break;
+				default:
+				c = c.charCodeAt();
+				e('\\u00' + Math.floor(c / 16).toString(16) +
+					(c % 16).toString(16));
+			}
+			}
+		}
+		e('"');
+		return;
+		case 'boolean':
+		e(String(x));
+		return;
+		default:
+		e('null');
+		return;
+		}
+	}
+	g(v);
+	return a.join('');
+	},
+
+	/*
+	 * Parse a JSON text, producing a JavaScript value.
+	 */
+	parse: function (text) {
+	var p = /^\s*(([,:{}\[\]])|"(\\.|[^\x00-\x1f"\\])*"|-?\d+(\.\d*)?([eE][+-]?\d+)?|true|false|null)\s*/,
+		token,
+		operator;
+
+	function error(m, t) {
+		throw {
+		name: 'JSONError',
+		message: m,
+		text: t || operator || token
+		};
+	}
+
+	function next(b) {
+		if (b && b != operator) {
+		error("Expected '" + b + "'");
+		}
+		if (text) {
+		var t = p.exec(text);
+		if (t) {
+			if (t[2]) {
+			token = null;
+			operator = t[2];
+			} else {
+			operator = null;
+			try {
+				token = eval(t[1]);
+			} catch (e) {
+				error("Bad token", t[1]);
+			}
+			}
+			text = text.substring(t[0].length);
+		} else {
+			error("Unrecognized token", text);
+		}
+		} else {
+		token = operator = undefined;
+		}
+	}
+
+	function val() {
+		var k, o;
+		switch (operator) {
+		case '{':
+		next('{');
+		o = {};
+		if (operator != '}') {
+			for (;;) {
+			if (operator || typeof token != 'string') {
+				error("Missing key");
+			}
+			k = token;
+			next();
+			next(':');
+			o[k] = val();
+			if (operator != ',') {
+				break;
+			}
+			next(',');
+			}
+		}
+		next('}');
+		return o;
+		case '[':
+		next('[');
+		o = [];
+		if (operator != ']') {
+			for (;;) {
+			o.push(val());
+			if (operator != ',') {
+				break;
+			}
+			next(',');
+			}
+		}
+		next(']');
+		return o;
+		default:
+		if (operator !== null) {
+			error("Missing value");
+		}
+		k = token;
+		next();
+		return k;
+		}
+	}
+	next();
+	return val();
+	}
+};
+
+} //# end of "install only once"
+//}}}
