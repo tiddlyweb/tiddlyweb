@@ -83,10 +83,8 @@ class Store(StorageInterface):
 
         try:
             recipe_path = self._recipe_path(recipe)
-            recipe_file = codecs.open(recipe_path, 'w', encoding='utf-8')
             self.serializer.object = recipe
-            recipe_file.write(self.serializer.to_string())
-            recipe_file.close()
+            _write_file(recipe_path, self.serializer.to_string())
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
 
@@ -204,15 +202,13 @@ class Store(StorageInterface):
 
         revision = self._tiddler_revision_filename(tiddler) + 1
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
-        tiddler_file = codecs.open(tiddler_filename, 'w', encoding='utf-8')
 
         if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64encode(tiddler.text)
         self.serializer.object = tiddler
-        tiddler_file.write(self.serializer.to_string())
+        _write_file(tiddler_filename, self.serializer.to_string())
         write_unlock(tiddler_base_filename)
         tiddler.revision = revision
-        tiddler_file.close()
         self.tiddler_written(tiddler)
 
     def user_delete(self, user):
@@ -258,8 +254,6 @@ class Store(StorageInterface):
         for ease.
         """
         user_path = self._user_path(user)
-
-        user_file = codecs.open(user_path, 'w', encoding='utf-8')
         user_dict = {}
         for key in ['usersign', 'note', '_password', 'roles']:
             value = user.__getattribute__(key)
@@ -270,8 +264,7 @@ class Store(StorageInterface):
                 key = 'password'
             user_dict[key] = value
         user_info = simplejson.dumps(user_dict, indent=0)
-        user_file.write(user_info)
-        user_file.close()
+        _write_file(user_path, user_info)
 
     def list_recipes(self):
         """
@@ -488,7 +481,7 @@ class Store(StorageInterface):
         Write the description of a bag to disk.
         """
         desc_filename = os.path.join(bag_path, 'description')
-        self._write_string_to_file(desc_filename, desc)
+        _write_file(desc_filename, desc)
 
     def _write_policy(self, policy, bag_path):
         """
@@ -499,15 +492,23 @@ class Store(StorageInterface):
             policy_dict[key] = policy.__getattribute__(key)
         policy_string = simplejson.dumps(policy_dict)
         policy_filename = os.path.join(bag_path, 'policy')
-        self._write_string_to_file(policy_filename, policy_string)
+        _write_file(policy_filename, policy_string)
 
-    def _write_string_to_file(self, filename, content):
-        """
-        Write any string to filename, utf-8 encoded.
-        """
-        dest_file = codecs.open(filename, 'w', encoding='utf-8')
-        dest_file.write(content)
-        dest_file.close()
+
+def _read_file(filename):
+    """
+    Read a utf-8 encoded file.
+    """
+    pass
+
+
+def _write_file(filename, content):
+    """
+    Write a string to utf-8 encoded file.
+    """
+    dest_file = codecs.open(filename, 'w', encoding='utf-8')
+    dest_file.write(content)
+    dest_file.close()
 
 
 def _encode_filename(filename):
