@@ -9,6 +9,7 @@ import sys
 
 from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
+from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
 
 INTERNAL_PLUGINS = ['tiddlyweb.fromsvn', 'tiddlyweb.instancer']
@@ -56,12 +57,6 @@ def server(args):
 
     from tiddlyweb.web import serve
     serve.start_cherrypy()
-
-
-def _store():
-    """Get our Store from config."""
-    return Store(config['server_store'][0],
-            environ={'tiddlyweb.config': config})
 
 
 @make_command()
@@ -120,16 +115,11 @@ def recipe(args):
         return usage()
 
     from tiddlyweb.model.recipe import Recipe
-    from tiddlyweb.serializer import Serializer
 
     recipe = Recipe(recipe_name)
 
     content = sys.stdin.read()
-    serializer = Serializer('text')
-    serializer.object = recipe
-    serializer.from_string(content)
-    store = _store()
-    store.put(recipe)
+    _put(recipe, content, 'text')
 
 
 @make_command()
@@ -142,18 +132,13 @@ def bag(args):
         return usage()
 
     from tiddlyweb.model.bag import Bag
-    from tiddlyweb.serializer import Serializer
 
     bag = Bag(bag_name)
 
     content = sys.stdin.read()
     if not len(content):
         content = '{"policy":{}}'
-    serializer = Serializer('json')
-    serializer.object = bag
-    serializer.from_string(content)
-    store = _store()
-    store.put(bag)
+    _put(bag, content, 'json')
 
 
 @make_command()
@@ -166,17 +151,12 @@ def tiddler(args):
         return usage()
 
     from tiddlyweb.model.tiddler import Tiddler
-    from tiddlyweb.serializer import Serializer
 
     tiddler = Tiddler(tiddler_name)
     tiddler.bag = bag_name
 
     content = sys.stdin.read()
-    serializer = Serializer('text')
-    serializer.object = tiddler
-    serializer.from_string(content)
-    store = _store()
-    store.put(tiddler)
+    _put(tiddler, content, 'text')
 
 
 @make_command()
@@ -218,3 +198,20 @@ def handle(args):
         COMMANDS[candidate_command](args)
     else:
         return usage(args)
+
+def _put(entity, content, serialization):
+    """
+    Put entity to store, by serializing content
+    using the named serialization.
+    """
+    serializer = Serializer(serialization)
+    serializer.object = entity
+    serializer.from_string(content)
+    _store().put(entity)
+
+
+def _store():
+    """Get our Store from config."""
+    return Store(config['server_store'][0],
+            environ={'tiddlyweb.config': config})
+
