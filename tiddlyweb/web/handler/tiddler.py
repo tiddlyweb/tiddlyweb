@@ -92,7 +92,7 @@ def _delete_tiddler(environ, start_response, tiddler):
     store = environ['tiddlyweb.store']
 
     try:
-        tiddler= store.get(tiddler)
+        tiddler = store.get(tiddler)
     except NoTiddlerError:
         tiddler.revision = 0
     _validate_tiddler(environ, tiddler)

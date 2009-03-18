@@ -96,21 +96,29 @@ class Challenger(ChallengerInterface):
         response = urllib.urlopen(openid_server, post_data).read()
 
         if 'is_valid:true' in response:
-            usersign = parsed_return_to['usersign'][0]
-            if 'http' in usersign:
-                usersign = usersign.split('://', 2)[1]
-            uri = '%s%s' % (web.server_host_url(environ), redirect)
-            cookie = Cookie.SimpleCookie()
-            secret = environ['tiddlyweb.config']['secret']
-            secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
-            cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
-            cookie['tiddlyweb_user']['path'] = '/'
-            logging.debug('303 to %s' % uri)
-            start_response('303 Found',
-                    [('Set-Cookie', cookie.output(header='')),
-                        ('Location', uri)])
-            return [uri]
+            return self._respond_success(parsed_return_to, redirect, environ, start_response)
+
         return self._send_openid_form(environ, start_response, redirect, status='401 Unauthorized', message=response)
+
+    def _respond_success(self, parsed_return_to, redirect, environ, start_response):
+        """
+        If the openid server validates our key checking, then
+        set the cookie and redirect the user.
+        """
+        usersign = parsed_return_to['usersign'][0]
+        if 'http' in usersign:
+            usersign = usersign.split('://', 2)[1]
+        uri = '%s%s' % (web.server_host_url(environ), redirect)
+        cookie = Cookie.SimpleCookie()
+        secret = environ['tiddlyweb.config']['secret']
+        secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
+        cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
+        cookie['tiddlyweb_user']['path'] = '/'
+        logging.debug('303 to %s' % uri)
+        start_response('303 Found',
+                [('Set-Cookie', cookie.output(header='')),
+                    ('Location', uri)])
+        return [uri]
 
     def _send_openid_form(self, environ, start_response, redirect, status='200 OK', message=''):
         """
@@ -164,8 +172,6 @@ OpenID: <input name="openid" size="60" />
 
         logging.debug('302 to %s' % request_uri)
         raise HTTP302(request_uri)
-
-        return []
 
     def _return_to(self, environ, redirect, link, usersign):
         """
