@@ -3,11 +3,12 @@ Simple functions for storing stuff as textfiles
 on the filesystem.
 """
 
-import os
 import codecs
-import time
+import logging
+import os
 import simplejson
 import shutil
+import time
 import urllib
 
 from base64 import b64encode, b64decode
@@ -27,7 +28,7 @@ from tiddlyweb.util import LockError, write_lock, write_unlock, \
 
 class Store(StorageInterface):
     """
-    The text based, store on the filesystem in a
+    The text-based store on the filesystem in a
     directory hierarchy implementation of a StorageInterface.
     """
 
@@ -37,6 +38,10 @@ class Store(StorageInterface):
         self._init_store()
 
     def _init_store(self):
+        """
+        Make sure the data storage directory and
+        structure is present.
+        """
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())
             for name in ['bags', 'recipes', 'users']:
@@ -339,7 +344,8 @@ class Store(StorageInterface):
                             found_tiddlers.append(tiddler)
                             break
                 except (OSError, NoTiddlerError), exc:
-                    pass # ignore malformed or weird tiddlers
+                    logging.warn('malformed tiddler during search: %s:%s' %
+                            (bagname, tiddler_name))
         return found_tiddlers
 
     def _bag_path(self, bag_name):
