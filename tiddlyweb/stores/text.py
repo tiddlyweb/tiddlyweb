@@ -21,6 +21,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError, StoreEncodingError
 from tiddlyweb.stores import StorageInterface
+from tiddlyweb.util import LockError, write_lock, write_unlock
 
 
 class Store(StorageInterface):
@@ -196,7 +197,7 @@ class Store(StorageInterface):
                 lock_attempts = lock_attempts + 1
                 write_lock(tiddler_base_filename)
                 locked = 1
-            except StoreLockError, exc:
+            except LockError, exc:
                 if lock_attempts > 4:
                     raise StoreLockError(exc)
                 time.sleep(.1)
@@ -520,47 +521,3 @@ def _encode_filename(filename):
     if '../' in filename:
         raise StoreEncodingError('invalid name for entity')
     return urllib.quote(filename.encode('utf-8'), safe='')
-
-
-def write_lock(filename):
-    """
-    Make a lock file based on a filename.
-    """
-
-    lock_filename = _lock_filename(filename)
-
-    if os.path.exists(lock_filename):
-        pid = _read_lock_file(lock_filename)
-        raise StoreLockError('write lock for %s taken by %s' % (filename, pid))
-
-    lock = open(lock_filename, 'w')
-    pid = os.getpid()
-    lock.write(str(pid))
-    lock.close()
-
-
-def write_unlock(filename):
-    """
-    Unlock the write lock.
-    """
-    lock_filename = _lock_filename(filename)
-    os.unlink(lock_filename)
-
-
-def _lock_filename(filename):
-    """
-    Return the pathname of the lock_filename.
-    """
-    pathname, basename = os.path.split(filename)
-    lock_filename = os.path.join(pathname, '.%s' % basename)
-    return lock_filename
-
-
-def _read_lock_file(lockfile):
-    """
-    Read the pid from a the lock file.
-    """
-    lock = open(lockfile, 'r')
-    pid = lock.read()
-    lock.close()
-    return pid

@@ -16,7 +16,8 @@ from fixtures import bagone, bagfour, textstore, reset_textstore, teststore
 from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.stores.text import Store as Texter, write_lock
+from tiddlyweb.stores.text import Store as Texter
+from tiddlyweb.util import write_lock, LockError
 import tiddlyweb.stores.text as texter
 import py.test
 
@@ -130,7 +131,7 @@ def test_store_lock():
 
     texter = Texter(environ={'tiddlyweb.config': {'server_store': ['text', {'store_root': 'store'}]}})
     write_lock(textstore.bag_store)
-    py.test.raises(StoreLockError, 'write_lock(textstore.bag_store)')
+    py.test.raises(LockError, 'write_lock(textstore.bag_store)')
 
     write_lock(textstore.bag_store + '/bagone/tiddlers/foobar')
     tiddler = Tiddler('foobar')
