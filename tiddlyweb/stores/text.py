@@ -65,10 +65,8 @@ class Store(StorageInterface):
 
         try:
             recipe_path = self._recipe_path(recipe)
-            recipe_file = codecs.open(recipe_path, encoding='utf-8')
             self.serializer.object = recipe
-            recipe_string = recipe_file.read()
-            recipe_file.close()
+            recipe_string = _read_file(recipe_path)
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
         except IOError, exc:
@@ -232,9 +230,7 @@ class Store(StorageInterface):
         user_path = self._user_path(user)
 
         try:
-            user_file = codecs.open(user_path, encoding='utf-8')
-            user_info = user_file.read()
-            user_file.close()
+            user_info = _read_file(user_path)
             user_data = simplejson.loads(user_info)
             for key, value in user_data.items():
                 if key == 'roles':
@@ -367,9 +363,7 @@ class Store(StorageInterface):
         Read a tiddler file from the disk, returning
         a tiddler object.
         """
-        tiddler_file = codecs.open(tiddler_filename, encoding='utf-8')
-        tiddler_string = tiddler_file.read()
-        tiddler_file.close()
+        tiddler_string = _read_file(tiddler_filename)
         self.serializer.object = tiddler
         tiddler = self.serializer.from_string(tiddler_string)
         return tiddler
@@ -392,9 +386,7 @@ class Store(StorageInterface):
         desc_filename = os.path.join(bag_path, 'description')
         if not os.path.exists(desc_filename):
             return ''
-        desc_file = codecs.open(desc_filename, encoding='utf-8')
-        desc = desc_file.read()
-        desc_file.close()
+        desc = _read_file(desc_filename)
         return desc
 
     def _read_policy(self, bag_path):
@@ -403,9 +395,7 @@ class Store(StorageInterface):
         return the Policy object.
         """
         policy_filename = os.path.join(bag_path, 'policy')
-        policy_file = codecs.open(policy_filename, encoding='utf-8')
-        policy = policy_file.read()
-        policy_file.close()
+        policy = _read_file(policy_filename)
         policy_data = simplejson.loads(policy)
         policy = Policy()
         for key, value in policy_data.items():
@@ -499,7 +489,10 @@ def _read_file(filename):
     """
     Read a utf-8 encoded file.
     """
-    pass
+    source_file = codecs.open(filename, encoding='utf-8')
+    content = source_file.read()
+    source_file.close()
+    return content
 
 
 def _write_file(filename, content):
