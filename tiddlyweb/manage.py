@@ -27,7 +27,6 @@ def make_command():
         """
         Add the function to the commands dictionary.
         """
-        global COMMANDS
         func.description = func.__doc__
         COMMANDS[func.__name__] = func
         return func
@@ -42,7 +41,8 @@ def server(args):
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print "you must include both a hostname or ip number and a port if using arguments: %s" % exc
+            print "you must include both a hostname or ip number and a " \
+                "port if using arguments: %s" % exc
             return usage()
         else:
             pass
@@ -60,7 +60,8 @@ def server(args):
 
 def _store():
     """Get our Store from config."""
-    return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
+    return Store(config['server_store'][0],
+            environ={'tiddlyweb.config': config})
 
 
 @make_command()
@@ -72,11 +73,10 @@ def adduser(args):
         print "you must include at least a username and password: %s" % exc
         return usage()
 
-    roles = []
     try:
         roles = args[2:]
     except IndexError:
-        pass
+        roles = []
 
     try:
         store = _store()
