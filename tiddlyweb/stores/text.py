@@ -21,7 +21,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError, StoreEncodingError
 from tiddlyweb.stores import StorageInterface
-from tiddlyweb.util import LockError, write_lock, write_unlock
+from tiddlyweb.util import LockError, write_lock, write_unlock, read_utf8_file, write_utf8_file
 
 
 class Store(StorageInterface):
@@ -66,7 +66,7 @@ class Store(StorageInterface):
         try:
             recipe_path = self._recipe_path(recipe)
             self.serializer.object = recipe
-            recipe_string = _read_file(recipe_path)
+            recipe_string = read_utf8_file(recipe_path)
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
         except IOError, exc:
@@ -82,7 +82,7 @@ class Store(StorageInterface):
         try:
             recipe_path = self._recipe_path(recipe)
             self.serializer.object = recipe
-            _write_file(recipe_path, self.serializer.to_string())
+            write_utf8_file(recipe_path, self.serializer.to_string())
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
 
@@ -204,7 +204,7 @@ class Store(StorageInterface):
         if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64encode(tiddler.text)
         self.serializer.object = tiddler
-        _write_file(tiddler_filename, self.serializer.to_string())
+        write_utf8_file(tiddler_filename, self.serializer.to_string())
         write_unlock(tiddler_base_filename)
         tiddler.revision = revision
         self.tiddler_written(tiddler)
@@ -230,7 +230,7 @@ class Store(StorageInterface):
         user_path = self._user_path(user)
 
         try:
-            user_info = _read_file(user_path)
+            user_info = read_utf8_file(user_path)
             user_data = simplejson.loads(user_info)
             for key, value in user_data.items():
                 if key == 'roles':
@@ -260,7 +260,7 @@ class Store(StorageInterface):
                 key = 'password'
             user_dict[key] = value
         user_info = simplejson.dumps(user_dict, indent=0)
-        _write_file(user_path, user_info)
+        write_utf8_file(user_path, user_info)
 
     def list_recipes(self):
         """
@@ -363,7 +363,7 @@ class Store(StorageInterface):
         Read a tiddler file from the disk, returning
         a tiddler object.
         """
-        tiddler_string = _read_file(tiddler_filename)
+        tiddler_string = read_utf8_file(tiddler_filename)
         self.serializer.object = tiddler
         tiddler = self.serializer.from_string(tiddler_string)
         return tiddler
@@ -386,7 +386,7 @@ class Store(StorageInterface):
         desc_filename = os.path.join(bag_path, 'description')
         if not os.path.exists(desc_filename):
             return ''
-        desc = _read_file(desc_filename)
+        desc = read_utf8_file(desc_filename)
         return desc
 
     def _read_policy(self, bag_path):
@@ -395,7 +395,7 @@ class Store(StorageInterface):
         return the Policy object.
         """
         policy_filename = os.path.join(bag_path, 'policy')
-        policy = _read_file(policy_filename)
+        policy = read_utf8_file(policy_filename)
         policy_data = simplejson.loads(policy)
         policy = Policy()
         for key, value in policy_data.items():
@@ -471,7 +471,7 @@ class Store(StorageInterface):
         Write the description of a bag to disk.
         """
         desc_filename = os.path.join(bag_path, 'description')
-        _write_file(desc_filename, desc)
+        write_utf8_file(desc_filename, desc)
 
     def _write_policy(self, policy, bag_path):
         """
@@ -482,26 +482,7 @@ class Store(StorageInterface):
             policy_dict[key] = policy.__getattribute__(key)
         policy_string = simplejson.dumps(policy_dict)
         policy_filename = os.path.join(bag_path, 'policy')
-        _write_file(policy_filename, policy_string)
-
-
-def _read_file(filename):
-    """
-    Read a utf-8 encoded file.
-    """
-    source_file = codecs.open(filename, encoding='utf-8')
-    content = source_file.read()
-    source_file.close()
-    return content
-
-
-def _write_file(filename, content):
-    """
-    Write a string to utf-8 encoded file.
-    """
-    dest_file = codecs.open(filename, 'w', encoding='utf-8')
-    dest_file.write(content)
-    dest_file.close()
+        write_utf8_file(policy_filename, policy_string)
 
 
 def _encode_filename(filename):

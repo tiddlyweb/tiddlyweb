@@ -2,6 +2,7 @@
 Miscellaneous utility functions for TiddlyWeb.
 """
 
+import codecs
 import os
 
 class LockError(IOError):
@@ -9,6 +10,25 @@ class LockError(IOError):
     This process was unable to get a lock.
     """
     pass
+
+
+def read_utf8_file(filename):
+    """
+    Read a utf-8 encoded file.
+    """
+    source_file = codecs.open(filename, encoding='utf-8')
+    content = source_file.read()
+    source_file.close()
+    return content
+
+
+def write_utf8_file(filename, content):
+    """
+    Write a string to utf-8 encoded file.
+    """
+    dest_file = codecs.open(filename, 'w', encoding='utf-8')
+    dest_file.write(content)
+    dest_file.close()
 
 
 def write_lock(filename):
