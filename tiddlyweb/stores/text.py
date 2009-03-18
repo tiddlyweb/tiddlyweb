@@ -35,6 +35,9 @@ class Store(StorageInterface):
             environ = {}
         self.environ = environ
         self.serializer = Serializer('text')
+        self._init_store()
+
+    def _init_store(self):
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())
             for name in ['bags', 'recipes', 'users']:
