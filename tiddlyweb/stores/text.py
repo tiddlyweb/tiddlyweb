@@ -194,7 +194,7 @@ class Store(StorageInterface):
         while (not locked):
             try:
                 lock_attempts = lock_attempts + 1
-                self.write_lock(tiddler_base_filename)
+                write_lock(tiddler_base_filename)
                 locked = 1
             except StoreLockError, exc:
                 if lock_attempts > 4:
@@ -209,7 +209,7 @@ class Store(StorageInterface):
             tiddler.text = b64encode(tiddler.text)
         self.serializer.object = tiddler
         tiddler_file.write(self.serializer.to_string())
-        self.write_unlock(tiddler_base_filename)
+        write_unlock(tiddler_base_filename)
         tiddler.revision = revision
         tiddler_file.close()
         self.tiddler_written(tiddler)
@@ -346,29 +346,6 @@ class Store(StorageInterface):
                     pass # ignore malformed or weird tiddlers
         return found_tiddlers
 
-    def write_lock(self, filename):
-        """
-        Make a lock file based on a filename.
-        """
-
-        lock_filename = self._lock_filename(filename)
-
-        if os.path.exists(lock_filename):
-            pid = self._read_lock_file(lock_filename)
-            raise StoreLockError('write lock for %s taken by %s' % (filename, pid))
-
-        lock = open(lock_filename, 'w')
-        pid = os.getpid()
-        lock.write(str(pid))
-        lock.close()
-
-    def write_unlock(self, filename):
-        """
-        Unlock the write lock.
-        """
-        lock_filename = self._lock_filename(filename)
-        os.unlink(lock_filename)
-
     def _bag_path(self, bag_name):
         """
         Return a string that is the path to a bag.
@@ -384,29 +361,12 @@ class Store(StorageInterface):
         """
         return [x for x in os.listdir(path) if not x.startswith('.')]
 
-    def _lock_filename(self, filename):
-        """
-        Return the pathname of the lock_filename.
-        """
-        pathname, basename = os.path.split(filename)
-        lock_filename = os.path.join(pathname, '.%s' % basename)
-        return lock_filename
-
     def _numeric_files_in_dir(self, path):
         """
         List the filename in a dir that are not made up of
         digits.
         """
         return [x for x in self._files_in_dir(path) if x.isdigit()]
-
-    def _read_lock_file(self, lockfile):
-        """
-        Read the pid from a the lock file.
-        """
-        lock = open(lockfile, 'r')
-        pid = lock.read()
-        lock.close()
-        return pid
 
     def _read_tiddler_file(self, tiddler, tiddler_filename):
         """
@@ -560,3 +520,47 @@ def _encode_filename(filename):
     if '../' in filename:
         raise StoreEncodingError('invalid name for entity')
     return urllib.quote(filename.encode('utf-8'), safe='')
+
+
+def write_lock(filename):
+    """
+    Make a lock file based on a filename.
+    """
+
+    lock_filename = _lock_filename(filename)
+
+    if os.path.exists(lock_filename):
+        pid = _read_lock_file(lock_filename)
+        raise StoreLockError('write lock for %s taken by %s' % (filename, pid))
+
+    lock = open(lock_filename, 'w')
+    pid = os.getpid()
+    lock.write(str(pid))
+    lock.close()
+
+
+def write_unlock(filename):
+    """
+    Unlock the write lock.
+    """
+    lock_filename = _lock_filename(filename)
+    os.unlink(lock_filename)
+
+
+def _lock_filename(filename):
+    """
+    Return the pathname of the lock_filename.
+    """
+    pathname, basename = os.path.split(filename)
+    lock_filename = os.path.join(pathname, '.%s' % basename)
+    return lock_filename
+
+
+def _read_lock_file(lockfile):
+    """
+    Read the pid from a the lock file.
+    """
+    lock = open(lockfile, 'r')
+    pid = lock.read()
+    lock.close()
+    return pid
