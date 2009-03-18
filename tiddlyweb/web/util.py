@@ -1,3 +1,8 @@
+"""
+General utility routines shared by various 
+web related modules.
+"""
+
 import urllib
 import time
 from datetime import datetime
@@ -6,6 +11,10 @@ from tiddlyweb.web.http import HTTP415
 
 
 def get_serialize_type(environ):
+    """
+    Look in the environ to determine which serializer
+    we should use for this request.
+    """
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
     serializers = environ['tiddlyweb.config']['serializers']
@@ -28,11 +37,16 @@ def get_serialize_type(environ):
 
 
 def handle_extension(environ, resource_name):
+    """
+    Look for an extension on the provided resource_name and
+    trim it off to give the "real" resource_name.
+    """
     extension = environ.get('tiddlyweb.extension')
     extension_types = environ['tiddlyweb.config']['extension_types']
     if extension and extension in extension_types:
         try:
-            resource_name = resource_name[0:resource_name.rindex('.' + extension)]
+            resource_name = resource_name[0:resource_name.rindex('.'
+                + extension)]
         except ValueError:
             pass
     else:
@@ -45,21 +59,36 @@ def handle_extension(environ, resource_name):
 
 
 def filter_query_string(environ):
+    """
+    Get the filter query string from tiddlyweb.query,
+    unencoding in the process.
+    """
     filter_string = environ['tiddlyweb.query'].get('filter', [''])[0]
     filter_string = urllib.unquote(filter_string)
     return unicode(filter_string, 'utf-8')
 
 
 def http_date_from_timestamp(timestamp):
+    """
+    Turn a modifier or created tiddler timestamp
+    into a proper formatted HTTP date.
+    """
     try:
-        timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M')[0:6]))
+        timestamp_datetime = datetime(*(time.strptime(timestamp,
+            '%Y%m%d%H%M')[0:6]))
     except ValueError:
-        timestamp_datetime = datetime(*(time.strptime(timestamp, '%Y%m%d%H%M%S')[0:6]))
+        timestamp_datetime = datetime(*(time.strptime(timestamp,
+            '%Y%m%d%H%M%S')[0:6]))
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
 
 def datetime_from_http_date(http_datestring):
-    http_datetime = datetime(*(time.strptime(http_datestring, '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
+    """
+    Turn an HTTP formatted date into a datetime 
+    object.
+    """
+    http_datetime = datetime(*(time.strptime(http_datestring,
+        '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime
 
 
@@ -87,6 +116,9 @@ def server_host_url(environ):
 
 
 def _server_prefix(environ):
+    """
+    Get the server_prefix out of tiddlyweb.config.
+    """
     config = environ.get('tiddlyweb.config', {})
     return config.get('server_prefix', '')
 
@@ -97,10 +129,12 @@ def tiddler_url(environ, tiddler):
     """
     if tiddler.recipe:
         tiddler_link = 'recipes/%s/tiddlers/%s' \
-                % (urllib.quote(tiddler.recipe.encode('utf-8')), urllib.quote(tiddler.title.encode('utf-8')))
+                % (urllib.quote(tiddler.recipe.encode('utf-8')),
+                        urllib.quote(tiddler.title.encode('utf-8')))
     else:
         tiddler_link = 'bags/%s/tiddlers/%s' \
-                % (urllib.quote(tiddler.bag.encode('utf-8')), urllib.quote(tiddler.title.encode('utf-8')))
+                % (urllib.quote(tiddler.bag.encode('utf-8')),
+                        urllib.quote(tiddler.title.encode('utf-8')))
     return '%s/%s' % (server_base_url(environ), tiddler_link)
 
 
@@ -108,11 +142,13 @@ def recipe_url(environ, recipe):
     """
     Construct a URL for a recipe.
     """
-    return '%s/recipes/%s' % (server_base_url(environ), urllib.quote(recipe.name.encode('utf-8')))
+    return '%s/recipes/%s' % (server_base_url(environ),
+            urllib.quote(recipe.name.encode('utf-8')))
 
 
 def bag_url(environ, bag):
     """
     Construct a URL for a recipe.
     """
-    return '%s/bags/%s' % (server_base_url(environ), urllib.quote(bag.name.encode('utf-8')))
+    return '%s/bags/%s' % (server_base_url(environ),
+            urllib.quote(bag.name.encode('utf-8')))
