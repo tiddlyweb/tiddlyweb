@@ -21,7 +21,8 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError, StoreEncodingError
 from tiddlyweb.stores import StorageInterface
-from tiddlyweb.util import LockError, write_lock, write_unlock, read_utf8_file, write_utf8_file
+from tiddlyweb.util import LockError, write_lock, write_unlock, \
+        read_utf8_file, write_utf8_file
 
 
 class Store(StorageInterface):
@@ -31,9 +32,7 @@ class Store(StorageInterface):
     """
 
     def __init__(self, environ=None):
-        if environ is None:
-            environ = {}
-        self.environ = environ
+        super(Store, self).__init__(environ)
         self.serializer = Serializer('text')
         self._init_store()
 
@@ -50,7 +49,6 @@ class Store(StorageInterface):
         Remove a recipe, irrevocably, from the system.
         No impact on tiddlers.
         """
-
         try:
             recipe_path = self._recipe_path(recipe)
             if not os.path.exists(recipe_path):
@@ -59,13 +57,13 @@ class Store(StorageInterface):
         except (NoRecipeError, StoreEncodingError), exc:
             raise NoRecipeError(exc)
         except Exception, exc:
-            raise IOError('unable to delete recipe %s: %s' % (recipe.name, exc))
+            raise IOError('unable to delete recipe %s: %s' %
+                    (recipe.name, exc))
 
     def recipe_get(self, recipe):
         """
         Read a recipe from the store.
         """
-
         try:
             recipe_path = self._recipe_path(recipe)
             self.serializer.object = recipe
@@ -73,7 +71,8 @@ class Store(StorageInterface):
         except StoreEncodingError, exc:
             raise NoRecipeError(exc)
         except IOError, exc:
-            raise NoRecipeError('unable to get recipe %s: %s' % (recipe.name, exc))
+            raise NoRecipeError('unable to get recipe %s: %s' %
+                    (recipe.name, exc))
 
         return self.serializer.from_string(recipe_string)
 
@@ -81,7 +80,6 @@ class Store(StorageInterface):
         """
         Put a recipe into the store.
         """
-
         try:
             recipe_path = self._recipe_path(recipe)
             self.serializer.object = recipe
@@ -177,7 +175,8 @@ class Store(StorageInterface):
                 tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
             return tiddler
         except IOError, exc:
-            raise NoTiddlerError('no tiddler for %s: %s' % (tiddler.title, exc))
+            raise NoTiddlerError('no tiddler for %s: %s' %
+                    (tiddler.title, exc))
 
     def tiddler_put(self, tiddler):
         """
@@ -185,7 +184,6 @@ class Store(StorageInterface):
         the bag already exists. Bag creation is a
         separate action from writing to a bag.
         """
-
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         if not os.path.exists(tiddler_base_filename):
             os.mkdir(tiddler_base_filename)
@@ -244,7 +242,8 @@ class Store(StorageInterface):
                 user.__setattr__(key, value)
             return user
         except IOError, exc:
-            raise NoUserError('unable to get user %s: %s' % (user.usersign, exc))
+            raise NoUserError('unable to get user %s: %s' %
+                    (user.usersign, exc))
 
     def user_put(self, user):
         """
@@ -272,7 +271,8 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
 
-        return [Recipe(urllib.unquote(recipe).decode('utf-8')) for recipe in recipes]
+        return [Recipe(urllib.unquote(recipe).decode('utf-8'))
+                for recipe in recipes]
 
     def list_bags(self):
         """
@@ -300,9 +300,11 @@ class Store(StorageInterface):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try:
             revisions = sorted(
-                    [int(x) for x in self._numeric_files_in_dir(tiddler_base_filename)])
+                    [int(x) for x in
+                        self._numeric_files_in_dir(tiddler_base_filename)])
         except OSError, exc:
-            raise NoTiddlerError('unable to list revisions in tiddler: %s' % exc)
+            raise NoTiddlerError('unable to list revisions in tiddler: %s'
+                    % exc)
         revisions.reverse()
         return revisions
 
@@ -321,7 +323,8 @@ class Store(StorageInterface):
             tiddler_dir = self._tiddlers_dir(bagname)
             tiddler_files = self._files_in_dir(tiddler_dir)
             for tiddler_name in tiddler_files:
-                tiddler = Tiddler(title=urllib.unquote(tiddler_name).decode('utf-8'),
+                tiddler = Tiddler(
+                        title=urllib.unquote(tiddler_name).decode('utf-8'),
                         bag=urllib.unquote(bagname).decode('utf-8'))
                 try:
                     revision_id = self.list_tiddler_revisions(tiddler)[0]
@@ -344,7 +347,8 @@ class Store(StorageInterface):
         Return a string that is the path to a bag.
         """
         try:
-            return os.path.join(self._store_root(), 'bags', _encode_filename(bag_name))
+            return os.path.join(self._store_root(), 'bags',
+                    _encode_filename(bag_name))
         except (AttributeError, StoreEncodingError), exc:
             raise NoBagError('No bag name: %s' % exc)
 
@@ -376,8 +380,10 @@ class Store(StorageInterface):
         Read a specific revision of a tiddler from disk.
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
-        tiddler_revision = self._tiddler_revision_filename(tiddler, index=index)
-        tiddler_filename = self._tiddler_full_filename(tiddler, tiddler_revision)
+        tiddler_revision = self._tiddler_revision_filename(tiddler,
+                index=index)
+        tiddler_filename = self._tiddler_full_filename(tiddler,
+                tiddler_revision)
         tiddler = self._read_tiddler_file(tiddler, tiddler_filename)
         tiddler.revision = tiddler_revision
         return tiddler
@@ -409,13 +415,15 @@ class Store(StorageInterface):
         """
         Return a string representing the pathname of a recipe.
         """
-        return os.path.join(self._store_root(), 'recipes', _encode_filename(recipe.name))
+        return os.path.join(self._store_root(), 'recipes',
+                _encode_filename(recipe.name))
 
     def _store_root(self):
         """
         Return a string which is the path to the root of the store.
         """
-        return self.environ['tiddlyweb.config']['server_store'][1]['store_root']
+        store_config = self.environ['tiddlyweb.config']['server_store'][1]
+        return store_config['store_root']
 
     def _tiddler_base_filename(self, tiddler):
         """
