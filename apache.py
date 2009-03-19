@@ -62,7 +62,7 @@ server_host is a complex data structure as follows:
 
     'server_host': {
         'scheme': 'http',
-        'hostname': 'some.example.com',
+        'host': 'some.example.com',
         'port': '80',
     }
 
