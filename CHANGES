@@ -1,3 +1,9 @@
+0.9.19 Thu Mar 19 18:57:09 GMT 2009
+
+  * Code refactorings to remove some duplication.
+  * Create tiddlyweb.util for holding utility functions.
+  * Correct set the Path of a cookie to include config['server_prefix'].
+
 0.9.18 Wed Mar 11 15:22:29 GMT 2009
 
   * Use TiddlyWiki 2.5 for empty.html
