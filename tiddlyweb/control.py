@@ -40,7 +40,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
 
 def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
     """
-    We have a recipe and a tiddler name. We need to
+    We have a recipe and a tiddler. We need to
     know the bag in which this tiddler can be found.
     This is different from determine_bag_for_tiddler().
     That one finds the bag the tiddler _could_ be in.
@@ -136,5 +136,3 @@ def _recipe_template(environ):
     except KeyError:
         pass
     return template
-
-
