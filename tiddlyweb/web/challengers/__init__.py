@@ -32,3 +32,6 @@ class ChallengerInterface(object):
         Respond to a POST request.
         """
         pass
+
+    def _cookie_path(self, environ):
+        return environ['tiddlyweb.config']['server_prefix'] + '/'

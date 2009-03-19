@@ -81,7 +81,7 @@ Password <input type="password" name="password" size="40" />
                 cookie = Cookie.SimpleCookie()
                 secret_string = sha('%s%s' % (user.usersign, secret)).hexdigest()
                 cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign, secret_string)
-                cookie['tiddlyweb_user']['path'] = '/'
+                cookie['tiddlyweb_user']['path'] = self._cookie_path(environ)
                 logging.debug('303 to %s' % uri)
                 start_response('303 Other',
                         [('Set-Cookie', cookie.output(header='')),

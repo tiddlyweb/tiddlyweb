@@ -173,3 +173,23 @@ def test_single_challenge_redirect():
 
     assert raised
     assert e.response['status'] == '302'
+
+def test_cookie_path_prefix():
+    original_prefix = config['server_prefix']
+    config['server_prefix'] = '/wiki'
+    http = httplib2.Http()
+    try:
+        http = httplib2.Http()
+        response, content = http.request(
+                'http://our_test_domain:8001/challenge/cookie_form',
+                method='POST',
+                headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
+                redirections=0)
+    except httplib2.RedirectLimit, e:
+        raised = 1
+
+    assert raised
+    assert 'Path=/wiki/' in e.response['set-cookie']
+    config['server_prefix'] = original_prefix
+

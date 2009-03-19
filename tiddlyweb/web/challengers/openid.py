@@ -113,7 +113,7 @@ class Challenger(ChallengerInterface):
         secret = environ['tiddlyweb.config']['secret']
         secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
         cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
-        cookie['tiddlyweb_user']['path'] = '/'
+        cookie['tiddlyweb_user']['path'] = self._cookie_path(environ)
         logging.debug('303 to %s' % uri)
         start_response('303 Found',
                 [('Set-Cookie', cookie.output(header='')),
