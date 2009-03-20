@@ -38,7 +38,9 @@ def _generate_secret():
     return digest.hexdigest()
 
 
-EMPTY_CONFIG = """# A default config, make your own changes here.
+EMPTY_CONFIG = """# A basic config, make your own changes here.
+# Run 'pydoc tiddlyweb.config' for information on changing the
+# defaults.
 config = {
     'secret': '%s',
 }
@@ -55,17 +57,20 @@ def instance(args):
         raise IOError('that name is in use')
     os.mkdir(directory)
     os.chdir(directory)
-    _make_bag('system')
-    import_list('system', config['instance_tiddlers'])
+    bag_names = [bag for bag, tiddlers in config['instance_tiddlers']]
+    print bag_names
+    [_make_bag(bag) for bag in bag_names]
+    update(None)
     _make_bag('common')
-    _make_recipe('default', ['system', 'common'])
+    _make_recipe('default', bag_names + ['common'])
     _empty_config()
 
 
 @make_command()
 def update(args):
     """Update the default plugins in the current instance."""
-    import_list('system', config['instance_tiddlers'])
+    [import_list(bag, tiddlers) for bag, tiddlers in
+            config['instance_tiddlers']]
 
 
 def _empty_config():

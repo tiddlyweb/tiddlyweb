@@ -150,10 +150,12 @@ DEFAULT_CONFIG = {
         'system_plugins': [],
         'twanager_plugins': [],
         'instance_tiddlers': [
-            'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
-            'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
-            'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js'
-            ],
+            ('system', [
+                'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
+                'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
+                'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js'
+                ]),
+	    ],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,
