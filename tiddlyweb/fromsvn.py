@@ -45,10 +45,8 @@ def from_svn(args):
     """Import one or more plugins, tiddlers or recipes in cook format: <bag> <http or file URL>"""
     bag = args[0]
     urls = args[1:]
-    if not bag:
-        raise ValueError('you must provide the name of a bag')
-    if not urls:
-        raise ValueError('you must provide at least one url')
+    if not bag or not urls:
+        raise IndexError('missing args')
     import_list(bag, urls)
 
 

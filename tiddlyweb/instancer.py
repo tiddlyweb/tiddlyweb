@@ -54,7 +54,7 @@ def instance(args):
     if not directory:
         raise ValueError('you must provide the name of a directory')
     if os.path.exists(directory):
-        raise IOError('that name is in use')
+        raise IOError('Your chosen directory already exists. Choose a different name.')
     os.mkdir(directory)
     os.chdir(directory)
     bag_names = [bag for bag, tiddlers in config['instance_tiddlers']]

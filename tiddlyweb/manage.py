@@ -194,8 +194,15 @@ def handle(args):
         args = []
 
     if candidate_command and candidate_command in COMMANDS:
-        logging.debug('running command %s with %s' % (candidate_command, args))
-        COMMANDS[candidate_command](args)
+        try:
+            logging.debug('running command %s with %s' % (candidate_command, args))
+            COMMANDS[candidate_command](args)
+        except IndexError, exc:
+            print "Incorect number of arguments: %s" % exc
+            return usage()
+        except IOError, exc:
+            print "IOError: %s" % exc
+            return usage()
     else:
         return usage(args)
 
