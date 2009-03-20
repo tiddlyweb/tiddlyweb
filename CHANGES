@@ -1,3 +1,9 @@
+0.9.20 Not yet ready
+
+  * Improved error handling in twanager.
+  * Changed format of tiddlyweb.config.instance_tiddlers
+    to support multiple bags.
+
 0.9.19 Thu Mar 19 18:57:09 GMT 2009
 
   * Code refactorings to remove some duplication.
