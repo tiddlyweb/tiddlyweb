@@ -1,8 +1,9 @@
-0.9.20 Not yet ready
+0.9.20 Mon Mar 23 10:42:44 GMT 2009
 
-  * Improved error handling in twanager.
+  * Improved error handling and reporting in twanager.
   * Changed format of tiddlyweb.config.instance_tiddlers
-    to support multiple bags.
+    to support multiple bags (see tiddlyweb.config and 
+    tiddlyweb.instancer).
 
 0.9.19 Thu Mar 19 18:57:09 GMT 2009
 
