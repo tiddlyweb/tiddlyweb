@@ -1,7 +1,8 @@
 """
 The base Class and interface for Classes
-use to get and put data into a storage
-system.
+use to transform strings of various forms
+to model objects and model objects to strings
+of various forms.
 """
 
 from tiddlyweb.serializer import NoSerializationError
