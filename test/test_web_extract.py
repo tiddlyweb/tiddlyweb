@@ -1,5 +1,7 @@
 """
 Test the way in which the /challenge URI produces stuff.
+
+XXX This test file appears to have never been completed.
 """
 
 import sys

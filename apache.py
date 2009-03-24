@@ -22,6 +22,13 @@ Replace /peerwiki with the prefix to the tiddlyweb.
 Replace the path after /peerwiki with the path to apache.py which
     should live in in the tiddlyweb instance directory.
 
+If you wish to use the http_basic extractor when using
+mod_wsgi, you need to set
+
+    WSGIPassAuthorization On
+
+in the apache configuration.
+
 ##################################################
 For mod_python
 
