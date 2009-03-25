@@ -116,15 +116,19 @@ class Store(StorageInterface):
         bag_path = self._bag_path(bag.name)
         tiddlers_dir = self._tiddlers_dir(bag.name)
 
-        try:
-            tiddlers = self._files_in_dir(tiddlers_dir)
-        except OSError, exc:
-            raise NoBagError('unable to list tiddlers in bag: %s' % exc)
-        for title in tiddlers:
-            bag.add_tiddler(Tiddler(urllib.unquote(title).decode('utf-8')))
+        if not (hasattr(bag, 'skinny') and bag.skinny):
+            try:
+                tiddlers = self._files_in_dir(tiddlers_dir)
+            except OSError, exc:
+                raise NoBagError('unable to list tiddlers in bag: %s' % exc)
+            for title in tiddlers:
+                bag.add_tiddler(Tiddler(urllib.unquote(title).decode('utf-8')))
 
-        bag.desc = self._read_bag_description(bag_path)
-        bag.policy = self._read_policy(bag_path)
+        try:
+            bag.desc = self._read_bag_description(bag_path)
+            bag.policy = self._read_policy(bag_path)
+        except IOError, exc:
+            raise NoBagError('unable to read policy or description: %s' % exc)
 
         return bag
 
