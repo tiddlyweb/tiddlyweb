@@ -31,7 +31,7 @@ def delete(environ, start_response):
 
     usersign = environ['tiddlyweb.usersign']
 
-    bag = _get_bag(environ, bag_name)
+    bag = _get_bag(environ, bag_name, True)
     bag.policy.allows(usersign, 'manage')
     # reuse the store attribute that was set on the
     # bag when we "got" it.
@@ -54,7 +54,7 @@ def get(environ, start_response):
     """
     bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
-    bag = _get_bag(environ, bag_name)
+    bag = _get_bag(environ, bag_name, True)
 
     bag.policy.allows(environ['tiddlyweb.usersign'], 'manage')
 
@@ -104,7 +104,7 @@ def import_wiki(environ, start_response):
     parse it for tiddlers to be stored in the named bag.
     """
     bag_name = _determine_bag_name(environ)
-    bag = _get_bag(environ, bag_name)
+    bag = _get_bag(environ, bag_name, True)
     length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
 
@@ -135,6 +135,7 @@ def list(environ, start_response):
     kept_bags = []
     for bag in bags:
         try:
+            bag.skinny = True
             bag = store.get(bag)
             bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_bags.append(bag)
@@ -171,8 +172,10 @@ def put(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     try:
+        bag.skinny = True
         bag = store.get(bag)
         bag.policy.allows(usersign, 'manage')
+        delattr(bag, 'skinny')
     except NoBagError:
         create_policy_check(environ, 'bag', usersign)
 
@@ -206,11 +209,13 @@ def _determine_bag_name(environ):
     return bag_name
 
 
-def _get_bag(environ, bag_name):
+def _get_bag(environ, bag_name, skinny=False):
     """
     Get the named bag out of the store.
     """
     bag = Bag(bag_name)
+    if skinny:
+        bag.skinny = True
     store = environ['tiddlyweb.store']
     try:
         bag = store.get(bag)
