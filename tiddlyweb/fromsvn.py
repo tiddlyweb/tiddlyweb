@@ -27,7 +27,8 @@ and use the importer to import it.
 
 import sys
 
-import BeautifulSoup
+import html5lib
+from html5lib import treebuilders
 
 from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
@@ -99,7 +100,9 @@ def import_tiddler(bag, url):
     Import one tiddler, at svn url, into bag.
     """
     content = get_url(url)
-    tiddler = BeautifulSoup(content).find('div')
+    parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+    soup = parser.parse(content)
+    tiddler = soup.find('div')
     store = Store(config['server_store'][0], {'tiddlyweb.config': config})
     _do_tiddler(bag, tiddler, store)
 
