@@ -31,30 +31,31 @@ def import_wiki(store, wikitext, bagname='wiki'):
     store_area = soup.find('div', id='storeArea')
     divs = store_area.findAll('div')
 
-    for tiddler in divs:
-        _do_tiddler(bagname, tiddler, store)
+    for tiddler_div in divs:
+        handle_tiddler_div(bagname, tiddler_div, store)
 
 
-def _do_tiddler(bagname, tiddler, store):
+def handle_tiddler_div(bagname, tiddler_div, store):
     """
-    Create a new Tiddler from a tiddler div.
+    Create a new Tiddler from a tiddler div, in beautifulsoup
+    form.
     """
-    new_tiddler = Tiddler(tiddler['title'], bag=bagname)
+    new_tiddler = Tiddler(tiddler_div['title'], bag=bagname)
 
     try:
-        new_tiddler.text = _html_decode(tiddler.find('pre').contents[0])
+        new_tiddler.text = _html_decode(tiddler_div.find('pre').contents[0])
     except IndexError:
         # there are no contents in the tiddler
         new_tiddler.text = ''
 
-    for attr, value in tiddler.attrs:
-        data = tiddler.get(attr, None)
+    for attr, value in tiddler_div.attrs:
+        data = tiddler_div.get(attr, None)
         if data and attr != 'tags':
             if attr in (['modifier', 'created', 'modified']):
                 new_tiddler.__setattr__(attr, data)
             else:
                 new_tiddler.fields[attr] = data
-    new_tiddler.tags = _tag_string_to_list(tiddler.get('tags', ''))
+    new_tiddler.tags = _tag_string_to_list(tiddler_div.get('tags', ''))
 
     try:
         store.put(new_tiddler)

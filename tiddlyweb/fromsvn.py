@@ -38,7 +38,7 @@ from tiddlyweb.manage import make_command
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.importer import _do_tiddler
+from tiddlyweb.importer import handle_tiddler_div
 
 
 @make_command()
@@ -100,11 +100,20 @@ def import_tiddler(bag, url):
     Import one tiddler, at svn url, into bag.
     """
     content = get_url(url)
+    tiddler = process_tiddler(content)
+    handle_tiddler_div(bag, tiddler, _store())
+
+
+def process_tiddler(content):
+    """
+    Turn some content into a div element representing
+    a tiddler.
+    """
+    content = _escape_brackets(content)
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
     soup = parser.parse(content)
     tiddler = soup.find('div')
-    store = Store(config['server_store'][0], {'tiddlyweb.config': config})
-    _do_tiddler(bag, tiddler, store)
+    return tiddler
 
 
 def import_plugin(bag, url):
@@ -128,11 +137,26 @@ def import_plugin(bag, url):
     serializer.object = tiddler
     serializer.from_string(tiddler_text)
 
-    store = Store(config['server_store'][0], {'tiddlyweb.config': config})
-    store.put(tiddler)
+    _store().put(tiddler)
 
 
 def init(config_in):
     """Register the config into the plugin."""
     global config
     config = config_in
+
+
+def _store():
+    return Store(config['server_store'][0], {'tiddlyweb.config': config})
+
+
+def _escape_brackets(content):
+    open_pre = content.index('<pre>')
+    close_pre = content.rindex('</pre>')
+    start = content[0:open_pre+5]
+    middle = content[open_pre+5:close_pre]
+    end = content[close_pre:]
+    middle = middle.replace('>', '&gt;').replace('<', '&lt;')
+    return start + middle + end
+
+
