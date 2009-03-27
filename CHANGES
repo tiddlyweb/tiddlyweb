@@ -1,3 +1,7 @@
+0.9.23 Fri Mar 27 18:44:46 GMT 2009
+
+  * Fix another (different) critical bug in from_svn.
+
 0.9.22 Fri Mar 27 13:47:55 GMT 2009
 
   * Correct a problem with importing tiddlywebconfig
