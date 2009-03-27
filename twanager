@@ -5,6 +5,8 @@ import sys
 cwd = os.getcwd()
 sys.path.insert(0,cwd)
 
+# this import must come after the above or
+# reading tiddlywebconfig.py will fail
 from tiddlyweb.manage import handle
 
 if __name__ == '__main__':
