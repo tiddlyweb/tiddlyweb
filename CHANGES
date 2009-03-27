@@ -1,3 +1,8 @@
+0.9.22 Fri Mar 27 13:47:55 GMT 2009
+
+  * Correct a problem with importing tiddlywebconfig
+    due to a bad change to twanager.
+
 0.9.21 Fri Mar 27 13:17:51 GMT 2009
 
   * Performance speedups when accessing bags.
