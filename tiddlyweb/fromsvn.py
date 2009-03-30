@@ -1,28 +1,23 @@
 """
-A built-in twanager plugin for retrieving tiddlers, plugins or full recipes
-from the TiddlyWiki subversion repository. Provide the
-name of one bag and one or more urls on the twanager command line.
+A built-in twanager plugin for retrieving tiddlers, plugins or full
+recipes from the TiddlyWiki subversion repository. Provide the name of
+one bag and one or more http or file urls on the twanager command line.
 
 Example:
 
    twanager from_svn bag0 http://tiddly-svn.dyndns.org/Trunk/verticals/stunplugged/index.html.recipe
 
-To turn on the plugin you need to add to the current
-tiddlywebconfig.py:
-
-    twanager_plugins: ['tiddlyweb.fromsvn']
-
-If the url is a recipe it will be parsed for lines beginning
-with recipe: or tiddler.
+If the url is a recipe it will be parsed for lines beginning with
+recipe: or tiddler.
 
 If recipe, that recipe is retrieved and recursively parsed.
 
-If tiddler, if the end of the URL is js, then get the .js
-and .js.meta files, massage them, join them together, make
-a tiddler, and put it in the store.
+If tiddler, if the end of the URL is js, then get the .js and .js.meta
+files, massage them, join them together, make a tiddler, and put it in
+the store.
 
-Otherwise assume we have a tiddler in the <div> format
-and use the importer to import it.
+Otherwise assume we have a tiddler in the <div> format and use importer
+code to import it.
 """
 
 import sys
@@ -158,5 +153,3 @@ def _escape_brackets(content):
     end = content[close_pre:]
     middle = middle.replace('>', '&gt;').replace('<', '&lt;')
     return start + middle + end
-
-
