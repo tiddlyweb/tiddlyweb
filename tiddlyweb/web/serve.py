@@ -9,7 +9,7 @@ import selector
 from tiddlyweb.config import config
 
 
-def load_app():
+def load_app(prefix=''):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
@@ -18,7 +18,7 @@ def load_app():
     """
 
     mapfile = config['urls_map']
-    app = selector.Selector(mapfile=mapfile)
+    app = selector.Selector(mapfile=mapfile, prefix=prefix)
     config['selector'] = app
 
     try:
@@ -49,6 +49,8 @@ def start_simple(filename, hostname, port):
 
     Provides the simplest base for testing, debugging
     and development.
+
+    XXX no longer used
     """
     os.environ = {}
     from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
@@ -63,16 +65,13 @@ def start_simple(filename, hostname, port):
 def start_cherrypy():
     """
     Start a cherrypy webserver to run our app.
-
-    Here for sake of testing %2F handling as well as
-    seeing what happens in a threaded environment.
     """
     os.environ = {}
     from cherrypy import wsgiserver
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
-    server = wsgiserver.CherryPyWSGIServer((hostname, port),
-            load_app())
+    app = load_app(prefix = config['server_prefix'])
+    server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
         logging.debug('starting cherrypy at %s:%s' % (hostname, port))
         print "Starting CherryPy at %s:%s" % (hostname, port)
