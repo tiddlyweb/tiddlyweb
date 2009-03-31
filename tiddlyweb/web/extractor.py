@@ -8,11 +8,8 @@ import logging
 
 class UserExtract(object):
     """
-    Stub WSGI Middleware to set the User, if it can be
+    WSGI Middleware to set the User, if it can be
     found in the request.
-
-    This is just crap to hold things together until
-    we have the real thing.
     """
 
     def __init__(self, application):
