@@ -69,7 +69,7 @@ class HTMLPresenter(object):
 </div>
 <div id="footer">
 %s
-<div id="badge">This is <a href="http://www.tiddlywiki.org/wiki/TiddlyWeb">TiddlyWeb</a> %s</div>
+<div id="badge">This is <a href="http://tiddlyweb.peermore.com/">TiddlyWeb</a> %s</div>
 <div id="usergreet">User %s.</div>
 </div>
 </body>
