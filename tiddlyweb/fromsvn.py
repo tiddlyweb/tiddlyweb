@@ -25,6 +25,7 @@ import sys
 import html5lib
 from html5lib import treebuilders
 
+import urllib
 from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
 
@@ -59,6 +60,8 @@ def import_one(bag, url):
         import_via_recipe(bag, url)
     elif url.endswith('.js'):
         import_plugin(bag, url)
+    elif url.endswith('.tid'):
+        import_tid_tiddler(bag, url)
     else:
         import_tiddler(bag, url)
 
@@ -88,6 +91,28 @@ def get_url(url):
     except HTTPError, exc:
         print >> sys.stderr, "HTTP Error while getting %s: %s" % (url, exc)
         sys.exit(1)
+
+
+def import_tid_tiddler(bag, url):
+    """
+    Import one tiddler, in the tid format, from svn
+    url, into bag.
+    """
+    content = get_url(url)
+    tiddler_title = unicode(urllib.unquote(url.split('/')[-1].rstrip('.tid')), 'UTF-8')
+    tiddler = Tiddler(tiddler_title, bag)
+    tiddler = process_tid_tiddler(tiddler, content)
+    _store().put(tiddler)
+
+
+def process_tid_tiddler(tiddler, content):
+    """
+    Deserialize a tid.
+    """
+    serializer = Serializer('text')
+    serializer.object = tiddler
+    serializer.from_string(content)
+    return tiddler
 
 
 def import_tiddler(bag, url):
