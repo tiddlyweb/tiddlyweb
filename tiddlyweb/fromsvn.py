@@ -26,6 +26,7 @@ import html5lib
 from html5lib import treebuilders
 
 import urllib
+import urllib2
 from urllib2 import urlopen, HTTPError
 from urlparse import urljoin
 
@@ -35,6 +36,11 @@ from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.importer import handle_tiddler_div
+
+def new_url2pathname(pathname):
+    return pathname
+
+urllib2.url2pathname = new_url2pathname
 
 
 @make_command()
@@ -55,7 +61,7 @@ def import_list(bag, urls):
 
 def import_one(bag, url):
     """Import one svn url into bag."""
-    print >> sys.stderr, "handling %s" % url
+    print >> sys.stderr, "handling %s" % url.encode('UTF-8')
     if url.endswith('.recipe'):
         import_via_recipe(bag, url)
     elif url.endswith('.js'):
@@ -85,6 +91,7 @@ def get_url(url):
     Get the content at url, raising HTTPProblem if there is one.
     """
     try:
+        print 'getting url: %s' % url.encode('UTF-8')
         getter = urlopen(url)
         content = getter.read()
         return unicode(content, 'utf-8')
@@ -99,7 +106,9 @@ def import_tid_tiddler(bag, url):
     url, into bag.
     """
     content = get_url(url)
-    tiddler_title = unicode(urllib.unquote(url.split('/')[-1].rstrip('.tid')), 'UTF-8')
+    tiddler_title = urllib.unquote(url.split('/')[-1].rstrip('.tid'))
+    if not type(tiddler_title) == unicode:
+        tiddler_title = unicode(tiddler_title, 'UTF-8')
     tiddler = Tiddler(tiddler_title, bag)
     tiddler = process_tid_tiddler(tiddler, content)
     _store().put(tiddler)
