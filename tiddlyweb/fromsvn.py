@@ -107,12 +107,20 @@ def get_url(url):
     """
     try:
         print >> sys.stderr, 'getting url: %s' % url.encode('UTF-8')
-        getter = urlopen(url)
-        content = getter.read()
-        return unicode(content, 'utf-8')
+        return _get_url(url)
     except HTTPError, exc:
         print >> sys.stderr, "HTTP Error while getting %s: %s" % (url, exc)
         sys.exit(1)
+
+
+def _get_url(url):
+    """
+    Get the content at url, like get_url but without the
+    exception handling.
+    """
+    getter = urlopen(url)
+    content = getter.read()
+    return unicode(content, 'utf-8')
 
 
 def import_tid_tiddler(bag, url):
@@ -164,10 +172,16 @@ def import_plugin(bag, url):
     """
     Import one plugin, at svn url, into bag, retrieving
     both the .js and .js.meta files.
+
+    If there is no meta file, then set title and tags
+    to something appropriate before de-serializing.
     """
     meta_url = '%s.meta' % url
     plugin_content = get_url(url)
-    meta_content = get_url(meta_url)
+    try:
+        meta_content = _get_url(meta_url)
+    except HTTPError:
+        meta_content = 'title: %s\ntags: systemConfig\n' % url.rstrip('.js').split('/')[-1]
 
     title = [line for line in meta_content.split('\n') if line.startswith('title:')][0]
     title = title.split(':', 2)[1].lstrip().rstrip()
