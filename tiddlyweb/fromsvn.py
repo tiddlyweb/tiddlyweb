@@ -78,12 +78,27 @@ def import_via_recipe(bag, url):
     Will recurse recipes as it finds them. NO LOOP DETECTION.
     """
     recipe = get_url(url)
-    rules = [line for line in recipe.split('\n') if line.startswith('tiddler:') or line.startswith('recipe:')]
+    recipe = recipe.encode('UTF-8')
+    urls = handle_recipe(recipe)
+    for url in urls:
+        import_one(bag, url)
+
+
+def handle_recipe(url, content):
+    """
+    Take a url base and a UTF-8 encoded string and parse it
+    as a TiddlyWiki cook recipe.
+    """
+    rules = [line for line in content.split('\n') if line.startswith('tiddler:') or line.startswith('recipe:')]
+    urls = []
     for rule in rules:
         target = rule.split(':', 2)[1]
         target = target.lstrip().rstrip()
+        if not '%' in target:
+            target = urllib.quote(target)
         target_url = urljoin(url, target)
-        import_one(bag, target_url)
+        urls.append(target_url)
+    return urls
 
 
 def get_url(url):
