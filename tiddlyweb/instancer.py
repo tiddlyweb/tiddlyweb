@@ -58,7 +58,6 @@ def instance(args):
     os.mkdir(directory)
     os.chdir(directory)
     bag_names = [bag for bag, tiddlers in config['instance_tiddlers']]
-    print bag_names
     [_make_bag(bag) for bag in bag_names]
     update(None)
     _make_bag('common')
