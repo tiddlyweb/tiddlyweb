@@ -15,7 +15,8 @@ def _challenger_url(environ, system):
     Return the proper URL for a specific challenger
     system.
     """
-    redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [''])[0]
+    default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
+    redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [default_redirect])[0]
     if len(redirect):
         redirect = '?tiddlyweb_redirect=%s' % redirect
     else:
