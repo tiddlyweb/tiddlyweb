@@ -106,7 +106,7 @@ def get_url(url):
     Get the content at url, raising HTTPProblem if there is one.
     """
     try:
-        print 'getting url: %s' % url.encode('UTF-8')
+        print >> sys.stderr, 'getting url: %s' % url.encode('UTF-8')
         getter = urlopen(url)
         content = getter.read()
         return unicode(content, 'utf-8')

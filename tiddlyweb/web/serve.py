@@ -5,6 +5,7 @@ web server.
 import logging
 import os
 import selector
+import sys
 
 from tiddlyweb.config import config
 
@@ -58,7 +59,7 @@ def start_simple(filename, hostname, port):
     port = int(config['server_host']['port'])
     httpd = WSGIServer((hostname, port), WSGIRequestHandler)
     httpd.set_app(load_app())
-    print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
+    print >> sys.stderr, "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
     httpd.serve_forever()
 
 
@@ -74,7 +75,7 @@ def start_cherrypy():
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
         logging.debug('starting cherrypy at %s:%s' % (hostname, port))
-        print "Starting CherryPy at %s:%s" % (hostname, port)
+        print >> sys.stderr, "Starting CherryPy at %s:%s" % (hostname, port)
         server.start()
     except KeyboardInterrupt:
         server.stop()
