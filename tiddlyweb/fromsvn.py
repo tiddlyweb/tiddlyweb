@@ -79,7 +79,7 @@ def import_via_recipe(bag, url):
     """
     recipe = get_url(url)
     recipe = recipe.encode('UTF-8')
-    urls = handle_recipe(recipe)
+    urls = handle_recipe(url, recipe)
     for url in urls:
         import_one(bag, url)
 

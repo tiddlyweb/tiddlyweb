@@ -1,3 +1,10 @@
+0.9.25 Mon Apr  6 21:14:09 BST 2009
+
+  * Generate a more correctly unique Etag when sending a list of tiddlers.
+  * Respect server_prefix when setting tiddlyweb_redirect in challengers.
+  * Have twanager sys.exit non zero when there are errors.
+  * Use proper signature when calling handle_recipe in from_svn.
+
 0.9.24 Mon Apr  6 14:49:45 BST 2009
 
   * More appropriate handling of UTF-8 in recipes used by from_svn.
