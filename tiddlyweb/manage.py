@@ -42,9 +42,9 @@ def server(args):
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print "you must include both a hostname or ip number and a " \
+            print >> sys.stderr, "you must include both a hostname or ip number and a " \
                 "port if using arguments: %s" % exc
-            return usage()
+            usage()
         else:
             pass
 
@@ -65,8 +65,8 @@ def adduser(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print "you must include at least a username and password: %s" % exc
-        return usage()
+        print >> sys.stderr, "you must include at least a username and password: %s" % exc
+        usage()
 
     try:
         roles = args[2:]
@@ -81,7 +81,7 @@ def adduser(args):
             user.add_role(role)
         store.put(user)
     except Exception, exc:
-        print 'unable to create or update user: %s' % exc
+        print >> sys.stderr, 'unable to create or update user: %s' % exc
         raise
 
     return True
@@ -98,11 +98,11 @@ def imwiki(args):
         filename, bag_name = args[0:2]
         import_wiki_file(store, filename, bag_name)
     except IndexError, exc:
-        print "index error: %s" % exc
-        return usage()
+        print >> sys.stderr, "index error: %s" % exc
+        usage()
     except ValueError, exc:
-        print "value error: %s" % exc
-        return usage()
+        print >> sys.stderr, "value error: %s" % exc
+        usage()
 
 
 @make_command()
@@ -111,8 +111,8 @@ def recipe(args):
     try:
         recipe_name = args[0]
     except IndexError, exc:
-        print "you must include a recipe name: %s" % exc
-        return usage()
+        print >> sys.stderr, "you must include a recipe name: %s" % exc
+        usage()
 
     from tiddlyweb.model.recipe import Recipe
 
@@ -128,8 +128,8 @@ def bag(args):
     try:
         bag_name = args[0]
     except IndexError, exc:
-        print "you must include a bag name: %s" % exc
-        return usage()
+        print >> sys.stderr, "you must include a bag name: %s" % exc
+        usage()
 
     from tiddlyweb.model.bag import Bag
 
@@ -147,8 +147,8 @@ def tiddler(args):
     try:
         tiddler_name, bag_name = args[0:3]
     except (IndexError, ValueError), exc:
-        print "you must include a tiddler and bag name: %s" % exc
-        return usage()
+        print >> sys.stderr, "you must include a tiddler and bag name: %s" % exc
+        usage()
 
     from tiddlyweb.model.tiddler import Tiddler
 
@@ -163,7 +163,8 @@ def tiddler(args):
 def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
-        print "%10s: %s" % (key, COMMANDS[key].description)
+        print >> sys.stderr, "%10s: %s" % (key, COMMANDS[key].description)
+    sys.exit(1)
 
 
 def handle(args):
@@ -186,7 +187,7 @@ def handle(args):
     try:
         candidate_command = args[1]
     except IndexError:
-        return usage([])
+        usage([])
 
     try:
         args = args[2:]
@@ -198,13 +199,13 @@ def handle(args):
             logging.debug('running command %s with %s' % (candidate_command, args))
             COMMANDS[candidate_command](args)
         except IndexError, exc:
-            print "Incorect number of arguments: %s" % exc
-            return usage()
+            print >> sys.stderr, "Incorect number of arguments: %s" % exc
+            usage()
         except IOError, exc:
-            print "IOError: %s" % exc
-            return usage()
+            print >> sys.stderr, "IOError: %s" % exc
+            usage()
     else:
-        return usage(args)
+        usage(args)
 
 def _put(entity, content, serialization):
     """

@@ -45,12 +45,6 @@ def teardown_module(module):
     sys.stdin = module.savedin
 
 
-def test_help():
-    handle('help')
-    results = output.getvalue()
-    assert 'Add or update a user to the database' in results
-
-
 def test_adduser():
     handle(['', 'adduser', 'cdent', 'crunk'])
     the_user = User('cdent')
