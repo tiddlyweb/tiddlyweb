@@ -77,7 +77,11 @@ def _validate_tiddler_list(environ, tiddlers):
 def _sha_tiddler_titles(tiddlers):
     digest = sha()
     for tiddler in tiddlers:
-        digest.update(tiddler.title.encode('utf-8'))
+        if tiddler.recipe:
+            container = tiddler.recipe
+        else:
+            container = tiddler.bag
+        digest.update(container.encode('utf-8') + tiddler.title.encode('utf-8'))
     return digest.hexdigest()
 
 
