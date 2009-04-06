@@ -14,39 +14,32 @@ structure somewhere. The directory hierarchy must be writable
 by the web server. Set file_store_location (below) to the
 path to this directory.
 
-Determine the URL of your CGI script. Set web_server_base
-(below) to the path portion of this URL.
+You will need to set server_prefix and server_host in the
+tiddlywebconfig.py in the instance directory that you create.
+
+See http://tiddlyweb.peemore.com for general documentation and
+http://bengillies.net/.a/#%5B%5BRunning%20on%20TiddlyWeb%2C%20Part%20One%5D%5D
+for an installation tutorial, specifically for people who
+do not have root access on their server.
 """
 
 import os
 import sys
 
-# Change this to the location of the tiddlyweb code,
-# if tiddlyweb is not in sys.path
-sys.path.append('/home/cdent/src/TiddlyWeb')
-
 from wsgiref.handlers import BaseCGIHandler
 from tiddlyweb.web import serve
 from tiddlyweb.config import config
 
-# where is the content stored
+# Where the content is stored.
+# It is best to make this somewhere other than
+# the directory where the CGI is running.
 file_store_location = '/tmp/store'
 
-# what's the URL to this index.cgi when access over the web
-web_server_base = '/tiddlyweb/index.cgi'
-
 def start():
-    port = 80
-    hostname = os.environ['HTTP_HOST']
-    if ':' in hostname:
-        hostname, port = hostname.split(':')
-
     # This assumes the default text server_store is being used.
     # If you are not using that store, you'll need to change this.
     config['server_store'] = ['text', {'store_root': file_store_location}]
-    config['server_prefix'] = web_server_base
-
-    app = serve.load_app(hostname, port, config['urls_map'])
+    app = serve.load_app()
     BaseCGIHandler(sys.stdin, sys.stdout, sys.stderr, os.environ).run(app)
 
 if __name__ == '__main__':
