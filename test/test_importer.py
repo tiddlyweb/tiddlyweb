@@ -96,6 +96,13 @@ recipe: special/%s/thing.recipe
     assert urls == ['http://example.com/monkey/%E2%84%A2/pirate.tiddler', 'http://example.com/special/%E2%84%A2/thing.recipe']
 
 
+def test_handle_recipe_plugin():
+    recipe = u'plugin: monkey/pirate.tid'
+    recipe = recipe.encode('UTF-8')
+    urls = handle_recipe('http://example.com/', recipe)
+    assert urls == ['http://example.com/monkey/pirate.tid']
+
+
 def _parse(content):
     parser = html5lib.liberalxmlparser.XMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
     soup = parser.parseFragment(content)
