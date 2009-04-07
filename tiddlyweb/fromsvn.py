@@ -89,7 +89,10 @@ def handle_recipe(url, content):
     Take a url base and a UTF-8 encoded string and parse it
     as a TiddlyWiki cook recipe.
     """
-    rules = [line for line in content.split('\n') if line.startswith('tiddler:') or line.startswith('recipe:')]
+    rules = [line for line in content.split('\n') if
+            line.startswith('tiddler:') or
+            line.startswith('plugin:') or
+            line.startswith('recipe:')]
     urls = []
     for rule in rules:
         target = rule.split(':', 2)[1]
@@ -129,7 +132,8 @@ def import_tid_tiddler(bag, url):
     url, into bag.
     """
     content = get_url(url)
-    tiddler_title = urllib.unquote(url.split('/')[-1].rstrip('.tid'))
+    tiddler_title = urllib.unquote(url.split('/')[-1])
+    tiddler_title = _strip_extension(tiddler_title, '.tid')
     if not type(tiddler_title) == unicode:
         tiddler_title = unicode(tiddler_title, 'UTF-8')
     tiddler = Tiddler(tiddler_title, bag)
@@ -181,7 +185,8 @@ def import_plugin(bag, url):
     try:
         meta_content = _get_url(meta_url)
     except HTTPError:
-        meta_content = 'title: %s\ntags: systemConfig\n' % url.rstrip('.js').split('/')[-1]
+        meta_content = 'title: %s\ntags: systemConfig\n' % _strip_extension(url, '.js').split('/')[-1]
+
 
     title = [line for line in meta_content.split('\n') if line.startswith('title:')][0]
     title = title.split(':', 2)[1].lstrip().rstrip()
@@ -204,10 +209,6 @@ def init(config_in):
     config = config_in
 
 
-def _store():
-    return Store(config['server_store'][0], {'tiddlyweb.config': config})
-
-
 def _escape_brackets(content):
     open_pre = content.index('<pre>')
     close_pre = content.rindex('</pre>')
@@ -216,3 +217,17 @@ def _escape_brackets(content):
     end = content[close_pre:]
     middle = middle.replace('>', '&gt;').replace('<', '&lt;')
     return start + middle + end
+
+
+def _store():
+    return Store(config['server_store'][0], {'tiddlyweb.config': config})
+
+
+def _strip_extension(name, ext):
+    """
+    Remove trailing extension from name.
+    """
+    ext_len = len(ext)
+    if name[-ext_len:] == ext:
+        name = name[:-ext_len]
+    return name

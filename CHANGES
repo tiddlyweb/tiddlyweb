@@ -1,3 +1,10 @@
+0.9.26 NOT YET
+
+  * Adjust from_svn to work correctly with .js files that have no
+    corresponding .meta file.
+  * Adjust from_svn to accept 'plugin:' indicator in recipes.
+  * Properly handle file extensions in from_svn (don't use rstrip!).
+
 0.9.25 Mon Apr  6 21:14:09 BST 2009
 
   * Generate a more correctly unique Etag when sending a list of tiddlers.
