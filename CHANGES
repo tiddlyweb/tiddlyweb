@@ -1,4 +1,4 @@
-0.9.26 NOT YET
+0.9.26 Tue Apr  7 17:23:16 BST 2009
 
   * Adjust from_svn to work correctly with .js files that have no
     corresponding .meta file.
