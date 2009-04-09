@@ -5,6 +5,7 @@ challengers. If there is only one, redirect
 to it.
 """
 
+import urllib
 
 from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url
@@ -18,7 +19,7 @@ def _challenger_url(environ, system):
     default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
     redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [default_redirect])[0]
     if len(redirect):
-        redirect = '?tiddlyweb_redirect=%s' % redirect
+        redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect)
     else:
         redirect = ''
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
