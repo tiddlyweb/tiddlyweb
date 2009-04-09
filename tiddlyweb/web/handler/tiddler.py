@@ -82,7 +82,7 @@ def _check_bag_constraint(environ, bag, constraint):
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
     except NoBagError, exc:
-        raise HTTP404('bag %s not found, %s' % (bag.name, exc))
+        raise HTTP404('bag %s not found while checking policy, %s' % (bag.name, exc))
 
 
 def _delete_tiddler(environ, start_response, tiddler):
@@ -145,12 +145,12 @@ def _determine_tiddler(environ, bag_finder):
             recipe = store.get(recipe)
             tiddler.recipe = recipe_name
         except NoRecipeError, exc:
-            raise HTTP404('%s not found, %s' % (tiddler.title, exc))
+            raise HTTP404('%s not found via recipe, %s' % (tiddler.title, exc))
 
         try:
             bag = bag_finder(recipe, tiddler, environ)
         except NoBagError, exc:
-            raise HTTP404('%s not found, %s' % (tiddler.title, exc))
+            raise HTTP404('%s not found via bag, %s' % (tiddler.title, exc))
 
         bag_name = bag.name
     else:
@@ -276,7 +276,7 @@ def _require_valid_etag_for_write(environ, tiddler):
     """
     incoming_etag = environ.get('HTTP_IF_MATCH', None)
     if not incoming_etag:
-        raise HTTP412('If Match header required')
+        raise HTTP412('If Match header required to update tiddlers.')
     tiddler_copy = Tiddler(tiddler.title, tiddler.bag)
     try:
         tiddler_copy = environ['tiddlyweb.store'].get(tiddler_copy)
@@ -316,7 +316,7 @@ def _validate_tiddler(environ, tiddler):
         logging.debug('attempting to validate incoming etag: %s against %s' %
                 (incoming_etag, tiddler_etag))
         if incoming_etag and incoming_etag != tiddler_etag:
-            raise HTTP412('Etag no match')
+            raise HTTP412('Provided ETag does not match. Server content probably newer.')
     etag = ('Etag', tiddler_etag)
     return last_modified, etag
 
