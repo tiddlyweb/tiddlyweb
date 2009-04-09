@@ -4,11 +4,11 @@ body, h1, h2, h3, h4, div, ul {
 }
 
 body {
-	font-family:georgia;
+        font-family: "Lucida Grande", Helvetica, sans-serif;
 	font-size:14px;
 	line-height:1.5em;
 	background-color:#fff;
-	color:#444;
+	color:#000;
 }
 
 a:link,
@@ -25,8 +25,8 @@ a:focus {
 }
 
 div#header {
-	background-color:#0056C0;
-	border-bottom:solid 1px #00387D;
+	background-color: #000;
+        border-bottom: 2px solid #666;
 	padding:2em 1em;
 
 }
@@ -41,7 +41,7 @@ div#content {
 	display:block;
 	padding:1em 1em 2em 1em;
 	background-color:#eee;
-	border-bottom:solid 1px #ccc;
+	border-bottom:solid 1px #666;
 }
 
 div#tiddlersheader,
@@ -58,19 +58,16 @@ ul {
 		margin-left:20px;
 	}
 	
-div.tiddler {
+div.tiddler, ul.listing{
 	padding:1em;
-	border:solid 1px #ccc;
-	border-bottom:solid 1px #aaa;
-	background-color:#faf9fe;
+	border:solid 1px #666;
+	background-color:#fff;
 }
 
 div#footer {
 	padding:0.5em 1em;
 	font-size:0.9em;
-	background-color:#faf9fe;
-	height:2em;
-	border-bottom:solid 1px #ddd;
+	background-color:#fff;
 }
 
 	div#badge {
