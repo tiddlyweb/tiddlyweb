@@ -1,3 +1,11 @@
+0.9.27 Fri Apr 10 16:07:19 BST 2009
+
+  * Update default css to look like http://tiddlyweb.peermore.com/
+  * Make some HTTP error messages more verbose.
+  * Redirect query strings correctly during the challenger phase.
+  * Support HEAD requests.
+  * Add support for a "since" filter: [since[20090410160800]]
+
 0.9.26 Tue Apr  7 17:23:16 BST 2009
 
   * Adjust from_svn to work correctly with .js files that have no
