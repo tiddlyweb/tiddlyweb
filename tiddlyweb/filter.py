@@ -61,6 +61,20 @@ def by_title(title, tiddlers):
     return [tiddler for tiddler in tiddlers if tiddler.title == title]
 
 
+def by_since(timespec, tiddlers):
+    """
+    Return those tiddlers new than the provided timespec.
+    """
+    if len(timespec) == 12:
+        timespec = timespec + '00'
+    def newer(tiddler):
+        modified = tiddler.modified
+        if len(modified) == 12:
+            modified = modified + '00'
+        return int(modified) >= int(timespec)
+    return [tiddler for tiddler in tiddlers if newer(tiddler)]
+
+
 def by_text(text, tiddlers):
     """
     Return those tiddlers that contain text.
@@ -249,4 +263,6 @@ FILTER_MAP = {
 
         'sort': make_sort(),
         'count': make_count(),
+
+        'since': by_since,
 }

@@ -41,6 +41,23 @@ def test_filter_by_title():
     found_tiddlers = filter.by_title('TiddlerFive', tiddlers)
     assert len(found_tiddlers) == 0, 'no tiddlers found matching TiddlerFive'
 
+def test_filter_by_since():
+    """
+    Get the tiddlers modified since <timespec>.
+    """
+    tiddler_old = Tiddler('old')
+    tiddler_old.modified = '19691009000000'
+    tiddler_new = Tiddler('new')
+    tiddler_new.modified = '20090401030303'
+    found_tiddlers = filter.by_since('20010101010100', [tiddler_old, tiddler_new])
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].title == 'new'
+
+    found_tiddlers = filter.by_since('200101010101', [tiddler_old, tiddler_new])
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].title == 'new'
+
+
 def test_filter_by_tag():
     """
     Given a tag, find the tiddlers that use that tag.
