@@ -15,6 +15,24 @@ from tiddlyweb.web.util import server_base_url
 from tiddlyweb import __version__ as VERSION
 
 
+class Header(object):
+    """
+    If REQUEST_METHOD is HEAD, change it to GET and
+    consume the output for lower requests.
+    """
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        if environ['REQUEST_METHOD'] == 'HEAD':
+            environ['REQUEST_METHOD'] = 'GET'
+            output = self.application(environ, start_response)
+            return []
+        else:
+            return self.application(environ, start_response)
+
+
 class HTMLPresenter(object):
     """
     Take the core app output, if tiddlyweb.title is set

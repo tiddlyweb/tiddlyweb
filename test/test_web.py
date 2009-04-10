@@ -39,6 +39,15 @@ def test_get_root():
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert expected_content in content
 
+def test_head_root():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/',
+            method='HEAD')
+
+    assert response['status'] == '200'
+    assert response['content-type'] == 'text/html; charset=UTF-8'
+    assert content == ''
+
 def test_recipe_url():
     environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
     recipe = Recipe('hello')

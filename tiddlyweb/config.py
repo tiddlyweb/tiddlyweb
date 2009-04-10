@@ -139,7 +139,7 @@ from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
-from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, HTMLPresenter, PermissionsExceptor
+from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, Header, HTMLPresenter, PermissionsExceptor
 
 # A dict containing the configuration of TiddlyWeb, both 
 # as a server and as a library. This dictionary can contain
@@ -161,6 +161,7 @@ DEFAULT_CONFIG = {
             Query,
             StoreSet,
             UserExtract,
+            Header,
             Negotiate
             ],
         'server_response_filters': [
