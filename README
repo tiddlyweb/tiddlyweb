@@ -1,6 +1,6 @@
 
 TiddlyWeb Home Site: http://tiddlyweb.peermore.com/
-See also: http://tiddlywiki.org/wiki/Dev:TiddlyWeb
+See also: http://tiddlywiki.org/wiki/TiddlyWeb
 
 TiddlyWeb, aka mo'ass, is a reference implementation of an ideal
 server side implementation for TiddlyWiki. It attempts to provide
@@ -42,8 +42,8 @@ will need to be an administrative user for this to work):
    python setup.py install
 
 If you are using TiddlyWeb from source checked out from the
-http://svn.tiddlywiki.org/ repository, you can install the necessary
-requirements by hand:
+http://github.com/tiddlyweb/tiddlyweb repository, you can install
+the necessary requirements by hand:
 
 Selector, simplejson and BeautifulSoup can be installed with
 easy_install, which either comes with your python distribution and
@@ -73,7 +73,7 @@ containing some TiddlyWeb documentation. The information at that location is
 likely to be more relevant than the stuff in docs. You can also leave comments
 there to help improve the documentation.
 
-See http://svn.tiddlywiki.org/Trunk/contributors/ChrisDent/experimental/tiddlyweb-plugins/
+See http://github.com/tiddlyweb/tiddlyweb-plugins
 for some samples of plugins that TiddlyWeb can use with itself.
 
 If you have questions or contributions on making this work

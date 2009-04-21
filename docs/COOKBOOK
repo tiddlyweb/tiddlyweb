@@ -1,6 +1,9 @@
 NOTE: THIS DOCUMENT IS SOMEWHAT OUT OF DATE. IMPROVEMENTS
 ARE IN PROGRESS.
 
+Please see http://tiddlyweb.peermore.com/ for the heart of
+TiddlyWeb documentation.
+
 Version 0.2 A work in progress.
 
 Improvement suggestions most welcome.
@@ -127,10 +130,11 @@ change into it:
 
   $ cd <directory name>
 
-If you want to add other content from svn.tiddlywiki.org TiddlyWeb has
-built in support for retrieving tiddlers and plugins from there. The
-twanager command from_svn can retrieve tiddlers, plugins and full cook-
-style recipes from subversion. If the instance command did not exist
+If you want to add other content from svn.tiddlywiki.org or 
+anywhere else on the web TiddlyWeb has built in support for
+retrieving tiddlers and plugins from there. The twanager command
+from_svn can retrieve tiddlers, plugins and full cook-style recipes
+from HTTP and file URLs. If the instance command did not exist
 we could have done:
 
   $ twanager from_svn system http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js
