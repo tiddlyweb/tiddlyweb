@@ -26,6 +26,14 @@ SAMPLE_BASIC_TIDDLER = """
 </div>
 """
 
+SAMPLE_EMPTY_TIDDLER = """
+<div title="GettingStopped">
+<pre>
+</pre>
+</div>
+"""
+
+
 def setup_module(module):
     module.store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
     bag = Bag(BAGNAME)
@@ -43,6 +51,16 @@ def test_import_simple_tiddler_div():
     assert tiddler.title == 'GettingStarted'
     assert 'as shown above (after' in tiddler.text
 
+def test_import_empty_tiddler_div():
+    div = _parse(SAMPLE_EMPTY_TIDDLER)
+    assert div['title'] == 'GettingStopped'
+    
+    handle_tiddler_div(BAGNAME, div, store)
+
+    tiddler = Tiddler('GettingStopped', BAGNAME)
+    tiddler = store.get(tiddler)
+    assert tiddler.title == 'GettingStopped'
+    assert tiddler.text == ''
 
 def test_from_svn_preprocessing():
     div = process_tiddler(SAMPLE_BASIC_TIDDLER)
