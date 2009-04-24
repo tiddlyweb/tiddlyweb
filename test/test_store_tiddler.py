@@ -139,6 +139,14 @@ def test_store_lock():
     tiddler.bag = 'bagone'
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 
+def test_put_with_slash():
+    tiddler1 = Tiddler('He is 5 and 1/2', 'bagone')
+    store.put(tiddler1)
+
+    tiddler2 = Tiddler('He is 5 and 1/2', 'bagone')
+    store.get(tiddler2)
+    assert tiddler1.title == tiddler2.title
+
 def test_bad_filename():
     """
     If there is ../ in the tiddler name, choke.

@@ -167,8 +167,8 @@ OpenID: <input name="openid" size="60" />
             pass
 
         request_uri = '%s?openid.mode=checkid_setup&openid.identity=%s&openid.return_to=%s' \
-                % (link, urllib.quote(openid),
-                        urllib.quote(self._return_to(environ, redirect, link, original_openid)))
+                % (link, urllib.quote(openid, safe=''),
+                        urllib.quote(self._return_to(environ, redirect, link, original_openid), safe=''))
 
         logging.debug('302 to %s' % request_uri)
         raise HTTP302(request_uri)

@@ -21,7 +21,7 @@ def wikitext_to_wikklyhtml(base_url, path_url, wikitext):
         """
         if '/' in url_fragment:
             return url_fragment, True
-        return '%s%s' % (base_url, urllib.quote(url_fragment)), False
+        return '%s%s' % (base_url, urllib.quote(url_fragment, safe='')), False
 
     posthook = PostHook()
 

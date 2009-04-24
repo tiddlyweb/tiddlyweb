@@ -239,5 +239,5 @@ class PermissionsExceptor(object):
         redirect = script_name
         if query_string:
             redirect += '?%s' % query_string
-        redirect = urllib.quote(redirect)
+        redirect = urllib.quote(redirect, safe='')
         return '%s/challenge?tiddlyweb_redirect=%s' % (server_base_url(environ), redirect)

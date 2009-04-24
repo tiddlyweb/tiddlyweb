@@ -170,6 +170,18 @@ def test_put_tiddler_json():
     assert info['title'] == 'TestTwo'
     assert info['text'] == 'i fight for the users'
 
+def test_put_tiddler_json_with_slash():
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FSlash',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
+    assert response['location'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FSlash'
+
+
 def test_put_tiddler_json_bad_path():
     """
     / in tiddler title is an unresolved source of some confusion.

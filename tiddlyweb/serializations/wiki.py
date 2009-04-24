@@ -14,7 +14,7 @@ from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.web.util import server_base_url, tiddler_url
+from tiddlyweb.web.util import server_base_url, tiddler_url, encode_name
 from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
@@ -78,9 +78,9 @@ the content of this wiki</a>.
         """
 
         if tiddlers[0].recipe:
-            workspace = '/recipes/%s/tiddlers' % urllib.quote(tiddlers[0].recipe.encode('utf-8'))
+            workspace = '/recipes/%s/tiddlers' % encode_name(tiddlers[0].recipe)
         else:
-            workspace = '/bags/%s/tiddlers' % urllib.quote(tiddlers[0].bag.encode('utf-8'))
+            workspace = '/bags/%s/tiddlers' % encode_name(tiddlers[0].bag)
         browsable_url = server_base_url(self.environ) + workspace
 
         if len(tiddlers) == 1:

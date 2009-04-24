@@ -5,6 +5,7 @@ HTML based serializers.
 import urllib
 
 from tiddlyweb.serializations import SerializationInterface
+from tiddlyweb.web.util import encode_name
 
 
 class Serialization(SerializationInterface):
@@ -29,7 +30,7 @@ class Serialization(SerializationInterface):
         lines = []
         output = '<ul id="recipes" class="listing">\n'
         for recipe in recipes:
-            line = '<li><a href="recipes/%s">%s</a></li>' % (urllib.quote(recipe.name.encode('utf-8')), recipe.name)
+            line = '<li><a href="recipes/%s">%s</a></li>' % (encode_name(recipe.name), recipe.name)
             lines.append(line)
         output += "\n".join(lines)
         return output + '\n</ul>'
@@ -42,7 +43,7 @@ class Serialization(SerializationInterface):
         lines = []
         output = '<ul id="bags" class="listing">\n'
         for bag in bags:
-            line = '<li><a href="bags/%s">%s</a></li>' % (urllib.quote(bag.name.encode('utf-8')), bag.name)
+            line = '<li><a href="bags/%s">%s</a></li>' % (encode_name(bag.name), bag.name)
             lines.append(line)
         output += "\n".join(lines)
         return output + '\n</ul>'
@@ -57,14 +58,14 @@ class Serialization(SerializationInterface):
             line = '<li><a href="'
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '%s/bags/%s/tiddlers' % (self._server_prefix(), urllib.quote(bag.encode('utf-8')))
+            line += '%s/bags/%s/tiddlers' % (self._server_prefix(), encode_name(bag))
             if filter_string:
-                line += '?filter=%s' % urllib.quote(filter_string.encode('utf-8'))
+                line += '?filter=%s' % urllib.quote(filter_string.encode('utf-8'), safe='')
             line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)
         output = "\n".join(lines)
         title = 'Bags in Recipe %s' % recipe.name
-        tiddler_link = '%s/tiddlers' % urllib.quote(recipe.name.encode('utf-8'))
+        tiddler_link = '%s/tiddlers' % encode_name(recipe.name)
         return """
 <div id="recipedesc" class="description">%s</div>
 <ul id="recipe" class="listing">
@@ -78,7 +79,7 @@ class Serialization(SerializationInterface):
         Bag as html.
         """
         self.environ['tiddlyweb.title'] = 'Bag %s' % bag.name
-        tiddler_link = '%s/tiddlers' % urllib.quote(bag.name.encode('utf-8'))
+        tiddler_link = '%s/tiddlers' % encode_name(bag.name)
         return """
 <div id="bagdesc" class="description">%s</div>
 <div class="tiddlerslink"><a href="%s">Tiddlers in Bag %s</a></div>
@@ -93,12 +94,12 @@ class Serialization(SerializationInterface):
         for tiddler in bag.list_tiddlers():
             if tiddler.recipe:
                 base = 'recipes'
-                base_link = urllib.quote(tiddler.recipe.encode('utf-8'))
+                base_link = encode_name(tiddler.recipe)
                 wiki_link = '%s/recipes/%s/tiddlers' % (server_prefix, base_link)
                 title = 'Tiddlers in Recipe %s' % tiddler.recipe
             else:
                 base = 'bags'
-                base_link = urllib.quote(tiddler.bag.encode('utf-8'))
+                base_link = encode_name(tiddler.bag)
                 wiki_link = '%s/bags/%s/tiddlers' % (server_prefix, base_link)
                 title = 'Tiddlers in Bag %s' % tiddler.bag
             if bag.revbag:
@@ -106,18 +107,18 @@ class Serialization(SerializationInterface):
                         server_prefix,
                         base,
                         base_link,
-                        urllib.quote(tiddler.title.encode('utf-8')),
+                        encode_name(tiddler.title),
                         tiddler.revision,
                         tiddler.title,
                         tiddler.revision)
-                wiki_link += '/%s/revisions' % urllib.quote(tiddler.title.encode('utf-8'))
+                wiki_link += '/%s/revisions' % encode_name(tiddler.title)
                 title = 'Revisions of Tiddler %s' % tiddler.title
             else:
                 line = '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
                         server_prefix,
                         base,
                         base_link,
-                        urllib.quote(tiddler.title.encode('utf-8')),
+                        encode_name(tiddler.title),
                         tiddler.title)
             lines.append(line)
         if bag.searchbag:
@@ -189,10 +190,10 @@ class Serialization(SerializationInterface):
         """
         server_prefix = self._server_prefix()
         if tiddler.recipe:
-            list_link = 'recipes/%s/tiddlers' % tiddler.recipe.encode('utf-8')
+            list_link = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
             list_title = 'Tiddlers in Recipe %s' % tiddler.recipe
         else:
-            list_link = 'bags/%s/tiddlers' % tiddler.bag.encode('utf-8')
+            list_link = 'bags/%s/tiddlers' % encode_name(tiddler.bag)
             list_title = 'Tiddlers in Bag %s' % tiddler.bag
 
         from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
@@ -206,7 +207,7 @@ class Serialization(SerializationInterface):
 %s
 %s
 </div>
-""" % (urllib.quote('%s/%s' % (server_prefix, list_link), safe='/'),
+""" % ('%s/%s' % (server_prefix, list_link),
         list_title.encode('utf-8'),
         self._tiddler_div(tiddler).encode('utf-8'),
         html)

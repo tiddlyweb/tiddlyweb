@@ -19,7 +19,7 @@ def _challenger_url(environ, system):
     default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
     redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', [default_redirect])[0]
     if len(redirect):
-        redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect)
+        redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect, safe='')
     else:
         redirect = ''
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)

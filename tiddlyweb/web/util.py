@@ -123,18 +123,22 @@ def _server_prefix(environ):
     return config.get('server_prefix', '')
 
 
+def encode_name(name):
+    return urllib.quote(name.encode('utf-8'), safe='')
+
+
 def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
     """
     if tiddler.recipe:
         tiddler_link = 'recipes/%s/tiddlers/%s' \
-                % (urllib.quote(tiddler.recipe.encode('utf-8')),
-                        urllib.quote(tiddler.title.encode('utf-8')))
+                % (encode_name(tiddler.recipe),
+                        encode_name(tiddler.title))
     else:
         tiddler_link = 'bags/%s/tiddlers/%s' \
-                % (urllib.quote(tiddler.bag.encode('utf-8')),
-                        urllib.quote(tiddler.title.encode('utf-8')))
+                % (encode_name(tiddler.bag),
+                        encode_name(tiddler.title))
     return '%s/%s' % (server_base_url(environ), tiddler_link)
 
 
@@ -143,7 +147,7 @@ def recipe_url(environ, recipe):
     Construct a URL for a recipe.
     """
     return '%s/recipes/%s' % (server_base_url(environ),
-            urllib.quote(recipe.name.encode('utf-8')))
+            encode_name(recipe.name))
 
 
 def bag_url(environ, bag):
@@ -151,4 +155,4 @@ def bag_url(environ, bag):
     Construct a URL for a recipe.
     """
     return '%s/bags/%s' % (server_base_url(environ),
-            urllib.quote(bag.name.encode('utf-8')))
+            encode_name(bag.name))
