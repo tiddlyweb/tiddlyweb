@@ -109,14 +109,14 @@ def test_handle_recipe_from_unicode():
 tiddler: monkey/%s/pirate.tiddler
 recipe: special/%s/thing.recipe
 """ % (u'\u2122', u'\u2122')
-    recipe = recipe.encode('UTF-8')
+    recipe = recipe.encode('utf-8')
     urls = handle_recipe('http://example.com/', recipe)
     assert urls == ['http://example.com/monkey/%E2%84%A2/pirate.tiddler', 'http://example.com/special/%E2%84%A2/thing.recipe']
 
 
 def test_handle_recipe_plugin():
     recipe = u'plugin: monkey/pirate.tid'
-    recipe = recipe.encode('UTF-8')
+    recipe = recipe.encode('utf-8')
     urls = handle_recipe('http://example.com/', recipe)
     assert urls == ['http://example.com/monkey/pirate.tid']
 

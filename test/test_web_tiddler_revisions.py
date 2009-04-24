@@ -36,21 +36,21 @@ def setup_module(module):
 
 def test_put_tiddler_txt_1():
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
 
 def test_put_tiddler_txt_2():
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
 
 def test_put_tiddler_txt_3():
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'

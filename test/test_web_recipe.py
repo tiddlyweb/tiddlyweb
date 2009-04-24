@@ -310,7 +310,7 @@ def test_roundtrip_unicode_recipe():
     recipe_list = [[recipe_name, '']]
     body = simplejson.dumps(dict(desc='',recipe=recipe_list))
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
-            method='PUT', body=body.encode('UTF-8'), headers={'Content-Type': 'application/json'})
+            method='PUT', body=body.encode('utf-8'), headers={'Content-Type': 'application/json'})
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)

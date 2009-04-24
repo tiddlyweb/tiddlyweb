@@ -114,7 +114,7 @@ def test_get_tiddler_revision_wiki():
 
 def test_put_tiddler_txt():
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
 
@@ -125,7 +125,7 @@ def test_put_tiddler_txt():
             % tiddler_url
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
-    content = content.decode('UTF-8')
+    content = content.decode('utf-8')
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == texts[-1] # text
@@ -136,7 +136,7 @@ def test_put_tiddler_txt_no_modified():
     Putting a tiddler with no modifier should make a default.
     """
     http = httplib2.Http()
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body='modifier: ArthurDent\n\nTowels')
 
@@ -147,7 +147,7 @@ def test_put_tiddler_txt_no_modified():
             % tiddler_url
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
-    content = content.decode('UTF-8')
+    content = content.decode('utf-8')
     assert 'modified: 2' in content
 
 def test_put_tiddler_json():
@@ -335,7 +335,7 @@ def test_get_tiddler_text_created():
     tiddler_url = 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne'
     response, content = http.request(tiddler_url, headers={'Accept': 'text/xml; q=1, text/plain'})
 
-    content = content.decode('UTF-8')
+    content = content.decode('utf-8')
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == u'Towels' # text
@@ -343,7 +343,7 @@ def test_get_tiddler_text_created():
     assert match('created: \d{12}', contents[1])
 
 def test_tiddler_bag_constraints():
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     http = httplib2.Http()
     _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['NONE'],write=['NONE'],create=['NONE'])))
 
@@ -428,7 +428,7 @@ def test_get_tiddler_via_recipe_with_perms():
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
             body=encoded_body)
@@ -436,14 +436,14 @@ def test_get_tiddler_via_recipe_with_perms():
     assert 'may not write' in content
 
     _put_policy('bag28', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['nancy'])))
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
             body=encoded_body)
     assert response['status'] == '403'
 
     _put_policy('bag28', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['cdent'])))
-    encoded_body = text_put_body.encode('UTF-8')
+    encoded_body = text_put_body.encode('utf-8')
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='PUT', headers={'Content-Type': 'text/plain'},
             body=encoded_body)

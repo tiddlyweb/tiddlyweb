@@ -61,7 +61,7 @@ def import_list(bag, urls):
 
 def import_one(bag, url):
     """Import one svn url into bag."""
-    print >> sys.stderr, "handling %s" % url.encode('UTF-8')
+    print >> sys.stderr, "handling %s" % url.encode('utf-8')
     if url.endswith('.recipe'):
         import_via_recipe(bag, url)
     elif url.endswith('.js'):
@@ -78,7 +78,7 @@ def import_via_recipe(bag, url):
     Will recurse recipes as it finds them. NO LOOP DETECTION.
     """
     recipe = get_url(url)
-    recipe = recipe.encode('UTF-8')
+    recipe = recipe.encode('utf-8')
     urls = handle_recipe(url, recipe)
     for url in urls:
         import_one(bag, url)
@@ -109,7 +109,7 @@ def get_url(url):
     Get the content at url, raising HTTPProblem if there is one.
     """
     try:
-        print >> sys.stderr, 'getting url: %s' % url.encode('UTF-8')
+        print >> sys.stderr, 'getting url: %s' % url.encode('utf-8')
         return _get_url(url)
     except HTTPError, exc:
         print >> sys.stderr, "HTTP Error while getting %s: %s" % (url, exc)
@@ -135,7 +135,7 @@ def import_tid_tiddler(bag, url):
     tiddler_title = urllib.unquote(url.split('/')[-1])
     tiddler_title = _strip_extension(tiddler_title, '.tid')
     if not type(tiddler_title) == unicode:
-        tiddler_title = unicode(tiddler_title, 'UTF-8')
+        tiddler_title = unicode(tiddler_title, 'utf-8')
     tiddler = Tiddler(tiddler_title, bag)
     tiddler = process_tid_tiddler(tiddler, content)
     _store().put(tiddler)

@@ -78,9 +78,9 @@ the content of this wiki</a>.
         """
 
         if tiddlers[0].recipe:
-            workspace = '/recipes/%s/tiddlers' % urllib.quote(tiddlers[0].recipe.encode('UTF-8'))
+            workspace = '/recipes/%s/tiddlers' % urllib.quote(tiddlers[0].recipe.encode('utf-8'))
         else:
-            workspace = '/bags/%s/tiddlers' % urllib.quote(tiddlers[0].bag.encode('UTF-8'))
+            workspace = '/bags/%s/tiddlers' % urllib.quote(tiddlers[0].bag.encode('utf-8'))
         browsable_url = server_base_url(self.environ) + workspace
 
         if len(tiddlers) == 1:

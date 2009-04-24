@@ -207,7 +207,7 @@ def _store_tiddler_revisions(environ, content, tiddler):
     serializer.object = tiddler
     for json_tiddler in reversed(json_tiddlers):
         json_string = simplejson.dumps(json_tiddler)
-        serializer.from_string(json_string.decode('UTF-8'))
+        serializer.from_string(json_string.decode('utf-8'))
         store.put(tiddler)
 
 
@@ -244,7 +244,7 @@ def _put_tiddler(environ, start_response, tiddler):
             serialize_type = web.get_serialize_type(environ)[0]
             serializer = Serializer(serialize_type, environ)
             serializer.object = tiddler
-            serializer.from_string(content.decode('UTF-8'))
+            serializer.from_string(content.decode('utf-8'))
         else:
             tiddler.text = content
 
