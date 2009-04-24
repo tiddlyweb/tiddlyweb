@@ -1,3 +1,8 @@
+0.9.28 Fri Apr 24 17:32:51 BST 2009
+
+  * Enable slashes in tiddler titles (except for at start)
+  * UTF-8 related refactorings.
+
 0.9.27 Fri Apr 10 16:07:19 BST 2009
 
   * Update default css to look like http://tiddlyweb.peermore.com/
