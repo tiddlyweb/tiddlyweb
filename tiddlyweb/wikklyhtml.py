@@ -19,7 +19,7 @@ def wikitext_to_wikklyhtml(base_url, path_url, wikitext):
         """
         Turn url information for a wikiword into a link.
         """
-        if '/' in url_fragment:
+        if '://' in url_fragment or url_fragment.startswith('/'):
             return url_fragment, True
         return '%s%s' % (base_url, urllib.quote(url_fragment, safe='')), False
 

@@ -16,6 +16,7 @@ from re import match
 
 from fixtures import muchdata, reset_textstore, teststore
 
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.user import User
 
 authorization = b64encode('cdent:cowpig')
@@ -353,6 +354,24 @@ def test_get_tiddler_text_created():
     assert contents[-1] == u'Towels' # text
     assert contents[-3] == u'tags: ' # tags
     assert match('created: \d{12}', contents[1])
+
+def test_get_tiddler_html_slash():
+    """
+    Create a tiddler with a tiddly link with a slash in it and make
+    sure it is escape properly.
+    """
+    tiddler = Tiddler('slashed', 'bag0')
+    tiddler.text = '[[test/tiddler]] and [[foo/bar|http://example.com/hassle]] and [[bar/baz|/happy/hour]]'
+    store.put(tiddler)
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/slashed', 
+            headers={'Accept:': 'text/html'})
+    assert response['status'] == '200'
+    assert 'test%2Ftiddler" >test/tiddler' in content
+    assert 'href="http://example.com/hassle"' in content
+    assert 'href="/happy/hour"' in content
+
 
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('utf-8')
