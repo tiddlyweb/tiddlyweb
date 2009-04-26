@@ -95,7 +95,7 @@ def handle_recipe(url, content):
             line.startswith('recipe:')]
     urls = []
     for rule in rules:
-        target = rule.split(':', 2)[1]
+        target = rule.split(':', 1)[1]
         target = target.lstrip().rstrip()
         if not '%' in target:
             target = urllib.quote(target)
@@ -189,7 +189,7 @@ def import_plugin(bag, url):
 
 
     title = [line for line in meta_content.split('\n') if line.startswith('title:')][0]
-    title = title.split(':', 2)[1].lstrip().rstrip()
+    title = title.split(':', 1)[1].lstrip().rstrip()
     tiddler_meta = '\n'.join([line for line in meta_content.split('\n') if not line.startswith('title:')])
 
     tiddler_meta.rstrip()
