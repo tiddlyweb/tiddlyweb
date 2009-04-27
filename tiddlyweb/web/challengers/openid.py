@@ -150,9 +150,16 @@ OpenID: <input name="openid" size="60" />
         if openid.endswith('/'):
             openid = openid.rstrip('/')
 
-        htmlpage = urllib.urlopen(openid).read()
+        try:
+            htmlpage = urllib.urlopen(openid).read()
+        except IOError, exc:
+            return self._send_openid_form(
+                    environ, start_response, redirect,
+                    message='Unable to talk to opendid server: %s' % exc)
+
         parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
         soup = parser.parse(htmlpage)
+
         try:
             link = soup.find('link', rel='openid.server')['href']
         except TypeError:
