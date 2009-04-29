@@ -51,13 +51,14 @@ def test_tiddler_fields_are_stored():
 def test_tiddler_fields_ignore_server():
     bag = Bag('bag0')
     store.put(bag)
-    tiddler = Tiddler('serverimpostor', bag='bag0')
-    tiddler.fields = {'field1': 'value1', 'server.host': 'value1', 'server.type': 'value2'}
+    tiddler = Tiddler('server\nimpostor', bag='bag0')
+    tiddler.tags = ['foo\nbar']
+    tiddler.fields = {'field1': 'value1\nafterlinefeed', 'server.host': 'value1', 'server.type': 'value2'}
     store.put(tiddler)
 
-    tiddler_second = Tiddler('serverimpostor', bag='bag0')
+    tiddler_second = Tiddler('server\nimpostor', bag='bag0')
     tiddler_second = store.get(tiddler_second)
-    assert tiddler_second.fields['field1'] == 'value1'
+    assert tiddler_second.fields['field1'] == 'value1\nafterlinefeed'
     assert 'server.host' not in tiddler_second.fields.keys()
     assert 'server.type' not in tiddler_second.fields.keys()
 

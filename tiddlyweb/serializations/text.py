@@ -99,7 +99,7 @@ class Serialization(SerializationInterface):
             tiddler.text = ''
         return 'modifier: %s\ncreated: %s\nmodified: %s\ntype: %s\ntags: %s%s\n%s\n' \
                 % (tiddler.modifier, tiddler.created, tiddler.modified, tiddler.type, \
-                self.tags_as(tiddler.tags), self.fields_as(tiddler), tiddler.text)
+                self.tags_as(tiddler.tags).replace('\n', '\\n'), self.fields_as(tiddler), tiddler.text)
 
     def fields_as(self, tiddler):
         """
@@ -109,7 +109,7 @@ class Serialization(SerializationInterface):
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):
-                info += '%s: %s\n' % (key, tiddler.fields[key])
+                info += '%s: %s\n' % (key, tiddler.fields[key].replace('\n', '\\n'))
         return info
 
     def as_tiddler(self, tiddler, input_string):
@@ -127,7 +127,7 @@ class Serialization(SerializationInterface):
             if hasattr(tiddler, field):
                 setattr(tiddler, field, value)
             else:
-                tiddler.fields[field] = value
+                tiddler.fields[field] = value.replace('\\n', '\n')
 
         # we used to raise TiddlerFormatError but there are
         # currently no rules for that...
