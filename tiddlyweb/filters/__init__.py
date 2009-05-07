@@ -1,4 +1,6 @@
 
+import cgi
+
 from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute
 from tiddlyweb.filters.sort import sort_by_attribute
 from tiddlyweb.filters.limit import limit
@@ -57,6 +59,28 @@ FILTER_PARSERS = {
         'sort':   sort_parse,
         'limit':  limit_parse,
         }
+
+
+def parse_for_filters(query_string):
+    if ';' in query_string:
+        strings = query_string.split(';')
+    else:
+        strings = query_string.split('&')
+
+    filters = []
+    leftovers = [] 
+    for string in strings:
+        query = cgi.parse_qs(string)
+        try:
+            key, value = query.items()[0]
+            func = FILTER_PARSERS[key](unicode(value[0], 'UTF-8'))
+            filters.append(func)
+        except(KeyError, IndexError):
+            leftovers.append(string)
+
+    leftovers = ';'.join(leftovers)
+    return filters, leftovers
+
 
 def recursive_filter(filters, tiddlers):
     if len(filters) == 0:

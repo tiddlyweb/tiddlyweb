@@ -17,17 +17,10 @@ def test_parsing():
     """
     string = 'slag=absolute;foo=;select=tag:systemConfig;select=tag:blog;fat=1;sort=-modified;limit=0,10;select=title:monkey'
 
-    environ = {}
-    environ['QUERY_STRING'] = string
-    environ['tiddlyweb.query'] = {}
-    parse_for_filters(environ)
+    filters, leftovers = parse_for_filters(string)
 
-    assert 'tiddlyweb.query' in environ
-    assert 'tiddlyweb.filters' in environ
-    assert len(environ['tiddlyweb.filters']) == 5
-    assert environ['tiddlyweb.query']['slag'][0] == 'absolute'
-
-    filters = environ['tiddlyweb.filters']
+    assert len(filters) == 5
+    assert leftovers == 'slag=absolute;foo=;fat=1'
 
     tiddlers = [Tiddler('a'), Tiddler('monkey')]
     tiddlers[1].tags = ['systemConfig', 'blog']

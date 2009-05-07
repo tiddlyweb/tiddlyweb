@@ -7,7 +7,7 @@ cgi.py users (dictionary of lists).
 
 import cgi
 
-from tiddlyweb.filters import FILTER_PARSERS
+from tiddlyweb.filters import parse_for_filters
 
 
 class Query(object):
@@ -36,27 +36,6 @@ class Query(object):
             content = environ['wsgi.input'].read(int(length))
             posted_data = cgi.parse_qs(content)
             environ['tiddlyweb.query'].update(posted_data)
-        parse_for_filters(environ)
-
-
-def parse_for_filters(environ):
-    query_string = environ.get('QUERY_STRING', '')
-    if ';' in query_string:
-        strings = query_string.split(';')
-    else:
-        strings = query_string.split('&')
-
-    filters = []
-    leftovers = [] 
-    for string in strings:
-        query = cgi.parse_qs(string)
-        try:
-            key, value = query.items()[0]
-            func = FILTER_PARSERS[key](value[0])
-            filters.append(func)
-        except(KeyError, IndexError):
-            leftovers.append(string)
-
-    leftovers = ';'.join(leftovers)
-    environ['tiddlyweb.query'].update(cgi.parse_qs(leftovers))
-    environ['tiddlyweb.filters'] = filters
+        filters, leftovers = parse_for_filters(environ.get('QUERY_STRING', ''))
+        environ['tiddlyweb.query'].update(cgi.parse_qs(leftovers))
+        environ['tiddlyweb.filters'] = filters
