@@ -14,19 +14,19 @@ from fixtures import recipe_list
 expected_string = """desc: 
 policy: {"read": [], "create": [], "manage": [], "write": [], "owner": null, "delete": []}
 
-/bags/bagone/tiddlers?filter=TiddlerOne
-/bags/bagtwo/tiddlers?filter=TiddlerTwo
-/bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
+/bags/bagone/tiddlers?select=title:TiddlerOne
+/bags/bagtwo/tiddlers?select=title:TiddlerTwo
+/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree"""
 
-no_desc = """/bags/bagone/tiddlers?filter=TiddlerOne
-/bags/bagtwo/tiddlers?filter=TiddlerTwo
-/bags/bagthree/tiddlers?filter=[tag[tagone]] [tag[tagthree]]"""
+no_desc = """/bags/bagone/tiddlers?select=title:TiddlerOne
+/bags/bagtwo/tiddlers?select=title:TiddlerTwo
+/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree"""
 
 expected_html_string = """<div id="recipedesc" class="description">Courage of Bags</div>
 <ul id="recipe" class="listing">
-<li><a href="/bags/bagone/tiddlers?filter=TiddlerOne">bag: bagone filter:TiddlerOne</a></li>
-<li><a href="/bags/bagtwo/tiddlers?filter=TiddlerTwo">bag: bagtwo filter:TiddlerTwo</a></li>
-<li><a href="/bags/bagthree/tiddlers?filter=%5Btag%5Btagone%5D%5D%20%5Btag%5Btagthree%5D%5D">bag: bagthree filter:[tag[tagone]] [tag[tagthree]]</a></li>
+<li><a href="/bags/bagone/tiddlers?select=title:TiddlerOne">bag: bagone filter:select=title:TiddlerOne</a></li>
+<li><a href="/bags/bagtwo/tiddlers?select=title:TiddlerTwo">bag: bagtwo filter:select=title:TiddlerTwo</a></li>
+<li><a href="/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree">bag: bagthree filter:select=tag:tagone;select=tag:tagthree</a></li>
 </ul>"""
 
 def setup_module(module):

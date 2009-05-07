@@ -72,7 +72,7 @@
   status: 200
   expected:
   - '"policy":'
-  - '["bag24", "tiddler4"]'
+  - '["bag24", "select=title:tiddler4"]'
   response_headers:
     content-type: application/json; charset=UTF-8
 
@@ -83,7 +83,7 @@
   expected:
   - "desc:"
   - "policy:"
-  - filter=tiddler6
+  - select=title:tiddler6
 
 # PUT a recipe using JSON. Any key not set will be
 # given defaults. Creating a recipe is controlled by

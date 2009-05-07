@@ -59,7 +59,7 @@ def test_json_search():
 
 def test_json_search_filtered():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;filter=[tag[tagtwo]]',
+    response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;select=tag:tagtwo',
             method='GET')
 
     assert response['status'] == '200'

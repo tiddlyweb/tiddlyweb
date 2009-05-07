@@ -6,7 +6,6 @@ import sys
 sys.path.append('.')
 
 from tiddlyweb import control
-from tiddlyweb import filter
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
@@ -24,7 +23,7 @@ def test_filter_by_text():
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = control.filter_tiddlers_from_bag(bag, filter.by_text, 'tiddler 0')
+    found_tiddlers = control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0')
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
@@ -35,7 +34,7 @@ def test_filter_by_text_string():
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = control.filter_tiddlers_from_bag(bag, '[text[tiddler 0]]')
+    found_tiddlers = control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0')
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
@@ -46,5 +45,5 @@ def test_filter_by_text_string_negate():
     bags_tiddlers = bag.list_tiddlers()
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = control.filter_tiddlers_from_bag(bag, '[!text[tiddler 0]]')
+    found_tiddlers = control.filter_tiddlers_from_bag(bag, 'select=text:!tiddler 0')
     assert len(found_tiddlers) == 9

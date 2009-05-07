@@ -56,7 +56,7 @@ def test_get_recipe_txt():
             method='GET')
 
     assert response['status'] == '200'
-    assert '/bags/bag8/tiddlers?filter=tiddler8' in content
+    assert '/bags/bag8/tiddlers?select=title:tiddler8' in content
 
 def test_get_recipe_not():
     """
@@ -123,7 +123,7 @@ def test_get_recipe_tiddler_list_disposition():
 
 def test_get_recipe_tiddler_list_filtered_one():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=tiddler8',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?select=title:tiddler8',
             method='GET')
 
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
@@ -132,14 +132,14 @@ def test_get_recipe_tiddler_list_filtered_one():
 
 def test_get_recipe_tiddler_list_filtered_empty():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=tiddlerfoo',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?select=title:tiddlerfoo',
             method='GET')
 
     assert response['status'] == '404'
 
 def test_get_recipe_tiddler_list_bogus_filter():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?filter=[sort[+monkey]]',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?sort=monkey',
             method='GET')
     assert response['status'] == '400'
     assert 'malformed filter' in content

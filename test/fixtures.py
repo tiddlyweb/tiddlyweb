@@ -48,15 +48,15 @@ bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
 
 recipe_list = [
-         [bagone, 'TiddlerOne'],
-         [bagtwo, 'TiddlerTwo'],
-         [bagthree, '[tag[tagone]] [tag[tagthree]]']
-         ]
+        [bagone, 'select=title:TiddlerOne'],
+        [bagtwo, 'select=title:TiddlerTwo'],
+        [bagthree, 'select=tag:tagone;select=tag:tagthree']
+        ]
 
 recipe_list_string = [
-         ['bagone', 'TiddlerOne'],
-         ['bagtwo', 'TiddlerTwo'],
-         ['bagthree', '[tag[tagone]] [tag[tagthree]]']
+        ['bagone', 'select=title:TiddlerOne'],
+        ['bagtwo', 'select=title:TiddlerTwo'],
+        ['bagthree', 'select=tag:tagone;select=tag:tagthree']
          ]
 
 class textstore:
@@ -87,9 +87,9 @@ def muchdata(store):
     recipe_list = [['bag1', '']]
     for numeral in range(0, 30, 2):
         bag_name = 'bag%s' % numeral
-        filter_string = 'tiddler%s' % (numeral % 10)
+        filter_string = 'select=title:tiddler%s' % (numeral % 10)
         if not (numeral % 10) % 3:
-            filter_string = filter_string + ' [tag[tag three]]'
+            filter_string = filter_string + ';select=tag:tag three'
         recipe_list.append([bag_name, filter_string])
     recipe.set_recipe(recipe_list)
 

@@ -6,7 +6,7 @@ produced by a recipe.
 
 import urllib
 
-from tiddlyweb.filter import FilterError
+from tiddlyweb.filters import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import \
@@ -66,7 +66,7 @@ def get_tiddlers(environ, start_response):
     Get the list of tiddlers produced by this
     recipe.
     """
-    filter_string = web.filter_query_string(environ)
+    filters = environ['tiddlyweb.filters']
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
@@ -83,7 +83,7 @@ def get_tiddlers(environ, start_response):
 
     # then filter those tiddlers
     try:
-        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
+        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
     tmp_bag = Bag('tmp_bag2', tmpbag=True)

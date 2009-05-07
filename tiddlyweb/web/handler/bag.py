@@ -8,7 +8,7 @@ These need some refactoring.
 
 import urllib
 
-from tiddlyweb.filter import FilterError
+from tiddlyweb.filters import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import \
         create_policy_check, UserRequiredError, ForbiddenError
@@ -79,7 +79,7 @@ def get_tiddlers(environ, start_response):
     bag. The information sent is dependent on the
     serialization chosen.
     """
-    filter_string = web.filter_query_string(environ)
+    filters = environ['tiddlyweb.filters']
 
     bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
@@ -89,7 +89,7 @@ def get_tiddlers(environ, start_response):
     bag.policy.allows(usersign, 'read')
 
     try:
-        tiddlers = control.filter_tiddlers_from_bag(bag, filter_string)
+        tiddlers = control.filter_tiddlers_from_bag(bag, filters)
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
     tmp_bag = Bag('tmp_bag', tmpbag=True)

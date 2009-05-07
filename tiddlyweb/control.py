@@ -10,7 +10,7 @@ like.
 """
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb import filter as fl
+from tiddlyweb.filters import parse_for_filters, recursive_filter
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.store import NoBagError
 
@@ -107,25 +107,21 @@ def get_tiddlers_from_bag(bag):
     return loaded_tiddlers
 
 
-def filter_tiddlers_from_bag(bag, filter, filterargs=None):
+def filter_tiddlers_from_bag(bag, filters):
     """
     Return the list of tiddlers resulting from filtering
-    bag by filter. filter may be a filter function, in
-    which case filterags may need to be set, or may be
-    a filter string.
-
-    Probably can do some meta-programming here.
+    bag by filter. The filter is a string that will be
+    parsed to a list of filters.
     """
     store = bag.store
-    if callable(filter):
-        if store:
-            return filter(filterargs, get_tiddlers_from_bag(bag))
-        return filter(filterargs, bag.list_tiddlers())
+
+    # XXX isinstance considered harmful
+    if isinstance(filters, basestring):
+        filters, leftovers = parse_for_filters(filters)
+    if store:
+        return recursive_filter(filters, get_tiddlers_from_bag(bag))
     else:
-        filters = fl.compose_from_string(filter)
-        if store:
-            return fl.by_composition(filters, get_tiddlers_from_bag(bag))
-        return fl.by_composition(filters, bag.list_tiddlers())
+        return recursive_filter(filters, bag.list_tiddlers())
 
 
 def _recipe_template(environ):

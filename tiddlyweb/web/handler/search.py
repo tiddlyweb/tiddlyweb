@@ -28,7 +28,7 @@ def get(environ, start_response):
     except (KeyError, IndexError):
         raise HTTP400('query string required')
 
-    filter_string = web.filter_query_string(environ)
+    filters = environ['tiddlyweb.filters']
 
     store = environ['tiddlyweb.store']
     try:
@@ -58,8 +58,8 @@ def get(environ, start_response):
             except(ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
 
-    if len(filter_string):
-        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filter_string)
+    if len(filters):
+        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
         tmp_bag = Bag('tmp_bag', tmpbag=True)
         tmp_bag.add_tiddlers(tiddlers)
 

@@ -13,7 +13,6 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
-from tiddlyweb import filter
 
 from fixtures import reset_textstore, muchdata, teststore
 
@@ -50,7 +49,7 @@ def test_construct_from_recipe():
     serializer.object = recipe
     html_text = serializer.to_string()
 
-    assert 'filter:tiddler8' in html_text
+    assert 'filter:select=title:tiddler8' in html_text
 
 def test_get_tiddlers_from_bag():
     """
@@ -74,6 +73,6 @@ def test_filter_tiddlers_from_bag():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    tiddlers = control.filter_tiddlers_from_bag(bag, '[tag[tagfour]]')
+    tiddlers = control.filter_tiddlers_from_bag(bag, 'select=tag:tagfour')
     assert len(tiddlers) == 3, 'there are 3 tiddlers when filters on tagfour'
 

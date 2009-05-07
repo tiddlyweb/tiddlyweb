@@ -60,7 +60,7 @@ class Serialization(SerializationInterface):
                 bag = bag.name
             line += '%s/bags/%s/tiddlers' % (self._server_prefix(), encode_name(bag))
             if filter_string:
-                line += '?filter=%s' % urllib.quote(filter_string.encode('utf-8'), safe='')
+                line += '?%s' % urllib.quote(filter_string.encode('utf-8'), safe=':=;')
             line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)
         output = "\n".join(lines)

@@ -45,7 +45,7 @@ class Serialization(SerializationInterface):
                 bag = bag.name
             line += '/bags/%s/tiddlers' % bag
             if filter_string:
-                line += '?filter=%s' % filter_string
+                line += '?%s' % filter_string
             lines.append(line)
         return "\n".join(lines)
 
@@ -150,8 +150,7 @@ class Serialization(SerializationInterface):
             for line in lines:
                 if '?' in line:
                     bag, query_string = line.split('?')
-                    request_info = cgi.parse_qs(query_string)
-                    filter_string = request_info.get('filter', [''])[0]
+                    filter_string = query_string
                 else:
                     bag = line
                     filter_string = ''

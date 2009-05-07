@@ -96,7 +96,7 @@ def test_get_tiddlers_from_bag():
 def test_filter_tiddlers():
     http = httplib2.Http()
 
-    response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers.json?filter=[tag[%s]]' \
+    response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers.json?select=tag:%s' \
             % (encoded_name, encoded_name),
             method='GET')
     assert response['status'] == '200'

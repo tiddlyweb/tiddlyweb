@@ -6,6 +6,14 @@ from tiddlyweb.filters.sort import sort_by_attribute
 from tiddlyweb.filters.limit import limit
 
 
+class FilterError(Exception):
+    """
+    An exception to throw when an attempt is made to
+    filter on an unavailable attribute.
+    """
+    pass
+
+
 def select_parse(command):
     attribute, args = command.split(':', 1)
 
@@ -73,7 +81,13 @@ def parse_for_filters(query_string):
         query = cgi.parse_qs(string)
         try:
             key, value = query.items()[0]
-            func = FILTER_PARSERS[key](unicode(value[0], 'UTF-8'))
+
+            try:
+                argument = unicode(value[0], 'UTF-8')
+            except TypeError:
+                argument = value[0]
+
+            func = FILTER_PARSERS[key](argument)
             filters.append(func)
         except(KeyError, IndexError):
             leftovers.append(string)
@@ -86,4 +100,7 @@ def recursive_filter(filters, tiddlers):
     if len(filters) == 0:
         return tiddlers
     filter = filters.pop(0)
-    return recursive_filter(filters, filter(tiddlers))
+    try:
+        return recursive_filter(filters, filter(tiddlers))
+    except AttributeError, exc:
+        raise FilterError('malformed filter: %s' % exc)
