@@ -1,3 +1,7 @@
+0.9.30 Thu May  7 13:21:14 BST 2009
+
+  * Cleanup index.cgi so separation between config and code more clear.
+
 0.9.29 Wed Apr 29 15:33:24 BST 2009
 
   * Deal with bag openid servers more appropriately.
