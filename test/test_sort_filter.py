@@ -14,13 +14,11 @@ from tiddlyweb.filters.sort import sort_by_attribute, ATTRIBUTE_ALTER
 ATTRIBUTE_ALTER['count'] = int
 
 tiddlers = [Tiddler('1'), Tiddler('c'), Tiddler('a'), Tiddler('b')]
-i = 0
 numbs = [5, 24, 13, 8]
 dates = ['200905090011', '20090509000000', '2008', '2007']
-for tiddler in tiddlers:
+for i, tiddler in enumerate(tiddlers):
     tiddler.fields['count'] = '%s' % numbs[i]
     tiddler.modified = dates[i]
-    i = i + 1
 
 
 def test_simple_sort():
