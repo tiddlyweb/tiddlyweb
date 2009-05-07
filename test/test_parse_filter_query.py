@@ -5,8 +5,6 @@ a CGI query string will become what we think it should.
 This test file is a playground for the moment.
 """
 
-import pprint
-
 from tiddlyweb.web.query import parse_for_filters
 
 def test_parsing():
@@ -24,6 +22,5 @@ def test_parsing():
 
     assert 'tiddlyweb.query' in environ
     assert 'tiddlyweb.filters' in environ
-    assert environ['tiddlyweb.filters'][0] == 'select tag:systemConfig'
-    assert environ['tiddlyweb.filters'][2] == 'sort -modified'
+    assert len(environ['tiddlyweb.filters']) == 5
     assert environ['tiddlyweb.query']['slag'][0] == 'absolute'
