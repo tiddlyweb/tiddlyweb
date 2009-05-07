@@ -7,9 +7,21 @@ handling once we have the filter.
 import py.test
 
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.filters.sort import sort_by_attribute
+from tiddlyweb.filters.sort import sort_by_attribute, ATTRIBUTE_ALTER
+
+        
+
+ATTRIBUTE_ALTER['count'] = int
 
 tiddlers = [Tiddler('1'), Tiddler('c'), Tiddler('a'), Tiddler('b')]
+i = 0
+numbs = [5, 24, 13, 8]
+dates = ['200905090011', '20090509000000', '2008', '2007']
+for tiddler in tiddlers:
+    tiddler.fields['count'] = '%s' % numbs[i]
+    tiddler.modified = dates[i]
+    i = i + 1
+
 
 def test_simple_sort():
     sorted_tiddlers = sort_by_attribute('title', tiddlers)
@@ -21,6 +33,17 @@ def test_reverse_sort():
     sorted_tiddlers = sort_by_attribute('title', tiddlers, reverse=True)
 
     assert ['c','b','a','1'] == [tiddler.title for tiddler in sorted_tiddlers]
+
+
+def test_count_sort():
+    sorted_tiddlers = sort_by_attribute('count', tiddlers)
+
+    assert ['5', '8', '13', '24'] == [tiddler.fields['count'] for tiddler in sorted_tiddlers]
+
+def test_modified_sort():
+    sorted_tiddlers = sort_by_attribute('modified', tiddlers)
+
+    assert ['2007', '2008', '20090509000000', '200905090011'] == [tiddler.modified for tiddler in sorted_tiddlers]
 
 
 def test_modifier_sort():

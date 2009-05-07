@@ -43,7 +43,7 @@ Sort:
 
 Select:
 
- Syntax: select=<key>:[!]<value>
+ Syntax: select=<key>:[!|<|>]<value>
 
     key: defines the attribute (or aspect) of the tiddlers on which to select
   value: the value that has to match (this should probably be a pattern)
