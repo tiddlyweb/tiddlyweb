@@ -4,6 +4,36 @@ Selection routines.
 
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
 
+MSELECT_SEPARATOR = ','
+
+def mselect_parse(command):
+    def selector(tiddlers):
+        return mselect(command, tiddlers)
+    return selector
+
+
+def select_parse(command):
+    attribute, args = command.split(':', 1)
+
+    if args.startswith('!'):
+        args = args.replace('!', '', 1)
+        def selector(tiddlers):
+            return select_by_attribute(attribute, args, tiddlers, negate=True)
+    elif args.startswith('<'):
+        args = args.replace('<', '', 1)
+        def selector(tiddlers):
+            return select_relative_attribute(attribute, args, tiddlers, lesser=True)
+    elif args.startswith('>'):
+        args = args.replace('>', '', 1)
+        def selector(tiddlers):
+            return select_relative_attribute(attribute, args, tiddlers, greater=True)
+    else:
+        def selector(tiddlers):
+            return select_by_attribute(attribute, args, tiddlers)
+
+    return selector
+
+
 def tag_in_tags(tiddler, attribute, value):
     return value in tiddler.tags
 
@@ -27,6 +57,15 @@ def default_func(tiddler, attribute, value):
             return False
 
 
+def mselect(command, tiddlers):
+    commands = command.split(MSELECT_SEPARATOR)
+    results = []
+    for command in commands:
+        func = select_parse(command)
+        results.extend(func(tiddlers))
+    return results
+
+
 def select_by_attribute(attribute, value, tiddlers, negate=False):
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
@@ -36,7 +75,6 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
 
 
 def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=False):
-
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x : x.lower())
 
     if greater:
