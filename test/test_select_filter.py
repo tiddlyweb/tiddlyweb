@@ -3,7 +3,7 @@ Tests on select style filters.
 """
 
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute
+from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute, ATTRIBUTE_SELECTOR
 
 tiddlers = [Tiddler('1'), Tiddler('c'), Tiddler('a'), Tiddler('b')]
 
@@ -12,6 +12,11 @@ dates = ['200905090011', '20090509000000', '2008', '2007']
 for i, tiddler in enumerate(tiddlers):
     tiddler.tags.append(tags[i])
     tiddler.modified = dates[i]
+
+def has_year(tiddler, attribute, value):
+    return tiddler.modified.startswith(value)
+
+ATTRIBUTE_SELECTOR['year'] = has_year
 
 
 def test_simple_select():
@@ -31,3 +36,10 @@ def test_sorted_select():
     selected_tiddlers = select_relative_attribute('modified', '2009', tiddlers, greater=True)
     assert ['1','c'] == [tiddler.title for tiddler in selected_tiddlers]
 
+def test_custom_select():
+    selected_tiddlers = select_by_attribute('year', '2009', tiddlers)
+    assert ['1','c'] == [tiddler.title for tiddler in selected_tiddlers]
+    selected_tiddlers = select_by_attribute('year', '2000', tiddlers)
+    assert [] == [tiddler.title for tiddler in selected_tiddlers]
+    selected_tiddlers = select_by_attribute('year', '2009', tiddlers, negate=True)
+    assert ['a','b'] == [tiddler.title for tiddler in selected_tiddlers]
