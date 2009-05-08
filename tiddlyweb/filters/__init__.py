@@ -1,7 +1,7 @@
 
 import cgi
 
-from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute, select_parse, mselect_parse
+from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute, select_parse
 from tiddlyweb.filters.sort import sort_by_attribute, sort_parse
 from tiddlyweb.filters.limit import limit, limit_parse
 
@@ -15,7 +15,6 @@ class FilterError(Exception):
 
 
 FILTER_PARSERS = {
-        'mselect': mselect_parse,
         'select': select_parse,
         'sort':   sort_parse,
         'limit':  limit_parse,

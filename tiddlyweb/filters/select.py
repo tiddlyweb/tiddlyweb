@@ -4,13 +4,6 @@ Selection routines.
 
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
 
-MSELECT_SEPARATOR = ','
-
-def mselect_parse(command):
-    def selector(tiddlers):
-        return mselect(command, tiddlers)
-    return selector
-
 
 def select_parse(command):
     attribute, args = command.split(':', 1)
@@ -55,15 +48,6 @@ def default_func(tiddler, attribute, value):
             return tiddler.fields[attribute] == value
         except KeyError:
             return False
-
-
-def mselect(command, tiddlers):
-    commands = command.split(MSELECT_SEPARATOR)
-    results = []
-    for command in commands:
-        func = select_parse(command)
-        results.extend(func(tiddlers))
-    return results
 
 
 def select_by_attribute(attribute, value, tiddlers, negate=False):
