@@ -1,3 +1,27 @@
+"""
+Overarching handler for TiddlyWeb filters.
+
+This is the second iteration of filters for TiddlyWeb.
+The first version was based on TiddlyWiki filters but
+this was found to be not entirely well suited to the
+HTTP situation in which TiddlyWeb finds itself, nor
+was it particularly easy to extend in a way that was
+simple, clear and powerful.
+
+This new style hopes to be some of those things.
+
+Filters are parsed from a string that is formatted
+as a CGI query string with parameters and arguments.
+The parameter is a filter type. Each filter is processed
+in sequence: the first processing all the tiddlers
+handed to it, the next taking only those that result
+from the first.
+
+Filters can be extended by adding more parsers to
+FILTER_PARSERS. Parsers for existing filter types
+may be extended as well (see the documentation for
+each type).
+"""
 
 import cgi
 
@@ -22,6 +46,13 @@ FILTER_PARSERS = {
 
 
 def parse_for_filters(query_string):
+    """
+    Take a string that looks like a CGI query
+    string and parse if for filters. Return
+    a tuple of a list of filter functions and
+    a string of whatever was in the query string that
+    did not result in a filter.
+    """
     if ';' in query_string:
         strings = query_string.split(';')
     else:
@@ -49,6 +80,14 @@ def parse_for_filters(query_string):
 
 
 def recursive_filter(filters, tiddlers):
+    """
+    Recursively process the list of filters found
+    by parse_for_filters against the given list
+    of tiddlers.
+
+    Each next filter processes only those tiddlers
+    that were results of the previous filter.
+    """
     if len(filters) == 0:
         return tiddlers
     filter = filters.pop(0)
