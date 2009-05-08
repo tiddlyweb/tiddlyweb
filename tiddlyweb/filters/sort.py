@@ -9,13 +9,13 @@ def date_to_canonical(x):
         x = x + '0' * gap
     return x
 
-ATTRIBUTE_ALTER = {
+ATTRIBUTE_SORT_KEY = {
         'modified': date_to_canonical
         }
 
 def sort_by_attribute(attribute, tiddlers, reverse=False):
 
-    func = ATTRIBUTE_ALTER.get(attribute, lambda x : x.lower())
+    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x : x.lower())
 
     def key_gen(x):
         try:

@@ -2,7 +2,7 @@
 Selection routines.
 """
 
-from tiddlyweb.filters.sort import ATTRIBUTE_ALTER
+from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
 
 def tag_in_tags(tiddler, attribute, value):
     return value in tiddler.tags
@@ -37,7 +37,7 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
 
 def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=False):
 
-    func = ATTRIBUTE_ALTER.get(attribute, lambda x : x.lower())
+    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x : x.lower())
 
     if greater:
         return [tiddler for tiddler in tiddlers if func(getattr(tiddler, attribute)) > func(value)]

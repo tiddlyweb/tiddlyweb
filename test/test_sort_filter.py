@@ -7,11 +7,11 @@ handling once we have the filter.
 import py.test
 
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.filters.sort import sort_by_attribute, ATTRIBUTE_ALTER
+from tiddlyweb.filters.sort import sort_by_attribute, ATTRIBUTE_SORT_KEY
 
         
 
-ATTRIBUTE_ALTER['count'] = int
+ATTRIBUTE_SORT_KEY['count'] = int
 
 tiddlers = [Tiddler('1'), Tiddler('c'), Tiddler('a'), Tiddler('b')]
 numbs = [5, 24, 13, 8]
