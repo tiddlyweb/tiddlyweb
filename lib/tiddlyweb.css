@@ -1,6 +1,6 @@
 body, h1, h2, h3, h4, div, ul {
 	padding:0;
-	margin:0;	
+	margin:0;
 }
 
 body {
@@ -36,7 +36,7 @@ div#header {
 		font-weight:normal;
 		color:#fff;
 	}
-	
+
 div#content {
 	display:block;
 	padding:1em 1em 2em 1em;
@@ -57,7 +57,7 @@ ul {
 	ul li {
 		margin-left:20px;
 	}
-	
+
 div.tiddler, ul.listing{
 	padding:1em;
 	border:solid 1px #666;
@@ -76,6 +76,6 @@ div#footer {
 	}
 
 	div#usergreet {
-		float:left;	
+		float:left;
 	}
-	
+
