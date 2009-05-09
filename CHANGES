@@ -1,3 +1,10 @@
+0.9.31 Sat May  9 22:46:46 BST 2009
+
+  * Enhance performance when checking bag policies by not listing tiddlers.
+  * Switch to new filter syntax: http://tiddlyweb.peermore.com/wiki/#filter
+    THIS IS A BACKWARDS INCOMPATIBLE CHANGE. YOU WILL NEED TO CHANGE YOUR
+    FILTER SETTINGS. See the website for instructions.
+
 0.9.30 Thu May  7 13:21:14 BST 2009
 
   * Cleanup index.cgi so separation between config and code more clear.
