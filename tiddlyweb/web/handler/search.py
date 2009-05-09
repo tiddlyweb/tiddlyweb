@@ -50,6 +50,7 @@ def get(environ, start_response):
                 tmp_bag.add_tiddler(store.get(tiddler))
         except KeyError:
             bag = Bag(tiddler.bag)
+            bag.skinny = True
             bag = store.get(bag)
             try:
                 bag.policy.allows(usersign, 'read')

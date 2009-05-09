@@ -98,6 +98,7 @@ def get_tiddlers(environ, start_response):
             policies[bag_name].allows(usersign, 'read')
         except KeyError:
             bag = Bag(tiddler.bag)
+            bag.skinny = True
             bag = store.get(bag)
             policy = bag.policy
             policies[bag_name] = policy

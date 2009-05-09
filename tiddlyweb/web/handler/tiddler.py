@@ -79,6 +79,7 @@ def _check_bag_constraint(environ, bag, constraint):
     store = environ['tiddlyweb.store']
     usersign = environ['tiddlyweb.usersign']
     try:
+        bag.skinny = True
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
     except NoBagError, exc:
