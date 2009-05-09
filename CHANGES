@@ -1,3 +1,7 @@
+0.9.32 Sat May  9 23:21:59 BST 2009
+
+  * Fix a packaging problem in 0.9.31.
+
 0.9.31 Sat May  9 22:46:46 BST 2009
 
   * Enhance performance when checking bag policies by not listing tiddlers.
