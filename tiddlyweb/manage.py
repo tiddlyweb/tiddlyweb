@@ -36,7 +36,7 @@ def make_command():
 
 @make_command()
 def server(args):
-    """Start the server: <host name or IP number> <port>"""
+    """Start the server using config settings. Provide <host name or IP number> <port> to override."""
     hostname = port = ''
     try:
         hostname, port = args[0:2]
