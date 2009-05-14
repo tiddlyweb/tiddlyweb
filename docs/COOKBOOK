@@ -62,8 +62,8 @@ You should see something like this:
      usage: List this help
 
 If it doesn't work then you are in an unsual situation. First make sure
-the stuff in README and RUN checks out okay and then contact
-TiddlyWikiDev for some assistance if not.
+the stuff in README checks out okay and then contact TiddlyWikiDev for
+some assistance if not.
 
 2. Create Your Base Store
 
