@@ -182,7 +182,7 @@
   status: 403
 
 # Write the bag, with a user.
-- name: PUT a tiddler in a restricted bag, and fail
+- name: PUT a tiddler in a restricted bag, and succeed
   method: PUT
   url: /bags/bagsample/tiddlers/tiddlersample
   request_headers:

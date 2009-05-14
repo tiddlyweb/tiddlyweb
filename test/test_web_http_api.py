@@ -86,15 +86,16 @@ def test_the_TESTS():
     for test_data in TESTS:
         test = dict(EMPTY_TEST)
         test.update(test_data)
-        print test['name']
-        full_url = base_url + test['url']
-        if test['method'] == 'GET' or test['method'] == 'DELETE':
-            response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
-        else:
-            response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
-                    body=test['data'])
-        assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
+        yield 'running %s' % test['name'], _run_test, test
 
+def _run_test(test):
+    full_url = base_url + test['url']
+    if test['method'] == 'GET' or test['method'] == 'DELETE':
+        response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
+    else:
+        response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
+                body=test['data'])
+    assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 def assert_response(response, content, status, headers=None, expected=None):
     if response['status'] == '500': print content
