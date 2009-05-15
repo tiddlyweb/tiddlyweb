@@ -58,16 +58,6 @@ def handle_extension(environ, resource_name):
     return resource_name
 
 
-def filter_query_string(environ):
-    """
-    Get the filter query string from tiddlyweb.query,
-    unencoding in the process.
-    """
-    filter_string = environ['tiddlyweb.query'].get('filter', [''])[0]
-    filter_string = urllib.unquote(filter_string)
-    return unicode(filter_string, 'utf-8')
-
-
 def http_date_from_timestamp(timestamp):
     """
     Turn a modifier or created tiddler timestamp

@@ -48,6 +48,15 @@ def test_head_root():
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert content == ''
 
+def test_with_header_and_css():
+    from tiddlyweb.config import config
+    config['css_uri'] = 'http://example.com/example.css'
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/', method='GET',
+            headers={'User-Agent': 'Mozilla/5'})
+    assert response['status'] == '200'
+    assert 'link rel="stylesheet" href="http://example.com/example.css"' in content
+
 def test_recipe_url():
     environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
     recipe = Recipe('hello')

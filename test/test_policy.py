@@ -106,3 +106,8 @@ def test_create_policy_check():
     py.test.raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", jeremy_info)')
     py.test.raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", roller_info)')
     py.test.raises(ForbiddenError, 'create_policy_check(weird_environ, "recipe", jeremy_info)')
+
+def test_malformed_policy():
+    policy = Policy()
+    policy.read = None # set the policy to a bad form
+    assert policy.allows(guest_info, 'read')

@@ -62,10 +62,18 @@ def test_redirect_to_challenge():
     _put_policy('bag28', dict(policy=dict(read=['cdent'],write=['cdent'])))
 
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8?select=tag:foo',
             method='GET')
     assert response['status'] == '401'
     assert 'cookie_form' in content
+    assert 'tiddlyweb_redirect=%2Frecipes%2Flong%2Ftiddlers%2Ftiddler8%3Fselect%3Dtag%3Afoo' in content
+
+def test_redirect_default_in_list():
+    """When we go to the challenge page directly, we should not get a tiddlyweb_redirect."""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/challenge', method='GET')
+    assert response['status'] == '401'
+    assert 'tiddlyweb_redirect=%2F' in content
 
 def test_simple_cookie_redirect():
     raised = 0

@@ -14,6 +14,7 @@ import simplejson
 from fixtures import muchdata, reset_textstore, teststore
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.stores import StorageInterface
 
 policy_dict = dict(
         read=['chris','jeremy','GUEST'],
@@ -289,6 +290,15 @@ def test_roundtrip_unicode_bag():
     bag_data = simplejson.loads(content)
     assert response['status'] == '200'
     assert bag_data['policy']['read'] == ['a','b','c','GUEST']
+
+def test_no_delete_store():
+    """
+    XXX: Not sure how to test this. We want to test for
+    StoreMethodNotImplemented raising HTTP400. But 
+    it is hard to inject in a false store.
+    """
+    pass
+
 
 def _put_policy(bag_name, policy_dict):
     """

@@ -50,3 +50,11 @@ def test_post_not_wiki_to_bag():
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
 
     assert response['status'] == '400'
+
+def test_post_not_wiki__type_to_bag():
+    content = "HI EVERYBODY!"
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
+            method='POST', headers={'Content-Type': 'text/plain'}, body=content)
+
+    assert response['status'] == '415'
