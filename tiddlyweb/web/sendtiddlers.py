@@ -57,7 +57,8 @@ def _validate_tiddler_list(environ, tiddlers):
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '%s:%s' % (_sha_tiddler_titles(tiddlers), last_modified_number)
+    etag_string = '%s:%s' % (_sha_tiddler_titles(tiddlers),
+            last_modified_number)
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
@@ -81,7 +82,8 @@ def _sha_tiddler_titles(tiddlers):
             container = tiddler.recipe
         else:
             container = tiddler.bag
-        digest.update(container.encode('utf-8') + tiddler.title.encode('utf-8'))
+        digest.update(container.encode('utf-8') +
+                tiddler.title.encode('utf-8'))
     return digest.hexdigest()
 
 

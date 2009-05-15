@@ -40,7 +40,8 @@ class Challenger(ChallengerInterface):
         sent content a request to the OpenID server and now must
         handle the response.
         """
-        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', ['/'])[0]
+        redirect = (environ['tiddlyweb.query'].
+                get('tiddlyweb_redirect', ['/'])[0])
         openid_mode = environ['tiddlyweb.query'].get('openid.mode', [None])[0]
 
         if openid_mode:
@@ -48,7 +49,8 @@ class Challenger(ChallengerInterface):
                 return self._handle_server_response(environ, start_response)
             if openid_mode == 'cancel':
                 return self._send_openid_form(
-                        environ, start_response, redirect, message='Try a different OpenID?')
+                        environ, start_response, redirect,
+                        message='Try a different OpenID?')
         return self._send_openid_form(environ, start_response, redirect)
 
     def challenge_post(self, environ, start_response):
@@ -57,13 +59,16 @@ class Challenger(ChallengerInterface):
         to find the server and send the user to talk to it. Otherwise, ask
         the user to fill out the form again.
         """
-        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', ['/'])[0]
+        redirect = (environ['tiddlyweb.query'].
+                get('tiddlyweb_redirect', ['/'])[0])
         openid = environ['tiddlyweb.query'].get('openid', [''])[0]
 
         if len(openid):
-            return self._find_speak_to_server(environ, start_response, redirect, openid)
+            return self._find_speak_to_server(environ, start_response,
+                    redirect, openid)
         else:
-            return self._send_openid_form(environ, start_response, redirect, message='Enter an OpenID')
+            return self._send_openid_form(environ, start_response, redirect,
+                    message='Enter an OpenID')
 
     def _handle_server_response(self, environ, start_response):
         """
@@ -84,7 +89,7 @@ class Challenger(ChallengerInterface):
             'openid.assoc_handle': request_info['openid.assoc_handle'][0],
             }
         for item in request_info['openid.signed'][0].split(','):
-            if item == 'mode' or item == 'sig' or item == 'signed' or item == 'assoc_handle':
+            if item in ['mode', 'sig', 'signed', 'assoc_handle']:
                 continue
             key = 'openid.%s' % item
             try:
@@ -96,11 +101,14 @@ class Challenger(ChallengerInterface):
         response = urllib.urlopen(openid_server, post_data).read()
 
         if 'is_valid:true' in response:
-            return self._respond_success(parsed_return_to, redirect, environ, start_response)
+            return self._respond_success(parsed_return_to, redirect, environ,
+                    start_response)
 
-        return self._send_openid_form(environ, start_response, redirect, status='401 Unauthorized', message=response)
+        return self._send_openid_form(environ, start_response, redirect,
+                status='401 Unauthorized', message=response)
 
-    def _respond_success(self, parsed_return_to, redirect, environ, start_response):
+    def _respond_success(self, parsed_return_to, redirect, environ,
+            start_response):
         """
         If the openid server validates our key checking, then
         set the cookie and redirect the user.
@@ -120,7 +128,8 @@ class Challenger(ChallengerInterface):
                     ('Location', uri)])
         return [uri]
 
-    def _send_openid_form(self, environ, start_response, redirect, status='200 OK', message=''):
+    def _send_openid_form(self, environ, start_response, redirect,
+            status='200 OK', message=''):
         """
         Send a form requesting an openid to the client.
         """
@@ -157,7 +166,8 @@ OpenID: <input name="openid" size="60" />
                     environ, start_response, redirect,
                     message='Unable to talk to opendid server: %s' % exc)
 
-        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+        parser = html5lib.HTMLParser(
+                tree=treebuilders.getTreeBuilder('beautifulsoup'))
         soup = parser.parse(htmlpage)
 
         try:
@@ -173,9 +183,10 @@ OpenID: <input name="openid" size="60" />
         except TypeError:
             pass
 
-        request_uri = '%s?openid.mode=checkid_setup&openid.identity=%s&openid.return_to=%s' \
-                % (link, urllib.quote(openid, safe=''),
-                        urllib.quote(self._return_to(environ, redirect, link, original_openid), safe=''))
+        request_uri = ('%s?openid.mode=checkid_setup&openid.identity=%s'
+                '&openid.return_to=%s' % (link, urllib.quote(openid, safe=''),
+                    urllib.quote(self._return_to(environ, redirect, link,
+                    original_openid), safe='')))
 
         logging.debug('302 to %s' % request_uri)
         raise HTTP302(request_uri)
@@ -185,11 +196,14 @@ OpenID: <input name="openid" size="60" />
         Generate the URL to which the user should return to after
         visiting their OpenID server.
         """
-        return '%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s&openid_server=%s&usersign=%s' \
-                % (web.server_base_url(environ), self._nonce(), redirect, link, usersign)
+        return ('%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s'
+                '&openid_server=%s&usersign=%s' % (
+                    web.server_base_url(environ), self._nonce(),
+                    redirect, link, usersign))
 
     def _nonce(self):
         """
         Generate a random string.
         """
-        return ''.join([random.choice('ABCDEFGHIJHKLMNOPQRSTUVWXYZ') for x in xrange(8)])
+        return ''.join([random.choice('ABCDEFGHIJHKLMNOPQRSTUVWXYZ') for
+            x in xrange(8)])

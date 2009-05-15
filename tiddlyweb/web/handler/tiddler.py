@@ -83,7 +83,8 @@ def _check_bag_constraint(environ, bag, constraint):
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
     except NoBagError, exc:
-        raise HTTP404('bag %s not found while checking policy, %s' % (bag.name, exc))
+        raise HTTP404('bag %s not found while checking policy, %s' %
+                (bag.name, exc))
 
 
 def _delete_tiddler(environ, start_response, tiddler):
@@ -317,7 +318,8 @@ def _validate_tiddler(environ, tiddler):
         logging.debug('attempting to validate incoming etag: %s against %s' %
                 (incoming_etag, tiddler_etag))
         if incoming_etag and incoming_etag != tiddler_etag:
-            raise HTTP412('Provided ETag does not match. Server content probably newer.')
+            raise HTTP412('Provided ETag does not match. '
+                'Server content probably newer.')
     etag = ('Etag', tiddler_etag)
     return last_modified, etag
 

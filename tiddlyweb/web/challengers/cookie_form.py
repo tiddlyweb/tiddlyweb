@@ -25,7 +25,8 @@ class Challenger(ChallengerInterface):
         """
         Respond to a GET request by sending a form.
         """
-        redirect = environ['tiddlyweb.query'].get('tiddlyweb_redirect', ['/'])[0]
+        redirect = (environ['tiddlyweb.query'].
+                get('tiddlyweb_redirect', ['/'])[0])
         return self._send_cookie_form(environ, start_response, redirect)
 
     def challenge_post(self, environ, start_response):
@@ -41,11 +42,14 @@ class Challenger(ChallengerInterface):
         try:
             user = query['user'][0]
             password = query['password'][0]
-            return self._validate_and_redirect(environ, start_response, user, password, redirect)
+            return self._validate_and_redirect(environ, start_response,
+                    user, password, redirect)
         except KeyError:
-            return self._send_cookie_form(environ, start_response, redirect, '401 Unauthorized')
+            return self._send_cookie_form(environ, start_response,
+                    redirect, '401 Unauthorized')
 
-    def _send_cookie_form(self, environ, start_response, redirect, status='200 OK', message=''):
+    def _send_cookie_form(self, environ, start_response, redirect,
+            status='200 OK', message=''):
         """
         Send a simple form to the client asking for a username
         and password.
@@ -65,7 +69,8 @@ Password <input type="password" name="password" size="40" />
 </pre>
 """ % (message, redirect)]
 
-    def _validate_and_redirect(self, environ, start_response, username, password, redirect):
+    def _validate_and_redirect(self, environ, start_response, username,
+            password, redirect):
         """
         Check a username and password. If valid, send a cookie
         to the client. If it is not, send the form again.
@@ -79,8 +84,10 @@ Password <input type="password" name="password" size="40" />
             if user.check_password(password):
                 uri = '%s%s' % (server_host_url(environ), redirect)
                 cookie = Cookie.SimpleCookie()
-                secret_string = sha('%s%s' % (user.usersign, secret)).hexdigest()
-                cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign, secret_string)
+                secret_string = sha('%s%s' % (user.usersign,
+                    secret)).hexdigest()
+                cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign,
+                        secret_string)
                 cookie['tiddlyweb_user']['path'] = self._cookie_path(environ)
                 logging.debug('303 to %s' % uri)
                 start_response('303 Other',
@@ -91,4 +98,5 @@ Password <input type="password" name="password" size="40" />
             pass
         except NoUserError:
             pass
-        return self._send_cookie_form(environ, start_response, redirect, status, 'User or Password no good')
+        return self._send_cookie_form(environ, start_response, redirect,
+                status, 'User or Password no good')

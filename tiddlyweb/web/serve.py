@@ -59,7 +59,8 @@ def start_simple(filename, hostname, port):
     port = int(config['server_host']['port'])
     httpd = WSGIServer((hostname, port), WSGIRequestHandler)
     httpd.set_app(load_app())
-    print >> sys.stderr, "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
+    print >> sys.stderr, ("Serving HTTP on %s port %s ..." %
+            httpd.socket.getsockname())
     httpd.serve_forever()
 
 
@@ -85,7 +86,7 @@ class Environator(object):
     """
     WSGI Middleware that doctors the environment
     to make it satisfactory to Selector no matter
-    what server has mounted us. This is likely to 
+    what server has mounted us. This is likely to
     be riddled with bugs, especially in the case where
     we have a server_prefix.
     """
@@ -99,10 +100,12 @@ class Environator(object):
         script_name = environ.get('SCRIPT_NAME', None)
         path_info = environ.get('PATH_INFO', None)
         query_string = environ.get('QUERY_STRING', None)
-        logging.debug('starting "%s" request with uri "%s", script_name "%s", path_info "%s" and query "%s"' % (
-            request_method, request_uri, script_name, path_info, query_string))
+        logging.debug('starting "%s" request with uri "%s", script_name "%s"'
+                ', path_info "%s" and query "%s"' % (request_method,
+                request_uri, script_name, path_info, query_string))
         # do no cleaning for now
         return self.application(environ, start_response)
+
 
 class Configurator(object):
     """

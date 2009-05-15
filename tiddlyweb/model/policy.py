@@ -144,6 +144,7 @@ def create_policy_check(environ, entity, usersign):
             else:
                 raise ForbiddenError('admin role required to create')
         except KeyError:
-            raise ForbiddenError('admin role required to create, user has no roles')
+            raise ForbiddenError(
+                    'admin role required to create, user has no roles')
 
     raise ForbiddenError('create access denied')

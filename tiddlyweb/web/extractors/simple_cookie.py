@@ -27,7 +27,8 @@ class Extractor(ExtractorInterface):
         """
         try:
             user_cookie = environ['HTTP_COOKIE']
-            logging.debug('simple_cookie looking at cookie string: %s' % user_cookie)
+            logging.debug('simple_cookie looking at cookie string: %s' %
+                    user_cookie)
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)
             cookie_value = cookie['tiddlyweb_user'].value

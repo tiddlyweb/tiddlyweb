@@ -207,6 +207,7 @@ def handle(args):
     else:
         usage(args)
 
+
 def _put(entity, content, serialization):
     """
     Put entity to store, by serializing content
@@ -222,4 +223,3 @@ def _store():
     """Get our Store from config."""
     return Store(config['server_store'][0],
             environ={'tiddlyweb.config': config})
-

@@ -37,6 +37,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.importer import handle_tiddler_div
 
+
 def new_url2pathname(pathname):
     return pathname
 

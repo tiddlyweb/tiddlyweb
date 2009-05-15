@@ -1,5 +1,5 @@
 """
-General utility routines shared by various 
+General utility routines shared by various
 web related modules.
 """
 
@@ -84,7 +84,7 @@ def http_date_from_timestamp(timestamp):
 
 def datetime_from_http_date(http_datestring):
     """
-    Turn an HTTP formatted date into a datetime 
+    Turn an HTTP formatted date into a datetime
     object.
     """
     http_datetime = datetime(*(time.strptime(http_datestring,

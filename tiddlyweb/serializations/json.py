@@ -36,7 +36,8 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        return simplejson.dumps([self._tiddler_dict(tiddler) for tiddler in bag.list_tiddlers()])
+        return simplejson.dumps([self._tiddler_dict(tiddler) for
+            tiddler in bag.list_tiddlers()])
 
     def recipe_as(self, recipe):
         """
@@ -46,7 +47,8 @@ class Serialization(SerializationInterface):
         policy_dict = {}
         for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
             policy_dict[key] = getattr(policy, key)
-        return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict, recipe=recipe.get_recipe()))
+        return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict,
+            recipe=recipe.get_recipe()))
 
     def as_recipe(self, recipe, input_string):
         """
@@ -109,7 +111,8 @@ class Serialization(SerializationInterface):
         Turn a JSON dictionary into a Tiddler.
         """
         dict_from_input = simplejson.loads(input_string)
-        accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields', 'text', 'type']
+        accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
+                'text', 'type']
         for key, value in dict_from_input.iteritems():
             if value and key in accepted_keys:
                 setattr(tiddler, key, value)
@@ -124,7 +127,8 @@ class Serialization(SerializationInterface):
         a dictonary.
         """
         unwanted_keys = ['text', 'store']
-        wanted_keys = [attribute for attribute in tiddler.slots if attribute not in unwanted_keys]
+        wanted_keys = [attribute for attribute in tiddler.slots if
+                attribute not in unwanted_keys]
         wanted_info = {}
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute, None)
@@ -148,5 +152,6 @@ class Serialization(SerializationInterface):
             bag.skinny = True
             bag = tiddler.store.get(bag)
             if 'tiddlyweb.usersign' in self.environ:
-                perms = bag.policy.user_perms(self.environ['tiddlyweb.usersign'])
+                perms = bag.policy.user_perms(
+                        self.environ['tiddlyweb.usersign'])
         return perms

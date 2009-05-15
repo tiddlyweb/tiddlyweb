@@ -11,7 +11,8 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import \
         create_policy_check, UserRequiredError, ForbiddenError
-from tiddlyweb.store import NoRecipeError, NoBagError, StoreMethodNotImplemented
+from tiddlyweb.store import NoRecipeError, NoBagError, \
+        StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
 from tiddlyweb.web.sendtiddlers import send_tiddlers
@@ -79,7 +80,8 @@ def get_tiddlers(environ, start_response):
         tmp_bag = Bag('tmp_bag1', tmpbag=True)
         tmp_bag.add_tiddlers(tiddlers)
     except NoBagError, exc:
-        raise HTTP404('recipe %s lists an unknown bag: %s' % (recipe.name, exc))
+        raise HTTP404('recipe %s lists an unknown bag: %s' %
+                (recipe.name, exc))
 
     # then filter those tiddlers
     try:

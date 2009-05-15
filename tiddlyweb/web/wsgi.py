@@ -45,10 +45,14 @@ class HTMLPresenter(object):
 
     def __call__(self, environ, start_response):
         output = self.application(environ, start_response)
-        if 'tiddlyweb.title' in environ and 'Mozilla' in environ['HTTP_USER_AGENT']:
+        if self._needs_title(environ):
             output = ''.join(output)
             return [self._header(environ), output, self._footer(environ)]
         return output
+
+    def _needs_title(self, environ):
+        return ('tiddlyweb.title' in environ and 'Mozilla'
+                in environ['HTTP_USER_AGENT'])
 
     def _header(self, environ):
         """
@@ -76,7 +80,8 @@ class HTMLPresenter(object):
 %s
 </div>
 <div id="content">
-""" % (environ['tiddlyweb.title'], css, links, environ['tiddlyweb.title'], header_extra)
+""" % (environ['tiddlyweb.title'], css, links,
+        environ['tiddlyweb.title'], header_extra)
 
     def _footer(self, environ):
         """

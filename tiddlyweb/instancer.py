@@ -27,6 +27,7 @@ from tiddlyweb.store import Store
 
 CONFIG_NAME = 'tiddlywebconfig.py'
 
+
 def _generate_secret():
     """
     Create a somewhat random secret to be used

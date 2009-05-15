@@ -5,6 +5,7 @@ Miscellaneous utility functions for TiddlyWeb.
 import codecs
 import os
 
+
 class LockError(IOError):
     """
     This process was unable to get a lock.

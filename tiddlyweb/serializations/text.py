@@ -37,7 +37,8 @@ class Serialization(SerializationInterface):
         policy_dict = {}
         for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
             policy_dict[key] = getattr(policy, key)
-        lines = ['desc: %s' % recipe.desc, 'policy: %s' % simplejson.dumps(policy_dict), '']
+        lines = ['desc: %s' % recipe.desc, 'policy: %s' %
+                simplejson.dumps(policy_dict), '']
 
         for bag, filter_string in recipe.get_recipe():
             line = ''
@@ -97,9 +98,12 @@ class Serialization(SerializationInterface):
         """
         if not tiddler.text:
             tiddler.text = ''
-        return 'modifier: %s\ncreated: %s\nmodified: %s\ntype: %s\ntags: %s%s\n%s\n' \
-                % (tiddler.modifier, tiddler.created, tiddler.modified, tiddler.type, \
-                self.tags_as(tiddler.tags).replace('\n', '\\n'), self.fields_as(tiddler), tiddler.text)
+        return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
+                '%s\ntags: %s%s\n%s\n' %
+                (tiddler.modifier, tiddler.created, tiddler.modified,
+                    tiddler.type,
+                    self.tags_as(tiddler.tags).replace('\n', '\\n'),
+                    self.fields_as(tiddler), tiddler.text))
 
     def fields_as(self, tiddler):
         """
@@ -109,7 +113,8 @@ class Serialization(SerializationInterface):
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):
-                info += '%s: %s\n' % (key, tiddler.fields[key].replace('\n', '\\n'))
+                info += '%s: %s\n' % (key,
+                        tiddler.fields[key].replace('\n', '\\n'))
         return info
 
     def as_tiddler(self, tiddler, input_string):

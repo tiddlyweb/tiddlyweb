@@ -6,7 +6,7 @@ import logging
 import urllib
 
 from base64 import b64encode
-            
+
 import html5lib
 from html5lib import treebuilders
 
@@ -43,7 +43,8 @@ class Serialization(SerializationInterface):
         """
         try:
             from tiddlyweb.importer import import_wiki
-            return import_wiki(self.environ['tiddlyweb.store'], input_string, bag.name)
+            return import_wiki(self.environ['tiddlyweb.store'], input_string,
+                    bag.name)
         except ImportError:
             raise NoSerializationError
 
@@ -78,7 +79,8 @@ the content of this wiki</a>.
         """
 
         if tiddlers[0].recipe:
-            workspace = '/recipes/%s/tiddlers' % encode_name(tiddlers[0].recipe)
+            workspace = '/recipes/%s/tiddlers' % encode_name(
+                    tiddlers[0].recipe)
         else:
             workspace = '/bags/%s/tiddlers' % encode_name(tiddlers[0].bag)
         browsable_url = server_base_url(self.environ) + workspace
@@ -106,7 +108,8 @@ the content of this wiki</a>.
 
         # Turn the title into HTML and then turn it into
         # plain text so it is of a form satisfactory to <title>
-        title = self._determine_title(title, candidate_title, candidate_subtitle)
+        title = self._determine_title(title, candidate_title,
+                candidate_subtitle)
         title = self._plain_textify_string(title)
 
         # load the wiki
@@ -114,14 +117,16 @@ the content of this wiki</a>.
         # put the title in place
         wiki = self._inject_title(wiki, title)
 
-        wiki = self._replace_chunk(wiki, '\n<noscript>\n', '\n</noscript>\n', self._no_script(browsable_url))
+        wiki = self._replace_chunk(wiki, '\n<noscript>\n', '\n</noscript>\n',
+                self._no_script(browsable_url))
 
         # replace the markup bits
         if len(found_markup_tiddlers):
             for title in found_markup_tiddlers:
                 start = '\n<!--%s-START-->\n' % MARKUPS[title]
                 finish = '\n<!--%s-END-->\n' % MARKUPS[title]
-                wiki = self._replace_chunk(wiki, start, finish, found_markup_tiddlers[title])
+                wiki = self._replace_chunk(wiki, start, finish,
+                        found_markup_tiddlers[title])
 
         # split the wiki into the before store and after store
         # sections, put our content in the middle
@@ -135,7 +140,8 @@ the content of this wiki</a>.
         text.
         """
         output = wikitext_to_wikklyhtml('', '', unicode(title))
-        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('beautifulsoup'))
+        parser = html5lib.HTMLParser(
+                tree=treebuilders.getTreeBuilder('beautifulsoup'))
         soup = parser.parse(output)
         title = soup.findAll(text=True)
         return ''.join(title).rstrip().lstrip()
@@ -176,7 +182,8 @@ the content of this wiki</a>.
         """
         Read base_tiddlywiki from its location.
         """
-        base_tiddlywiki = open(self.environ['tiddlyweb.config']['base_tiddlywiki'])
+        base_tiddlywiki = open(
+                self.environ['tiddlyweb.config']['base_tiddlywiki'])
         wiki = base_tiddlywiki.read()
         base_tiddlywiki.close()
         wiki = unicode(wiki, 'utf-8')
@@ -228,7 +235,8 @@ the content of this wiki</a>.
                     bag = Bag(tiddler.bag)
                     bag.skinny = True
                     bag = store.get(bag)
-                    perms = bag.policy.user_perms(environ['tiddlyweb.usersign'])
+                    perms = bag.policy.user_perms(
+                            environ['tiddlyweb.usersign'])
             return perms
 
         perms = []
@@ -255,9 +263,11 @@ the content of this wiki</a>.
             return 'data:$s;base64,%s' % (tiddler.type, b64text)
         else:
             if tiddler.type.startswith('image'):
-                return '\n<html><img src="%s" /></html>\n' % tiddler_url(self.environ, tiddler)
+                return ('\n<html><img src="%s" /></html>\n' %
+                        tiddler_url(self.environ, tiddler))
             else:
-                return '\n<html><a href="%s">%s</a></html>\n' % (tiddler_url(self.environ, tiddler), tiddler.title)
+                return ('\n<html><a href="%s">%s</a></html>\n' %
+                        (tiddler_url(self.environ, tiddler), tiddler.title))
 
     def _tiddler_fields(self, fields):
         """
