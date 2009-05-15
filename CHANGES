@@ -1,3 +1,10 @@
+0.9.33 Fri May 15 19:58:43 BST 2009
+
+  * Remove out of data documentation, provide more pointers to
+    http://tiddlyweb.peermore.com/
+  * Make pep8 and test coverage related changes throughout the code.
+  * Remove ordering within bags, for performance gain.
+
 0.9.32 Sat May  9 23:21:59 BST 2009
 
   * Fix a packaging problem in 0.9.31.
