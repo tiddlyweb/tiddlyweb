@@ -21,6 +21,7 @@ def limit_parse(count='0'):
         index, count = count.split(',', 1)
     index = int(index)
     count = int(count)
+
     def limiter(tiddlers):
         return limit(tiddlers, index=index, count=count)
 
@@ -33,4 +34,3 @@ def limit(tiddlers, count=0, index=0):
     on a count and index.
     """
     return tiddlers[index:index+count]
-

@@ -21,7 +21,7 @@ check for the presence of a tag in the tags attribute with
     select=tag:tagvalue
 
 An attribute function takes a tiddler, an attribute name and
-a value, may do anything it wants with it, and must return 
+a value, may do anything it wants with it, and must return
 True or False.
 
 '!' negates a selection, getting all those tiddlers that
@@ -31,7 +31,7 @@ don't match.
 
 '<' gets those tiddlers that sort less than the value.
 
-When doing sorting ATTRIBUTE_SORT_KEY is consulted to  
+When doing sorting ATTRIBUTE_SORT_KEY is consulted to
 canonicalize the value. See tiddlyweb.filters.sort.
 """
 
@@ -41,7 +41,7 @@ from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
 def select_parse(command):
     """
     Parse a select parse command into
-    attributes and arguments and return a 
+    attributes and arguments and return a
     function (for later use) which will do
     the selecting.
     """
@@ -49,17 +49,26 @@ def select_parse(command):
 
     if args.startswith('!'):
         args = args.replace('!', '', 1)
+
         def selector(tiddlers):
             return select_by_attribute(attribute, args, tiddlers, negate=True)
+
     elif args.startswith('<'):
         args = args.replace('<', '', 1)
+
         def selector(tiddlers):
-            return select_relative_attribute(attribute, args, tiddlers, lesser=True)
+            return select_relative_attribute(attribute, args, tiddlers,
+                    lesser=True)
+
     elif args.startswith('>'):
         args = args.replace('>', '', 1)
+
         def selector(tiddlers):
-            return select_relative_attribute(attribute, args, tiddlers, greater=True)
+            return select_relative_attribute(attribute, args, tiddlers,
+                    greater=True)
+
     else:
+
         def selector(tiddlers):
             return select_by_attribute(attribute, args, tiddlers)
 
@@ -73,10 +82,11 @@ def tag_in_tags(tiddler, attribute, value):
     """
     return value in tiddler.tags
 
+
 def text_in_text(tiddler, attribute, value):
     """
     Return true if the provide tiddler has
-    the string provide in value in its 
+    the string provide in value in its
     text attribute.
     """
     return value in tiddler.text
@@ -92,7 +102,7 @@ def default_func(tiddler, attribute, value):
     """
     Look in the tiddler for an attribute with the
     provided value. First proper attributes are
-    checked, then extended fields. If neither of 
+    checked, then extended fields. If neither of
     these are present, return False.
     """
     try:
@@ -112,21 +122,26 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
     """
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
-        return [tiddler for tiddler in tiddlers if not select(tiddler, attribute, value)]
+        return [tiddler for tiddler in tiddlers if not
+                select(tiddler, attribute, value)]
     else:
-        return [tiddler for tiddler in tiddlers if select(tiddler, attribute, value)]
+        return [tiddler for tiddler in tiddlers if
+                select(tiddler, attribute, value)]
 
 
-def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=False):
+def select_relative_attribute(attribute, value, tiddlers,
+        greater=False, lesser=False):
     """
     Select tiddlers that sort greater or less than the provided value
     for the provided attribute.
     """
-    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x : x.lower())
+    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
     if greater:
-        return [tiddler for tiddler in tiddlers if func(getattr(tiddler, attribute)) > func(value)]
+        return [tiddler for tiddler in tiddlers if
+                func(getattr(tiddler, attribute)) > func(value)]
     elif lesser:
-        return [tiddler for tiddler in tiddlers if func(getattr(tiddler, attribute)) < func(value)]
+        return [tiddler for tiddler in tiddlers if
+                func(getattr(tiddler, attribute)) < func(value)]
     else:
         return tiddlers

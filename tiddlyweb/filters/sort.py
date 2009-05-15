@@ -41,9 +41,12 @@ def sort_parse(attribute):
     """
     if attribute.startswith('-'):
         attribute = attribute.replace('-', '', 1)
+
         def sorter(tiddlers):
             return sort_by_attribute(attribute, tiddlers, reverse=True)
+
     else:
+
         def sorter(tiddlers):
             return sort_by_attribute(attribute, tiddlers)
 
@@ -52,13 +55,13 @@ def sort_parse(attribute):
 
 def sort_by_attribute(attribute, tiddlers, reverse=False):
     """
-    Sort a group of tiddlers by some attribute. 
+    Sort a group of tiddlers by some attribute.
     Inspect ATTRIBUTE_SORT_KEY to see if there is a special
     function by which we should generate the value for this
     attribute.
     """
 
-    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x : x.lower())
+    func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
     def key_gen(x):
         try:

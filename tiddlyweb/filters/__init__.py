@@ -25,7 +25,8 @@ each type).
 
 import cgi
 
-from tiddlyweb.filters.select import select_by_attribute, select_relative_attribute, select_parse
+from tiddlyweb.filters.select import select_by_attribute, \
+        select_relative_attribute, select_parse
 from tiddlyweb.filters.sort import sort_by_attribute, sort_parse
 from tiddlyweb.filters.limit import limit, limit_parse
 
@@ -40,8 +41,8 @@ class FilterError(Exception):
 
 FILTER_PARSERS = {
         'select': select_parse,
-        'sort':   sort_parse,
-        'limit':  limit_parse,
+        'sort': sort_parse,
+        'limit': limit_parse,
         }
 
 
@@ -59,7 +60,7 @@ def parse_for_filters(query_string):
         strings = query_string.split('&')
 
     filters = []
-    leftovers = [] 
+    leftovers = []
     for string in strings:
         query = cgi.parse_qs(string)
         try:
