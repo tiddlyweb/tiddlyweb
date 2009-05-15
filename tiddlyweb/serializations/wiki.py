@@ -99,12 +99,13 @@ the content of this wiki</a>.
         found_markup_tiddlers = {}
         for tiddler in tiddlers:
             lines += self._tiddler_as_div(tiddler)
-            if tiddler.title == 'SiteTitle':
+            tiddler_title = tiddler.title
+            if tiddler_title == 'SiteTitle':
                 candidate_title = tiddler.text
-            if tiddler.title == 'SiteSubtitle':
+            if tiddler_title == 'SiteSubtitle':
                 candidate_subtitle = tiddler.text
-            if tiddler.title in markup_tiddlers:
-                found_markup_tiddlers[tiddler.title] = tiddler.text
+            if tiddler_title in markup_tiddlers:
+                found_markup_tiddlers[tiddler_title] = tiddler.text
 
         # Turn the title into HTML and then turn it into
         # plain text so it is of a form satisfactory to <title>

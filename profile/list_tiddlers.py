@@ -38,6 +38,7 @@ def make_tiddlers_for_bag():
         tiddler = Tiddler(name, bag.name)
         tiddler.text = name
         store.put(tiddler)
+    print 'stored', time()
 
 def profile_listing_tiddlers():
     store = Store('text', environ=environ)

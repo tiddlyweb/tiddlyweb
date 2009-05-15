@@ -83,9 +83,12 @@ class Bag(dict):
         a tiddler of the same name in the bag.
         """
         tiddler = self._tiddler_copy(tiddler)
-        if self._tiddler_key(tiddler) in self.order:
-            self.order.remove(self._tiddler_key(tiddler))
-        self.order.append(self._tiddler_key(tiddler))
+        tiddler_key = self._tiddler_key(tiddler)
+        try:
+            self.order.remove(tiddler_key)
+        except ValueError:
+            pass
+        self.order.append(tiddler_key)
         self.__setitem__(tiddler)
 
     def add_tiddlers(self, tiddlers):
