@@ -44,7 +44,7 @@ def load_app(prefix=''):
     return app
 
 
-def start_simple(filename, hostname, port):
+def start_simple():
     """
     Start a wsgiref.simple_server to run our app.
 
