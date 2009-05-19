@@ -128,7 +128,7 @@ class Store(StorageInterface):
             bag.desc = self._read_bag_description(bag_path)
             bag.policy = self._read_policy(bag_path)
         except IOError, exc:
-            raise NoBagError('unable to read policy or description: %s' % exc)
+            raise NoBagError('unable to read policy or description at %s: %s' % (bag_path, exc))
 
         return bag
 
@@ -287,8 +287,7 @@ class Store(StorageInterface):
         """
         List all the bags in the store.
         """
-        path = os.path.join(self._store_root(), 'bags')
-        bags = self._files_in_dir(path)
+        bags = self._bag_filenames()
 
         return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
 
@@ -322,8 +321,7 @@ class Store(StorageInterface):
         Search in the store for tiddlers that match search_query.
         This is intentionally simple, slow and broken to encourage overriding.
         """
-        path = os.path.join(self._store_root(), 'bags')
-        bags = self._files_in_dir(path)
+        bags = self._bag_filenames()
         found_tiddlers = []
 
         query = search_query.lower()
@@ -351,6 +349,13 @@ class Store(StorageInterface):
                     logging.warn('malformed tiddler during search: %s:%s' %
                             (bagname, tiddler_name))
         return found_tiddlers
+
+    def _bag_filenames(self):
+        """
+        List the filenames that are bags.
+        """
+        path = os.path.join(self._store_root(), 'bags')
+        return self._files_in_dir(path)
 
     def _bag_path(self, bag_name):
         """
