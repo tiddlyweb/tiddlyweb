@@ -1,5 +1,7 @@
 """
 Try to setup tiddlyweb.
+Seem to be missing some details on how to make
+this the best it can be.
 """
 
 try:
@@ -15,6 +17,7 @@ setup(name = 'tiddlyweb',
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://tiddlyweb.peermore.com/',
+        download_url = 'http://tiddlyweb.peermore.com/dist/',
         packages = ['tiddlyweb', 'tiddlyweb.filters', 'tiddlyweb.model', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler', 'cherrypy', 'cherrypy.wsgiserver'],
         scripts = ['twanager',],
         platforms = 'Posix; MacOS X; Windows',
