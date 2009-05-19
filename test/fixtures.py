@@ -67,7 +67,6 @@ def reset_textstore():
         shutil.rmtree('store')
 
 def muchdata(store):
-    print store.storage
     for bag_numeral in range(30):
         bag = create_bag(store, bag_numeral)
         for tiddler_numeral in range(10):
