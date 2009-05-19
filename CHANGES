@@ -1,6 +1,6 @@
 0.9.33 Fri May 15 19:58:43 BST 2009
 
-  * Remove out of data documentation, provide more pointers to
+  * Remove out of date documentation, provide more pointers to
     http://tiddlyweb.peermore.com/
   * Make pep8 and test coverage related changes throughout the code.
   * Remove ordering within bags, for performance gain.
