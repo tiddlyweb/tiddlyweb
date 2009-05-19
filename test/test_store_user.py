@@ -5,11 +5,13 @@ sys.path.append('.')
 
 import py.test
 
-from fixtures import textstore, reset_textstore, teststore
+import tiddlyweb.stores.text
+
+from fixtures import reset_textstore, teststore
 from tiddlyweb.store import NoUserError
 from tiddlyweb.model.user import User
 
-expected_stored_filename = os.path.join(textstore.user_store, 'cdent')
+expected_stored_filename = os.path.join('store', 'users', 'cdent')
 
 def setup_module(module):
     reset_textstore()
@@ -21,6 +23,9 @@ def test_simple_put():
     user.add_role('ADMIN')
     user.add_role('BOSS')
     store.put(user)
+
+    if type(store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
 
     assert os.path.exists(expected_stored_filename)
 

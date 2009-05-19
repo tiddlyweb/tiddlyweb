@@ -7,6 +7,9 @@ import os
 import sys
 sys.path.append('.')
 
+import py.test
+
+import tiddlyweb.stores.text
 from tiddlyweb.store import NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.bag import Bag
@@ -19,6 +22,8 @@ from fixtures import reset_textstore, muchdata, teststore
 def setup_module(module):
     reset_textstore()
     module.store = teststore()
+    if type(module.store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
     muchdata(module.store)
 
 def test_many_bags_and_tiddlers():

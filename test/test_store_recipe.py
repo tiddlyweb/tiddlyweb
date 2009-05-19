@@ -8,10 +8,14 @@ import sys
 import shutil
 sys.path.append('.')
 
-from fixtures import textstore, reset_textstore, recipe_list_string, teststore
+import py.test
+
+import tiddlyweb.stores.text
+
+from fixtures import reset_textstore, recipe_list_string, teststore
 from tiddlyweb.model.recipe import Recipe
 
-expected_stored_filename = os.path.join(textstore.recipe_store, 'testrecipe')
+expected_stored_filename = os.path.join('store', 'recipes', 'testrecipe')
 
 expected_stored_content = """desc: I enjoy being stored
 policy: {"read": [], "create": [], "manage": [], "write": [], "owner": null, "delete": []}
@@ -37,6 +41,9 @@ def test_recipe_put():
     recipe.set_recipe(recipe_list_string)
     store.put(recipe)
 
+    if type(store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
+    
     assert os.path.exists(expected_stored_filename), \
             'path %s should be created' \
             % expected_stored_filename

@@ -12,16 +12,16 @@ import os
 import sys
 sys.path.append('.')
 
-from fixtures import bagone, bagfour, textstore, reset_textstore, teststore
+from fixtures import bagone, bagfour, reset_textstore, teststore
 from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
 from tiddlyweb.util import write_lock, LockError
-import tiddlyweb.stores.text as texter
+
 import py.test
 
-expected_stored_filename = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne', '1')
+expected_stored_filename = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne', '1')
 
 expected_stored_text = """modifier: AuthorOne
 created: 
@@ -50,6 +50,9 @@ def test_simple_put():
     tiddler.modified = '200803030303'
     store.put(tiddler)
 
+    if type(store.storage) != Texter:
+        py.test.skip('skipping this test for non-text store')
+    
     assert os.path.exists(expected_stored_filename)
 
     f = file(expected_stored_filename)
@@ -108,17 +111,29 @@ def test_get_revision():
 def test_delete():
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
 
-    assert os.path.exists(os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'RevisionTiddler'))
+    if type(store.storage) != Texter:
+        py.test.skip('skipping this test for non-text store')
+    
+    assert os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
     store.delete(tiddler)
-    assert not os.path.exists(os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'RevisionTiddler'))
+    assert not os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
 
 def test_failed_delete_not_there():
     tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    # in case we skipped deleting it above, delete it again
+    try:
+        store.delete(tiddler)
+    except NoTiddlerError:
+        pass
     py.test.raises(NoTiddlerError, 'store.delete(tiddler)')
 
 def test_failed_delete_perms():
     tiddler = Tiddler(title='TiddlerOne', bag='bagone')
-    path = os.path.join(textstore.bag_store, 'bagone', 'tiddlers', 'TiddlerOne')
+
+    if type(store.storage) != Texter:
+        py.test.skip('skipping this test for non-text store')
+    
+    path = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne')
     assert os.path.exists(path)
     os.chmod(path, 0555)
     py.test.raises(IOError, 'store.delete(tiddler)')
@@ -129,11 +144,13 @@ def test_store_lock():
     Make the sure the locking system throws the proper lock.
     """
 
-    texter = Texter(environ={'tiddlyweb.config': {'server_store': ['text', {'store_root': 'store'}]}})
-    write_lock(textstore.bag_store)
-    py.test.raises(LockError, 'write_lock(textstore.bag_store)')
+    if type(store.storage) != Texter:
+        py.test.skip('skipping this test for non-text store')
+    
+    write_lock('store/bags')
+    py.test.raises(LockError, 'write_lock("store/bags")')
 
-    write_lock(textstore.bag_store + '/bagone/tiddlers/foobar')
+    write_lock('store/bags' + '/bagone/tiddlers/foobar')
     tiddler = Tiddler('foobar')
     tiddler.text='hello'
     tiddler.bag = 'bagone'

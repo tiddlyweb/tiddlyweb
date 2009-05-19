@@ -21,6 +21,7 @@ import os
 import sys
 sys.path.append('.')
 
+import tiddlyweb.stores.text
 from tiddlyweb.store import NoBagError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
@@ -34,6 +35,8 @@ import py.test
 def setup_module(module):
     reset_textstore()
     module.store = teststore()
+    if type(module.store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
 
 def test_no_bag_for_tiddler():
     tiddler = Tiddler(title='testnobag')

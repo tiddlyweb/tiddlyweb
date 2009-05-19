@@ -34,8 +34,8 @@ def setup_module(module):
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
-    module.store = teststore()
     reset_textstore()
+    module.store = teststore()
     muchdata(module.store)
 
 def test_get_bag_tiddler_list_default():

@@ -59,24 +59,15 @@ recipe_list_string = [
         ['bagthree', 'select=tag:tagone;select=tag:tagthree']
          ]
 
-class textstore:
-
-    store_dirname = 'store'
-    bag_store = os.path.join(store_dirname, 'bags')
-    recipe_store = os.path.join(store_dirname, 'recipes')
-    user_store = os.path.join(store_dirname, 'users')
-
 def teststore():
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
 def reset_textstore():
-    if os.path.exists(textstore.store_dirname):
-        shutil.rmtree(textstore.store_dirname)
-    os.makedirs(textstore.bag_store)
-    os.makedirs(textstore.recipe_store)
-    os.makedirs(textstore.user_store)
+    if os.path.exists('store'):
+        shutil.rmtree('store')
 
 def muchdata(store):
+    print store.storage
     for bag_numeral in range(30):
         bag = create_bag(store, bag_numeral)
         for tiddler_numeral in range(10):

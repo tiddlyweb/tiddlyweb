@@ -10,6 +10,8 @@ sys.path.append('.')
 
 import py.test
 
+import tiddlyweb.stores.text
+
 from fixtures import tiddlers, bagone, reset_textstore, teststore
 from tiddlyweb.store import NoBagError
 from tiddlyweb.model.bag import Bag
@@ -22,6 +24,9 @@ def setup_module(module):
 def test_simple_put():
     bagone.desc = 'I enjoy being stored'
     store.put(bagone)
+
+    if type(store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
 
     assert os.path.exists('store/bags/bagone'), \
             'path %s should be created' \

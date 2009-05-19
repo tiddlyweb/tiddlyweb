@@ -12,8 +12,8 @@ from tiddlyweb.model.bag import Bag
 from fixtures import muchdata, reset_textstore, teststore
 
 def setup_module(module):
-    module.store = teststore()
     reset_textstore()
+    module.store = teststore()
     muchdata(module.store)
 
 def test_filter_by_text():
