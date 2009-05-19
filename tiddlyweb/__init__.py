@@ -29,6 +29,6 @@ Bags and Tiddlers. See the tiddlyweb.model package.
 __version__ = '0.9.33'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __copyright__ = 'Copyright UnaMesa Association 2008-2009'
-__contributors__ = ['Frederick Dohr',
+__contributors__ = ['Frederik Dohr',
         'Zac Bir']
 __license__ = 'BSD'
