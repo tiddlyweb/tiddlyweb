@@ -175,7 +175,10 @@ def put(environ, start_response):
         bag.skinny = True
         bag = store.get(bag)
         bag.policy.allows(usersign, 'manage')
-        delattr(bag, 'skinny')
+        try:
+            delattr(bag, 'skinny')
+        except AttributeError:
+            pass
     except NoBagError:
         create_policy_check(environ, 'bag', usersign)
 
