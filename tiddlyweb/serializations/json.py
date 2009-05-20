@@ -112,9 +112,9 @@ class Serialization(SerializationInterface):
         """
         dict_from_input = simplejson.loads(input_string)
         accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
-                'text', 'type']
+                'revision', 'text', 'type']
         for key, value in dict_from_input.iteritems():
-            if value and key in accepted_keys:
+            if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
         if tiddler.type and tiddler.type != 'None':
             tiddler.text = b64decode(tiddler.text)
