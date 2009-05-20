@@ -1,3 +1,11 @@
+0.9.34 Wed May 20 15:05:26 BST 2009
+
+  * Bring ordering in bags back, it is important.
+  * Decode JSON tiddlers correctly, including revision and handling empty
+    text.
+  * Clean up the text store to make it more subclassable.
+  * Make the majority of test work with any store.
+
 0.9.33 Fri May 15 19:58:43 BST 2009
 
   * Remove out of date documentation, provide more pointers to
