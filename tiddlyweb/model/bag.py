@@ -34,6 +34,7 @@ class Bag(dict):
         self.policy = Policy() # set to default policy
         self.tmpbag = tmpbag
         self.revbag = revbag
+        self.order = []
         self.searchbag = searchbag
         self.store = None
 
@@ -83,6 +84,11 @@ class Bag(dict):
         """
         tiddler = self._tiddler_copy(tiddler)
         tiddler_key = self._tiddler_key(tiddler)
+        try:
+            self.order.remove(tiddler_key)
+        except ValueError:
+            pass
+        self.order.append(tiddler_key)
         self.__setitem__(tiddler)
 
     def add_tiddlers(self, tiddlers):
@@ -97,6 +103,11 @@ class Bag(dict):
         """
         Remove the provided tiddler from the bag.
         """
+        tiddler_key = self._tiddler_key(tiddler)
+        try:
+            self.order.remove(tiddler_key)
+        except ValueError:
+            pass
         self.__delitem__(tiddler)
 
     def list_tiddlers(self):
@@ -104,4 +115,4 @@ class Bag(dict):
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        return self.values()
+        return [self.get(keyword, None) for keyword in self.order]

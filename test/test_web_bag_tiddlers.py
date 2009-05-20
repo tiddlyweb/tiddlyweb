@@ -8,6 +8,7 @@ sys.path.append('.')
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import simplejson
 
 from tiddlyweb.model.bag import Bag
 
@@ -26,6 +27,14 @@ def setup_module(module):
     reset_textstore()
     module.store = teststore()
     muchdata(module.store)
+
+def test_get_sorted_tiddlers():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
+            method='GET')
+    assert response['status'] == '200'
+    tiddlers = simplejson.loads(content)
+    assert tiddlers[0]['title'] == 'tiddler0'
 
 def test_post_wiki_to_bag():
     bag = Bag('wikibag')
