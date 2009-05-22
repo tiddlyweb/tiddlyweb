@@ -89,6 +89,10 @@ class Tiddler(object):
 
         A title is required to ceate a tiddler.
         """
+        if title:
+            title = unicode(title)
+        if bag:
+            bag = unicode(bag)
         self.title = title
         self.bag = bag
 

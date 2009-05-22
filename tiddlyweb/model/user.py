@@ -16,8 +16,10 @@ class User(object):
     """
 
     def __init__(self, usersign, note=None):
-        self.usersign = usersign
+        self.usersign = unicode(usersign)
         self.note = note
+        if self.note:
+            self.note = unicode(self.note)
         self._password = None
         self.roles = set()
 

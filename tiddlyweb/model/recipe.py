@@ -27,8 +27,8 @@ class Recipe(list):
 
     def __init__(self, name, desc=''):
         list.__init__(self)
-        self.name = name
-        self.desc = desc
+        self.name = unicode(name)
+        self.desc = unicode(desc)
         self.store = None
         self.policy = Policy()
 

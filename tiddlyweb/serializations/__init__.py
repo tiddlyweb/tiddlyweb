@@ -117,7 +117,7 @@ class SerializationInterface(object):
             if ' ' in tag:
                 tag = '[[%s]]' % tag
             tag_string_list.append(tag)
-        return ' '.join(tag_string_list)
+        return u' '.join(tag_string_list)
 
     def _html_encode(self, text):
         """

@@ -29,8 +29,8 @@ class Bag(dict):
     def __init__(self, name, desc='',
             tmpbag=False, revbag=False, searchbag=False):
         dict.__init__(self)
-        self.name = name
-        self.desc = desc
+        self.name = unicode(name)
+        self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
         self.tmpbag = tmpbag
         self.revbag = revbag

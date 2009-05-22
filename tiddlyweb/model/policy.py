@@ -80,12 +80,12 @@ class Policy(object):
         role_list = [x[2:] for x in info_list if x.startswith('R:')]
 
         # always reject if the constraint is NONE
-        if len(user_list) == 1 and user_list[0] == 'NONE':
+        if len(user_list) == 1 and user_list[0] == u'NONE':
             raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
         # always allow if the constraint is ANY
-        if len(user_list) == 1 and user_list[0] == 'ANY':
-            if user_sign is not 'GUEST':
+        if len(user_list) == 1 and user_list[0] == u'ANY':
+            if user_sign != u'GUEST':
                 return True
 
         # if there is an intersection between the users roles and any roles
@@ -99,7 +99,7 @@ class Policy(object):
 
         # if the user is set to GUEST (meaning nobody in credentials)
         # then we don't pass, and we need a user
-        if user_sign == 'GUEST':
+        if user_sign == u'GUEST':
             raise UserRequiredError('real user required to %s' % constraint)
 
         # we've fallen through, the user we have matches nothing
@@ -131,15 +131,15 @@ def create_policy_check(environ, entity, usersign):
     if policy == '':
         return True
 
-    if policy == 'ANY':
-        if usersign['name'] != 'GUEST':
+    if policy == u'ANY':
+        if usersign['name'] != u'GUEST':
             return True
         else:
             raise UserRequiredError('authenticated user required to create')
 
-    if policy == 'ADMIN':
+    if policy == u'ADMIN':
         try:
-            if 'ADMIN' in usersign['roles']:
+            if u'ADMIN' in usersign['roles']:
                 return True
             else:
                 raise ForbiddenError('admin role required to create')
