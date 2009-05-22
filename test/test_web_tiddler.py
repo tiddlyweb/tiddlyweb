@@ -6,6 +6,8 @@ import sys
 import os
 sys.path.append('.')
 
+import py.test
+
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
@@ -15,6 +17,8 @@ from base64 import b64encode
 from re import match
 
 from fixtures import muchdata, reset_textstore, _teststore
+
+import tiddlyweb.stores.text
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.user import User
@@ -189,6 +193,9 @@ def test_put_tiddler_json_bad_path():
     """
     http = httplib2.Http()
 
+    if type(store.storage) != tiddlyweb.stores.text.Store:
+        py.test.skip('skipping this test for non-text store')
+
     json = simplejson.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/..%2F..%2F..%2F..%2FTestThree',
@@ -197,9 +204,6 @@ def test_put_tiddler_json_bad_path():
     assert response['status'] == '404', 'response status should be 404 is %s' % response['status']
 
 def test_put_tiddler_json_no_bag():
-    """
-    / in tiddler title is an unresolved source of some confusion.
-    """
     http = httplib2.Http()
 
     json = simplejson.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))

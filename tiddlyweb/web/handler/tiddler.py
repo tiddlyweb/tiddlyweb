@@ -74,17 +74,14 @@ def put(environ, start_response):
 def _check_bag_constraint(environ, bag, constraint):
     """
     Check to see if the bag allows the current user
-    to perform the requested action.
+    to perform the requested action. Lets NoBagError
+    raise.
     """
     store = environ['tiddlyweb.store']
     usersign = environ['tiddlyweb.usersign']
-    try:
-        bag.skinny = True
-        bag = store.get(bag)
-        bag.policy.allows(usersign, constraint)
-    except NoBagError, exc:
-        raise HTTP404('bag %s not found while checking policy, %s' %
-                (bag.name, exc))
+    bag.skinny = True
+    bag = store.get(bag)
+    bag.policy.allows(usersign, constraint)
 
 
 def _delete_tiddler(environ, start_response, tiddler):
