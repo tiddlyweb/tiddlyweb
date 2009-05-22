@@ -32,15 +32,16 @@ def test_tiddler_fields_dict():
 
 def test_tiddler_fields_contains_stuff():
     tiddler = Tiddler('feebles')
-    tiddler.fields = {'this':'is cool', 'so':'is that'}
+    tiddler.fields = {u'this':u'is cool', u'so':u'is that'}
     assert tiddler.fields['this'] == 'is cool'
     assert tiddler.fields['so'] == 'is that'
 
 def test_tiddler_fields_are_stored():
     bag = Bag('bag0')
+    print 'bo ', bag.policy.owner
     store.put(bag)
     tiddler = Tiddler('feebles', bag='bag0')
-    tiddler.fields = {'field1': 'value1', 'field2': 'value2'}
+    tiddler.fields = {u'field1': u'value1', u'field2': u'value2'}
     store.put(tiddler)
 
     tiddler_second = Tiddler('feebles', bag='bag0')
@@ -52,8 +53,8 @@ def test_tiddler_fields_ignore_server():
     bag = Bag('bag0')
     store.put(bag)
     tiddler = Tiddler('server\nimpostor', bag='bag0')
-    tiddler.tags = ['foo\nbar']
-    tiddler.fields = {'field1': 'value1\nafterlinefeed', 'server.host': 'value1', 'server.type': 'value2'}
+    tiddler.tags = [u'foo\nbar']
+    tiddler.fields = {u'field1': u'value1\nafterlinefeed', u'server.host': u'value1', u'server.type': u'value2'}
     store.put(tiddler)
 
     tiddler_second = Tiddler('server\nimpostor', bag='bag0')
