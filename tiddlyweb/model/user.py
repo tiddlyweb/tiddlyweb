@@ -27,7 +27,7 @@ class User(object):
         """
         Add the named role (a string) to this user.
         """
-        self.roles.add(role)
+        self.roles.add(unicode(role))
 
     def del_role(self, role):
         """
