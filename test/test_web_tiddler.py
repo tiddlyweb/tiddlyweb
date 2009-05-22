@@ -14,7 +14,7 @@ import simplejson
 from base64 import b64encode
 from re import match
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.user import User
@@ -42,7 +42,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
     user = User('cdent')

@@ -17,11 +17,11 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
 
-from fixtures import reset_textstore, muchdata, teststore
+from fixtures import reset_textstore, muchdata, _teststore
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     if type(module.store.storage) != tiddlyweb.stores.text.Store:
         py.test.skip('skipping this test for non-text store')
     muchdata(module.store)

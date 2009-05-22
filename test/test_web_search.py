@@ -10,7 +10,7 @@ import wsgi_intercept
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -23,7 +23,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_simple_search():

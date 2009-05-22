@@ -9,11 +9,11 @@ from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_filter_by_text():

@@ -11,18 +11,18 @@ import httplib2
 import urllib
 import simplejson
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.stores import StorageInterface
 
 policy_dict = dict(
-        read=['chris','jeremy','GUEST'],
-        write=['chris','jeremy'],
-        create=['chris','jeremy'],
-        delete=['chris'],
+        read=[u'chris',u'jeremy',u'GUEST'],
+        write=[u'chris',u'jeremy'],
+        create=[u'chris',u'jeremy'],
+        delete=[u'chris'],
         manage=[],
-        owner='chris')
+        owner=u'chris')
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -35,7 +35,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_get_bag_tiddler_list_default():

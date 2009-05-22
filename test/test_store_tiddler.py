@@ -12,7 +12,7 @@ import os
 import sys
 sys.path.append('.')
 
-from fixtures import bagone, bagfour, reset_textstore, teststore
+from fixtures import bagone, bagfour, reset_textstore, _teststore
 from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError
 from tiddlyweb.model.tiddler import Tiddler
@@ -37,7 +37,7 @@ def setup_module(module):
     Need to clean up the store here.
     """
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
 
 def test_simple_put():
     """
@@ -168,5 +168,7 @@ def test_bad_filename():
     """
     If there is ../ in the tiddler name, choke.
     """
+    if type(store.storage) != Texter:
+        py.test.skip('skipping this test for non-text store')
     tiddler = Tiddler('../nastyone', 'bagone')
     py.test.raises(NoTiddlerError, 'store.put(tiddler)')

@@ -9,7 +9,7 @@ import httplib2
 
 from tiddlyweb.model.tiddler import Tiddler
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -22,7 +22,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_get_wiki():
@@ -37,10 +37,11 @@ def test_get_wiki():
 
 def test_get_wiki_with_title():
     tiddler = Tiddler('SiteTitle')
-    tiddler.bag = 'bag1'
-    tiddler.text = 'Wow //cow// moo'
+    tiddler.bag = u'bag1'
+    tiddler.text = u'Wow //cow// moo'
 
     store.put(tiddler)
+
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
@@ -51,8 +52,8 @@ def test_get_wiki_with_title():
     assert 'Wow //cow// moo' in content
 
     tiddler = Tiddler('SiteSubtitle')
-    tiddler.bag = 'bag1'
-    tiddler.text = 'MooCow'
+    tiddler.bag = u'bag1'
+    tiddler.text = u'MooCow'
     store.put(tiddler)
 
     http = httplib2.Http()
@@ -64,7 +65,7 @@ def test_get_wiki_with_title():
     assert 'MooCow' in content
 
     tiddler = Tiddler('SiteTitle')
-    tiddler.bag = 'bag1'
+    tiddler.bag = u'bag1'
     store.delete(tiddler)
 
     http = httplib2.Http()

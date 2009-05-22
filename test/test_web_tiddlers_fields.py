@@ -13,7 +13,7 @@ import simplejson
 
 from tiddlyweb.serializer import Serializer
 
-from fixtures import reset_textstore, teststore, muchdata
+from fixtures import reset_textstore, _teststore, muchdata
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -26,7 +26,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_put_tiddler_with_fields():

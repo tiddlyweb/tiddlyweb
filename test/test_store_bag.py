@@ -12,14 +12,14 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import tiddlers, bagone, reset_textstore, teststore
+from fixtures import tiddlers, bagone, reset_textstore, _teststore
 from tiddlyweb.store import NoBagError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
 
 def test_simple_put():
     bagone.desc = 'I enjoy being stored'
@@ -50,7 +50,8 @@ def test_simple_get():
     bag = Bag(name='bagone')
     bag = store.get(bag)
 
-    assert bag.list_tiddlers()[0].title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
+    print bag.list_tiddlers()
+    assert bag.list_tiddlers()[0].title == tiddler.title
     assert bag.list_tiddlers()[0].text == None
     assert bag.list_tiddlers()[0].tags == []
     assert bag.policy.read == bagone.policy.read

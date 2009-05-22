@@ -22,17 +22,17 @@ config['server_host'] = {
 
 TiddlerOne = Tiddler('TiddlerOne')
 TiddlerOne.modifier = 'AuthorOne'
-TiddlerOne.text = 'c tiddler one content'
+TiddlerOne.text = u'c tiddler one content'
 TiddlerOne.tags = ['tagone', 'tagtwo']
 
 TiddlerTwo = Tiddler('TiddlerTwo')
-TiddlerTwo.modifier = 'AuthorTwo'
-TiddlerTwo.text = 'b tiddler two content'
+TiddlerTwo.modifier = u'AuthorTwo'
+TiddlerTwo.text = u'b tiddler two content'
 
 TiddlerThree = Tiddler('TiddlerThree')
-TiddlerThree.modifier = 'AuthorThree'
-TiddlerThree.text = 'a tiddler three content'
-TiddlerThree.tags = ['tagone', 'tagthree']
+TiddlerThree.modifier = u'AuthorThree'
+TiddlerThree.text = u'a tiddler three content'
+TiddlerThree.tags = [u'tagone', u'tagthree']
 
 tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree]
 
@@ -48,18 +48,18 @@ bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
 
 recipe_list = [
-        [bagone, 'select=title:TiddlerOne'],
-        [bagtwo, 'select=title:TiddlerTwo'],
-        [bagthree, 'select=tag:tagone;select=tag:tagthree']
+        [bagone, u'select=title:TiddlerOne'],
+        [bagtwo, u'select=title:TiddlerTwo'],
+        [bagthree, u'select=tag:tagone;select=tag:tagthree']
         ]
 
 recipe_list_string = [
-        ['bagone', 'select=title:TiddlerOne'],
-        ['bagtwo', 'select=title:TiddlerTwo'],
-        ['bagthree', 'select=tag:tagone;select=tag:tagthree']
+        [u'bagone', u'select=title:TiddlerOne'],
+        [u'bagtwo', u'select=title:TiddlerTwo'],
+        [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
          ]
 
-def teststore():
+def _teststore():
     return Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
 def reset_textstore():
@@ -74,12 +74,12 @@ def muchdata(store):
 
     recipe = Recipe('long')
 
-    recipe_list = [['bag1', '']]
+    recipe_list = [[u'bag1', '']]
     for numeral in range(0, 30, 2):
-        bag_name = 'bag%s' % numeral
-        filter_string = 'select=title:tiddler%s' % (numeral % 10)
+        bag_name = u'bag%s' % numeral
+        filter_string = u'select=title:tiddler%s' % (numeral % 10)
         if not (numeral % 10) % 3:
-            filter_string = filter_string + ';select=tag:tag three'
+            filter_string = filter_string + u';select=tag:tag three'
         recipe_list.append([bag_name, filter_string])
     recipe.set_recipe(recipe_list)
 
@@ -89,14 +89,14 @@ def muchdata(store):
 def create_tiddler(store, bag, numeral):
     tiddler = Tiddler('tiddler%s' % numeral)
     tiddler.bag = bag.name
-    tiddler.text = 'i am tiddler %s' % numeral
-    tags = ['basic tag']
+    tiddler.text = u'i am tiddler %s' % numeral
+    tags = [u'basic tag']
     if not numeral % 2:
-        tags.append('tagtwo')
+        tags.append(u'tagtwo')
     if not numeral % 3:
-        tags.append('tagthree')
+        tags.append(u'tagthree')
     if not numeral % 4:
-        tags.append('tagfour')
+        tags.append(u'tagfour')
     tiddler.tags = tags
     if tiddler.title == 'tiddler8':
         tiddler.modified = '200805230303'

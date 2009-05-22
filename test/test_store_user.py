@@ -7,7 +7,7 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import reset_textstore, teststore
+from fixtures import reset_textstore, _teststore
 from tiddlyweb.store import NoUserError
 from tiddlyweb.model.user import User
 
@@ -15,7 +15,7 @@ expected_stored_filename = os.path.join('store', 'users', 'cdent')
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
 
 def test_simple_put():
     user = User('cdent', note='foo')

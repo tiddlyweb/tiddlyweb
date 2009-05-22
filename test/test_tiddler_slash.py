@@ -7,14 +7,14 @@ import os
 import sys
 sys.path.append('.')
 
-from fixtures import reset_textstore, teststore
+from fixtures import reset_textstore, _teststore
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     module.bag = Bag('bag/puss')
     module.store.put(module.bag)
 

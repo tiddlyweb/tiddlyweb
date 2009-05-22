@@ -12,7 +12,7 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import reset_textstore, recipe_list_string, teststore
+from fixtures import reset_textstore, recipe_list_string, _teststore
 from tiddlyweb.model.recipe import Recipe
 
 expected_stored_filename = os.path.join('store', 'recipes', 'testrecipe')
@@ -29,7 +29,7 @@ def setup_module(module):
     Need to clean up the store here.
     """
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
 
 def test_recipe_put():
     """

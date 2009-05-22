@@ -13,7 +13,7 @@ import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 
@@ -30,7 +30,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
     user = User('cdent')
@@ -73,7 +73,7 @@ def test_get_recipe_dot_name():
     Effectively return an entity with a dot in the name.
     """
     recipe = Recipe('long.gif')
-    recipe.desc = 'hello'
+    recipe.desc = u'hello'
     store.put(recipe)
 
     http = httplib2.Http()

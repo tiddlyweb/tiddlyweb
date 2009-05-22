@@ -11,7 +11,7 @@ import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
@@ -30,8 +30,8 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
-    muchdata(module.store)
+    module.store = _teststore()
+    #muchdata(module.store)
 
 def test_put_unicode_bag():
     http = httplib2.Http()
@@ -57,11 +57,14 @@ def test_put_unicode_tiddler():
     encoded_bag_name = encoded_name
     bag_name = name
 
-    tiddler_text = 'hello %s' % name
+    tiddler_text = u'hello %s' % name
     tiddler_json = simplejson.dumps(dict(modifier=name,text=tiddler_text,tags=[name]))
     response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers/%s' \
             % (encoded_bag_name, encoded_tiddler_name),
             method='PUT', body=tiddler_json, headers={'Content-Type':'application/json'})
+
+    print content
+    assert response['status'] == '204'
 
     tiddler = Tiddler(tiddler_name, bag=bag_name)
     tiddler = store.get(tiddler)

@@ -14,7 +14,7 @@ import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -24,7 +24,7 @@ def setup_module(module):
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def teardown_module(module):

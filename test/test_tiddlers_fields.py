@@ -16,11 +16,11 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from fixtures import reset_textstore, teststore
+from fixtures import reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
 
 def test_tiddler_has_fields():
     tiddler = Tiddler('feebles')

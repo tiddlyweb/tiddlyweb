@@ -12,7 +12,7 @@ import simplejson
 
 from tiddlyweb.model.bag import Bag
 
-from fixtures import muchdata, reset_textstore, teststore
+from fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     from tiddlyweb.web import serve
@@ -25,7 +25,7 @@ def setup_module(module):
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
     reset_textstore()
-    module.store = teststore()
+    module.store = _teststore()
     muchdata(module.store)
 
 def test_get_sorted_tiddlers():
