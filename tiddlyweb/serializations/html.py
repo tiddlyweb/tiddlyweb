@@ -50,6 +50,36 @@ class Serialization(SerializationInterface):
         output += "\n".join(lines)
         return output + '\n</ul>'
 
+    def list_tiddlers(self, bag):
+        """
+        List the tiddlers in a bag as html.
+        """
+        server_prefix = self._server_prefix()
+        lines = []
+        for tiddler in bag.list_tiddlers():
+            base, base_link, wiki_link, title = self._tiddler_list_info(tiddler)
+            if bag.revbag:
+                line = self._tiddler_revision_info(base, base_link, tiddler)
+                wiki_link += '/%s/revisions' % encode_name(tiddler.title)
+                title = 'Revisions of Tiddler %s' % tiddler.title
+            else:
+                line = self._tiddler_in_bag_info(base, base_link, tiddler)
+            lines.append(line)
+
+        if bag.searchbag:
+            title = 'Found Tiddlers'
+            wiki_link = None
+
+        output = "\n".join(lines)
+        self.environ['tiddlyweb.title'] = title
+
+        return """
+%s
+<ul id="tiddlers" class="listing">
+%s
+</ul>
+""" % (self._tiddler_list_header(wiki_link), output)
+
     def recipe_as(self, recipe):
         """
         Recipe as html.
@@ -89,42 +119,6 @@ class Serialization(SerializationInterface):
 <div class="tiddlerslink"><a href="%s">Tiddlers in Bag %s</a></div>
 """ % (bag.desc, tiddler_link, bag.name)
 
-    def list_tiddlers(self, bag):
-        """
-        List the tiddlers in a bag as html.
-        """
-        server_prefix = self._server_prefix()
-        lines = []
-        for tiddler in bag.list_tiddlers():
-            base, base_link, wiki_link, title = self._tiddler_list_info(tiddler)
-
-            if bag.revbag:
-                line = self._tiddler_revision_info(base, base_link, tiddler)
-                wiki_link += '/%s/revisions' % encode_name(tiddler.title)
-                title = 'Revisions of Tiddler %s' % tiddler.title
-            else:
-                line = '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
-                        server_prefix,
-                        base,
-                        base_link,
-                        encode_name(tiddler.title),
-                        tiddler.title)
-
-            lines.append(line)
-
-        if bag.searchbag:
-            title = 'Found Tiddlers'
-            wiki_link = None
-        output = "\n".join(lines)
-        self.environ['tiddlyweb.title'] = title
-
-        return """
-%s
-<ul id="tiddlers" class="listing">
-%s
-</ul>
-""" % (self._tiddler_list_header(wiki_link), output)
-
     def tiddler_as(self, tiddler):
         """
         Transform the provided tiddler into an HTML
@@ -138,6 +132,7 @@ class Serialization(SerializationInterface):
             return (self._tiddler_div(tiddler) + '<pre>%s</pre>' %
                     self._html_encode(tiddler.text) + '</div>')
 
+
     def _server_prefix(self):
         """
         Return the string that is the server prefix,
@@ -145,6 +140,48 @@ class Serialization(SerializationInterface):
         """
         config = self.environ.get('tiddlyweb.config', {})
         return config.get('server_prefix', '')
+
+    def _tiddler_div(self, tiddler):
+        """
+        The string that starts the div that contains a tiddler.
+        """
+        return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
+                'modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
+                (tiddler.title, tiddler.revision, tiddler.modifier,
+                        tiddler.modified, tiddler.created,
+                        self.tags_as(tiddler.tags),
+                        self._tiddler_fields(tiddler.fields))
+
+    def _tiddler_fields(self, fields):
+        """
+        Turn tiddler fields into a string suitable for
+        _tiddler_div.
+        """
+        output = []
+        for key in fields:
+            output.append('%s="%s"' % (key, fields[key]))
+        return ' '.join(output)
+
+    def _tiddler_in_bag_info(self, base, base_link, tiddler):
+        """
+        Get the info for a non-revision tiddler in a list.
+        """
+        return '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
+            self._server_prefix(),
+            base,
+            base_link,
+            encode_name(tiddler.title),
+            tiddler.title)
+
+    def _tiddler_list_header(self, wiki_link):
+        """
+        The string we present at the top of a list of tiddlers.
+        """
+        if wiki_link:
+            return """
+<div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
+""" % ('%s.wiki' % wiki_link)
+        return ''
 
     def _tiddler_list_info(self, tiddler):
         """
@@ -176,37 +213,6 @@ class Serialization(SerializationInterface):
             tiddler.revision,
             tiddler.title,
             tiddler.revision))
-
-    def _tiddler_list_header(self, wiki_link):
-        """
-        The string we present at the top of a list of tiddlers.
-        """
-        if wiki_link:
-            return """
-<div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
-""" % ('%s.wiki' % wiki_link)
-        return ''
-
-    def _tiddler_div(self, tiddler):
-        """
-        The string that starts the div that contains a tiddler.
-        """
-        return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
-                'modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
-                (tiddler.title, tiddler.revision, tiddler.modifier,
-                        tiddler.modified, tiddler.created,
-                        self.tags_as(tiddler.tags),
-                        self._tiddler_fields(tiddler.fields))
-
-    def _tiddler_fields(self, fields):
-        """
-        Turn tiddler fields into a string suitable for
-        _tiddler_div.
-        """
-        output = []
-        for key in fields:
-            output.append('%s="%s"' % (key, fields[key]))
-        return ' '.join(output)
 
     def _tiddler_to_wikklyhtml(self, tiddler):
         """
