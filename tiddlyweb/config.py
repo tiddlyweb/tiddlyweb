@@ -218,7 +218,7 @@ def read_config():
     If the file can't be imported an exception will be
     thrown, preventing unexpected results.
 
-    What's expected in the override file is a dict with the
+    What is expected in the override file is a dict with the
     name config.
     """
     from tiddlywebconfig import config as custom_config
@@ -228,9 +228,13 @@ def read_config():
         try:
             # If this config item is a dict, update to update it
             custom_config[key].keys()
-            config[key].update(custom_config[key])
+            try:
+                config[key].update(custom_config[key])
+            except KeyError:
+                config[key] = custom_config[key]
         except AttributeError:
             config[key] = custom_config[key]
+    print config
 
 
 if os.path.exists('tiddlywebconfig.py'):
