@@ -1,3 +1,8 @@
+0.9.36 Sat May 23 20:18:21 BST 2009
+
+  * Make generated ETags follow the spec.
+    Thanks to FND for spotting the bug.
+
 0.9.35 Fri May 22 14:51:32 BST 2009
 
   * More explicit use of unicode strings in tests and core.
