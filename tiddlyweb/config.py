@@ -234,7 +234,6 @@ def read_config():
                 config[key] = custom_config[key]
         except AttributeError:
             config[key] = custom_config[key]
-    print config
 
 
 if os.path.exists('tiddlywebconfig.py'):
