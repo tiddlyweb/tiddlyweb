@@ -54,7 +54,7 @@ def test_put_tiddler_txt_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
-    assert response['etag'] == 'bag1/TestOne/3'
+    assert response['etag'] == '"bag1/TestOne/3"'
 
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
@@ -82,7 +82,7 @@ def test_get_tiddler_revision_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
             method='GET')
     assert response['status'] == '200'
-    assert response['etag'] == 'bag1/TestOne/3'
+    assert response['etag'] == '"bag1/TestOne/3"'
 
 def test_get_tiddler_revision_4_fail():
     http = httplib2.Http()
@@ -133,7 +133,7 @@ def test_tiddler_revision_list_json_fat():
     assert 'I have something to sell' in info[0]['text']
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
-            method='POST', headers={'if-match': 'bag28/tiddler0/1', 'content-type': 'application/json'}, body=content)
+            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'application/json'}, body=content)
 
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
@@ -153,13 +153,13 @@ def test_etag_generation():
     tiddler = Tiddler('monkey', 'bar')
     etag = _tiddler_etag(tiddler)
 
-    assert etag == 'bar/monkey/0'
+    assert etag == '"bar/monkey/0"'
 
     bag = Bag('bar')
     store.put(bag)
     store.put(tiddler)
     etag = _tiddler_etag(tiddler)
-    assert etag == 'bar/monkey/1'
+    assert etag == '"bar/monkey/1"'
 
 
 def test_post_revision_etag_handling():
@@ -176,6 +176,6 @@ def test_post_revision_etag_handling():
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
-            method='POST', headers={'If-Match': 'bag28/newone/0', 'content-type': 'application/json'}, body=json_content)
+            method='POST', headers={'If-Match': '"bag28/newone/0"', 'content-type': 'application/json'}, body=json_content)
 
     assert response['status'] == '204'

@@ -229,7 +229,7 @@ def test_get_tiddler_etag_recipe():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['etag'] == 'bag28/tiddler8/1'
+    assert response['etag'] == '"bag28/tiddler8/1"'
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
@@ -239,7 +239,7 @@ def test_get_tiddler_etag_bag():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['etag'] == 'bag28/tiddler8/1'
+    assert response['etag'] == '"bag28/tiddler8/1"'
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
@@ -249,12 +249,17 @@ def test_get_tiddler_cached():
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
             method='GET')
     assert response['status'] == '200'
-    assert response['etag'] == 'bag28/tiddler8/1'
+    assert response['etag'] == '"bag28/tiddler8/1"'
     assert not response.fromcache
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
             method='GET')
     assert response['status'] == '304'
-    assert response['etag'] == 'bag28/tiddler8/1'
+    assert response['etag'] == '"bag28/tiddler8/1"'
+    assert response.fromcache
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
+            method='GET')
+    assert response['status'] == '304'
+    assert response['etag'] == '"bag28/tiddler8/1"'
     assert response.fromcache
 
 def test_put_tiddler_cache_fakey():
@@ -267,17 +272,17 @@ def test_put_tiddler_cache_fakey():
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
-    assert response['etag'] == 'bag1/CashForCache/1'
+    assert response['etag'] == '"bag1/CashForCache/1"'
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='GET', headers={'Accept': 'application/json'})
     assert response['status'] == '200'
-    assert response['etag'] == 'bag1/CashForCache/1'
+    assert response['etag'] == '"bag1/CashForCache/1"'
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
-    assert response['etag'] == 'bag1/CashForCache/2'
+    assert response['etag'] == '"bag1/CashForCache/2"'
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
@@ -291,13 +296,13 @@ def test_put_tiddler_via_recipe():
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
 
     assert response['status'] == '204'
-    assert response['etag'] == 'bag1/FantasticVoyage/1'
+    assert response['etag'] == '"bag1/FantasticVoyage/1"'
     url = response['location']
 
     reponse, content = http.request(url, method='GET', headers={'Accept': 'application/json'})
     tiddler_dict = simplejson.loads(content)
     assert tiddler_dict['bag'] == 'bag1'
-    assert response['etag'] == 'bag1/FantasticVoyage/1'
+    assert response['etag'] == '"bag1/FantasticVoyage/1"'
 
 def test_slash_in_etag():
     http = httplib2.Http()
@@ -309,15 +314,15 @@ def test_slash_in_etag():
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test%2FTwo/1'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%2FTwo/1"'}, body=json)
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test/Two/2'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test/Two/2"'}, body=json)
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test%2FTwo/2'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%2FTwo/2"'}, body=json)
     assert response['status'] == '204'
 
 def test_paren_in_etag():
@@ -330,15 +335,15 @@ def test_paren_in_etag():
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test(Two)/1'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/1"'}, body=json)
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test%28Two%29/2'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%28Two%29/2"'}, body=json)
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'bag0/Test(Two)/2'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/2"'}, body=json)
     assert response['status'] == '204'
 
 def test_get_tiddler_text_created():
@@ -521,11 +526,11 @@ def test_delete_tiddler_in_bag():
 def test_delete_tiddler_etag():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',
-            method='DELETE', headers={'If-Match': 'bag5/tiddler0/9'})
+            method='DELETE', headers={'If-Match': '"bag5/tiddler0/9"'})
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',
-            method='DELETE', headers={'If-Match': 'bag5/tiddler0/1'})
+            method='DELETE', headers={'If-Match': '"bag5/tiddler0/1"'})
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/tiddler0',

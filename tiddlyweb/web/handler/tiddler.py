@@ -317,7 +317,7 @@ def _validate_tiddler(environ, tiddler):
         if incoming_etag and incoming_etag != tiddler_etag:
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
-    etag = ('Etag', tiddler_etag)
+    etag = ('Etag', '%s' % tiddler_etag)
     return last_modified, etag
 
 
@@ -400,7 +400,7 @@ def _tiddler_etag(tiddler):
     Calculate the ETAG of a tiddler, based on
     bag name, tiddler title and revision.
     """
-    return str('%s/%s/%s' %
+    return str('"%s/%s/%s"' %
             (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
                 urllib.quote(tiddler.title.encode('utf-8'), safe=''),
                 tiddler.revision))

@@ -57,7 +57,7 @@ def _validate_tiddler_list(environ, tiddlers):
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '%s:%s' % (_sha_tiddler_titles(tiddlers),
+    etag_string = '"%s:%s"' % (_sha_tiddler_titles(tiddlers),
             last_modified_number)
     etag = ('Etag', etag_string)
 
