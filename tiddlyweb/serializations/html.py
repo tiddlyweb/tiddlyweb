@@ -96,19 +96,10 @@ class Serialization(SerializationInterface):
         server_prefix = self._server_prefix()
         lines = []
         for tiddler in bag.list_tiddlers():
-
             base, base_link, wiki_link, title = self._tiddler_list_info(tiddler)
 
             if bag.revbag:
-                line = ('<li><a href="%s/%s/%s/tiddlers/'
-                        '%s/revisions/%s">%s:%s</a></li>' % (
-                        server_prefix,
-                        base,
-                        base_link,
-                        encode_name(tiddler.title),
-                        tiddler.revision,
-                        tiddler.title,
-                        tiddler.revision))
+                line = self._tiddler_revision_info(base, base_link, tiddler)
                 wiki_link += '/%s/revisions' % encode_name(tiddler.title)
                 title = 'Revisions of Tiddler %s' % tiddler.title
             else:
@@ -171,6 +162,20 @@ class Serialization(SerializationInterface):
             wiki_link = '%s/bags/%s/tiddlers' % (self._server_prefix(), base_link)
             title = 'Tiddlers in Bag %s' % tiddler.bag
         return base, base_link, wiki_link, title
+
+    def _tiddler_revision_info(self, base, base_link, tiddler):
+        """
+        Get the individual revision info for listing revisions.
+        """
+        return  ('<li><a href="%s/%s/%s/tiddlers/'
+            '%s/revisions/%s">%s:%s</a></li>' % (
+            self._server_prefix(),
+            base,
+            base_link,
+            encode_name(tiddler.title),
+            tiddler.revision,
+            tiddler.title,
+            tiddler.revision))
 
     def _tiddler_list_header(self, wiki_link):
         """
