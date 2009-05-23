@@ -96,17 +96,9 @@ class Serialization(SerializationInterface):
         server_prefix = self._server_prefix()
         lines = []
         for tiddler in bag.list_tiddlers():
-            if tiddler.recipe:
-                base = 'recipes'
-                base_link = encode_name(tiddler.recipe)
-                wiki_link = '%s/recipes/%s/tiddlers' % (
-                        server_prefix, base_link)
-                title = 'Tiddlers in Recipe %s' % tiddler.recipe
-            else:
-                base = 'bags'
-                base_link = encode_name(tiddler.bag)
-                wiki_link = '%s/bags/%s/tiddlers' % (server_prefix, base_link)
-                title = 'Tiddlers in Bag %s' % tiddler.bag
+
+            base, base_link, wiki_link, title = self._tiddler_list_info(tiddler)
+
             if bag.revbag:
                 line = ('<li><a href="%s/%s/%s/tiddlers/'
                         '%s/revisions/%s">%s:%s</a></li>' % (
@@ -126,12 +118,15 @@ class Serialization(SerializationInterface):
                         base_link,
                         encode_name(tiddler.title),
                         tiddler.title)
+
             lines.append(line)
+
         if bag.searchbag:
             title = 'Found Tiddlers'
             wiki_link = None
         output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
+
         return """
 %s
 <ul id="tiddlers" class="listing">
@@ -159,6 +154,23 @@ class Serialization(SerializationInterface):
         """
         config = self.environ.get('tiddlyweb.config', {})
         return config.get('server_prefix', '')
+
+    def _tiddler_list_info(self, tiddler):
+        """
+        Get the basic link info needed for listing tiddlers.
+        """
+        if tiddler.recipe:
+            base = 'recipes'
+            base_link = encode_name(tiddler.recipe)
+            wiki_link = '%s/recipes/%s/tiddlers' % (
+                    self._server_prefix(), base_link)
+            title = 'Tiddlers in Recipe %s' % tiddler.recipe
+        else:
+            base = 'bags'
+            base_link = encode_name(tiddler.bag)
+            wiki_link = '%s/bags/%s/tiddlers' % (self._server_prefix(), base_link)
+            title = 'Tiddlers in Bag %s' % tiddler.bag
+        return base, base_link, wiki_link, title
 
     def _tiddler_list_header(self, wiki_link):
         """
