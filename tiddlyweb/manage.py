@@ -12,6 +12,7 @@ from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
 
+
 INTERNAL_PLUGINS = ['tiddlyweb.fromsvn', 'tiddlyweb.instancer']
 
 COMMANDS = {}
