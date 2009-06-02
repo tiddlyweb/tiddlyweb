@@ -13,7 +13,7 @@ from tiddlyweb import __version__ as VERSION
 
 setup(name = 'tiddlyweb',
         version = VERSION,
-        description = 'An optionally headless, extensible RESTful datastore for TiddlyWiki',
+        description = 'An optionally headless, extensible RESTful datastore for TiddlyWiki and pretty much anything else.',
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://tiddlyweb.peermore.com/',

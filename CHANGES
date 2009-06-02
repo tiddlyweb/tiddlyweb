@@ -1,3 +1,8 @@
+0.9.37 NOT YET
+
+  * Handle UTF-8 encoded command line arguments to twanager.
+  * Don't clobber os.environ when starting built in servers.
+
 0.9.36 Sat May 23 20:18:21 BST 2009
 
   * Make generated ETags follow the spec.
