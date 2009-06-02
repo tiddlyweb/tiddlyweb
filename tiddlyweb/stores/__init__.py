@@ -23,6 +23,15 @@ class StorageInterface(object):
     """
 
     def __init__(self, environ=None):
+        """
+        The WSGI environment is made available to the storage system
+        so that decisions can be made based on things like the
+        request IP. Care should be taken when using environ related
+        data as the environment can change from when Store is
+        instantiated to when it is actually used. Configuration
+        information pulled from the store should only be used
+        during the initialization phase.
+        """
         if environ is None:
             environ = {}
         self.environ = environ

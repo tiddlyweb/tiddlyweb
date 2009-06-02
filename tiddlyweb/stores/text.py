@@ -35,6 +35,8 @@ class Store(StorageInterface):
     def __init__(self, environ=None):
         super(Store, self).__init__(environ)
         self.serializer = Serializer('text')
+        store_config = self.environ['tiddlyweb.config']['server_store'][1]
+        self._root = store_config['store_root']
         self._init_store()
 
     def _init_store(self):
@@ -437,8 +439,7 @@ class Store(StorageInterface):
         """
         Return a string which is the path to the root of the store.
         """
-        store_config = self.environ['tiddlyweb.config']['server_store'][1]
-        return store_config['store_root']
+        return self._root
 
     def _tiddler_base_filename(self, tiddler):
         """
