@@ -1,7 +1,8 @@
-0.9.37 NOT YET
+0.9.37 Tue Jun  2 17:39:33 BST 2009
 
   * Handle UTF-8 encoded command line arguments to twanager.
   * Don't clobber os.environ when starting built in servers.
+  * Remove obsolete docs.
 
 0.9.36 Sat May 23 20:18:21 BST 2009
 
