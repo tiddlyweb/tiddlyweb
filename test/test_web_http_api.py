@@ -86,7 +86,7 @@ def test_the_TESTS():
     for test_data in TESTS:
         test = dict(EMPTY_TEST)
         test.update(test_data)
-        yield 'running %s' % test['name'], _run_test, test
+        yield test['name'], _run_test, test
 
 def _run_test(test):
     full_url = base_url + test['url']
