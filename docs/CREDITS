@@ -27,13 +27,13 @@ list here, but a few highlights:
   on many aspects of TiddlyWeb, and of course built the excellent
   WikklyText.
 
-* Frederik Dohr is the earliest adopter of TiddlyWeb, using it to build
-  a Plugin Library for TiddlyWiki. In that role he has provided
-  invaluable input on features, excellent bug reports, and general
-  support and comradeship throughout the development process.
+* Frederik Dohr is the earliest adopter of TiddlyWeb, and responsible
+  for most of the code that creates the TiddlyWebWiki vertical. He's
+  been invaluable in providing input on features, excellent bug reports,
+  and general support and comradeship throughout the development process.
 
 * Action requires communication to make go. Many thanks to Jon Lister,
   Martin Budden, Paul Downey, Phil Hawksworth, Phil Whitehouse, Simon
-  McManus, Saq Imtiaz, Michael Mahemoff, Tony from the TiddlyWikiDev
-  group, Ben Tremblay and many others for comments, questions and
-  conversations about TiddlyWeb.
+  McManus, and Michael Mahemoff from Osmosoft; Tony, Oveek, Reenen,
+  Ben Tremblay and others from the TiddlyWikiDev group; and many others
+  for comments, questions and conversations about TiddlyWeb.
