@@ -50,10 +50,7 @@ def start_simple():
 
     Provides the simplest base for testing, debugging
     and development.
-
-    XXX no longer used
     """
-    os.environ = {}
     from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
@@ -68,7 +65,6 @@ def start_cherrypy():
     """
     Start a cherrypy webserver to run our app.
     """
-    os.environ = {}
     from cherrypy import wsgiserver
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
