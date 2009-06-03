@@ -93,8 +93,9 @@ class Store(object):
         Get a thing, recipe, bag or tiddler
         """
         func = self._figure_function('get', thing)
+        thing = func(thing)
         thing.store = self
-        return func(thing)
+        return thing
 
     def put(self, thing):
         """
