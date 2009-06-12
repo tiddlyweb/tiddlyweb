@@ -175,15 +175,16 @@ class SimpleLog(object):
 class StoreSet(object):
     """
     WSGI Middleware that sets our choice of Store (tiddlyweb.store) in the environment.
-    Eventually this can be used to configure the store per instance.
     """
 
     def __init__(self, application):
         self.application = application
+        self.database = None
 
     def __call__(self, environ, start_response):
-        database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
-        environ['tiddlyweb.store'] = database
+        if not self.database:
+            self.database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
+        environ['tiddlyweb.store'] = self.database
         return self.application(environ, start_response)
 
 
