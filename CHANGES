@@ -1,3 +1,9 @@
+0.9.39 Fri Jun 12 16:12:33 BST 2009
+
+  * Handle OpenIDs with port numbers in them.
+  * Only create a reference to the store once per generated
+    middleware stack.
+
 0.9.38 Thu Jun  4 20:57:21 BST 2009
 
   * Adjustments in stores to make layering multiple stores more
