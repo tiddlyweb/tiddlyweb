@@ -179,12 +179,10 @@ class StoreSet(object):
 
     def __init__(self, application):
         self.application = application
-        self.database = None
 
     def __call__(self, environ, start_response):
-        if not self.database:
-            self.database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
-        environ['tiddlyweb.store'] = self.database
+        database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
+        environ['tiddlyweb.store'] = database
         return self.application(environ, start_response)
 
 
