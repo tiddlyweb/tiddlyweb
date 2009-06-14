@@ -1,3 +1,7 @@
+0.9.40 Sun Jun 14 13:23:24 BST 2009
+
+  * Revert to having a new reference to the store per connection.
+
 0.9.39 Fri Jun 12 16:12:33 BST 2009
 
   * Handle OpenIDs with port numbers in them.
