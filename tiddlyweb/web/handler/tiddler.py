@@ -9,6 +9,7 @@ import urllib
 import simplejson
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
@@ -19,6 +20,7 @@ from tiddlyweb.web.http import \
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
+from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
 
 def get(environ, start_response):
@@ -94,7 +96,7 @@ def _delete_tiddler(environ, start_response, tiddler):
         tiddler = store.get(tiddler)
     except NoTiddlerError:
         tiddler.revision = 0
-    _validate_tiddler(environ, tiddler)
+    _validate_tiddler_headers(environ, tiddler)
 
     bag = Bag(tiddler.bag)
     # this will raise 403 if constraint does not pass
@@ -233,7 +235,7 @@ def _put_tiddler(environ, start_response, tiddler):
             # These both next will raise exceptions if
             # the contraints don't match.
             _check_bag_constraint(environ, bag, 'write')
-            _validate_tiddler(environ, tiddler)
+            _validate_tiddler_headers(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
 
@@ -251,6 +253,11 @@ def _put_tiddler(environ, start_response, tiddler):
         if not user == 'GUEST':
             tiddler.modifier = user
 
+
+        try:
+            _check_bag_constraint(environ, bag, 'accept')
+        except (ForbiddenError, UserRequiredError), exc:
+            _validate_tiddler_content(environ, tiddler)
         store.put(tiddler)
     except NoBagError, exc:
         raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
@@ -268,6 +275,18 @@ def _put_tiddler(environ, start_response, tiddler):
     return []
 
 
+def _validate_tiddler_content(environ, tiddler):
+    """
+    Unless tiddler is valid raise a 409 with the reason why
+    things to check are presumably tags and title, but we don't
+    want to worry about that here, we want to dispatch elsewhere.
+    """
+    try:
+        validate_tiddler(tiddler, environ)
+    except InvalidTiddlerError, exc:
+        raise HTTP409('Tiddler content is invalid: %s' % exc)
+
+
 def _require_valid_etag_for_write(environ, tiddler):
     """
     Unless there is an etag and it is valid
@@ -281,10 +300,10 @@ def _require_valid_etag_for_write(environ, tiddler):
         tiddler_copy = environ['tiddlyweb.store'].get(tiddler_copy)
     except NoTiddlerError:
         tiddler_copy.revision = 0
-    return _validate_tiddler(environ, tiddler_copy)
+    return _validate_tiddler_headers(environ, tiddler_copy)
 
 
-def _validate_tiddler(environ, tiddler):
+def _validate_tiddler_headers(environ, tiddler):
     """
     Check ETAG and last modified information to
     see if a) the client can use its cached tiddler
@@ -337,7 +356,7 @@ def _send_tiddler(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
-    last_modified, etag = _validate_tiddler(environ, tiddler)
+    last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
     if tiddler.type and tiddler.type != 'None':
         mime_type = tiddler.type

@@ -75,7 +75,7 @@ class Serialization(SerializationInterface):
         """
         policy = bag.policy
         policy_dict = {}
-        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage', 'accept']:
             policy_dict[key] = getattr(policy, key)
         info = dict(policy=policy_dict, desc=bag.desc)
         return simplejson.dumps(info)

@@ -34,7 +34,7 @@ class Policy(object):
 
     def __init__(self, owner=None,
             read=None, write=None, create=None, delete=None,
-            manage=None):
+            manage=None, accept=None):
         # avoid "dangerous" warnings from pylint and
         # and possible memory leaks
         if read is None:
@@ -47,12 +47,15 @@ class Policy(object):
             delete = []
         if manage is None:
             manage = []
+        if accept is None:
+            accept = []
         self.owner = owner
         self.read = read
         self.write = write
         self.create = create
         self.delete = delete
         self.manage = manage
+        self.accept = accept
 
     def allows(self, user, constraint):
         """
