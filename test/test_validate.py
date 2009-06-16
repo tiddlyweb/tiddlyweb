@@ -4,8 +4,9 @@ sys.path.insert(0, '.')
 
 import py.test
 
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
+from tiddlyweb.web.validator import validate_bag, validate_tiddler, InvalidTiddlerError
 import tiddlyweb.web.validator
 
 def check_for_text(tiddler, environ):
@@ -35,3 +36,12 @@ def test_validate_tiddler():
     validate_tiddler(tiddler)
 
     assert 'FOOBAR' in tiddler.text
+
+def test_validate_bag_desc():
+    bag = Bag('barney')
+    bag.desc = '<script>alert("foo");</script>'
+
+    validate_bag(bag)
+
+    assert bag.desc == '&lt;script&gt;alert("foo");&lt;/script&gt;'
+
