@@ -35,7 +35,7 @@ class Serialization(SerializationInterface):
         """
         policy = recipe.policy
         policy_dict = {}
-        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+        for key in Policy.attributes:
             policy_dict[key] = getattr(policy, key)
         lines = ['desc: %s' % recipe.desc, 'policy: %s' %
                 simplejson.dumps(policy_dict), '']

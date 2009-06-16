@@ -505,7 +505,7 @@ class Store(StorageInterface):
         Write the policy of a bad to disk.
         """
         policy_dict = {}
-        for key in ['read', 'write', 'create', 'delete', 'manage', 'accept', 'owner']:
+        for key in Policy.attributes:
             policy_dict[key] = policy.__getattribute__(key)
         policy_string = simplejson.dumps(policy_dict)
         policy_filename = os.path.join(bag_path, 'policy')

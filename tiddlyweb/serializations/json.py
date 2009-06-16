@@ -45,7 +45,7 @@ class Serialization(SerializationInterface):
         """
         policy = recipe.policy
         policy_dict = {}
-        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage']:
+        for key in Policy.attributes:
             policy_dict[key] = getattr(policy, key)
         return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict,
             recipe=recipe.get_recipe()))
@@ -75,7 +75,7 @@ class Serialization(SerializationInterface):
         """
         policy = bag.policy
         policy_dict = {}
-        for key in ['owner', 'read', 'write', 'create', 'delete', 'manage', 'accept']:
+        for key in Policy.attributes:
             policy_dict[key] = getattr(policy, key)
         info = dict(policy=policy_dict, desc=bag.desc)
         return simplejson.dumps(info)
