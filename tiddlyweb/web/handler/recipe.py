@@ -18,6 +18,7 @@ from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
+from tiddlyweb.web.validator import validate_recipe, InvalidRecipeError
 
 
 def delete(environ, start_response):
@@ -166,6 +167,7 @@ def put(environ, start_response):
         content = environ['wsgi.input'].read(int(length))
         serializer.from_string(content.decode('utf-8'))
 
+        _validate_recipe(environ, recipe)
         store.put(recipe)
     except NoSerializationError:
         raise HTTP415('Content type %s not supported' % serialize_type)
@@ -174,6 +176,15 @@ def put(environ, start_response):
             [('Location', web.recipe_url(environ, recipe))])
 
     return []
+
+def _validate_recipe(environ, recipe):
+    """
+    Unless recipe is valid raise a 409 with the reason why.
+    """
+    try:
+        validate_recipe(recipe, environ)
+    except InvalidBagError, exc:
+        raise HTTP409('Recipe content is invalid: %s' % exc)
 
 
 def _determine_recipe(environ):

@@ -18,6 +18,7 @@ from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
+from tiddlyweb.web.validator import validate_bag, InvalidBagError
 
 
 def delete(environ, start_response):
@@ -191,6 +192,7 @@ def put(environ, start_response):
 
         bag.policy.owner = usersign['name']
 
+        _validate_bag(environ, bag)
         store.put(bag)
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % serialize_type)
@@ -199,6 +201,16 @@ def put(environ, start_response):
             [('Location', web.bag_url(environ, bag))])
 
     return []
+
+
+def _validate_bag(environ, bag):
+    """
+    Unless bag is valid raise a 409 with the reason why.
+    """
+    try:
+        validate_bag(bag, environ)
+    except InvalidBagError, exc:
+        raise HTTP409('Bag content is invalid: %s' % exc)
 
 
 def _determine_bag_name(environ):

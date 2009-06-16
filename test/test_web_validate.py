@@ -103,3 +103,37 @@ def test_validate_one_tiddler_modify():
 
     assert response['status'] == '200'
     assert 'FOOBAR' in content
+
+def test_validate_one_bag():
+    bag_json = simplejson.dumps(dict(desc='<script>alert("hot!");</script>', policy={}))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=bag_json)
+
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag1',
+            method='GET')
+
+    assert response['status'] == '200'
+
+    assert '<script>' not in content
+    assert '&lt;script' in content
+
+def test_validate_one_recipe():
+    recipe_json = simplejson.dumps(dict(desc='<script>alert("hot!");</script>', policy={}, recipe=[]))
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/recipe1',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=recipe_json)
+
+    assert response['status'] == '204'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/recipe1',
+            method='GET')
+
+    assert response['status'] == '200'
+
+    assert '<script>' not in content
+    assert '&lt;script' in content
