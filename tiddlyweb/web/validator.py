@@ -21,11 +21,11 @@ class InvalidRecipeError(Exception):
 
 
 def sanitize_desc(entity, environ):
-    """Strip any bad HTML which may be present in a description."""
+    """
+    Strip any bad HTML which may be present in a description.
+    """
     desc = entity.desc
-    p = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
-    output = p.parseFragment(desc)
-    entity.desc = output.toxml()
+    entity.desc = sanitize_html_fragment(desc)
 
 
 BAG_VALIDATORS = [
@@ -58,3 +58,13 @@ def _validate(entity, environ, validators):
 
     for validator in validators:
         validator(entity, environ)
+
+
+def sanitize_html_fragment(fragment):
+    """
+    Santize an html fragment, returning a copy of the fragment,
+    cleaned up.
+    """
+    p = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
+    output = p.parseFragment(fragment)
+    return output.toxml()
