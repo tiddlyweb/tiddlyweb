@@ -113,8 +113,8 @@ class Serialization(SerializationInterface):
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):
-                info += '%s: %s\n' % (key,
-                        tiddler.fields[key].replace('\n', '\\n'))
+                value = str(tiddler.fields[key])
+                info += '%s: %s\n' % (key, value.replace('\n', '\\n'))
         return info
 
     def as_tiddler(self, tiddler, input_string):
