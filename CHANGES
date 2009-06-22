@@ -1,3 +1,8 @@
+0.9.41 Fri Jun 19 16:54:26 BST 2009
+
+  * Put a validation/sanitation of input architecture in place
+    in tiddlyweb/web/validator.py
+
 0.9.40 Sun Jun 14 13:23:24 BST 2009
 
   * Revert to having a new reference to the store per connection.
