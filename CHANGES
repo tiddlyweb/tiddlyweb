@@ -1,3 +1,9 @@
+0.9.43 Wed Jun 24 11:21:34 BST 2009
+
+  * Use TiddlyWiki 2.5.2 for the base_tiddlywiki.
+  * When string-ifying attribute and fields on tiddlers,
+    turn into unicode not str.
+
 0.9.42 Mon Jun 22 14:32:24 BST 2009
 
   * Use TiddlyWiki 2.5.1 for the base_tiddlywiki.

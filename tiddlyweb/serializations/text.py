@@ -113,7 +113,7 @@ class Serialization(SerializationInterface):
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):
-                value = str(tiddler.fields[key])
+                value = unicode(tiddler.fields[key])
                 info += '%s: %s\n' % (key, value.replace('\n', '\\n'))
         return info
 
