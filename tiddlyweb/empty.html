@@ -3,7 +3,7 @@
 <head>
 <script id="versionArea" type="text/javascript">
 //<![CDATA[
-var version = {title: "TiddlyWiki", major: 2, minor: 5, revision: 1, date: new Date("June 22, 2009"), extensions: {}};
+var version = {title: "TiddlyWiki", major: 2, minor: 5, revision: 2, date: new Date("June 24, 2009"), extensions: {}};
 //]]>
 </script>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -5626,8 +5626,6 @@ function upgradeFrom(path)
 {
 	var importStore = new TiddlyWiki();
 	var tw = loadFile(path);
-	if(window.netscape !== undefined)
-		tw = convertUTF8ToUnicode(tw);
 	importStore.importTiddlyWiki(tw);
 	importStore.forEachTiddler(function(title,tiddler) {
 		if(!store.getTiddler(title)) {
