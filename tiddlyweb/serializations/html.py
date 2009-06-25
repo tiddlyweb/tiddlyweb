@@ -101,12 +101,12 @@ class Serialization(SerializationInterface):
         title = 'Bags in Recipe %s' % recipe.name
         tiddler_link = '%s/tiddlers' % encode_name(recipe.name)
         return """
+<div class="tiddlerslink"><a href="%s">Tiddlers in Recipe</a></div>
 <div id="recipedesc" class="description">%s</div>
 <ul id="recipe" class="listing">
 %s
 </ul>
-<div class="tiddlerslink"><a href="%s">Tiddlers in Recipe</a></div>
-""" % (recipe.desc, output, tiddler_link)
+""" % (tiddler_link, recipe.desc, output)
 
     def bag_as(self, bag):
         """
