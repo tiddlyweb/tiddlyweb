@@ -58,7 +58,8 @@ class Serialization(SerializationInterface):
         server_prefix = self._server_prefix()
         lines = []
         for tiddler in bag.list_tiddlers():
-            base, base_link, wiki_link, title = self._tiddler_list_info(tiddler)
+            base, base_link, wiki_link, title = \
+                    self._tiddler_list_info(tiddler)
             if bag.revbag:
                 line = self._tiddler_revision_info(base, base_link, tiddler)
                 wiki_link += '/%s/revisions' % encode_name(tiddler.title)
@@ -133,7 +134,8 @@ class Serialization(SerializationInterface):
         else:
             list_link = 'bags/%s/tiddlers' % encode_name(tiddler.bag)
             list_title = 'Tiddlers in Bag %s' % tiddler.bag
-        list_html = '<div class="tiddlerslink"><a href="%s" title="tiddler list">%s</a></div>' % (list_link, list_title)
+        list_html = ('<div class="tiddlerslink"><a href="%s" ' % list_link +
+                'title="tiddler list">%s</a></div>' % list_title)
         html = render_wikitext(tiddler, list_link, self.environ)
         self.environ['tiddlyweb.title'] = tiddler.title
         return list_html + self._tiddler_div(tiddler) + html + '</div>'
@@ -201,7 +203,8 @@ class Serialization(SerializationInterface):
         else:
             base = 'bags'
             base_link = encode_name(tiddler.bag)
-            wiki_link = '%s/bags/%s/tiddlers' % (self._server_prefix(), base_link)
+            wiki_link = '%s/bags/%s/tiddlers' % (self._server_prefix(),
+                    base_link)
             title = 'Tiddlers in Bag %s' % tiddler.bag
         return base, base_link, wiki_link, title
 
@@ -221,7 +224,14 @@ class Serialization(SerializationInterface):
 
 
 def render_wikitext(tiddler, container_path, environ):
-        server_prefix = environ.get('tidldyweb.config', {}).get('server_prefix', '')
-        html = wikitext_to_wikklyhtml('%s/' % server_prefix,
-                container_path, tiddler.text)
-        return unicode(html, 'utf-8')
+    """
+    Take a tiddler and render it's wikitext to some kind
+    of HTML format.
+
+    container_path is used when generating URLs
+    """
+    server_prefix = environ.get('tidldyweb.config',
+            {}).get('server_prefix', '')
+    html = wikitext_to_wikklyhtml('%s/' % server_prefix,
+            container_path, tiddler.text)
+    return unicode(html, 'utf-8')
