@@ -6,6 +6,7 @@ import urllib
 
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name
+from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
 
 
 class Serialization(SerializationInterface):
@@ -126,12 +127,16 @@ class Serialization(SerializationInterface):
         DIV. If wikklytext is available the wikitext
         will be rendered into formatted HTML.
         """
-        try:
-            return self._tiddler_to_wikklyhtml(tiddler)
-        except ImportError:
-            return (self._tiddler_div(tiddler) + '<pre>%s</pre>' %
-                    self._html_encode(tiddler.text) + '</div>')
-
+        if tiddler.recipe:
+            list_link = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
+            list_title = 'Tiddlers in Recipe %s' % tiddler.recipe
+        else:
+            list_link = 'bags/%s/tiddlers' % encode_name(tiddler.bag)
+            list_title = 'Tiddlers in Bag %s' % tiddler.bag
+        list_html = '<div class="tiddlerslink"><a href="%s" title="tiddler list">%s</a></div>' % (list_link, list_title)
+        html = render_wikitext(tiddler, list_link, self.environ)
+        self.environ['tiddlyweb.title'] = tiddler.title
+        return list_html + self._tiddler_div(tiddler) + html + '</div>'
 
     def _server_prefix(self):
         """
@@ -214,30 +219,9 @@ class Serialization(SerializationInterface):
             tiddler.title,
             tiddler.revision))
 
-    def _tiddler_to_wikklyhtml(self, tiddler):
-        """
-        Render tiddler.text to HTML using wikklytext.
-        """
-        server_prefix = self._server_prefix()
-        if tiddler.recipe:
-            list_link = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
-            list_title = 'Tiddlers in Recipe %s' % tiddler.recipe
-        else:
-            list_link = 'bags/%s/tiddlers' % encode_name(tiddler.bag)
-            list_title = 'Tiddlers in Bag %s' % tiddler.bag
 
-        from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
+def render_wikitext(tiddler, container_path, environ):
+        server_prefix = environ.get('tidldyweb.config', {}).get('server_prefix', '')
         html = wikitext_to_wikklyhtml('%s/' % server_prefix,
-                list_link, tiddler.text)
-        # Have to be very careful in the following about UTF-8 handling
-        # because wikklytext wants to encode its output.
-        self.environ['tiddlyweb.title'] = tiddler.title
-        return """
-<div class="tiddlerslink"><a href="%s" title="tiddler list">%s</a></div>
-%s
-%s
-</div>
-""" % ('%s/%s' % (server_prefix, list_link),
-        list_title.encode('utf-8'),
-        self._tiddler_div(tiddler).encode('utf-8'),
-        html)
+                container_path, tiddler.text)
+        return unicode(html, 'utf-8')
