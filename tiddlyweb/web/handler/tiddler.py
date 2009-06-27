@@ -356,16 +356,15 @@ def _send_tiddler(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
+    # this will raise 304
+    # have to do this check after we read from the store because
+    # we need the revision, which is sad
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
     if tiddler.type and tiddler.type != 'None':
         mime_type = tiddler.type
         content = tiddler.text
     else:
-        # this will raise 304
-        # have to do this check after we read from the store because
-        # we need the revision, which is sad
-
         serialize_type, mime_type = web.get_serialize_type(environ)
         serializer = Serializer(serialize_type, environ)
         serializer.object = tiddler
