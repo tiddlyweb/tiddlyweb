@@ -209,6 +209,9 @@ DEFAULT_CONFIG = {
         'log_level': 'INFO',
         'css_uri': '',
         'wikitext_renderer': 'wikklytextrender',
+        'wikitext_render_map': {
+                'text/x-tiddlywiki': 'wikklytextrender',
+                },
         }
 
 

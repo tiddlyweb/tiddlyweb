@@ -361,7 +361,7 @@ def _send_tiddler(environ, start_response, tiddler):
     # we need the revision, which is sad
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
-    if tiddler.type and tiddler.type != 'None':
+    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
         mime_type = tiddler.type
         content = tiddler.text
     else:
@@ -385,6 +385,13 @@ def _send_tiddler(environ, start_response, tiddler):
 
     return [content]
 
+def _not_wikitext(tiddler, config):
+    return (
+            tiddler.type and
+            tiddler.type != 'None' and
+            tiddler.type not in
+            config['wikitext_render_map']
+            )
 
 def _send_tiddler_revisions(environ, start_response, tiddler):
     """
