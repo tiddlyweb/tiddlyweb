@@ -208,6 +208,7 @@ DEFAULT_CONFIG = {
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'log_level': 'INFO',
         'css_uri': '',
+        'wikitext_renderer': 'wikklytext',
         }
 
 
