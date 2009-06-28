@@ -6,7 +6,7 @@ import urllib
 
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name
-from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
+from tiddlyweb.wikitext import render_wikitext
 
 
 class Serialization(SerializationInterface):
@@ -221,17 +221,3 @@ class Serialization(SerializationInterface):
             tiddler.revision,
             tiddler.title,
             tiddler.revision))
-
-
-def render_wikitext(tiddler, container_path, environ):
-    """
-    Take a tiddler and render it's wikitext to some kind
-    of HTML format.
-
-    container_path is used when generating URLs
-    """
-    server_prefix = environ.get('tidldyweb.config',
-            {}).get('server_prefix', '')
-    html = wikitext_to_wikklyhtml('%s/' % server_prefix,
-            container_path, tiddler.text)
-    return unicode(html, 'utf-8')
