@@ -18,7 +18,7 @@ def render_wikitext(tiddler=None, path='', environ={}):
         try:
             imported_module = __import__(renderer_name, {}, {}, ['render'])
         except ImportError, err:
-            raise ImportError("couldn't load module for %s: %s, %s" % (rendererer_name, err, err1))
+            raise ImportError("couldn't load module for %s: %s, %s" % (renderer_name, err, err1))
     return imported_module.render(tiddler, path, environ)
 
 
