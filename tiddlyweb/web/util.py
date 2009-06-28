@@ -117,6 +117,11 @@ def encode_name(name):
     return urllib.quote(name.encode('utf-8'), safe='')
 
 
+def html_encode(text):
+    return (text.replace('&', '&amp;').replace('<', '&lt;').
+            replace('>', '&gt;'))
+
+
 def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
