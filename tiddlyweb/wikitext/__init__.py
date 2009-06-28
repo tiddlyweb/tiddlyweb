@@ -1,5 +1,5 @@
 
-DEFAULT_RENDERER = 'wikklytext'
+DEFAULT_RENDERER = 'wikklytextrender'
 
 def render_wikitext(tiddler=None, path='', environ={}):
     """

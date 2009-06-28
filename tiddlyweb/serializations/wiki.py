@@ -16,7 +16,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web.util import server_base_url, tiddler_url,\
         encode_name, html_encode
-from tiddlyweb.wikklyhtml import wikitext_to_wikklyhtml
+from tiddlyweb.wikitext.wikklytextrender import wikitext_to_wikklyhtml
 
 SPLITTER = '</div>\n<!--POST-STOREAREA-->\n'
 
