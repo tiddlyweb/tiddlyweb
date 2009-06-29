@@ -24,13 +24,15 @@ NOTE: This interface is experimental and subject to change.
 DEFAULT_RENDERER = 'wikklytextrender'
 
 
-def render_wikitext(tiddler=None, path='', environ={}):
+def render_wikitext(tiddler=None, path='', environ=None):
     """
     Take a tiddler and render it's wikitext to some kind
     of HTML format.
 
     container_path is used when generating URLs
     """
+    if environ == None:
+        environ = {}
     renderer_name = _determine_renderer(tiddler, environ)
     try:
         imported_module = __import__('tiddlyweb.wikitext.%s' % renderer_name,
@@ -40,11 +42,17 @@ def render_wikitext(tiddler=None, path='', environ={}):
         try:
             imported_module = __import__(renderer_name, {}, {}, ['render'])
         except ImportError, err:
-            raise ImportError("couldn't load module for %s: %s, %s" % (renderer_name, err, err1))
+            raise ImportError("couldn't load module for %s: %s, %s" %
+                    (renderer_name, err, err1))
     return imported_module.render(tiddler, path, environ)
 
 
 def _determine_renderer(tiddler, environ):
+    """
+    Inspect tiddlyweb.config to determine which 
+    wikitext renderer should be used for this 
+    tiddler.
+    """
     config = environ.get('tiddlyweb.config', {})
     try:
         if tiddler.type and tiddler.type != 'None':

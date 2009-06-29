@@ -1,8 +1,18 @@
+"""
+Render TiddlyWiki syntax wikitext to HTML
+using the WikklyText enginge.
+"""
+
 import wikklytext
 import urllib
 
 
 def render(tiddler, path, environ):
+    """
+    Render TiddlyWiki wikitext in the provided
+    tiddler to HTML. The provided path helps
+    set paths in wikilinks correctly.
+    """
     server_prefix = environ.get('tidldyweb.config',
             {}).get('server_prefix', '')
     html = wikitext_to_wikklyhtml('%s/' % server_prefix,
