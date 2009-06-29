@@ -1,3 +1,9 @@
+0.9.44 Mon Jun 29 09:10:21 BST 2009
+
+  * Implement a system for pluggable rendering of wikitext to HTML.
+  * Add log_file config item.
+  * Add 'info' command to twanager.
+
 0.9.43 Wed Jun 24 11:21:34 BST 2009
 
   * Use TiddlyWiki 2.5.2 for the base_tiddlywiki.
