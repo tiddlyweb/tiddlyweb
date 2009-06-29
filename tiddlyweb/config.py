@@ -116,6 +116,13 @@ css_uri -- A url of a css file that can be used to style
 the HTML output of the server. See
 tiddlyweb.web.wsgi.HTMLPresenter and tiddlyweb.serializations.html
 for the classes and ids used.
+
+wikitext_renderer -- The default module for rendering
+tiddler.text to HTML when tiddler.type is None.
+
+wikitext_render_map -- A dictionary mapping tiddler.type
+MIME-TYPES to modules with a render() function for
+turning that content-type into HTML.
 """
 
 import logging

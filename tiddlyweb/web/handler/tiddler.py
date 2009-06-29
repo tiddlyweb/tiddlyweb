@@ -361,6 +361,8 @@ def _send_tiddler(environ, start_response, tiddler):
     # we need the revision, which is sad
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
+    # XXX If we have content that doesn't look like wikitext,
+    # we send it out straight up rather than using the serializer.
     if _not_wikitext(tiddler, environ['tiddlyweb.config']):
         mime_type = tiddler.type
         content = tiddler.text
@@ -387,9 +389,9 @@ def _send_tiddler(environ, start_response, tiddler):
 
 def _not_wikitext(tiddler, config):
     return (
-            tiddler.type and
-            tiddler.type != 'None' and
-            tiddler.type not in
+            tiddler.type and # type is set
+            tiddler.type != 'None' and # type is not None stringified
+            tiddler.type not in # type is not id'd as wikitext by config
             config['wikitext_render_map']
             )
 
