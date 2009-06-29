@@ -259,7 +259,7 @@ else:
 # instance command.
 try:
     current_command = sys.argv[1]
-    if config['log_level'] != 'INFO' or current_command != 'instance':
+    if config['log_level'] != 'INFO' or (current_command != 'instance' and current_command != 'info'):
         raise IndexError
 except IndexError:
     logging.basicConfig(level=getattr(logging, config['log_level']),

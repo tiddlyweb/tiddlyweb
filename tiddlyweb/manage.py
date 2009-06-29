@@ -12,6 +12,8 @@ from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
 
+from tiddlyweb import __version__ as VERSION
+
 
 INTERNAL_PLUGINS = ['tiddlyweb.fromsvn', 'tiddlyweb.instancer']
 
@@ -34,6 +36,11 @@ def make_command():
         return func
     return decorate
 
+@make_command()
+def info(args):
+    """Display info about TiddlyWeb."""
+    print """This is TiddlyWeb version %s.
+The current store is: %s.""" % (VERSION, config['server_store'][0])
 
 @make_command()
 def server(args):
