@@ -109,6 +109,8 @@ recipe_create_policy -- A policy statement on who or what kind
 of user can create new recipes on the system through the web
 API. See bag_create_policy.
 
+log_file -- Path and filename of the TiddlyWeb log file.
+
 log_level -- String of loglevel to log. Pick one of 
 'CRITICAL', 'DEBUG', 'ERROR', 'INFO', 'WARNING'.
 
@@ -214,6 +216,7 @@ DEFAULT_CONFIG = {
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'log_level': 'INFO',
+        'log_file': './tiddlyweb.log',
         'css_uri': '',
         'wikitext_renderer': 'wikklytextrender',
         'wikitext_render_map': {
@@ -252,7 +255,14 @@ if os.path.exists('tiddlywebconfig.py'):
 else:
     config = DEFAULT_CONFIG
 
-logging.basicConfig(level=getattr(logging, config['log_level']),
-        format='%(asctime)s %(levelname)-8s %(message)s',
-        filename='./tiddlyweb.log')
-logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
+# Avoid writing a tiddlyweb.log when we are using the
+# instance command.
+try:
+    current_command = sys.argv[1]
+    if config['log_level'] != 'INFO' or current_command != 'instance':
+        raise IndexError
+except IndexError:
+    logging.basicConfig(level=getattr(logging, config['log_level']),
+            format='%(asctime)s %(levelname)-8s %(message)s',
+            filename=config['log_file'])
+    logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
