@@ -36,11 +36,13 @@ def make_command():
         return func
     return decorate
 
+
 @make_command()
 def info(args):
     """Display info about TiddlyWeb."""
     print """This is TiddlyWeb version %s.
 The current store is: %s.""" % (VERSION, config['server_store'][0])
+
 
 @make_command()
 def server(args):
