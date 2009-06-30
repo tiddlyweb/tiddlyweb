@@ -70,8 +70,8 @@ class Bag(dict):
     def __getitem__(self, tiddler):
         return dict.__getitem__(self, self._tiddler_key(tiddler))
 
-    def __setitem__(self, tiddler):
-        dict.__setitem__(self, self._tiddler_key(tiddler), tiddler)
+    def __setitem__(self, key, tiddler):
+        dict.__setitem__(self, key, tiddler)
 
     def __delitem__(self, tiddler):
         dict.__delitem__(self, self._tiddler_key(tiddler))
@@ -89,7 +89,7 @@ class Bag(dict):
         except ValueError:
             pass
         self.order.append(tiddler_key)
-        self.__setitem__(tiddler)
+        self.__setitem__(self._tiddler_key(tiddler), tiddler)
 
     def add_tiddlers(self, tiddlers):
         """
