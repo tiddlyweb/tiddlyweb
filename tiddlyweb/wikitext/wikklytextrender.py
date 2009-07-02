@@ -6,8 +6,10 @@ using the WikklyText enginge.
 import wikklytext
 import urllib
 
+from tiddlyweb.web.util import encode_name
 
-def render(tiddler, path, environ):
+
+def render(tiddler, environ):
     """
     Render TiddlyWiki wikitext in the provided
     tiddler to HTML. The provided path helps
@@ -15,6 +17,12 @@ def render(tiddler, path, environ):
     """
     server_prefix = environ.get('tidldyweb.config',
             {}).get('server_prefix', '')
+    if tiddler.recipe:
+        path = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
+    elif tiddler.bag:
+        path = 'bags/%s/tiddlers' % encode_name(tiddler.bag)
+    else:
+        path = ''
     html = wikitext_to_wikklyhtml('%s/' % server_prefix,
             path, tiddler.text)
     return unicode(html, 'utf-8')

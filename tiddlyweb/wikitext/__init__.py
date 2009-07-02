@@ -24,12 +24,10 @@ NOTE: This interface is experimental and subject to change.
 DEFAULT_RENDERER = 'wikklytextrender'
 
 
-def render_wikitext(tiddler=None, path='', environ=None):
+def render_wikitext(tiddler=None, environ=None):
     """
     Take a tiddler and render it's wikitext to some kind
     of HTML format.
-
-    container_path is used when generating URLs
     """
     if environ == None:
         environ = {}
@@ -44,7 +42,7 @@ def render_wikitext(tiddler=None, path='', environ=None):
         except ImportError, err:
             raise ImportError("couldn't load module for %s: %s, %s" %
                     (renderer_name, err, err1))
-    return imported_module.render(tiddler, path, environ)
+    return imported_module.render(tiddler, environ)
 
 
 def _determine_renderer(tiddler, environ):

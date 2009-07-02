@@ -11,7 +11,7 @@ def setup_module(module):
 
 
 def test_render_wikitext_basic():
-    html = render_wikitext(tiddler, '', {'tiddlyweb.config': config})
+    html = render_wikitext(tiddler, {'tiddlyweb.config': config})
 
     assert '<h1' in html
     assert '</h1>' in html
@@ -20,7 +20,7 @@ def test_render_wikitext_basic():
 def test_render_wikitext_plain():
     renderer = config['wikitext_renderer']
     config['wikitext_renderer'] = 'raw'
-    text = render_wikitext(tiddler, '', {'tiddlyweb.config': config})
+    text = render_wikitext(tiddler, {'tiddlyweb.config': config})
     config['wikitext_renderer'] = renderer
 
     assert '<h1' not in text

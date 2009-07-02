@@ -136,7 +136,7 @@ class Serialization(SerializationInterface):
             list_title = 'Tiddlers in Bag %s' % tiddler.bag
         list_html = ('<div class="tiddlerslink"><a href="%s" ' % list_link +
                 'title="tiddler list">%s</a></div>' % list_title)
-        html = render_wikitext(tiddler, list_link, self.environ)
+        html = render_wikitext(tiddler, self.environ)
         self.environ['tiddlyweb.title'] = tiddler.title
         return list_html + self._tiddler_div(tiddler) + html + '</div>'
 
