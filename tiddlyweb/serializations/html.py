@@ -125,8 +125,8 @@ class Serialization(SerializationInterface):
         """
         Transform the provided tiddler into an HTML
         representation of the tiddler packaged in a
-        DIV. If wikklytext is available the wikitext
-        will be rendered into formatted HTML.
+        DIV. Render the content using the render_wikitext
+        subsystem.
         """
         if tiddler.recipe:
             list_link = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
