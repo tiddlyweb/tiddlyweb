@@ -10,13 +10,6 @@ def setup_module(module):
     module.tiddler = tiddler
 
 
-def test_render_wikitext_basic():
-    html = render_wikitext(tiddler, {'tiddlyweb.config': config})
-
-    assert '<h1' in html
-    assert '</h1>' in html
-
-
 def test_render_wikitext_plain():
     renderer = config['wikitext_renderer']
     config['wikitext_renderer'] = 'raw'

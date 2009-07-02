@@ -99,34 +99,6 @@ def get_tiddlers(environ, start_response):
     return send_tiddlers(environ, start_response, tmp_bag)
 
 
-def import_wiki(environ, start_response):
-    """
-    Accept a tiddlywiki as POST and using it as the source
-    parse it for tiddlers to be stored in the named bag.
-    """
-    bag_name = _determine_bag_name(environ)
-    bag = _get_bag(environ, bag_name, True)
-    length = environ['CONTENT_LENGTH']
-    content = environ['wsgi.input'].read(int(length))
-
-    bag.policy.allows(environ['tiddlyweb.usersign'], 'create')
-
-    try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = bag
-
-        serializer.from_string(content)
-    except NoSerializationError:
-        raise HTTP415('Content type not supported: %s' % mime_type)
-    except AttributeError, exc:
-        raise HTTP400('Content malformed: %s' % exc)
-
-    start_response("204 No Content",
-            [('Location', '%s/tiddlers' % web.bag_url(environ, bag))])
-    return ['']
-
-
 def list(environ, start_response):
     """
     List all the bags that the current user can read.

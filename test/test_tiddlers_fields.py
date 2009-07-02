@@ -92,18 +92,6 @@ def test_tiddler_fields_as_json():
     assert tiddler.fields['field2'] == 'value2'
     assert tiddler.bag == 'bag0'
 
-def test_tiddler_fields_as_wiki():
-    tiddler = Tiddler('feebles', bag='bag0')
-    tiddler = store.get(tiddler)
-    environ = {'tiddlyweb.config': config}
-    serializer = Serializer('wiki', environ)
-    serializer.object = tiddler
-    wiki_string = serializer.to_string()
-
-    assert 'field1="value1"' in wiki_string
-    assert 'field2="value2"' in wiki_string
-    assert 'server.bag="bag0"' in wiki_string
-
 def test_tiddler_fields_as_html():
     tiddler = Tiddler('feebles', bag='bag0')
     tiddler = store.get(tiddler)

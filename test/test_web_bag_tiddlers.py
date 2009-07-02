@@ -36,34 +36,11 @@ def test_get_sorted_tiddlers():
     tiddlers = simplejson.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
 
-def test_post_wiki_to_bag():
-    bag = Bag('wikibag')
-    store.put(bag)
-
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.wiki',
-            method='GET')
-
-    assert response['status'] == '200'
-
-    response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
-            method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
-
-    assert response['status'] == '204'
-    assert response['location'] == 'http://our_test_domain:8001/bags/wikibag/tiddlers'
-
-def test_post_not_wiki_to_bag():
+def test_not_post_to_bag_tiddlers():
     content = "HI EVERYBODY!"
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
 
-    assert response['status'] == '400'
+    assert response['status'] == '405'
 
-def test_post_not_wiki__type_to_bag():
-    content = "HI EVERYBODY!"
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/wikibag/tiddlers',
-            method='POST', headers={'Content-Type': 'text/plain'}, body=content)
-
-    assert response['status'] == '415'

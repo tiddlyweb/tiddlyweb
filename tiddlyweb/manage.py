@@ -15,7 +15,7 @@ from tiddlyweb.model.user import User
 from tiddlyweb import __version__ as VERSION
 
 
-INTERNAL_PLUGINS = ['tiddlyweb.fromsvn', 'tiddlyweb.instancer']
+INTERNAL_PLUGINS = []
 
 COMMANDS = {}
 
@@ -95,24 +95,6 @@ def adduser(args):
         raise
 
     return True
-
-
-@make_command()
-def imwiki(args):
-    """Import a Tiddlywiki html file into a bag: <filename> <bag>"""
-    from tiddlyweb.importer import import_wiki_file
-
-    store = _store()
-
-    try:
-        filename, bag_name = args[0:2]
-        import_wiki_file(store, filename, bag_name)
-    except IndexError, exc:
-        print >> sys.stderr, "index error: %s" % exc
-        usage()
-    except ValueError, exc:
-        print >> sys.stderr, "value error: %s" % exc
-        usage()
 
 
 @make_command()

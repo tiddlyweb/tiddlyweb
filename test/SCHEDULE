@@ -10,7 +10,6 @@ At the URL level:
 * GET a list of bags (unauthenticated and authenticated)
 ** filtered and unfiltered
 * PUT a recipe, creating a workspace
-* GET an operational tiddlywiki/workspace from a recipe
 * GET static HTML from a recipe
 * confirm safety of protected tiddler (can't write or delete tiddler)
 * confirm safety of protected bag (can't create tiddler)

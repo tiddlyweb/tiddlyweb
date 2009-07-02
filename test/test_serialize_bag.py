@@ -60,17 +60,6 @@ def test_generated_html_with_prefix():
 
     assert '<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
 
-def test_generated_wiki():
-    environ = {'tiddlyweb.config': config}
-    wiki_serializer = Serializer('wiki', environ)
-    # work around a limitation in the serializations
-    # when store is not set, we assume the bag has not been reified
-    string = wiki_serializer.list_tiddlers(bagfour)
-
-    assert '<div title="TiddlerOne' in string
-    assert '<div title="TiddlerTwo' in string
-    assert '<div title="TiddlerThree' in string
-
 def test_generated_html_with_revbag():
     html_serializer = Serializer('html')
     bagfour.revbag = True

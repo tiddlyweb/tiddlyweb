@@ -250,15 +250,6 @@ def test_put_bag_wrong_type():
 
     assert response['status'] == '415'
 
-def test_get_bag_wiki():
-    """
-    Doesn't support wiki.
-    """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0.wiki',
-            method='GET')
-    assert response['status'] == '415'
-
 def test_get_bag_tiddlers_constraints():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',

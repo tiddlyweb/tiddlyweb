@@ -96,27 +96,6 @@ def test_get_tiddler_missing_revision():
 
     assert response['status'] == '404'
 
-def test_get_tiddler_wiki():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8.wiki',
-            method='GET')
-
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
-    assert '<title>\ntiddler8\n</title>' in content
-    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
-    assert 'server.permissions="read, write, create, delete"' in content
-
-def test_get_tiddler_revision_wiki():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1.wiki',
-            method='GET')
-
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; chareset=UTF-8 is %s' % response['content-type']
-    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
-    assert 'revision="1"' in content
-
 def test_put_tiddler_txt():
     http = httplib2.Http()
     encoded_body = text_put_body.encode('utf-8')
@@ -364,24 +343,6 @@ def test_get_tiddler_text_created():
     assert contents[-3] == u'tags: ' # tags
     assert match('created: \d{12}', contents[1])
 
-def test_get_tiddler_html_slash():
-    """
-    Create a tiddler with a tiddly link with a slash in it and make
-    sure it is escape properly.
-    """
-    tiddler = Tiddler('slashed', 'bag0')
-    tiddler.text = '[[test/tiddler]] and [[foo/bar|http://example.com/hassle]] and [[bar/baz|/happy/hour]]'
-    store.put(tiddler)
-
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/slashed', 
-            headers={'Accept:': 'text/html'})
-    assert response['status'] == '200'
-    assert 'test%2Ftiddler" >test/tiddler' in content
-    assert 'href="http://example.com/hassle"' in content
-    assert 'href="/happy/hour"' in content
-
-
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('utf-8')
     http = httplib2.Http()
@@ -444,11 +405,10 @@ def test_tiddler_bag_constraints():
 
     # update the policy so we can read and GET the thing
     _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['NONE'],delete=['NONE'])))
-    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne.wiki',
+    response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '200'
     assert 'John Smith' in content
-    assert 'server.permissions="read, create"' in content
 
 def test_get_tiddler_via_recipe_with_perms():
 

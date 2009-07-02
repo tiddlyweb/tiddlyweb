@@ -1,6 +1,6 @@
 
 """
-Test that GETting a recipe in wiki form, gets a tiddlywiki.
+Test that GETting recipes.
 """
 
 import sys
@@ -36,16 +36,6 @@ def setup_module(module):
     user = User('cdent')
     user.set_password('cowpig')
     module.store.put(user)
-
-def test_get_recipe_wiki_fail():
-    """
-    Don't Return a wiki for a recipe, because only do that for tiddlers.
-    """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long.wiki',
-            method='GET')
-
-    assert response['status'] == '415'
 
 def test_get_recipe_txt():
     """
@@ -115,7 +105,7 @@ def test_get_recipe_tiddler_list():
 
 def test_get_recipe_tiddler_list_disposition():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki?download=long.html',
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers?download=long.html',
             method='GET')
 
     assert response['status'] == '200'
@@ -286,21 +276,6 @@ def test_get_recipe_wiki_bag_constraints():
             method='GET')
     assert response['status'] == '403'
     assert 'may not read' in content
-
-
-def test_get_recipe_wiki_has_workspace_bag_does_not():
-    _put_bag_policy('bag28', dict(policy=dict(read=[])))
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.wiki',
-            method='GET')
-    assert response['status'] == '200'
-    assert 'recipe="long"' in content
-
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers.wiki',
-            method='GET')
-    assert response['status'] == '200'
-    assert 'recipe="long"' not in content
-    assert 'workspace="bags/bag28"' in content
 
 def test_roundtrip_unicode_recipe():
     http = httplib2.Http()

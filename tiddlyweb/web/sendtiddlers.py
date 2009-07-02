@@ -38,10 +38,9 @@ def send_tiddlers(environ, start_response, bag):
     cache_header = ('Cache-Control', 'no-cache')
     response = [content_header, cache_header]
 
-    if serialize_type == 'wiki':
-        if download:
-            response.append(('Content-Disposition',
-                'attachment; filename="%s"' % download))
+    if download:
+        response.append(('Content-Disposition',
+            'attachment; filename="%s"' % download))
     if last_modified:
         response.append(last_modified)
     if etag:

@@ -21,7 +21,7 @@ The renderer module has a function render.
 NOTE: This interface is experimental and subject to change.
 """
 
-DEFAULT_RENDERER = 'wikklytextrender'
+DEFAULT_RENDERER = 'raw'
 
 
 def render_wikitext(tiddler=None, environ=None):

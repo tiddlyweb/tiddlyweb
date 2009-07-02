@@ -25,8 +25,8 @@ act as plugins for twanager, adding command line functionality.
 As with system_plugins init(config) is called.
 
 instance_tiddlers -- A list of URLs pointing to tiddlers
-in tiddlywiki svn to be imported by from_svn during
-the instance and instance_update twanager commands.
+on the to be imported by from_svn during the instance
+and update twanager commands.
 (This format is subject to change.)
 
 server_store -- The name of a module implementing 
@@ -89,12 +89,6 @@ NOTE: EVERY INSTALLATION SHOULD CHANGE THIS IN ITS OWN
 CONFIGURATION. When using twanager instance, a random
 secret will be created in tiddlywebconfig.py.
 
-base_tiddlywiki -- the file location of the tiddlywiki
-file into which Tiddlers are pushed when creating
-outgoing TiddlyWiki representations from TiddlyWeb. This
-can be an absolute path or relative to the startup 
-directory of the server.
-
 urls_map -- the file location of the text file that maps
 URL paths to python code, doing method dispatch. With
 the advent of system_plugins, it is not often necessary
@@ -133,10 +127,8 @@ import sys
 
 try:
     from pkg_resources import resource_filename
-    BASE_TIDDLYWIKI = resource_filename('tiddlyweb', 'empty.html')
     URLS_MAP = resource_filename('tiddlyweb', 'urls.map')
 except ImportError:
-    BASE_TIDDLYWIKI = 'tiddlyweb/empty.html'
     URLS_MAP = 'tiddlyweb/urls.map'
 
 # override urllib.quote's broken-ness compared with browsers
@@ -158,13 +150,7 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, Header, HTMLPres
 DEFAULT_CONFIG = {
         'system_plugins': [],
         'twanager_plugins': [],
-        'instance_tiddlers': [
-            ('system', [
-                'http://svn.tiddlywiki.org/Trunk/association/adaptors/TiddlyWebAdaptor.js',
-                'http://svn.tiddlywiki.org/Trunk/association/plugins/ServerSideSavingPlugin.js',
-                'http://svn.tiddlywiki.org/Trunk/association/plugins/TiddlyWebConfig.js'
-                ]),
-	    ],
+        'instance_tiddlers': [ ],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,
@@ -190,10 +176,8 @@ DEFAULT_CONFIG = {
             'txt': 'text/plain',
             'html': 'text/html',
             'json': 'application/json',
-            'wiki': 'text/x-tiddlywiki',
         },
         'serializers': {
-            'text/x-tiddlywiki': ['wiki', 'text/html; charset=UTF-8'],
             'text/html': ['html', 'text/html; charset=UTF-8'],
             'text/plain': ['text', 'text/plain; charset=UTF-8'],
             'application/json': ['json', 'application/json; charset=UTF-8'],
@@ -209,19 +193,14 @@ DEFAULT_CONFIG = {
             ],
         # XXX this should come from a file
         'secret': 'this should come from a file',
-        # XXX this should allow a URL, but not doing that
-        # yet because of google app engine
-        'base_tiddlywiki': BASE_TIDDLYWIKI,
         'urls_map': URLS_MAP,
         'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'log_level': 'INFO',
         'log_file': './tiddlyweb.log',
         'css_uri': '',
-        'wikitext_renderer': 'wikklytextrender',
-        'wikitext_render_map': {
-                'text/x-tiddlywiki': 'wikklytextrender',
-                },
+        'wikitext_renderer': 'raw',
+        'wikitext_render_map': {},
         }
 
 
