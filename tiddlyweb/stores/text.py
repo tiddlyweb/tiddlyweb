@@ -182,7 +182,7 @@ class Store(StorageInterface):
             # set created on new tiddler from modified on base_tiddler
             # (might be the same)
             tiddler.created = base_tiddler.modified
-            if tiddler.type and tiddler.type != 'None':
+            if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
                 tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
             return tiddler
         except IOError, exc:
@@ -213,7 +213,7 @@ class Store(StorageInterface):
         revision = self._tiddler_revision_filename(tiddler) + 1
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
 
-        if tiddler.type and tiddler.type != 'None':
+        if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
             tiddler.text = b64encode(tiddler.text)
         self.serializer.object = tiddler
         write_utf8_file(tiddler_filename, self.serializer.to_string())
