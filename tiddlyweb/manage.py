@@ -70,6 +70,30 @@ def server(args):
 
 
 @make_command()
+def addrole(args):
+    """Add a role to an existing user. <username> [role] [role] [role]"""
+    try:
+        username = args.pop(0)
+        roles = args[0:]
+    except (IndexError, ValueError), exc:
+        print >> sys.stderr, "you must provide a user and an at least one role: %s" % exc
+        usage()
+
+    try:
+        store = _store()
+        user = User(username)
+        user = store.get(user)
+        for role in roles:
+            user.add_role(role)
+        store.put(user)
+    except Exception, exc:
+        print >> sys.stderr, 'unable to add role to user: %s' % exc
+        usage()
+
+    return True
+
+
+@make_command()
 def adduser(args):
     """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
     try:
