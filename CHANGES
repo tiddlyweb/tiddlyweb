@@ -1,3 +1,7 @@
+0.9.50 NOT YET RELEASED
+
+  * Extract tiddlywiki related features to a plugin: tiddlywebwiki.
+
 0.9.44 Mon Jun 29 09:10:21 BST 2009
 
   * Implement a system for pluggable rendering of wikitext to HTML.
