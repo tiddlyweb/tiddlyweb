@@ -13,7 +13,7 @@ an individual test file, with more verbose output as follows:
 
 You can run the tests to the first failure:
 
-  py.test -x
+  py.test -svx
 
 This helps quite a bit with dealing with the error
 output.

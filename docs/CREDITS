@@ -23,9 +23,9 @@ list here, but a few highlights:
   the Socialtext REST API with Matt Liggett and Matthew O'Connor.
 
 * Frank McIngvale, the author of WikklyText which does the server-side
-  wikitext to HTML transformation in TiddlyWeb, provided excellent input
-  on many aspects of TiddlyWeb, and of course built the excellent
-  WikklyText.
+  wikitext to HTML transformation originally in TiddlyWeb and then extracted
+  to a plugin (tiddlywebwiki), provided excellent input on many aspects
+  of TiddlyWeb, and of course built the excellent WikklyText.
 
 * Frederik Dohr is the earliest adopter of TiddlyWeb, and responsible
   for most of the code that creates the TiddlyWebWiki vertical. He's
@@ -34,6 +34,7 @@ list here, but a few highlights:
 
 * Action requires communication to make go. Many thanks to Jon Lister,
   Martin Budden, Paul Downey, Phil Hawksworth, Phil Whitehouse, Simon
-  McManus, and Michael Mahemoff from Osmosoft; Tony, Oveek, Reenen,
-  Ben Tremblay and others from the TiddlyWikiDev group; and many others
-  for comments, questions and conversations about TiddlyWeb.
+  McManus, Michael Mahemoff, Jon Robson and Ben Gillies from Osmosoft;
+  Tony, Oveek, Reenen, Ben Tremblay and others from the TiddlyWikiDev
+  and TiddlyWeb Google groups; and many others for comments, questions
+  and conversations about TiddlyWeb.
