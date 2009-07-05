@@ -22,15 +22,12 @@ COMMANDS = {}
 
 def make_command():
     """
-    A decorator that marks the decorated method
-    as a member of the commands dictionary, with
-    associated help.
+    A decorator that marks the decorated method as a member of the commands
+    dictionary, with associated help.
     """
 
     def decorate(func):
-        """
-        Add the function to the commands dictionary.
-        """
+        """Add the function to the commands dictionary."""
         func.description = func.__doc__
         COMMANDS[func.__name__] = func
         return func
@@ -46,14 +43,17 @@ The current store is: %s.""" % (VERSION, config['server_store'][0])
 
 @make_command()
 def server(args):
-    """Start the server using config settings. Provide <host name or IP number> <port> to override."""
+    """
+    Start the server using config settings.
+    Provide <host name or IP number> <port> to override.
+    """
     hostname = port = ''
     try:
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print >> sys.stderr, "you must include both a hostname or ip number and a " \
-                "port if using arguments: %s" % exc
+            print >> sys.stderr, "you must include both a hostname or IP " \
+                "number and a port if using arguments: %s" % exc
             usage()
         else:
             pass
@@ -76,7 +76,7 @@ def addrole(args):
         username = args.pop(0)
         roles = args[0:]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must provide a user and an at least one role: %s" % exc
+        print >> sys.stderr, "you must provide a user and at least one role: %s" % exc
         usage()
 
     try:
@@ -95,7 +95,10 @@ def addrole(args):
 
 @make_command()
 def adduser(args):
-    """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
+    """
+    Add or update a user to the database:
+    <username> <password> [[role] [role] ...]
+    """
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
@@ -159,7 +162,9 @@ def bag(args):
 
 @make_command()
 def tiddler(args):
-    """Import a single tiddler into an existing bag from stdin: <tiddler> <bag>"""
+    """
+    Import a single tiddler into an existing bag from stdin: <tiddler> <bag>
+    """
     try:
         tiddler_name, bag_name = args[0:3]
     except (IndexError, ValueError), exc:
@@ -184,10 +189,7 @@ def usage(*args):
 
 
 def handle(args):
-    """
-    Dispatch to the proper function for the command
-    given in a args[1].
-    """
+    """Dispatch to the proper function for the command given in a args[1]."""
     plugins = INTERNAL_PLUGINS
     try:
         plugins.extend(config['twanager_plugins'])
@@ -226,8 +228,7 @@ def handle(args):
 
 def _put(entity, content, serialization):
     """
-    Put entity to store, by serializing content
-    using the named serialization.
+    Put entity to store, by serializing content using the named serialization.
     """
     serializer = Serializer(serialization)
     serializer.object = entity
