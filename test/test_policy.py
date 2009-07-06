@@ -111,3 +111,10 @@ def test_malformed_policy():
     policy = Policy()
     policy.read = None # set the policy to a bad form
     assert policy.allows(guest_info, 'read')
+
+def test_confirm_attributes():
+    """Confirm the class attributes of a policy."""
+    attributes = Policy.attributes
+    for name in ['read', 'write', 'create', 'delete', 'accept', 'manage', 'owner']:
+        assert name in attributes
+
