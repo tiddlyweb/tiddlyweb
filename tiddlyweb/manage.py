@@ -98,7 +98,7 @@ def addrole(args):
         username = args.pop(0)
         roles = args[0:]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must provide a user and an at least one role: %s" % exc
+        print >> sys.stderr, "you must provide a user and at least one role: %s" % exc
         usage()
 
     try:
