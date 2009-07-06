@@ -323,12 +323,13 @@ class Store(StorageInterface):
         Search in the store for tiddlers that match search_query.
         This is intentionally simple, slow and broken to encourage overriding.
         """
-        bags = self._bag_filenames()
+        bag_filenames = self._bag_filenames()
         found_tiddlers = []
 
         query = search_query.lower()
 
-        for bagname in bags:
+        for bagname in bag_filenames:
+            bagname = urllib.unquote(bagname).decode('utf-8')
             tiddler_dir = self._tiddlers_dir(bagname)
             tiddler_files = self._files_in_dir(tiddler_dir)
             for tiddler_name in tiddler_files:
