@@ -90,6 +90,12 @@ def test_get_tiddler_revision_4_fail():
             method='GET')
     assert response['status'] == '404'
 
+def test_get_tiddler_revision_nonint_fail():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/four',
+            method='GET')
+    assert response['status'] == '404'
+
 def test_get_tiddler_revision_list_404():
     """
     Get a 404 when the tiddler doesn't exist.
