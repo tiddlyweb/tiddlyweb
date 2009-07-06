@@ -70,6 +70,28 @@ def server(args):
 
 
 @make_command()
+def userpass(args):
+    """Change the password of an existing user. <username> <password>"""
+    try:
+        username, password = args[0:2]
+    except (IndexError, ValueError), exc:
+        print >> sys.stderr, "you must provide a user and a password: %s" % exc
+        usage()
+
+    try:
+        store = _store()
+        user = User(username)
+        user = store.get(user)
+        user.set_password(password)
+        store.put(user)
+    except Exception, exc:
+        print >> sys.stderr, 'unable to set password for user: %s' % exc
+        usage()
+
+    return True
+
+
+@make_command()
 def addrole(args):
     """Add a role to an existing user. <username> [role] [role] [role]"""
     try:
