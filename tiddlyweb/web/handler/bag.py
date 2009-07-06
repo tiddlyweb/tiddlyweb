@@ -115,19 +115,16 @@ def list(environ, start_response):
         except(UserRequiredError, ForbiddenError):
             pass
 
+    serialize_type, mime_type = web.get_serialize_type(environ)
+    start_response("200 OK", [('Content-Type', mime_type)])
+    serializer = Serializer(serialize_type, environ)
+
     try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-
-        content = serializer.list_bags(kept_bags)
-
-    except NoSerializationError:
-        raise HTTP415('Content type not supported: %s' % mime_type)
-
-    start_response("200 OK",
-            [('Content-Type', mime_type)])
-
-    return [content]
+        output = serializer.list_bags(kept_bags)
+    except NoSerializationError, exc:
+        raise HTTP415('Content type not supported: %s, %a' % (mime_type, exc))
+    
+    return [output]
 
 
 def put(environ, start_response):

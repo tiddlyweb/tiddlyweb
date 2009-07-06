@@ -126,17 +126,19 @@ def list(environ, start_response):
             recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_recipes.append(recipe)
         except(UserRequiredError, ForbiddenError):
-            # if we got a perm error, just pass
-            # and don't add anything to the kept recipes
             pass
 
     serialize_type, mime_type = web.get_serialize_type(environ)
+    start_response("200 OK", [('Content-Type', mime_type)])
+
     serializer = Serializer(serialize_type, environ)
 
-    start_response("200 OK",
-            [('Content-Type', mime_type)])
-
-    return [serializer.list_recipes(kept_recipes)]
+    try:
+        output = serializer.list_recipes(kept_recipes)
+    except NoSerializationError:
+        raise HTTP415('Content type not supported: %s' % mime_type)
+    
+    return [output]
 
 
 def put(environ, start_response):

@@ -32,7 +32,6 @@ def send_tiddlers(environ, start_response, bag):
         raise HTTP404('No tiddlers in container')
 
     serialize_type, mime_type = get_serialize_type(environ)
-    serializer = Serializer(serialize_type, environ)
 
     content_header = ('Content-Type', mime_type)
     cache_header = ('Cache-Control', 'no-cache')
@@ -46,8 +45,13 @@ def send_tiddlers(environ, start_response, bag):
     if etag:
         response.append(etag)
 
-    output = serializer.list_tiddlers(bag)
     start_response("200 OK", response)
+
+    serializer = Serializer(serialize_type, environ)
+    try:
+        output = serializer.list_tiddlers(bag)
+    except NoSerializationError, exc:
+        raise HTTP415('Content type not supported: %s, %s' % (mime_type, exc))
     return [output]
 
 
