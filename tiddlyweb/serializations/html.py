@@ -58,11 +58,11 @@ class Serialization(SerializationInterface):
         server_prefix = self._server_prefix()
         lines = []
         for tiddler in bag.list_tiddlers():
-            base, base_link, wiki_link, title = \
+            base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
             if bag.revbag:
                 line = self._tiddler_revision_info(base, base_link, tiddler)
-                wiki_link += '/%s/revisions' % encode_name(tiddler.title)
+                representation_link += '/%s/revisions' % encode_name(tiddler.title)
                 title = 'Revisions of Tiddler %s' % tiddler.title
             else:
                 line = self._tiddler_in_bag_info(base, base_link, tiddler)
@@ -70,7 +70,6 @@ class Serialization(SerializationInterface):
 
         if bag.searchbag:
             title = 'Found Tiddlers'
-            wiki_link = None
 
         output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
@@ -80,7 +79,7 @@ class Serialization(SerializationInterface):
 <ul id="tiddlers" class="listing">
 %s
 </ul>
-""" % (self._tiddler_list_header(wiki_link), output)
+""" % (self._tiddler_list_header(representation_link), output)
 
     def recipe_as(self, recipe):
         """
@@ -180,14 +179,20 @@ class Serialization(SerializationInterface):
             encode_name(tiddler.title),
             tiddler.title)
 
-    def _tiddler_list_header(self, wiki_link):
+    def _tiddler_list_header(self, representation_link):
         """
         The string we present at the top of a list of tiddlers.
         """
-        if wiki_link:
+        if representation_link:
+            extension_types = self.environ.get('tiddlyweb.config', {}).get('extension_types', {}).keys()
+            links = []
+            for extension in extension_types:
+                link = '<a href="%s.%s">%s</a>' % (representation_link, extension, extension)
+                links.append(link)
+            link_info = ' '.join(links)
             return """
-<div id="tiddlersheader"><a href="%s">These Tiddlers as a TiddlyWiki</a></div>
-""" % ('%s.wiki' % wiki_link)
+<div id="tiddlersheader">This list of tiddlers: %s</div>
+""" % (link_info)
         return ''
 
     def _tiddler_list_info(self, tiddler):
@@ -197,16 +202,16 @@ class Serialization(SerializationInterface):
         if tiddler.recipe:
             base = 'recipes'
             base_link = encode_name(tiddler.recipe)
-            wiki_link = '%s/recipes/%s/tiddlers' % (
+            representation_link = '%s/recipes/%s/tiddlers' % (
                     self._server_prefix(), base_link)
             title = 'Tiddlers in Recipe %s' % tiddler.recipe
         else:
             base = 'bags'
             base_link = encode_name(tiddler.bag)
-            wiki_link = '%s/bags/%s/tiddlers' % (self._server_prefix(),
+            representation_link = '%s/bags/%s/tiddlers' % (self._server_prefix(),
                     base_link)
             title = 'Tiddlers in Bag %s' % tiddler.bag
-        return base, base_link, wiki_link, title
+        return base, base_link, representation_link, title
 
     def _tiddler_revision_info(self, base, base_link, tiddler):
         """

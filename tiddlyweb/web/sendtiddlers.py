@@ -2,9 +2,6 @@
 Routines related to sending a list of tiddlers out
 to the web, including sending those tiddlers and
 validating cache headers for list of tiddlers.
-
-These are important because this is what sends
-a TiddlyWiki out.
 """
 
 from sha import sha
