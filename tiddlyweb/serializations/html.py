@@ -191,7 +191,7 @@ class Serialization(SerializationInterface):
                 links.append(link)
             link_info = ' '.join(links)
             return """
-<div id="tiddlersheader">This list of tiddlers: %s</div>
+<div id="tiddlersheader">This list of tiddlers as: %s</div>
 """ % (link_info)
         return ''
 
