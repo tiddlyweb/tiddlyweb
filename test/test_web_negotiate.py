@@ -7,8 +7,6 @@ the environment that allows us to determine
 what kind of store and serializer to use.
 """
 
-import sys
-sys.path.append('.')
 
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.serve import config

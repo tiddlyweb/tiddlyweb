@@ -3,9 +3,6 @@
 Test turning a recipe into other forms.
 """
 
-import sys
-sys.path.append('.')
-
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.serializer import Serializer
 

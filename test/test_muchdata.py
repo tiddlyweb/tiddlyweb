@@ -4,8 +4,6 @@ from playing with it.
 """
 
 import os
-import sys
-sys.path.append('.')
 
 import py.test
 

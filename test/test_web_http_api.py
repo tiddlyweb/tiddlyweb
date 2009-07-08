@@ -10,9 +10,7 @@ of as a test it will produce a list of test
 requests and some associated information.
 """
 
-import sys
 import os
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

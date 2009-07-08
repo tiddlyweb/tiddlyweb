@@ -4,8 +4,6 @@ Test using / in names and titles.
 
 
 import os
-import sys
-sys.path.append('.')
 
 from fixtures import reset_textstore, _teststore
 

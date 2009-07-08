@@ -18,8 +18,6 @@ Flow through the entire process we might have.
 """
 
 import os
-import sys
-sys.path.append('.')
 
 import tiddlyweb.stores.text
 from tiddlyweb.store import NoBagError

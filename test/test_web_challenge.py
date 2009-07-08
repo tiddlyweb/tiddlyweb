@@ -2,8 +2,6 @@
 Test the way in which the /challenge URI produces stuff.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

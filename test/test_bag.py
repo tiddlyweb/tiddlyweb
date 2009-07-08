@@ -7,8 +7,6 @@ for the contents of the bag. Which is lame, but useful
 in this case.
 """
 
-import sys
-sys.path.append('.')
 from tiddlyweb.model.bag import Bag, Policy
 
 import py.test

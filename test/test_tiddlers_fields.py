@@ -6,8 +6,6 @@ Most straightforward things to do here seems to be
 to do what TiddlyWiki does: have a fields field.
 """
 
-import sys
-sys.path.append('.')
 
 import simplejson
 

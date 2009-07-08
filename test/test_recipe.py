@@ -4,9 +4,6 @@ Test a recipe to confirm it does all its recipe
 things.
 """
 
-import sys
-sys.path.append('.')
-
 import py.test
 
 from tiddlyweb.model.recipe import Recipe

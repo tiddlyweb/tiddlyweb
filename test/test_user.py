@@ -2,8 +2,6 @@
 Test user, a simple data container for a user.
 """
 
-import sys
-sys.path.append('.')
 
 import py.test
 

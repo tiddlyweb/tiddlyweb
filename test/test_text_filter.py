@@ -2,8 +2,6 @@
 Tests for a [text[<string>]] style filter.
 """
 
-import sys
-sys.path.append('.')
 
 from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler

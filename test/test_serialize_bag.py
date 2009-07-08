@@ -3,9 +3,6 @@
 Test turning a bag into other forms.
 """
 
-import sys
-sys.path.append('.')
-
 import simplejson
 
 from tiddlyweb.serializer import Serializer

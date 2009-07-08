@@ -2,8 +2,6 @@
 Test extended fields on tiddlers via the HTTP API.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

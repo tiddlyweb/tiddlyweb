@@ -4,9 +4,7 @@ Exploratory testing for storing recipes.
 """
 
 import os
-import sys
 import shutil
-sys.path.append('.')
 
 import py.test
 

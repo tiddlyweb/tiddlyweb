@@ -3,8 +3,6 @@
 Test tiddler, a simple data container for a tiddler.
 """
 
-import sys
-sys.path.append('.')
 from tiddlyweb.model.tiddler import Tiddler
 
 test_tiddler_text = "Race car drivers\ngo really very fast."

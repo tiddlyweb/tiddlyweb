@@ -4,9 +4,6 @@ Confirm the store knows how to fail
 to load a module.
 """
 
-import sys
-sys.path.append('.')
-
 import py.test
 
 from tiddlyweb.config import config

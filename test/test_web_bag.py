@@ -2,8 +2,6 @@
 Test that GETting a bag can list the tiddlers.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

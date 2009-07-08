@@ -1,6 +1,4 @@
 
-import sys
-sys.path.append('.')
 
 from fixtures import reset_textstore, muchdata, _teststore
 from tiddlyweb.model.bag import Bag

@@ -9,8 +9,6 @@ Prequisites:
 """
 
 import os
-import sys
-sys.path.append('.')
 
 from fixtures import bagone, bagfour, reset_textstore, _teststore
 from tiddlyweb.config import config

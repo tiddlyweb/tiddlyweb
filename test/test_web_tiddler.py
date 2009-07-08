@@ -2,9 +2,7 @@
 Test that GETting a tiddler in some form.
 """
 
-import sys
 import os
-sys.path.append('.')
 
 import py.test
 

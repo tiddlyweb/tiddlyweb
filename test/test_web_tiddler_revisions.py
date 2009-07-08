@@ -2,8 +2,6 @@
 Test GETting a tiddler revision list.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

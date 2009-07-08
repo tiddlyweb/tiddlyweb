@@ -4,8 +4,6 @@ Test the way in which the /challenge URI produces stuff.
 XXX This test file appears to have never been completed.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept

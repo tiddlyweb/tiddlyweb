@@ -5,8 +5,6 @@ See about doing this lazily.
 """
 
 import os
-import sys
-sys.path.append('.')
 
 import py.test
 

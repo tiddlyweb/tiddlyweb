@@ -3,8 +3,6 @@ Test extracting the QUERY_STRING into tiddlyweb.query.
 Not much yet as it is just a directly mappen.
 """
 
-import sys
-sys.path.append('.')
 
 import urllib
 

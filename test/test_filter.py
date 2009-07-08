@@ -5,8 +5,6 @@ described just yet. Use this as the basis for building the basic
 tiddler data store. And the rest of the underneath the web code.
 """
 
-import sys
-sys.path.append('.')
 
 import copy
 

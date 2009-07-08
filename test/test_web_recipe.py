@@ -3,8 +3,6 @@
 Test that GETting recipes.
 """
 
-import sys
-sys.path.append('.')
 
 from wsgi_intercept import httplib2_intercept
 from base64 import b64encode

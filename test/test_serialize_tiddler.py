@@ -7,9 +7,6 @@ tiddler. This will be added later. For now it is
 just in the way.
 """
 
-import sys
-sys.path.append('.')
-
 import simplejson
 import py.test
 
