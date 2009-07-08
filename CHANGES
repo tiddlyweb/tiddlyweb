@@ -1,6 +1,10 @@
 0.9.50 NOT YET RELEASED
 
   * Extract tiddlywiki related features to a plugin: tiddlywebwiki.
+  * Provide links to other available representations from tiddlers lists.
+  * Correct escaping of bag names in search in text store.
+  * addrole and userpass twanager command.
+  * Propely escape " in HTML attributes in HTML serialization.
 
 0.9.44 Mon Jun 29 09:10:21 BST 2009
 
