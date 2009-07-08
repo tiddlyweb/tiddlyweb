@@ -122,6 +122,18 @@ def html_encode(text):
             replace('>', '&gt;'))
 
 
+def escape_attribute_value(text):
+    """
+    escape double quotes in attribute values
+
+    This assumes values are enclosed in double quotes (key="value").
+    """
+    try:
+        return text.replace('"', r'\"')
+    except AttributeError: # value might be None -- XXX: magic!?
+        return text
+
+
 def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.

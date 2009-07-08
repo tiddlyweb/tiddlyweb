@@ -91,13 +91,29 @@ def test_tiddler_from_json():
 
 def test_tiddler_html_encode():
     serializer = Serializer('html')
-    tiddler= Tiddler('jeremy found a bug')
+    tiddler = Tiddler('jeremy found a bug')
     tiddler.bag = 'foo'
     tiddler.text = u'"Hello." I\'m > than 5 & < you.'
     serializer.object = tiddler
     string = serializer.to_string()
 
     assert '"Hello." I\'m &gt; than 5 &amp; &lt; you.' in string
+
+def test_html_attribute_escape():
+    tiddler = Tiddler('unescape "double" quotes in tiddler field values')
+    tiddler.bag = 'foo "bar" baz'
+    tiddler.modifier = 'Chris "sensei" Dent'
+    tiddler.tags = ["foo", 'xxx "yyy" zzz']
+    tiddler.fields["custom"] = u"""lorem 'ipsum' dolor "sit" amet"""
+    tiddler.text = ''
+    serializer = Serializer('html')
+    serializer.object = tiddler
+    string = serializer.to_string()
+
+    assert r'''title="unescape \"double\" quotes in tiddler field values"''' in string
+    assert r'''modifier="Chris \"sensei\" Dent"''' in string
+    assert r'''tags="foo [[xxx \"yyy\" zzz]]"''' in string
+    assert r'''custom="lorem 'ipsum' dolor \"sit\" amet"''' in string
 
 def test_tiddler_json_base64():
     serializer = Serializer('json')

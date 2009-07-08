@@ -5,7 +5,7 @@ HTML based serializers.
 import urllib
 
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.web.util import encode_name
+from tiddlyweb.web.util import encode_name, escape_attribute_value
 from tiddlyweb.wikitext import render_wikitext
 
 
@@ -153,9 +153,12 @@ class Serialization(SerializationInterface):
         """
         return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
                 'modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
-                (tiddler.title, tiddler.revision, tiddler.modifier,
-                        tiddler.modified, tiddler.created,
-                        self.tags_as(tiddler.tags),
+                    (escape_attribute_value(tiddler.title),
+                        tiddler.revision,
+                        escape_attribute_value(tiddler.modifier),
+                        tiddler.modified,
+                        tiddler.created,
+                        escape_attribute_value(self.tags_as(tiddler.tags)),
                         self._tiddler_fields(tiddler.fields))
 
     def _tiddler_fields(self, fields):
@@ -164,8 +167,8 @@ class Serialization(SerializationInterface):
         _tiddler_div.
         """
         output = []
-        for key in fields:
-            output.append('%s="%s"' % (key, fields[key]))
+        for key, val in fields.items():
+            output.append('%s="%s"' % (key, escape_attribute_value(val)))
         return ' '.join(output)
 
     def _tiddler_in_bag_info(self, base, base_link, tiddler):
