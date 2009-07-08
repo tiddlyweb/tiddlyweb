@@ -130,7 +130,7 @@ def escape_attribute_value(text):
     """
     try:
         return text.replace('"', r'\"')
-    except AttributeError: # value might be None -- XXX: magic!?
+    except AttributeError: # value might be None
         return text
 
 
