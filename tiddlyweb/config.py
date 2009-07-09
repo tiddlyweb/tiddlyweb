@@ -234,11 +234,19 @@ if os.path.exists('tiddlywebconfig.py'):
 else:
     config = DEFAULT_CONFIG
 
-# Avoid writing a tiddlyweb.log when we are using the
-# instance command.
+# Avoid writing a tiddlyweb.log under some circumstances
 try:
-    current_command = sys.argv[1]
-    if config['log_level'] != 'INFO' or (current_command != 'instance' and current_command != 'info'):
+    try:
+        current_command = sys.argv[0]
+        current_sub_command = sys.argv[1]
+    except IndexError:
+        current_command = ''
+        current_sub_command = ''
+    # there's tiddlywebconfig.py here and it says log level is high, so log
+    if config['log_level'] != 'INFO': 
+        raise IndexError
+    # we're running the server so we want to log
+    if current_command == 'twanager' and current_sub_command == 'server':
         raise IndexError
 except IndexError:
     logging.basicConfig(level=getattr(logging, config['log_level']),
