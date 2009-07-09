@@ -68,7 +68,7 @@ def start_cherrypy():
     from cherrypy import wsgiserver
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
-    app = load_app(prefix = config['server_prefix'])
+    app = load_app(prefix=config['server_prefix'])
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
         logging.debug('starting cherrypy at %s:%s' % (hostname, port))
