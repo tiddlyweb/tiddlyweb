@@ -1,4 +1,10 @@
-0.9.50 NOT YET RELEASED
+0.9.51 NOT YET RELEASED
+
+  * Performance optimization when reading one tiddler from a recipe.
+  * Cleaner tiddlyweb.log handling.
+  * Don't do sys.path manipulation in tests.
+
+0.9.50 Thu Jul 9 00:00:00 BST 2009 
 
   * Extract tiddlywiki related features to a plugin: tiddlywebwiki.
   * Provide links to other available representations from tiddlers lists.
