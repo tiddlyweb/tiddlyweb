@@ -88,6 +88,6 @@ def _sha_tiddler_titles(bag):
 def _last_modified_tiddler(bag):
     # If there are no tiddlers, raise a 404
     try:
-        return str(max([int(tiddler.modified) for tiddler in bag.gen_tiddlers()]))
+        return str(max(int(tiddler.modified) for tiddler in bag.gen_tiddlers()))
     except ValueError:
         raise HTTP404('No tiddlers in container')
