@@ -65,7 +65,7 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
                 if tiddler.title == candidate_tiddler.title:
                     return bag
         else:
-            for candidate_tiddler in bag.list_tiddlers():
+            for candidate_tiddler in bag.gen_tiddlers():
                 if tiddler.title == candidate_tiddler.title:
                     return bag
 
@@ -101,8 +101,7 @@ def get_tiddlers_from_bag(bag):
     Return the list of tiddlers that are in a bag.
     """
 
-    tiddlers = bag.list_tiddlers()
-    loaded_tiddlers = []
+    tiddlers = bag.gen_tiddlers()
     if bag.store:
         for tiddler in tiddlers:
             try:
@@ -127,7 +126,7 @@ def filter_tiddlers_from_bag(bag, filters):
     if store:
         return recursive_filter(filters, get_tiddlers_from_bag(bag))
     else:
-        return recursive_filter(filters, bag.list_tiddlers())
+        return recursive_filter(filters, bag.gen_tiddlers())
 
 
 def _recipe_template(environ):

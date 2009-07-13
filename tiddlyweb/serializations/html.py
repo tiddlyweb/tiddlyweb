@@ -57,7 +57,7 @@ class Serialization(SerializationInterface):
         """
         server_prefix = self._server_prefix()
         lines = []
-        for tiddler in bag.list_tiddlers():
+        for tiddler in bag.gen_tiddlers():
             base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
             if bag.revbag:

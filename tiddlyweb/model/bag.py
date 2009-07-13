@@ -110,6 +110,13 @@ class Bag(dict):
             pass
         self.__delitem__(tiddler)
 
+    def gen_tiddlers(self):
+        """
+        Make a generator of all the tiddlers in the bag, 
+        in the order they were added.
+        """
+        return (self.get(keyword, None) for keyword in self.order)
+
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order

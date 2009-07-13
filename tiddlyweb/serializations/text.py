@@ -87,10 +87,10 @@ class Serialization(SerializationInterface):
         if bag.revbag:
             return "\n".join(
                     ["%s:%s" % (tiddler.title, tiddler.revision)
-                        for tiddler in bag.list_tiddlers()])
+                        for tiddler in bag.gen_tiddlers()])
         else:
             return "\n".join([
-                tiddler.title for tiddler in bag.list_tiddlers()])
+                tiddler.title for tiddler in bag.gen_tiddlers()])
 
     def tiddler_as(self, tiddler):
         """

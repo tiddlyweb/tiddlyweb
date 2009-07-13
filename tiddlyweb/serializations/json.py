@@ -37,7 +37,7 @@ class Serialization(SerializationInterface):
         the form described by self._tiddler_dict.
         """
         return simplejson.dumps([self._tiddler_dict(tiddler) for
-            tiddler in bag.list_tiddlers()])
+            tiddler in bag.gen_tiddlers()])
 
     def recipe_as(self, recipe):
         """
