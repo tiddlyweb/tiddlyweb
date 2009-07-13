@@ -20,13 +20,11 @@ def send_tiddlers(environ, start_response, bag):
     """
     last_modified = None
     etag = None
-    bags_tiddlers = bag.list_tiddlers()
     download = environ['tiddlyweb.query'].get('download', [None])[0]
 
-    if bags_tiddlers:
-        last_modified, etag = _validate_tiddler_list(environ, bags_tiddlers)
-    else:
-        raise HTTP404('No tiddlers in container')
+    # If there are no tiddlers in the bag, validation will
+    # raise 404. If incoming Etag is acceptable, will raise 304.
+    last_modified, etag = _validate_tiddler_list(environ, bag)
 
     serialize_type, mime_type = get_serialize_type(environ)
 
@@ -52,12 +50,12 @@ def send_tiddlers(environ, start_response, bag):
     return [output]
 
 
-def _validate_tiddler_list(environ, tiddlers):
-    last_modified_number = _last_modified_tiddler(tiddlers)
+def _validate_tiddler_list(environ, bag):
+    last_modified_number = _last_modified_tiddler(bag)
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '"%s:%s"' % (_sha_tiddler_titles(tiddlers),
+    etag_string = '"%s:%s"' % (_sha_tiddler_titles(bag),
             last_modified_number)
     etag = ('Etag', etag_string)
 
@@ -75,9 +73,9 @@ def _validate_tiddler_list(environ, tiddlers):
     return last_modified, etag
 
 
-def _sha_tiddler_titles(tiddlers):
+def _sha_tiddler_titles(bag):
     digest = sha()
-    for tiddler in tiddlers:
+    for tiddler in bag.gen_tiddlers():
         if tiddler.recipe:
             container = tiddler.recipe
         else:
@@ -87,5 +85,9 @@ def _sha_tiddler_titles(tiddlers):
     return digest.hexdigest()
 
 
-def _last_modified_tiddler(tiddlers):
-    return str(max([int(tiddler.modified) for tiddler in tiddlers]))
+def _last_modified_tiddler(bag):
+    # If there are no tiddlers, raise a 404
+    try:
+        return str(max([int(tiddler.modified) for tiddler in bag.gen_tiddlers()]))
+    except ValueError:
+        raise HTTP404('No tiddlers in container')
