@@ -31,12 +31,12 @@ def test_filter_by_title():
     return those that match the title.
     """
 
-    found_tiddlers = filter('select=title:TiddlerOne', tiddlers)
+    found_tiddlers = list(filter('select=title:TiddlerOne', tiddlers))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0] == tiddlers[0]
 
 
-    found_tiddlers = filter('select=title:TiddlerFive', tiddlers)
+    found_tiddlers = list(filter('select=title:TiddlerFive', tiddlers))
     assert len(found_tiddlers) == 0
 
 
@@ -49,11 +49,11 @@ def test_filter_by_since():
     tiddler_old.modified = '19691009000000'
     tiddler_new = Tiddler('new')
     tiddler_new.modified = '20090401030303'
-    found_tiddlers = filter('select=modified:>20010101010100', [tiddler_old, tiddler_new])
+    found_tiddlers = list(filter('select=modified:>20010101010100', [tiddler_old, tiddler_new]))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'new'
 
-    found_tiddlers = filter('select=modified:>200101010101', [tiddler_old, tiddler_new])
+    found_tiddlers = list(filter('select=modified:>200101010101', [tiddler_old, tiddler_new]))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'new'
 
@@ -63,13 +63,13 @@ def test_filter_by_tag():
     Given a tag, find the tiddlers that use that tag.
     """
 
-    found_tiddlers = filter('select=tag:tagone', tiddlers)
+    found_tiddlers = list(filter('select=tag:tagone', tiddlers))
     assert len(found_tiddlers) == 2, 'two tiddlers in returned list'
 
-    found_tiddlers = filter('select=tag:tagoe', tiddlers)
+    found_tiddlers = list(filter('select=tag:tagoe', tiddlers))
     assert len(found_tiddlers) == 0, 'zero tiddlers in returned list'
 
-    found_tiddlers = filter('select=tag:tagthree', tiddlers)
+    found_tiddlers = list(filter('select=tag:tagthree', tiddlers))
     assert len(found_tiddlers) == 1, 'one tiddlers in returned list'
 
     assert found_tiddlers[0].title == tiddlers[2].title, 'the found tiddler is the right one'
@@ -79,11 +79,11 @@ def test_filter_by_bag():
     Given a bag, find the tiddlers that are in that bag.
     """
 
-    found_tiddlers = filter('select=bag:TiddlerThree', tiddlers)
+    found_tiddlers = list(filter('select=bag:TiddlerThree', tiddlers))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].bag == 'TiddlerThree'
     
-    found_tiddlers = filter('select=bag:NoHit', tiddlers)
+    found_tiddlers = list(filter('select=bag:NoHit', tiddlers))
     assert len(found_tiddlers) == 0
 
 def test_negate_fitler_by_title():
@@ -91,7 +91,7 @@ def test_negate_fitler_by_title():
     Return those tiddlers which are not of provided title.
     """
 
-    found_tiddlers = filter('select=title:!TiddlerOne', tiddlers)
+    found_tiddlers = list(filter('select=title:!TiddlerOne', tiddlers))
     assert len(found_tiddlers) == 2, 'two tiddlers in returned list, got %s' % len(found_tiddlers)
 
 def test_sort_filter_by_title():
@@ -119,7 +119,7 @@ def test_compose_filters():
     Compose a list of filters and see that they do the right thing.
     """
 
-    found_tiddlers = filter('select=tag:tagone;select=title:TiddlerThree', tiddlers)
+    found_tiddlers = list(filter('select=tag:tagone;select=title:TiddlerThree', tiddlers))
     assert len(found_tiddlers) == 1
 
 def test_compose_with_negate_filters():
@@ -127,7 +127,7 @@ def test_compose_with_negate_filters():
     Compose a list of filters and see that they do the right thing.
     """
 # this is only one because of the title check
-    found_tiddlers = filter('select=tag:!tagtwo;select=title:TiddlerTwo', tiddlers)
+    found_tiddlers = list(filter('select=tag:!tagtwo;select=title:TiddlerTwo', tiddlers))
     assert len(found_tiddlers) == 1
 
 def test_empty_composed_filters():
@@ -135,31 +135,31 @@ def test_empty_composed_filters():
     assert found_tiddlers == tiddlers, 'empty filter returns all tiddlers'
 
 def test_string_to_composed_filter_positive_tag():
-    found_tiddlers = filter('select=tag:tagone', tiddlers)
+    found_tiddlers = list(filter('select=tag:tagone', tiddlers))
     assert len(found_tiddlers) == 2
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
     assert 'TiddlerThree' in [tiddler.title for tiddler in found_tiddlers]
 
 def test_string_to_composed_filter_positive_bag():
-    found_tiddlers = filter('select=bag:TiddlerThree', tiddlers)
+    found_tiddlers = list(filter('select=bag:TiddlerThree', tiddlers))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].bag == 'TiddlerThree'
     assert found_tiddlers[0].title == 'TiddlerThree'
 
 def test_string_to_composed_filter_negative_title():
-    found_tiddlers = filter('select=title:!TiddlerOne', tiddlers)
+    found_tiddlers = list(filter('select=title:!TiddlerOne', tiddlers))
     assert len(found_tiddlers) == 2
     assert 'TiddlerThree' in [tiddler.title for tiddler in found_tiddlers], 'should get third tiddler'
     assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers], 'should get second tiddler'
 
 def test_string_to_composed_filter_negative_tag():
-    found_tiddlers = filter('select=tag:!tagthree', tiddlers)
+    found_tiddlers = list(filter('select=tag:!tagthree', tiddlers))
     assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers], 'should get first tiddler'
     assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers], 'should get third tiddler'
 
 def test_string_to_composed_filter_negative_bag():
-    found_tiddlers = filter('select=bag:!TiddlerThree', tiddlers)
+    found_tiddlers = list(filter('select=bag:!TiddlerThree', tiddlers))
     assert len(found_tiddlers) == 2
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
     assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers]
@@ -175,7 +175,7 @@ def test_string_composed_filter_with_spaces():
         tiddler.text = name
         tiddlers.append(tiddler)
 
-    found_tiddlers = filter('select=title:tiddler one', tiddlers)
+    found_tiddlers = list(filter('select=title:tiddler one', tiddlers))
     assert len(found_tiddlers) == 1, 'one tiddler should be found, got %s' % len(found_tiddlers)
     assert found_tiddlers[0].title == 'tiddler one'
 

@@ -61,7 +61,7 @@ def test_get_tiddlers_from_bag():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    tiddlers = control.get_tiddlers_from_bag(bag)
+    tiddlers = list(control.get_tiddlers_from_bag(bag))
 
     assert len(tiddlers) ==  10, 'there are 10 tiddlers in bag0'
     text = ''
@@ -76,6 +76,6 @@ def test_filter_tiddlers_from_bag():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    tiddlers = control.filter_tiddlers_from_bag(bag, 'select=tag:tagfour')
+    tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=tag:tagfour'))
     assert len(tiddlers) == 3, 'there are 3 tiddlers when filters on tagfour'
 

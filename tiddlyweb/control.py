@@ -110,9 +110,7 @@ def get_tiddlers_from_bag(bag):
             except TiddlerFormatError:
                 # XXX do more here?
                 pass
-            loaded_tiddlers.append(tiddler)
-
-    return loaded_tiddlers
+            yield tiddler
 
 
 def filter_tiddlers_from_bag(bag, filters):

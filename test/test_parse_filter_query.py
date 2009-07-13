@@ -24,7 +24,7 @@ def test_parsing():
 
     tiddlers = [Tiddler('a'), Tiddler('monkey')]
     tiddlers[1].tags = ['systemConfig', 'blog']
-    tiddlers = recursive_filter(filters, tiddlers)
+    tiddlers = list(recursive_filter(filters, tiddlers))
     
     assert len(tiddlers) == 1
     assert tiddlers[0].title == 'monkey'

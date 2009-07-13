@@ -122,11 +122,11 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
     """
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
-        return [tiddler for tiddler in tiddlers if not
-                select(tiddler, attribute, value)]
+        return (tiddler for tiddler in tiddlers if not
+                select(tiddler, attribute, value))
     else:
-        return [tiddler for tiddler in tiddlers if
-                select(tiddler, attribute, value)]
+        return (tiddler for tiddler in tiddlers if
+                select(tiddler, attribute, value))
 
 
 def select_relative_attribute(attribute, value, tiddlers,
@@ -138,10 +138,10 @@ def select_relative_attribute(attribute, value, tiddlers,
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
     if greater:
-        return [tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute)) > func(value)]
+        return (tiddler for tiddler in tiddlers if
+                func(getattr(tiddler, attribute)) > func(value))
     elif lesser:
-        return [tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute)) < func(value)]
+        return (tiddler for tiddler in tiddlers if
+                func(getattr(tiddler, attribute)) < func(value))
     else:
         return tiddlers
