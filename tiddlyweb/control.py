@@ -57,9 +57,17 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
-        for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
-            if tiddler.title == candidate_tiddler.title:
-                return bag
+        # If there is a filter_string then we need to load the tiddlers off
+        # the store. If there's not, then we can just use the list that is
+        # already in the bag, saving a bit of time.
+        if filter_string:
+            for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
+                if tiddler.title == candidate_tiddler.title:
+                    return bag
+        else:
+            for candidate_tiddler in bag.list_tiddlers():
+                if tiddler.title == candidate_tiddler.title:
+                    return bag
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
