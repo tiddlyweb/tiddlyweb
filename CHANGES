@@ -1,4 +1,4 @@
-0.9.51 NOT YET RELEASED
+0.9.51 Tue Jul 14 13:18:48 BST 2009
 
   * Performance optimization when reading one tiddler from a recipe.
   * Cleaner tiddlyweb.log handling.
