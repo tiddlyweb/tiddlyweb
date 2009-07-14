@@ -197,7 +197,11 @@ class Store(StorageInterface):
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         if not os.path.exists(tiddler_base_filename):
-            os.mkdir(tiddler_base_filename)
+            try:
+                os.mkdir(tiddler_base_filename)
+            except OSError, exc:
+                raise NoTiddlerError('unable to put tiddler: %s' % exc)
+
         locked = 0
         lock_attempts = 0
         while (not locked):
