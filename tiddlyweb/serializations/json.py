@@ -99,7 +99,7 @@ class Serialization(SerializationInterface):
         plus the text of the tiddler.
         """
         tiddler_dict = self._tiddler_dict(tiddler)
-        if tiddler.type and tiddler.type != 'None':
+        if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
             tiddler_dict['text'] = b64encode(tiddler.text)
         else:
             tiddler_dict['text'] = tiddler.text
@@ -116,7 +116,7 @@ class Serialization(SerializationInterface):
         for key, value in dict_from_input.iteritems():
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
-        if tiddler.type and tiddler.type != 'None':
+        if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
             tiddler.text = b64decode(tiddler.text)
 
         return tiddler
