@@ -6,7 +6,7 @@ validating cache headers for list of tiddlers.
 
 from sha import sha
 
-from tiddlyweb.serializer import Serializer
+from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
 from tiddlyweb.web.http import HTTP404, HTTP304
