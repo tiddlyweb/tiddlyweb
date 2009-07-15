@@ -106,7 +106,6 @@ class Tiddler(object):
         self.revision = 0
         self.recipe = None
         # reference to the store which 'got' us
-        # this is can be used in serialization
         self.store = None
 
     def __repr__(self):
