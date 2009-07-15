@@ -246,7 +246,6 @@ try:
     if config['log_level'] != 'INFO': 
         raise IndexError
     # we're running the server so we want to log
-    print current_command, current_sub_command
     if 'twanager' in current_command and current_sub_command == 'server':
         raise IndexError
 except IndexError:
