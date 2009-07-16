@@ -123,8 +123,7 @@ class Store(StorageInterface):
                 tiddlers = self._files_in_dir(tiddlers_dir)
             except OSError, exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
-            for title in tiddlers:
-                bag.add_tiddler(Tiddler(urllib.unquote(title).decode('utf-8')))
+            bag.add_tiddlers(Tiddler(urllib.unquote(title).decode('utf-8')) for title in tiddlers)
 
         try:
             bag.desc = self._read_bag_description(bag_path)
