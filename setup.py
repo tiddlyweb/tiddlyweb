@@ -24,7 +24,3 @@ setup(name = 'tiddlyweb',
         install_requires = ['selector', 'simplejson', 'html5lib'],
         include_package_data = True,
         )
-
-
-
-
