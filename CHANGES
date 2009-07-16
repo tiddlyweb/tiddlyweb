@@ -1,3 +1,11 @@
+0.9.53 Wed Jul 15 21:40:37 BST 2009
+
+  * Fix sending data on stdout from tiddlyweb.config. Bad with mod_wsgi.
+
+0.9.52 Wed Jul 15 21:35:25 BST 2009
+
+  * Fix several problems related to the wikitext rendering system.
+
 0.9.51 Tue Jul 14 13:18:48 BST 2009
 
   * Performance optimization when reading one tiddler from a recipe.
