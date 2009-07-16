@@ -85,11 +85,11 @@ def tag_in_tags(tiddler, attribute, value):
 
 def text_in_text(tiddler, attribute, value):
     """
-    Return true if the provide tiddler has
-    the string provide in value in its
+    Return true if the provided tiddler has
+    the string provided in value in its
     text attribute.
     """
-    return value in tiddler.text
+    return value.lower() in tiddler.text.lower()
 
 
 ATTRIBUTE_SELECTOR = {
