@@ -43,8 +43,11 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        return simplejson.dumps([self._tiddler_dict(tiddler) for
-            tiddler in bag.gen_tiddlers()])
+        iostring = StringIO()
+        simplejson.dump([self._tiddler_dict(tiddler) for
+            tiddler in bag.gen_tiddlers()], iostring)
+        iostring.seek(0)
+        return iostring
 
     def recipe_as(self, recipe):
         """
