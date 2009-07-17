@@ -32,7 +32,10 @@ class Serialization(SerializationInterface):
         Create a JSON list of bag names from the
         provided bags.
         """
-        return simplejson.dumps([bag.name for bag in bags])
+        iostring = StringIO()
+        simplejson.dump([bag.name for bag in bags], iostring)
+        iostring.seek(0)
+        return iostring
 
     def list_tiddlers(self, bag):
         """
