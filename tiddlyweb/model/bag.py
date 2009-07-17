@@ -118,11 +118,17 @@ class Bag(dict):
         Make a generator of all the tiddlers in the bag, 
         in the order they were added.
         """
-        return (self.get(keyword, None) for keyword in self.order)
+        try:
+            return self.tiddler_generator
+        except AttributeError:
+            return (self.get(keyword, None) for keyword in self.order)
 
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        return [self.get(keyword, None) for keyword in self.order]
+        try:
+            return [tiddler for tiddler in self.tiddler_generator]
+        except AttributeError:
+            return [self.get(keyword, None) for keyword in self.order]

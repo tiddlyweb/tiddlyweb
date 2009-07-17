@@ -118,12 +118,18 @@ class Store(StorageInterface):
         bag_path = self._bag_path(bag.name)
         tiddlers_dir = self._tiddlers_dir(bag.name)
 
-        if not (hasattr(bag, 'skinny') and bag.skinny):
+        def _bag_gen(bag):
             try:
-                tiddlers = self._files_in_dir(tiddlers_dir)
-            except OSError, exc:
+                for title in self._files_in_dir(tiddlers_dir):
+                    tiddler = Tiddler(urllib.unquote(title).decode('utf-8'))
+                    tiddler.bag = bag.name
+                    yield tiddler
+                return
+            except OSerror, exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
-            bag.add_tiddlers(Tiddler(urllib.unquote(title).decode('utf-8')) for title in tiddlers)
+
+        if not (hasattr(bag, 'skinny') and bag.skinny):
+            bag.tiddler_generator = _bag_gen(bag)
 
         try:
             bag.desc = self._read_bag_description(bag_path)
