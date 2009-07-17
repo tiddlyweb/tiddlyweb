@@ -47,7 +47,7 @@ def send_tiddlers(environ, start_response, bag):
         output = serializer.list_tiddlers(bag)
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s, %s' % (mime_type, exc))
-    return [output]
+    return output
 
 
 def _validate_tiddler_list(environ, bag):

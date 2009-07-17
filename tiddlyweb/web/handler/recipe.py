@@ -60,7 +60,7 @@ def get(environ, start_response):
     # setting the cookie for text/plain is harmless
     start_response("200 OK",
             [('Content-Type', mime_type)])
-    return [content]
+    return content
 
 
 def get_tiddlers(environ, start_response):
@@ -138,7 +138,7 @@ def list(environ, start_response):
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
     
-    return [output]
+    return output
 
 
 def put(environ, start_response):

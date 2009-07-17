@@ -21,7 +21,8 @@ class Serialization(SerializationInterface):
         """
         Return a linefeed separated list of recipe names.
         """
-        return "\n".join([recipe.name for recipe in recipes])
+        #return "\n".join([recipe.name for recipe in recipes])
+        return ('%s\n' % recipe.name for recipe in recipes)
 
     def list_bags(self, bags):
         """
