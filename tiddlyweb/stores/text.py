@@ -285,8 +285,8 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
 
-        return [Recipe(urllib.unquote(recipe).decode('utf-8'))
-                for recipe in recipes]
+        return (Recipe(urllib.unquote(recipe).decode('utf-8'))
+                for recipe in recipes)
 
     def list_bags(self):
         """
@@ -294,7 +294,7 @@ class Store(StorageInterface):
         """
         bags = self._bag_filenames()
 
-        return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
+        return (Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags)
 
     def list_users(self):
         """
@@ -303,7 +303,7 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'users')
         users = self._files_in_dir(path)
 
-        return [User(urllib.unquote(user).decode('utf-8')) for user in users]
+        return (User(urllib.unquote(user).decode('utf-8')) for user in users)
 
     def list_tiddler_revisions(self, tiddler):
         """
@@ -313,8 +313,8 @@ class Store(StorageInterface):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try:
             revisions = sorted(
-                    [int(x) for x in
-                        self._numeric_files_in_dir(tiddler_base_filename)])
+                    int(x) for x in
+                        self._numeric_files_in_dir(tiddler_base_filename))
         except OSError, exc:
             raise NoTiddlerError('unable to list revisions in tiddler: %s'
                     % exc)
@@ -342,19 +342,19 @@ class Store(StorageInterface):
                 try:
                     revision_id = self.list_tiddler_revisions(tiddler)[0]
                     if query in tiddler.title.lower():
-                        found_tiddlers.append(tiddler)
+                        yield tiddler
                         continue
                     tiddler_file = codecs.open(
                         self._tiddler_full_filename(tiddler, revision_id),
                         encoding='utf-8')
                     for line in tiddler_file:
                         if query in line.lower():
-                            found_tiddlers.append(tiddler)
+                            yield tiddler
                             break
                 except (OSError, NoTiddlerError), exc:
                     logging.warn('malformed tiddler during search: %s:%s' %
                             (bagname, tiddler_name))
-        return found_tiddlers
+        return
 
     def _bag_filenames(self):
         """
@@ -377,14 +377,14 @@ class Store(StorageInterface):
         """
         List the filenames in a dir that do not start with .
         """
-        return [x for x in os.listdir(path) if not x.startswith('.')]
+        return (x for x in os.listdir(path) if not x.startswith('.'))
 
     def _numeric_files_in_dir(self, path):
         """
         List the filename in a dir that are not made up of
         digits.
         """
-        return [x for x in self._files_in_dir(path) if x.isdigit()]
+        return (x for x in self._files_in_dir(path) if x.isdigit())
 
     def _read_tiddler_file(self, tiddler, tiddler_filename):
         """
