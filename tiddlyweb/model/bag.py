@@ -67,6 +67,9 @@ class Bag(dict):
             tiddler = bags_tiddler
         return tiddler
 
+    def __repr__(self):
+        return self.name + object.__repr__(self)
+
     def __getitem__(self, tiddler):
         return dict.__getitem__(self, self._tiddler_key(tiddler))
 
