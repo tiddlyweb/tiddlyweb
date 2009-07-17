@@ -18,8 +18,8 @@ def test_filter_by_text():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    bags_tiddlers = bag.list_tiddlers()
-    assert len(bags_tiddlers) == 10
+    #bags_tiddlers = bag.list_tiddlers()
+    #assert len(bags_tiddlers) == 10
 
     found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0'))
     assert len(found_tiddlers) == 1
@@ -29,8 +29,8 @@ def test_filter_by_text_string():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    bags_tiddlers = bag.list_tiddlers()
-    assert len(bags_tiddlers) == 10
+    #bags_tiddlers = bag.list_tiddlers()
+    #assert len(bags_tiddlers) == 10
 
     found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0'))
     assert len(found_tiddlers) == 1
@@ -40,8 +40,8 @@ def test_filter_by_text_string_negate():
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    bags_tiddlers = bag.list_tiddlers()
-    assert len(bags_tiddlers) == 10
+    #bags_tiddlers = bag.list_tiddlers()
+    #assert len(bags_tiddlers) == 10
 
     found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:!tiddler 0'))
     assert len(found_tiddlers) == 9
