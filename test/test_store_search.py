@@ -12,7 +12,7 @@ def setup_module(module):
     muchdata(store)
 
 def test_simple_search():
-    tiddlers = store.search('i am tiddler 0')
+    tiddlers = list(store.search('i am tiddler 0'))
 
     assert len(tiddlers) > 0
     assert type(tiddlers[0]) == Tiddler
@@ -28,6 +28,6 @@ def test_unicode_search():
 
     store.put(tiddler)
 
-    tiddlers = store.search(name)
+    tiddlers = list(store.search(name))
 
     assert len(tiddlers) == 1
