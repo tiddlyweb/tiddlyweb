@@ -25,6 +25,7 @@ def test_generate_json():
     json = simplejson.loads(string)
     assert json['policy']['manage'] == ['NONE']
     assert json['desc'] == 'a tasty little bag'
+    print serializer.list_tiddlers(bagfour)
 
 
 def test_generated_string():

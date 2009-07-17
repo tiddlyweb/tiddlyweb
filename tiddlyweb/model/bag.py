@@ -4,6 +4,8 @@ A module containing the Bag class.
 
 import copy
 
+from collections import deque
+
 from tiddlyweb.model.policy import Policy
 
 
@@ -35,6 +37,7 @@ class Bag(dict):
         self.tmpbag = tmpbag
         self.revbag = revbag
         self.order = []
+        self.queue = deque()
         self.searchbag = searchbag
         self.store = None
 
@@ -76,6 +79,13 @@ class Bag(dict):
     def __delitem__(self, tiddler):
         dict.__delitem__(self, self._tiddler_key(tiddler))
 
+    def adder(self):
+        while True:
+            try:
+                self.add_tiddler((yield))
+            except GeneratorExit:
+                return
+
     def add_tiddler(self, tiddler):
         """
         Inject a tiddler into the bag. Depending on the
@@ -83,12 +93,13 @@ class Bag(dict):
         a tiddler of the same name in the bag.
         """
         tiddler = self._tiddler_copy(tiddler)
-        tiddler_key = self._tiddler_key(tiddler)
+        #tiddler_key = self._tiddler_key(tiddler)
         try:
-            self.order.remove(tiddler_key)
-        except ValueError:
+            queued_tiddler = self.__getitem__(tiddler)
+            self.queue.remove(queued_tiddler)
+        except KeyError:
             pass
-        self.order.append(tiddler_key)
+        self.queue.appendleft(tiddler)
         self.__setitem__(self._tiddler_key(tiddler), tiddler)
 
     def add_tiddlers(self, tiddlers):
@@ -103,23 +114,32 @@ class Bag(dict):
         """
         Remove the provided tiddler from the bag.
         """
-        tiddler_key = self._tiddler_key(tiddler)
         try:
-            self.order.remove(tiddler_key)
+            queued_tiddler = self.__getitem__(tiddler)
+            self.queue.remove(queued_tiddler)
+            self.__delitem__(tiddler)
         except ValueError:
             pass
-        self.__delitem__(tiddler)
 
     def gen_tiddlers(self):
         """
         Make a generator of all the tiddlers in the bag, 
         in the order they were added.
         """
-        return (self.get(keyword, None) for keyword in self.order)
+        queue2 = deque()
+        while True:
+            try:
+                tiddler = self.queue.pop()
+                queue2.appendleft(tiddler)
+                yield tiddler
+            except IndexError:
+                break
+        self.queue = queue2
+        return
 
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        return [self.get(keyword, None) for keyword in self.order]
+        return list(self.gen_tiddlers())
