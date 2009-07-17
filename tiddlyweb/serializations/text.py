@@ -21,14 +21,13 @@ class Serialization(SerializationInterface):
         """
         Return a linefeed separated list of recipe names.
         """
-        #return "\n".join([recipe.name for recipe in recipes])
         return ('%s\n' % recipe.name for recipe in recipes)
 
     def list_bags(self, bags):
         """
         Return a linefeed separated list of recipe names.
         """
-        return "\n".join([bag.name for bag in bags])
+        return ('%s\n' % bag.name for bag in bags)
 
     def recipe_as(self, recipe):
         """
@@ -86,12 +85,10 @@ class Serialization(SerializationInterface):
         List the tiddlers in a bag as text.
         """
         if bag.revbag:
-            return "\n".join(
-                    ["%s:%s" % (tiddler.title, tiddler.revision)
-                        for tiddler in bag.gen_tiddlers()])
+            return ('%s:%s\n' % (tiddler.title, tiddler.revision)
+                        for tiddler in bag.gen_tiddlers())
         else:
-            return "\n".join([
-                tiddler.title for tiddler in bag.gen_tiddlers()])
+            return ('%s\n' % tiddler.title for tiddler in bag.gen_tiddlers())
 
     def tiddler_as(self, tiddler):
         """

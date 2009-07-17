@@ -28,7 +28,7 @@ def test_generate_json():
 
 
 def test_generated_string():
-    string = serializer.list_tiddlers(bagfour)
+    string = ''.join(list(serializer.list_tiddlers(bagfour)))
 
     assert 'TiddlerOne' in string
     assert 'TiddlerTwo' in string
@@ -36,7 +36,7 @@ def test_generated_string():
 
 def test_generated_string_with_revbag():
     bagfour.revbag = True
-    string = serializer.list_tiddlers(bagfour)
+    string = ''.join(list(serializer.list_tiddlers(bagfour)))
 
     assert 'TiddlerOne:0' in string
     assert 'TiddlerTwo:0' in string

@@ -116,7 +116,7 @@ def test_get_recipe_tiddler_list_filtered_one():
 
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
     assert response['status'] == '200'
-    assert content == 'tiddler8'
+    assert content == 'tiddler8\n'
 
 def test_get_recipe_tiddler_list_filtered_empty():
     http = httplib2.Http()
