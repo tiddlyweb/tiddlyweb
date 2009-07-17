@@ -81,7 +81,7 @@ def test_json_to_bag():
 def test_text_list():
     serializer = Serializer('text')
     bags = [Bag('bag' + str(name)) for name in xrange(2)]
-    string = serializer.list_bags(bags)
+    string = ''.join(list(serializer.list_bags(bags)))
 
     assert 'bag0' in string
     assert 'bag1' in string
@@ -89,7 +89,7 @@ def test_text_list():
 def test_html_list():
     serializer = Serializer('html')
     bags = [Bag('bag' + str(name)) for name in xrange(2)]
-    string = serializer.list_bags(bags)
+    string = ''.join(list(serializer.list_bags(bags)))
 
     assert 'href="bags/bag0' in string
     assert 'href="bags/bag1' in string
