@@ -99,8 +99,7 @@ class Bag(dict):
         Call add_tiddler() on a list of tiddlers.
         For convenience.
         """
-        for tiddler in tiddlers:
-            self.add_tiddler(tiddler)
+        [self.add_tiddler(tiddler) for tiddler in tiddlers]
 
     def remove_tiddler(self, tiddler):
         """
