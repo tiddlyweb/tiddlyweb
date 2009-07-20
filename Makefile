@@ -5,6 +5,11 @@
 .PHONY: test dist upload
 
 clean:
+	find . -name "*.pyc" |xargs rm || true
+	rm -r dist || true
+
+cleanagain:
+	find . -name "*.pyc" |xargs rm || true
 	rm -r dist || true
 
 test: 
@@ -13,7 +18,7 @@ test:
 dist: test
 	python setup.py sdist
 
-upload: clean test pypi peermore
+upload: clean test cleanagain pypi peermore
 
 pypi:
 	python setup.py sdist upload
