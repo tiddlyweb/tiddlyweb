@@ -34,6 +34,15 @@ def test_get_sorted_tiddlers():
     tiddlers = simplejson.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
 
+def test_get_selected_sorted_limited_tiddlers():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?select=title:!tiddler1;select=title:!tiddler0;sort=title;limit=1',
+            method='GET')
+    assert response['status'] == '200'
+    tiddlers = simplejson.loads(content)
+    assert len(tiddlers) == 1
+    assert tiddlers[0]['title'] == 'tiddler2'
+
 def test_not_post_to_bag_tiddlers():
     content = "HI EVERYBODY!"
     http = httplib2.Http()

@@ -132,7 +132,7 @@ def test_compose_with_negate_filters():
 
 def test_empty_composed_filters():
     found_tiddlers = filter('', tiddlers)
-    assert found_tiddlers == tiddlers, 'empty filter returns all tiddlers'
+    assert list(found_tiddlers) == tiddlers, 'empty filter returns all tiddlers'
 
 def test_string_to_composed_filter_positive_tag():
     found_tiddlers = list(filter('select=tag:tagone', tiddlers))

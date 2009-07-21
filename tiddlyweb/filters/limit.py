@@ -33,4 +33,15 @@ def limit(tiddlers, count=0, index=0):
     Make a slice of a list of tiddlers based
     on a count and index.
     """
-    return tiddlers[index:index+count]
+    # The following optimizes the common case of taking the short top
+    # of a long list of tiddlers. The other option is to switch to a
+    # list first and then take a slice as follows:
+    # tiddlers = list(tiddlers)
+    # return (tiddler for tiddler in tiddlers[index:index+count])
+    for enum_index, tiddler in enumerate(tiddlers):
+        if enum_index < index:
+            continue
+        if enum_index > (index + count - 1):
+            return
+        yield tiddler
+    return

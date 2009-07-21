@@ -144,4 +144,4 @@ def select_relative_attribute(attribute, value, tiddlers,
         return (tiddler for tiddler in tiddlers if
                 func(getattr(tiddler, attribute)) < func(value))
     else:
-        return tiddlers
+        return (tiddler for tiddler in tiddlers)
