@@ -54,17 +54,12 @@ class Bag(dict):
 
     def _tiddler_copy(self, tiddler):
         """
-        If a bag is not a tmpbag, when we put a tiddler in
-        it, we need to copy the tiddler, otherwise operations
-        that happen to the tiddler in the bag may impact a
-        tiddler somewhere else in the process space.
+        If a bag is not a tmpbag, add a bag attribute.
         """
         if self.tmpbag:
             pass
         else:
-            bags_tiddler = copy.deepcopy(tiddler)
-            bags_tiddler.bag = self.name
-            tiddler = bags_tiddler
+            tiddler.bag = self.name
         return tiddler
 
     def __repr__(self):
