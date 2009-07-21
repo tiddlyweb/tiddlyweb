@@ -344,7 +344,7 @@ class Store(StorageInterface):
             for tiddler_name in tiddler_files:
                 tiddler = Tiddler(
                         title=urllib.unquote(tiddler_name).decode('utf-8'),
-                        bag=urllib.unquote(bagname).decode('utf-8'))
+                        bag=bagname)
                 try:
                     revision_id = self.list_tiddler_revisions(tiddler)[0]
                     if query in tiddler.title.lower():

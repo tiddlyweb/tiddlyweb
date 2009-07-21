@@ -90,7 +90,7 @@ def recursive_filter(filters, tiddlers):
     that were results of the previous filter.
     """
     if len(filters) == 0:
-        return tiddlers
+        return (tiddler for tiddler in tiddlers)
     filter = filters.pop(0)
     try:
         return recursive_filter(filters, filter(tiddlers))

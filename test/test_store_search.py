@@ -20,10 +20,10 @@ def test_simple_search():
 
 def test_unicode_search():
 
-    bag = Bag('bagfoo')
+    bag = Bag(name)
     store.put(bag)
 
-    tiddler = Tiddler(name, bag='bagfoo')
+    tiddler = Tiddler('barney', name)
     tiddler.text = name
 
     store.put(tiddler)

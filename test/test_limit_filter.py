@@ -12,7 +12,6 @@ tiddlers = [Tiddler('1'), Tiddler('c'), Tiddler('a'), Tiddler('b')]
 def test_simple_limit():
     limited_tiddlers = limit(tiddlers, count=2)
 
-    assert len(limited_tiddlers) == 2
     assert ['1','c'] == [tiddler.title for tiddler in limited_tiddlers]
 
 
