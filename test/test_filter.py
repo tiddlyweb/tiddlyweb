@@ -32,7 +32,7 @@ def test_filter_by_title():
     """
 
     found_tiddlers = list(filter('select=title:TiddlerOne', tiddlers))
-    assert len(found_tiddlers) == 1
+    assert len(found_tiddlers) == 2
     assert found_tiddlers[0] == tiddlers[0]
 
 
@@ -64,15 +64,15 @@ def test_filter_by_tag():
     """
 
     found_tiddlers = list(filter('select=tag:tagone', tiddlers))
-    assert len(found_tiddlers) == 2, 'two tiddlers in returned list'
+    assert len(found_tiddlers) == 3
 
     found_tiddlers = list(filter('select=tag:tagoe', tiddlers))
-    assert len(found_tiddlers) == 0, 'zero tiddlers in returned list'
+    assert len(found_tiddlers) == 0
 
     found_tiddlers = list(filter('select=tag:tagthree', tiddlers))
-    assert len(found_tiddlers) == 1, 'one tiddlers in returned list'
+    assert len(found_tiddlers) == 1
 
-    assert found_tiddlers[0].title == tiddlers[2].title, 'the found tiddler is the right one'
+    assert found_tiddlers[0].title == tiddlers[2].title
 
 def test_filter_by_bag():
     """
@@ -99,7 +99,7 @@ def test_sort_filter_by_title():
     Get some tiddlers by a filter, and then sort them.
     """
     found_tiddlers = filter('sort=title', tiddlers)
-    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerThree', 'TiddlerTwo']
+    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerOne', 'TiddlerOne', 'TiddlerThree', 'TiddlerTwo']
 
 def test_sort_filter_by_bogus():
     """
@@ -136,7 +136,7 @@ def test_empty_composed_filters():
 
 def test_string_to_composed_filter_positive_tag():
     found_tiddlers = list(filter('select=tag:tagone', tiddlers))
-    assert len(found_tiddlers) == 2
+    assert len(found_tiddlers) == 3
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
     assert 'TiddlerThree' in [tiddler.title for tiddler in found_tiddlers]
 
@@ -154,13 +154,13 @@ def test_string_to_composed_filter_negative_title():
 
 def test_string_to_composed_filter_negative_tag():
     found_tiddlers = list(filter('select=tag:!tagthree', tiddlers))
-    assert len(found_tiddlers) == 2, 'two tiddlers should be found, got %s' % len(found_tiddlers)
-    assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers], 'should get first tiddler'
-    assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers], 'should get third tiddler'
+    assert len(found_tiddlers) == 3
+    assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
+    assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers]
 
 def test_string_to_composed_filter_negative_bag():
     found_tiddlers = list(filter('select=bag:!TiddlerThree', tiddlers))
-    assert len(found_tiddlers) == 2
+    assert len(found_tiddlers) == 3
     assert 'TiddlerOne' in [tiddler.title for tiddler in found_tiddlers]
     assert 'TiddlerTwo' in [tiddler.title for tiddler in found_tiddlers]
 
@@ -185,7 +185,8 @@ def test_string_composed_filter_with_sort():
     """
 
     found_tiddlers = filter('sort=-title', tiddlers)
-    assert [tiddler.title for tiddler in found_tiddlers] == ['TiddlerTwo', 'TiddlerThree', 'TiddlerOne']
+    titles = [tiddler.title for tiddler in found_tiddlers]
+    assert titles == ['TiddlerTwo', 'TiddlerThree', 'TiddlerOne', 'TiddlerOne']
 
 def test_string_composed_filter_with_count():
     """

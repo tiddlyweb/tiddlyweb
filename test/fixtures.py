@@ -22,6 +22,11 @@ TiddlerOne.modifier = 'AuthorOne'
 TiddlerOne.text = u'c tiddler one content'
 TiddlerOne.tags = ['tagone', 'tagtwo']
 
+TiddlerOnea = Tiddler('TiddlerOne')
+TiddlerOnea.modifier = 'AuthorOne'
+TiddlerOnea.text = u'c tiddler one content'
+TiddlerOnea.tags = ['tagone', 'tagtwo']
+
 TiddlerTwo = Tiddler('TiddlerTwo')
 TiddlerTwo.modifier = u'AuthorTwo'
 TiddlerTwo.text = u'b tiddler two content'
@@ -31,7 +36,7 @@ TiddlerThree.modifier = u'AuthorThree'
 TiddlerThree.text = u'a tiddler three content'
 TiddlerThree.tags = [u'tagone', u'tagthree']
 
-tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree]
+tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree, TiddlerOnea]
 
 bagone = Bag(name='bagone')
 bagone.add_tiddler(tiddlers[0])
@@ -40,7 +45,7 @@ bagtwo.add_tiddler(tiddlers[1])
 bagthree = Bag(name='bagthree')
 bagthree.add_tiddler(tiddlers[2])
 bagfour = Bag(name='bagfour')
-bagfour.add_tiddler(tiddlers[0])
+bagfour.add_tiddler(tiddlers[3])
 bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
 

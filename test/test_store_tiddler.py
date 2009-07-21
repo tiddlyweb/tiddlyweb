@@ -9,6 +9,7 @@ Prequisites:
 """
 
 import os
+import fixtures
 
 from fixtures import bagone, bagfour, reset_textstore, _teststore
 from tiddlyweb.config import config
@@ -32,8 +33,11 @@ c tiddler one content
 
 def setup_module(module):
     """
-    Need to clean up the store here.
+    Need to clean up the store here. 
     """
+    # reset an altered tiddler that has been made
+    # wrong in earlier tests. XXX really need no gobals!
+    bagone.list_tiddlers()[0].revision = None
     reset_textstore()
     module.store = _teststore()
 

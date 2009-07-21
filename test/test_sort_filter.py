@@ -45,5 +45,5 @@ def test_modified_sort():
 
 
 def test_modifier_sort():
-    py.test.raises(AttributeError, 'sort_by_attribute("blam", tiddlers, reverse=True)')
+    py.test.raises(AttributeError, 'sort_by_attribute("blam", tiddlers, reverse=True).next()')
 
