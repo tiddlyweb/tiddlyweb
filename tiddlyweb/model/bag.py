@@ -67,6 +67,9 @@ class Bag(dict):
             tiddler = bags_tiddler
         return tiddler
 
+    def __repr__(self):
+        return self.name + object.__repr__(self)
+
     def __getitem__(self, tiddler):
         return dict.__getitem__(self, self._tiddler_key(tiddler))
 
@@ -96,8 +99,7 @@ class Bag(dict):
         Call add_tiddler() on a list of tiddlers.
         For convenience.
         """
-        for tiddler in tiddlers:
-            self.add_tiddler(tiddler)
+        [self.add_tiddler(tiddler) for tiddler in tiddlers]
 
     def remove_tiddler(self, tiddler):
         """
@@ -115,11 +117,17 @@ class Bag(dict):
         Make a generator of all the tiddlers in the bag, 
         in the order they were added.
         """
-        return (self.get(keyword, None) for keyword in self.order)
+        try:
+            return self.tiddler_generator
+        except AttributeError:
+            return (self.get(keyword, None) for keyword in self.order)
 
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        return [self.get(keyword, None) for keyword in self.order]
+        try:
+            return [tiddler for tiddler in self.tiddler_generator]
+        except AttributeError:
+            return [self.get(keyword, None) for keyword in self.order]

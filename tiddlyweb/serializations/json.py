@@ -10,6 +10,7 @@ from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 
+from StringIO import StringIO
 
 class Serialization(SerializationInterface):
     """
@@ -21,14 +22,20 @@ class Serialization(SerializationInterface):
         Create a JSON list of recipe names from
         the provided recipes.
         """
-        return simplejson.dumps([recipe.name for recipe in recipes])
+        iostring = StringIO()
+        simplejson.dump([recipe.name for recipe in recipes], iostring)
+        iostring.seek(0)
+        return iostring
 
     def list_bags(self, bags):
         """
         Create a JSON list of bag names from the
         provided bags.
         """
-        return simplejson.dumps([bag.name for bag in bags])
+        iostring = StringIO()
+        simplejson.dump([bag.name for bag in bags], iostring)
+        iostring.seek(0)
+        return iostring
 
     def list_tiddlers(self, bag):
         """
@@ -36,8 +43,11 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        return simplejson.dumps([self._tiddler_dict(tiddler) for
-            tiddler in bag.gen_tiddlers()])
+        iostring = StringIO()
+        simplejson.dump([self._tiddler_dict(tiddler) for
+            tiddler in bag.gen_tiddlers()], iostring)
+        iostring.seek(0)
+        return iostring
 
     def recipe_as(self, recipe):
         """

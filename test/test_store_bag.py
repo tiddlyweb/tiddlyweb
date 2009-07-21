@@ -48,10 +48,10 @@ def test_simple_get():
     bag = Bag(name='bagone')
     bag = store.get(bag)
 
-    print bag.list_tiddlers()
-    assert bag.list_tiddlers()[0].title == tiddler.title
-    assert bag.list_tiddlers()[0].text == None
-    assert bag.list_tiddlers()[0].tags == []
+    ltiddlers = bag.list_tiddlers()
+    assert ltiddlers[0].title == tiddler.title
+    assert ltiddlers[0].text == None
+    assert ltiddlers[0].tags == []
     assert bag.policy.read == bagone.policy.read
     assert bag.policy.write == bagone.policy.write
     assert bag.policy.create == bagone.policy.create
@@ -60,7 +60,7 @@ def test_simple_get():
     assert bag.policy.owner == bagone.policy.owner
     assert bag.desc == 'I enjoy being stored'
     
-    the_tiddler = bag.list_tiddlers()[0]
+    the_tiddler = ltiddlers[0]
     the_tiddler = store.get(the_tiddler)
     assert the_tiddler.title == tiddler.title, 'stored tiddler title and retrieved tiddler.title the same'
     assert sorted(the_tiddler.tags) == sorted(tiddler.tags)
@@ -72,7 +72,7 @@ def test_failed_get():
 def test_list():
     bag = Bag('bagtwo')
     store.put(bag)
-    bags = store.list_bags()
+    bags = list(store.list_bags())
 
     assert len(bags) == 2
     assert u'bagone' in [bag.name for bag in bags]

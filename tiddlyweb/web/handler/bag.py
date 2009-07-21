@@ -124,7 +124,7 @@ def list(environ, start_response):
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s, %a' % (mime_type, exc))
     
-    return [output]
+    return output
 
 
 def put(environ, start_response):

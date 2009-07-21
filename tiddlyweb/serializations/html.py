@@ -28,58 +28,64 @@ class Serialization(SerializationInterface):
         List the recipes on the system as html.
         """
         self.environ['tiddlyweb.title'] = 'Recipes'
-        lines = []
-        output = '<ul id="recipes" class="listing">\n'
+        yield '<ul id="recipes" class="listing">\n'
         for recipe in recipes:
-            line = '<li><a href="recipes/%s">%s</a></li>' % (
+            line = '<li><a href="recipes/%s">%s</a></li>\n' % (
                     encode_name(recipe.name), recipe.name)
-            lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+            yield line
+        yield '</ul>\n'
+        return
 
     def list_bags(self, bags):
         """
         List the bags on the system as html.
         """
         self.environ['tiddlyweb.title'] = 'Bags'
-        lines = []
-        output = '<ul id="bags" class="listing">\n'
+        yield '<ul id="bags" class="listing">\n'
         for bag in bags:
-            line = '<li><a href="bags/%s">%s</a></li>' % (
+            line = '<li><a href="bags/%s">%s</a></li>\n' % (
                     encode_name(bag.name), bag.name)
-            lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+            yield line
+        yield '</ul>\n'
+        return
 
     def list_tiddlers(self, bag):
         """
         List the tiddlers in a bag as html.
         """
         server_prefix = self._server_prefix()
-        lines = []
-        for tiddler in bag.gen_tiddlers():
-            base, base_link, representation_link, title = \
-                    self._tiddler_list_info(tiddler)
-            if bag.revbag:
-                line = self._tiddler_revision_info(base, base_link, tiddler)
-                representation_link += '/%s/revisions' % encode_name(tiddler.title)
-                title = 'Revisions of Tiddler %s' % tiddler.title
-            else:
-                line = self._tiddler_in_bag_info(base, base_link, tiddler)
-            lines.append(line)
+        tiddler_gen = bag.gen_tiddlers()
+        first_tiddler = tiddler_gen.next()
+
+        base, base_link, representation_link, title = \
+                self._tiddler_list_info(first_tiddler)
+
+        if bag.revbag:
+            representation_link += '/%s/revisions' % encode_name(first_tiddler.title)
+            title = 'Revisions of Tiddler %s' % first_tiddler.title
 
         if bag.searchbag:
             title = 'Found Tiddlers'
 
-        output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
 
-        return """
-%s
-<ul id="tiddlers" class="listing">
-%s
-</ul>
-""" % (self._tiddler_list_header(representation_link), output)
+        yield self._tiddler_list_header(representation_link) + '\n'
+        yield '<ul id="tiddlers" class="listing">\n'
+
+        def _tiddler_line(base, base_link, tiddler):
+            if bag.revbag:
+                return self._tiddler_revision_info(base, base_link, tiddler)
+            else:
+                return self._tiddler_in_bag_info(base, base_link, tiddler)
+
+        yield _tiddler_line(base, base_link, first_tiddler)
+
+        for tiddler in tiddler_gen:
+            yield _tiddler_line(base, base_link, tiddler)
+
+        yield '</ul>\n'
+
+        return 
 
     def recipe_as(self, recipe):
         """
