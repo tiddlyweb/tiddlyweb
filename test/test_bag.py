@@ -80,19 +80,6 @@ def xtest_store_by_copy():
 
     assert tiddlers[0].text != bag[tiddlers[0]].text, 'tiddlers in bag are copies not reference'
 
-def test_bag_remove():
-    """
-    Confirm the bag shrinks when you remove a tiddler.
-    """
-
-    assert len(bag) == 2
-    tiddlers[1].bag = bag.name
-    bag.remove_tiddler(tiddlers[1])
-    assert len(bag) == 1
-
-# trying to remove a tiddler that's not there gives a KeyError
-    py.test.raises(KeyError, "bag.remove_tiddler(tiddlers[2])")
-
 def test_bag_has_policy():
     """
     Confirm a create bag gets a policy.

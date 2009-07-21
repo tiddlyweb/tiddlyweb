@@ -96,17 +96,6 @@ class Bag(dict):
         """
         [self.add_tiddler(tiddler) for tiddler in tiddlers]
 
-    def remove_tiddler(self, tiddler):
-        """
-        Remove the provided tiddler from the bag.
-        """
-        tiddler_key = self._tiddler_key(tiddler)
-        try:
-            self.order.remove(tiddler_key)
-        except ValueError:
-            pass
-        self.__delitem__(tiddler)
-
     def gen_tiddlers(self):
         """
         Make a generator of all the tiddlers in the bag, 
