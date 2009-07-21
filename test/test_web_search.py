@@ -63,4 +63,4 @@ def test_json_search_filtered():
     assert response['status'] == '200'
     assert 'json' in response['content-type']
     info = simplejson.loads(content)
-    assert len(info) < 30
+    assert len(info) == 30

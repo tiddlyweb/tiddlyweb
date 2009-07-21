@@ -61,7 +61,7 @@ def get(environ, start_response):
 
     if len(filters):
         tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
-        tmp_bag = Bag('tmp_bag', tmpbag=True)
+        tmp_bag = Bag('tmp_bag', tmpbag=True, searchbag=True)
         tmp_bag.add_tiddlers(tiddlers)
 
     return send_tiddlers(environ, start_response, tmp_bag)
