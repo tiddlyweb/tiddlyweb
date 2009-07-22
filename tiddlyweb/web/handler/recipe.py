@@ -77,38 +77,44 @@ def get_tiddlers(environ, start_response):
 
     # get the tiddlers from the recipe and uniquify them
     try:
-        tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
-        tmp_bag = Bag('tmp_bag1', tmpbag=True)
-        tmp_bag.add_tiddlers(tiddlers)
+        tmp_bag1 = Bag('tmp_bag1', tmpbag=True)
+        tmp_bag1.tiddler_generator = control.get_tiddlers_from_recipe(recipe, environ)
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
     # then filter those tiddlers
     try:
-        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
-        tmp_bag = Bag('tmp_bag2', tmpbag=True)
+        tiddlers = control.filter_tiddlers_from_bag(tmp_bag1, filters)
 
         # Make an optimization so we are not going
         # to the database to load the policies of
         # the same bag over and over.
-        policies = {}
-        for tiddler in tiddlers:
-            bag_name = tiddler.bag
-            try:
-                policies[bag_name].allows(usersign, 'read')
-            except KeyError:
-                bag = Bag(tiddler.bag)
-                bag.skinny = True
-                bag = store.get(bag)
-                policy = bag.policy
-                policies[bag_name] = policy
-                policies[bag_name].allows(usersign, 'read')
+        def _bag_gen(tiddlers):
+            print 'starting gen'
+            policies = {}
+            for tiddler in tiddlers:
+                bag_name = tiddler.bag
+                try:
+                    policies[bag_name].allows(usersign, 'read')
+                except KeyError:
+                    bag = Bag(tiddler.bag)
+                    bag.skinny = True
+                    bag = store.get(bag)
+                    policy = bag.policy
+                    policies[bag_name] = policy
+                    policies[bag_name].allows(usersign, 'read')
 
-            tiddler.recipe = recipe.name
-            tmp_bag.add_tiddler(tiddler)
+                tiddler.recipe = recipe.name
+                print 'yielding in the _bag_gen'
+                yield tiddler
+            return
 
-        return send_tiddlers(environ, start_response, tmp_bag)
+        tmp_bag2 = Bag('tmp_bag2', tmpbag=True)
+        print 'assigning generator'
+        tmp_bag2.tiddler_generator = _bag_gen(tiddlers)
+
+        return send_tiddlers(environ, start_response, tmp_bag2)
     except (AttributeError, FilterError), exc:
         raise HTTP400('malformed filter: %s' % exc)
 

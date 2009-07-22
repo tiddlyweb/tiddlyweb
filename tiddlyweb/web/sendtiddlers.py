@@ -49,8 +49,19 @@ def send_tiddlers(environ, start_response, bag):
         raise HTTP415('Content type not supported: %s, %s' % (mime_type, exc))
     return output
 
-
+# XXX The following temporarily replaces the original
+# to test a proposition. The proposition is that validate_tiddler_list
+# is winding the generator to its end and thus leaving
+# the serializaiton with nothing present. Putting this bogus
+# code gets us past that to see how we're doing otherwise.
+# Not sure what the fix is here, probably returning yet another
+# generator, but how?
 def _validate_tiddler_list(environ, bag):
+    last_modified = ('Last-Modified', '200912310000')
+    etag = ('Etag', 'fdafsafds')
+    return last_modified, etag
+
+def _xvalidate_tiddler_list(environ, bag):
     last_modified_number = _last_modified_tiddler(bag)
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)

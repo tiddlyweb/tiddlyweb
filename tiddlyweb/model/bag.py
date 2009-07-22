@@ -11,9 +11,10 @@ class Bag(dict):
     """
     XXX: Should we subclass for tmpbag and revbag?
 
-    A Bag is a collection of tiddlers, usually unique by
-    the title of the tiddler. A bag can have tiddlers added, removed,
-    and listed.
+    A Bag is an ordered collection of tiddlers in a similar
+    authorization and topic domain.
+
+    A bag acts as a generator.
 
     A Bag which has been retrieved from a Store will have
     its 'store' attribute set to the store it was retrieved
