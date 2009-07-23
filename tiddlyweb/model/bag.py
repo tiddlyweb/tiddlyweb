@@ -14,7 +14,7 @@ class Bag(dict):
     A Bag is an ordered collection of tiddlers in a similar
     authorization and topic domain.
 
-    A bag acts as a generator.
+    A bag provides a generator for the tiddlers within.
 
     A Bag which has been retrieved from a Store will have
     its 'store' attribute set to the store it was retrieved
@@ -27,92 +27,60 @@ class Bag(dict):
     for use within the web handlers.
     """
 
-    def __init__(self, name, desc='',
-            tmpbag=False, revbag=False, searchbag=False):
+    def __init__(self, name, desc='', source=None):
         dict.__init__(self)
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
-        self.tmpbag = tmpbag
-        self.revbag = revbag
-        self.order = []
-        self.searchbag = searchbag
         self.store = None
+        self.sources = []
+        self.listed = []
+        self.tiddlers = None
+        self.add_tiddler_source(source)
 
-    def _tiddler_key(self, tiddler):
-        """
-        Calculate the dict key for indexing this tiddler
-        in the bag. If we are a searchbag we need to include bag.
-        If we are a revbag we need to include revision. Otherwise
-        we just want to use the tiddler.title (so that clobbering
-        happens).
-        """
-        if self.searchbag:
-            return '%s.%s.%s' % (tiddler.bag, tiddler.title, tiddler.revision)
-        if self.revbag:
-            return '%s.%s' % (tiddler.title, tiddler.revision)
-        return '%s' % (tiddler.title)
+    def add_tiddler_source(self, source):
+        if source:
+            self.sources.append(source)
+            if self.tiddlers == None:
+                self.tiddlers = self._make_tiddler_lister()
 
-    def _tiddler_copy(self, tiddler):
-        """
-        If a bag is not a tmpbag, add a bag attribute.
-        """
-        if self.tmpbag:
-            pass
-        else:
-            tiddler.bag = self.name
-        return tiddler
+    def _make_tiddler_lister(self):
+        print self.sources
+        while True:
+            if self.sources:
+                for source in self.sources:
+                    tiddler = source.next()
+                    print 'prepping for ', tiddler
+                    if not tiddler.bag:
+                        tiddler.bag = self.name
+                    yield tiddler
+                    self.listed.append(tiddler)
+            else:
+                break
 
     def __repr__(self):
         return self.name + object.__repr__(self)
 
-    def __getitem__(self, tiddler):
-        return dict.__getitem__(self, self._tiddler_key(tiddler))
-
-    def __setitem__(self, key, tiddler):
-        dict.__setitem__(self, key, tiddler)
-
-    def __delitem__(self, tiddler):
-        dict.__delitem__(self, self._tiddler_key(tiddler))
-
     def add_tiddler(self, tiddler):
-        """
-        Inject a tiddler into the bag. Depending on the
-        type of bag in use, this may or may not clobber
-        a tiddler of the same name in the bag.
-        """
-        tiddler = self._tiddler_copy(tiddler)
-        tiddler_key = self._tiddler_key(tiddler)
-        try:
-            self.order.remove(tiddler_key)
-        except ValueError:
-            pass
-        self.order.append(tiddler_key)
-        self.__setitem__(self._tiddler_key(tiddler), tiddler)
+        self.add_tiddler_source(tid for tid in [tiddler])
 
     def add_tiddlers(self, tiddlers):
         """
-        Call add_tiddler() on a list of tiddlers.
+        Call add_tiddler() on an iter of tiddlers.
         For convenience.
         """
-        [self.add_tiddler(tiddler) for tiddler in tiddlers]
-
-    def gen_tiddlers(self):
-        """
-        Make a generator of all the tiddlers in the bag, 
-        in the order they were added.
-        """
-        try:
-            return self.tiddler_generator
-        except AttributeError:
-            return (self.get(keyword, None) for keyword in self.order)
+        self.add_tiddler_source(tiddler for tiddler in tiddlers)
 
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        try:
-            return [tiddler for tiddler in self.tiddler_generator]
-        except AttributeError:
-            return [self.get(keyword, None) for keyword in self.order]
+        tiddlers = list(self.tiddlers)
+        if tiddlers:
+            print 'returning gen list'
+            return tiddlers
+        else:
+            print 'returning list'
+            return self.listed
+        #return [tiddler for tiddler in self.tiddlers]

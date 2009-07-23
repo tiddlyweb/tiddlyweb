@@ -105,6 +105,7 @@ def default_func(tiddler, attribute, value):
     checked, then extended fields. If neither of
     these are present, return False.
     """
+    print 'filtering tiddler: %s' % tiddler.title
     try:
         return getattr(tiddler, attribute) == value
     except AttributeError:
@@ -122,11 +123,15 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
     """
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
-        return (tiddler for tiddler in tiddlers if not
+        return (_debug(tiddler) for tiddler in tiddlers if not
                 select(tiddler, attribute, value))
     else:
-        return (tiddler for tiddler in tiddlers if
+        return (_debug(tiddler) for tiddler in tiddlers if
                 select(tiddler, attribute, value))
+
+
+def _debug(tiddler):
+    print 'debug %s' % tiddler.title
 
 
 def select_relative_attribute(attribute, value, tiddlers,

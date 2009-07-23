@@ -18,7 +18,7 @@ def setup_module(module):
 # we need to copy tiddlers otherwise the test below which 
 # messes with the contents of tiddlers screws with others tests
     module.tiddlers = copy.deepcopy(tids)
-    module.bag.add_tiddler(module.tiddlers[0])
+    module.bag.add_tiddler_source(tiddler for tiddler in [module.tiddlers[0]])
 
 def test_bag_create():
     """
@@ -38,7 +38,8 @@ def test_bag_adjusts_tiddler():
     Confirm adding a tiddler to a bag updates the tiddler object
     notion of its bag.
     """
-    assert bag.list_tiddlers()[0].bag == 'foobag', 'first tiddler in bag has bag with name foobag'
+    tiddlers = bag.list_tiddlers()
+    assert tiddlers[0].bag == 'foobag'
 
 def test_bag_list_tiddlers():
     """
@@ -46,9 +47,8 @@ def test_bag_list_tiddlers():
     """
 
     listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 1, 'the bag should be the length of the tiddlers, 1, is %s' % len(bag)
-    assert len(listed_tiddlers) == 1, 'there should be 1 tiddler in the bag, is %s' % len(listed_tiddlers)
-    assert listed_tiddlers[0].title == tiddlers[0].title, 'tiddler in bag is tiddler put in bag'
+    assert len(listed_tiddlers) == 1
+    assert listed_tiddlers[0].title == tiddlers[0].title
 
 def test_bag_add_tiddler():
     """
@@ -56,9 +56,9 @@ def test_bag_add_tiddler():
     """
 
     bag.add_tiddler(tiddlers[1])
+    x = bag.list_tiddlers() # run the gen off its end
     listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 2, 'the bag should now be length 2, is %s' % len(bag)
-    assert len(listed_tiddlers) == 2, 'there should be 2 tiddlers in the bag, is %s' % len(listed_tiddlers)
+    assert len(listed_tiddlers) == 2
 
 def test_bag_add_duplicate():
     """
@@ -66,9 +66,9 @@ def test_bag_add_duplicate():
     """
 
     bag.add_tiddler(tiddlers[0])
+    x = bag.list_tiddlers() # run the gen off its end
     listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 2, 'the bag should be length 2 after adding same tiddler, is %s' % len(bag)
-    assert len(listed_tiddlers) == 2, 'there should be 2 tiddlers in the bag after adding same tiddler, is %s' % len(listed_tiddlers)
+    assert len(listed_tiddlers) == 2
 
 def xtest_store_by_copy():
     """

@@ -45,9 +45,7 @@ bagtwo.add_tiddler(tiddlers[1])
 bagthree = Bag(name='bagthree')
 bagthree.add_tiddler(tiddlers[2])
 bagfour = Bag(name='bagfour')
-bagfour.add_tiddler(tiddlers[3])
-bagfour.add_tiddler(tiddlers[1])
-bagfour.add_tiddler(tiddlers[2])
+bagfour.add_tiddler_source(tiddler for tiddler in [tiddlers[3], tiddlers[1], tiddlers[2]])
 
 recipe_list = [
         [bagone, u'select=title:TiddlerOne'],
