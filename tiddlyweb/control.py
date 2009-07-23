@@ -61,7 +61,8 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
         # the store. If there's not, then we can just use the list that is
         # already in the bag, saving a bit of time.
         if filter_string:
-            for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
+            tiddlers = filter_tiddlers_from_bag(bag, filter_string)
+            for candidate_tiddler in tiddlers:
                 if tiddler.title == candidate_tiddler.title:
                     return bag
         else:
@@ -85,8 +86,8 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = _recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        tmpbag = Bag(filter_string, tmpbag=True)
-        tmpbag.add_tiddler(tiddler)
+        tmpbag = Bag(filter_string)
+        tmpbag.add_tiddler(tiddler) # add just this one tiddler as the source
         for candidate_tiddler in filter_tiddlers_from_bag(tmpbag, filter_string):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
@@ -102,14 +103,15 @@ def get_tiddlers_from_bag(bag):
     """
 
     tiddlers = bag.tiddlers
-    if bag.store:
-        for tiddler in tiddlers:
+    for tiddler in tiddlers:
+        if bag.store:
             try:
                 tiddler = bag.store.get(tiddler)
             except TiddlerFormatError:
                 # XXX do more here?
                 pass
-            yield tiddler
+        yield tiddler
+    return
 
 
 def filter_tiddlers_from_bag(bag, filters):
@@ -124,9 +126,11 @@ def filter_tiddlers_from_bag(bag, filters):
     if isinstance(filters, basestring):
         filters, leftovers = parse_for_filters(filters)
     if store:
-        return recursive_filter(filters, get_tiddlers_from_bag(bag))
+        tiddlers = recursive_filter(filters, get_tiddlers_from_bag(bag))
+        return tiddlers
     else:
-        return recursive_filter(filters, bag.tiddlers)
+        tiddlers =  recursive_filter(filters, bag.tiddlers)
+        return tiddlers
 
 
 def _recipe_template(environ):

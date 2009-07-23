@@ -91,8 +91,7 @@ def get_tiddlers(environ, start_response):
 
     try:
         tiddlers = control.filter_tiddlers_from_bag(bag, filters)
-        tmp_bag = Bag('tmp_bag', tmpbag=True)
-        tmp_bag.add_tiddlers(tiddlers)
+        tmp_bag = Bag('tmp_bag', source=tiddlers)
 
         return send_tiddlers(environ, start_response, tmp_bag)
     except (AttributeError, FilterError), exc:

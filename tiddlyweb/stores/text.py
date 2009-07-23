@@ -128,8 +128,7 @@ class Store(StorageInterface):
             except OSerror, exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
 
-        if not (hasattr(bag, 'skinny') and bag.skinny):
-            bag.tiddler_generator = _bag_gen(bag)
+        bag.add_tiddler_source(_bag_gen(bag))
 
         try:
             bag.desc = self._read_bag_description(bag_path)

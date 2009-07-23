@@ -41,27 +41,29 @@ def get(environ, start_response):
 # It's necessary to get the tiddler off the store
 # in case we are doing wiki or atom outputs of the
 # search.
-    tmp_bag = Bag('tmp_bag', tmpbag=True, searchbag=True)
+    tmp_bag = Bag('tmp_bag')
     bag_readable = {}
 
-    for tiddler in tiddlers:
+    def _tiddler_readable(tiddler):
         try:
             if bag_readable[tiddler.bag]:
-                tmp_bag.add_tiddler(store.get(tiddler))
+                return True
         except KeyError:
             bag = Bag(tiddler.bag)
-            bag.skinny = True
             bag = store.get(bag)
             try:
                 bag.policy.allows(usersign, 'read')
-                tmp_bag.add_tiddler(store.get(tiddler))
                 bag_readable[tiddler.bag] = True
-            except(ForbiddenError, UserRequiredError):
+                return True
+            except (ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
+                return False
+
+    source_tiddlers = (store.get(tiddler) for tiddler in tiddlers if _tiddler_readable(tiddler))
+    tmp_bag.add_tiddler_source(source_tiddlers)
 
     if len(filters):
         tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
-        tmp_bag = Bag('tmp_bag', tmpbag=True, searchbag=True)
-        tmp_bag.add_tiddlers(tiddlers)
+        tmp_bag = Bag('tmp_bag', source=tiddlers)
 
     return send_tiddlers(environ, start_response, tmp_bag)

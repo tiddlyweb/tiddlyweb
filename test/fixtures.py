@@ -38,6 +38,9 @@ TiddlerThree.tags = [u'tagone', u'tagthree']
 
 tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree, TiddlerOnea]
 
+def tiddler_source():
+    return (tiddler for tiddler in tiddlers)
+
 bagone = Bag(name='bagone')
 bagone.add_tiddler(tiddlers[0])
 bagtwo = Bag(name='bagtwo')

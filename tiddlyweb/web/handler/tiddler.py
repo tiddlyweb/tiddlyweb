@@ -401,18 +401,21 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     """
     store = environ['tiddlyweb.store']
 
-    tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
+    def _tiddler_revision(revision):
+        tiddler_revision = Tiddler(tiddler.title, tiddler.bag)
+        tiddler_revision.revision = revision
+        try:
+            tmp_tiddler = store.get(tiddler_revision)
+        except NoTiddlerError, exc:
+            # If a particular revision is not present in the store.
+            raise HTTP404('tiddler %s at revision % not found, %s' %
+                    (tiddler.title, revision, exc))
+        return tmp_tiddler
+
     try:
-        for revision in store.list_tiddler_revisions(tiddler):
-            tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
-            tmp_tiddler.revision = revision
-            try:
-                tmp_tiddler = store.get(tmp_tiddler)
-            except NoTiddlerError, exc:
-                # If a particular revision is not present in the store.
-                raise HTTP404('tiddler %s at revision % not found, %s' %
-                        (tiddler.title, revision, exc))
-            tmp_bag.add_tiddler(tmp_tiddler)
+        tiddlers = (_tiddler_revision(revision) for
+                revision in store.list_tiddler_revisions(tiddler))
+        tmp_bag = Bag('tmp', revbag=True, source=tiddlers)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
         raise HTTP404('tiddler %s not found, %s' % (tiddler.title, exc))

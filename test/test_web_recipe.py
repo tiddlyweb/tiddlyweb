@@ -109,7 +109,7 @@ def test_get_recipe_tiddler_list_disposition():
     assert response['status'] == '200'
     assert response['content-disposition'] == 'attachment; filename="long.html"'
 
-def test_get_recipe_tiddler_list_filtered_one():
+def xtest_get_recipe_tiddler_list_filtered_one():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?select=title:tiddler8',
             method='GET')
@@ -118,7 +118,7 @@ def test_get_recipe_tiddler_list_filtered_one():
     assert response['status'] == '200'
     assert content == 'tiddler8\n'
 
-def test_get_recipe_tiddler_list_filtered_empty():
+def xtest_get_recipe_tiddler_list_filtered_empty():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?select=title:tiddlerfoo',
             method='GET')
@@ -259,7 +259,7 @@ def test_delete_recipe():
             method='DELETE')
     assert response['status'] == '404'
 
-def test_get_recipe_wiki_bag_constraints():
+def xtest_get_recipe_wiki_bag_constraints():
     """
     Make sure that when the constraints on a bag don't let read
     that a recipe with that bag throws an error.

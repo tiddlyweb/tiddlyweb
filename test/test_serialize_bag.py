@@ -9,13 +9,20 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.config import config
 
-from fixtures import bagfour
+from fixtures import tiddlers as some_tiddlers
 
 
 def setup_module(module):
     module.serializer = Serializer('text')
 
+def tiddler_source():
+    for tiddler in some_tiddlers:
+        tiddler.bag = None
+        yield tiddler
+    return 
+
 def test_generate_json():
+    bagfour = Bag('four')
     serializer = Serializer('json')
     bagfour.desc = 'a tasty little bag'
     bagfour.policy.manage = ['NONE']
@@ -28,13 +35,15 @@ def test_generate_json():
 
 
 def test_generated_string():
-    string = ''.join(list(serializer.list_tiddlers(bagfour)))
+    bagfour = Bag('four', source=tiddler_source())
+    string = ''.join(serializer.list_tiddlers(bagfour))
 
     assert 'TiddlerOne' in string
     assert 'TiddlerTwo' in string
     assert 'TiddlerThree' in string
 
 def test_generated_string_with_revbag():
+    bagfour = Bag('four', source=tiddler_source())
     bagfour.revbag = True
     string = ''.join(list(serializer.list_tiddlers(bagfour)))
 
@@ -44,25 +53,28 @@ def test_generated_string_with_revbag():
     bagfour.revbag = False
 
 def test_generated_html():
+    bagfour = Bag('four', source=tiddler_source())
     html_serializer = Serializer('html')
-    string = html_serializer.list_tiddlers(bagfour)
-    assert '<li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
+    string = ''.join(html_serializer.list_tiddlers(bagfour))
+    assert '<li><a href="/bags/four/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
 
 def test_generated_html_with_prefix():
+    bagfour = Bag('four', source=tiddler_source())
     new_config = config.copy()
     new_config['server_prefix'] = '/salacious'
     environ = {'tiddlyweb.config': new_config}
     html_serializer = Serializer('html', environ)
     string = html_serializer.list_tiddlers(bagfour)
 
-    assert '<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
+    assert '<li><a href="/salacious/bags/four/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
 
 def test_generated_html_with_revbag():
+    bagfour = Bag('four', source=tiddler_source())
     html_serializer = Serializer('html')
     bagfour.revbag = True
     string = html_serializer.list_tiddlers(bagfour)
 
-    assert '<li><a href="/bags/bagfour/tiddlers/TiddlerTwo/revisions/0">TiddlerTwo:0</a></li>' in string
+    assert '<li><a href="/bags/four/tiddlers/TiddlerTwo/revisions/0">TiddlerTwo:0</a></li>' in string
     bagfour.revbag = False
 
 def test_json_to_bag():

@@ -77,8 +77,7 @@ def get_tiddlers(environ, start_response):
 
     # get the tiddlers from the recipe and uniquify them
     try:
-        tmp_bag1 = Bag('tmp_bag1', tmpbag=True)
-        tmp_bag1.tiddler_generator = control.get_tiddlers_from_recipe(recipe, environ)
+        tmp_bag1 = Bag('tmp_bag1', source=control.get_tiddlers_from_recipe(recipe, environ))
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
@@ -110,9 +109,7 @@ def get_tiddlers(environ, start_response):
                 yield tiddler
             return
 
-        tmp_bag2 = Bag('tmp_bag2', tmpbag=True)
-        print 'assigning generator'
-        tmp_bag2.tiddler_generator = _bag_gen(tiddlers)
+        tmp_bag2 = Bag('tmp_bag2', source=_bag_gen(tiddlers))
 
         return send_tiddlers(environ, start_response, tmp_bag2)
     except (AttributeError, FilterError), exc:

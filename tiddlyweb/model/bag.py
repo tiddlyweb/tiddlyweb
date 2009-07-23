@@ -7,7 +7,7 @@ import copy
 from tiddlyweb.model.policy import Policy
 
 
-class Bag(dict):
+class Bag(object):
     """
     XXX: Should we subclass for tmpbag and revbag?
 
@@ -27,9 +27,10 @@ class Bag(dict):
     for use within the web handlers.
     """
 
-    def __init__(self, name, desc='', source=None):
-        dict.__init__(self)
+    def __init__(self, name, desc='', searchbag=False, revbag=False, source=None):
         self.name = unicode(name)
+        self.revbag = revbag
+        self.searchbag = searchbag
         self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
         self.store = None
@@ -45,18 +46,15 @@ class Bag(dict):
                 self.tiddlers = self._make_tiddler_lister()
 
     def _make_tiddler_lister(self):
-        print self.sources
-        while True:
-            if self.sources:
-                for source in self.sources:
-                    tiddler = source.next()
-                    print 'prepping for ', tiddler
+        for source in self.sources:
+            for tiddler in source:
+                try:
                     if not tiddler.bag:
                         tiddler.bag = self.name
-                    yield tiddler
-                    self.listed.append(tiddler)
-            else:
-                break
+                except AttributeError:
+                    pass
+                self.listed.append(tiddler)
+                yield tiddler
 
     def __repr__(self):
         return self.name + object.__repr__(self)
@@ -83,4 +81,3 @@ class Bag(dict):
         else:
             print 'returning list'
             return self.listed
-        #return [tiddler for tiddler in self.tiddlers]

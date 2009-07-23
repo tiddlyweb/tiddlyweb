@@ -86,9 +86,9 @@ class Serialization(SerializationInterface):
         """
         if bag.revbag:
             return ('%s:%s\n' % (tiddler.title, tiddler.revision)
-                        for tiddler in bag.gen_tiddlers())
+                        for tiddler in bag.tiddlers)
         else:
-            return ('%s\n' % tiddler.title for tiddler in bag.gen_tiddlers())
+            return ('%s\n' % tiddler.title for tiddler in bag.tiddlers)
 
     def tiddler_as(self, tiddler):
         """

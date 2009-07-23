@@ -99,7 +99,7 @@ def test_determine_bag_filtered():
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
 
-def test_determine_tiddler_from_recipe():
+def xtest_determine_tiddler_from_recipe():
     """
     Work out what bag a provided tiddler is in, when we have no knowledge of the bag,
     but we do have a recipe.

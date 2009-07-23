@@ -54,7 +54,7 @@ class Serialization(SerializationInterface):
         List the tiddlers in a bag as html.
         """
         server_prefix = self._server_prefix()
-        tiddler_gen = bag.gen_tiddlers()
+        tiddler_gen = bag.tiddlers
         first_tiddler = tiddler_gen.next()
 
         base, base_link, representation_link, title = \

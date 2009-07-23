@@ -8,17 +8,12 @@ in this case.
 """
 
 from tiddlyweb.model.bag import Bag, Policy
+from tiddlyweb.model.tiddler import Tiddler
+
+from fixtures import tiddler_source
 
 import py.test
 import copy
-
-def setup_module(module):
-    module.bag = Bag(name='foobag')
-    from fixtures import tiddlers as tids
-# we need to copy tiddlers otherwise the test below which 
-# messes with the contents of tiddlers screws with others tests
-    module.tiddlers = copy.deepcopy(tids)
-    module.bag.add_tiddler_source(tiddler for tiddler in [module.tiddlers[0]])
 
 def test_bag_create():
     """
@@ -31,6 +26,7 @@ def test_bag_name():
     Confirm the bag gets its name right.
     """
 
+    bag = Bag('foobag')
     assert bag.name == 'foobag', 'the bag should be named foobag'
 
 def test_bag_adjusts_tiddler():
@@ -38,6 +34,7 @@ def test_bag_adjusts_tiddler():
     Confirm adding a tiddler to a bag updates the tiddler object
     notion of its bag.
     """
+    bag = Bag('foobag', source=tiddler_source())
     tiddlers = bag.list_tiddlers()
     assert tiddlers[0].bag == 'foobag'
 
@@ -46,39 +43,20 @@ def test_bag_list_tiddlers():
     Confirm the bag is able to list its tiddlers.
     """
 
+    bag = Bag('foobag', source=tiddler_source())
     listed_tiddlers = bag.list_tiddlers()
-    assert len(listed_tiddlers) == 1
-    assert listed_tiddlers[0].title == tiddlers[0].title
+    assert len(listed_tiddlers) == 4
+    assert listed_tiddlers[0].title == 'TiddlerOne'
 
 def test_bag_add_tiddler():
     """
     Confirm adding a tiddler lengthens the bag.
     """
 
-    bag.add_tiddler(tiddlers[1])
-    x = bag.list_tiddlers() # run the gen off its end
+    bag = Bag('foobag', source=tiddler_source())
+    bag.add_tiddler(Tiddler('snoop'))
     listed_tiddlers = bag.list_tiddlers()
-    assert len(listed_tiddlers) == 2
-
-def test_bag_add_duplicate():
-    """
-    Confirm adding the same tiddler does not lengthen bag.
-    """
-
-    bag.add_tiddler(tiddlers[0])
-    x = bag.list_tiddlers() # run the gen off its end
-    listed_tiddlers = bag.list_tiddlers()
-    assert len(listed_tiddlers) == 2
-
-def xtest_store_by_copy():
-    """
-    Confirm tiddlers in bag are copies, not references.
-    """
-
-    tiddlers[0].text = 'changed it'
-    tiddlers[0].bag = bag.name
-
-    assert tiddlers[0].text != bag[tiddlers[0]].text, 'tiddlers in bag are copies not reference'
+    assert len(listed_tiddlers) == 5
 
 def test_bag_has_policy():
     """

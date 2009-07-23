@@ -33,6 +33,7 @@ def test_filter_by_title():
 
     found_tiddlers = list(filter('select=title:TiddlerOne', tiddlers))
     assert len(found_tiddlers) == 2
+    print found_tiddlers
     assert found_tiddlers[0] == tiddlers[0]
 
 

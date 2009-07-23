@@ -45,7 +45,7 @@ class Serialization(SerializationInterface):
         """
         iostring = StringIO()
         simplejson.dump([self._tiddler_dict(tiddler) for
-            tiddler in bag.gen_tiddlers()], iostring)
+            tiddler in bag.tiddlers], iostring)
         iostring.seek(0)
         return iostring
 

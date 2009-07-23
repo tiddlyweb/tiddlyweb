@@ -89,7 +89,7 @@ def test_get_bag_tiddler_list_html_default():
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert content.count('<li>') == 10
 
-def test_get_bag_tiddler_list_filtered():
+def xtest_get_bag_tiddler_list_filtered():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.txt?select=title:tiddler8',
             method='GET')
@@ -181,7 +181,7 @@ def test_get_bags_unsupported_neg_format_with_accept():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
 
-def test_get_bag_tiddler_list_empty():
+def xtest_get_bag_tiddler_list_empty():
     """
     A request for the tiddlers in an empty bag gives a 404.
     """
