@@ -95,7 +95,7 @@ def _delete_tiddler(environ, start_response, tiddler):
     try:
         tiddler = store.get(tiddler)
     except NoTiddlerError:
-        tiddler.revision = 0
+        tiddler.revision = 1
     _validate_tiddler_headers(environ, tiddler)
 
     bag = Bag(tiddler.bag)
@@ -299,7 +299,7 @@ def _require_valid_etag_for_write(environ, tiddler):
     try:
         tiddler_copy = environ['tiddlyweb.store'].get(tiddler_copy)
     except NoTiddlerError:
-        tiddler_copy.revision = 0
+        tiddler_copy.revision = 1
     return _validate_tiddler_headers(environ, tiddler_copy)
 
 

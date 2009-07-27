@@ -112,7 +112,7 @@ class Serialization(SerializationInterface):
         """
         dict_from_input = simplejson.loads(input_string)
         accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
-                'revision', 'text', 'type']
+                'text', 'type']
         for key, value in dict_from_input.iteritems():
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
