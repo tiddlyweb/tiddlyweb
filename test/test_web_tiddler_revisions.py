@@ -180,6 +180,6 @@ def test_post_revision_etag_handling():
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
-            method='POST', headers={'If-Match': '"bag28/newone/1"', 'content-type': 'application/json'}, body=json_content)
+            method='POST', headers={'If-Match': '"bag28/newone/0"', 'content-type': 'application/json'}, body=json_content)
 
     assert response['status'] == '204'
