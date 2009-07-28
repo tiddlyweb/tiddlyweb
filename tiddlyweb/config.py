@@ -203,6 +203,18 @@ DEFAULT_CONFIG = {
         'wikitext_render_map': {},
         }
 
+def merge_config(global_config, additional_config):
+    for key in additional_config:
+        try:
+            # If this config item is a dict, update to
+            # update it
+            additional_config[key].keys()
+            try:
+                global_config[key].update(additional_config[key])
+            except KeyError:
+                global_config[key] = additional_config[key]
+        except AttributeError:
+            global_config[key] = additional_config[key]
 
 def read_config():
     """
@@ -217,16 +229,7 @@ def read_config():
     from tiddlywebconfig import config as custom_config
     global config
     config = DEFAULT_CONFIG
-    for key in custom_config:
-        try:
-            # If this config item is a dict, update to update it
-            custom_config[key].keys()
-            try:
-                config[key].update(custom_config[key])
-            except KeyError:
-                config[key] = custom_config[key]
-        except AttributeError:
-            config[key] = custom_config[key]
+    merge_config(config, custom_config)
 
 
 if os.path.exists('tiddlywebconfig.py'):
