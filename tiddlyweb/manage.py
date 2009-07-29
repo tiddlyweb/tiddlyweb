@@ -257,7 +257,6 @@ def handle(args):
 def _external_load(args):
     module = args[2]
     args = [args[0]] + args[3:]
-    print args
 
     if module.endswith('.py'):
         path, module = os.path.split(module)
