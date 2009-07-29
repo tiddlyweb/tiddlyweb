@@ -289,8 +289,8 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
 
-        return [Recipe(urllib.unquote(recipe).decode('utf-8'))
-                for recipe in recipes]
+        return (Recipe(urllib.unquote(recipe).decode('utf-8'))
+                for recipe in recipes)
 
     def list_bags(self):
         """
