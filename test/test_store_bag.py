@@ -72,7 +72,7 @@ def test_failed_get():
 def test_list():
     bag = Bag('bagtwo')
     store.put(bag)
-    bags = store.list_bags()
+    bags = list(store.list_bags())
 
     assert len(bags) == 2
     assert u'bagone' in [bag.name for bag in bags]

@@ -298,7 +298,7 @@ class Store(StorageInterface):
         """
         bags = self._bag_filenames()
 
-        return [Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags]
+        return (Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags)
 
     def list_users(self):
         """
