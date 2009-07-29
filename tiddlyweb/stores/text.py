@@ -213,6 +213,10 @@ class Store(StorageInterface):
                     raise StoreLockError(exc)
                 time.sleep(.1)
 
+        # Protect against incoming tiddlers that have revision
+        # set. Since we are putting a new one, we want the system
+        # to calculate.
+        tiddler.revision = None
         revision = self._tiddler_revision_filename(tiddler) + 1
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
 
