@@ -46,7 +46,6 @@ def test_bag_list_tiddlers():
     """
 
     listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 1, 'the bag should be the length of the tiddlers, 1, is %s' % len(bag)
     assert len(listed_tiddlers) == 1, 'there should be 1 tiddler in the bag, is %s' % len(listed_tiddlers)
     assert listed_tiddlers[0].title == tiddlers[0].title, 'tiddler in bag is tiddler put in bag'
 
@@ -57,31 +56,7 @@ def test_bag_add_tiddler():
 
     bag.add_tiddler(tiddlers[1])
     listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 2, 'the bag should now be length 2, is %s' % len(bag)
     assert len(listed_tiddlers) == 2, 'there should be 2 tiddlers in the bag, is %s' % len(listed_tiddlers)
-
-def test_bag_add_duplicate():
-    """
-    Confirm adding the same tiddler does not lengthen bag.
-    """
-
-    bag.add_tiddler(tiddlers[0])
-    listed_tiddlers = bag.list_tiddlers()
-    assert len(bag) == 2, 'the bag should be length 2 after adding same tiddler, is %s' % len(bag)
-    assert len(listed_tiddlers) == 2, 'there should be 2 tiddlers in the bag after adding same tiddler, is %s' % len(listed_tiddlers)
-
-def test_bag_remove():
-    """
-    Confirm the bag shrinks when you remove a tiddler.
-    """
-
-    assert len(bag) == 2
-    tiddlers[1].bag = bag.name
-    bag.remove_tiddler(tiddlers[1])
-    assert len(bag) == 1
-
-# trying to remove a tiddler that's not there gives a KeyError
-    py.test.raises(KeyError, "bag.remove_tiddler(tiddlers[2])")
 
 def test_bag_has_policy():
     """
