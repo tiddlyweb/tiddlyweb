@@ -1,3 +1,10 @@
+0.9.55 Wed Jul 29 13:03:35 BST 2009
+
+  * Add support for a --load <file or module> parameter to twanager.
+  * Return generators from the text store where we had been returning lists.
+  * Make Bags much simpler, now they are just lists of tiddlers.
+  * In the text store, guard against writing to the wrong revision ID.
+
 0.9.54 Tue Jul 28 14:42:50 BST 2009
 
   * Filter search results correctly.
