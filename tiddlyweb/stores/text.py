@@ -307,7 +307,7 @@ class Store(StorageInterface):
         path = os.path.join(self._store_root(), 'users')
         users = self._files_in_dir(path)
 
-        return [User(urllib.unquote(user).decode('utf-8')) for user in users]
+        return (User(urllib.unquote(user).decode('utf-8')) for user in users)
 
     def list_tiddler_revisions(self, tiddler):
         """
