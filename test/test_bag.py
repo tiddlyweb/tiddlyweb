@@ -70,16 +70,6 @@ def test_bag_add_duplicate():
     assert len(bag) == 2, 'the bag should be length 2 after adding same tiddler, is %s' % len(bag)
     assert len(listed_tiddlers) == 2, 'there should be 2 tiddlers in the bag after adding same tiddler, is %s' % len(listed_tiddlers)
 
-def test_store_by_copy():
-    """
-    Confirm tiddlers in bag are copies, not references.
-    """
-
-    tiddlers[0].text = 'changed it'
-    tiddlers[0].bag = bag.name
-
-    assert tiddlers[0].text != bag[tiddlers[0]].text, 'tiddlers in bag are copies not reference'
-
 def test_bag_remove():
     """
     Confirm the bag shrinks when you remove a tiddler.
