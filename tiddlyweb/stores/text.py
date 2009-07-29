@@ -317,8 +317,8 @@ class Store(StorageInterface):
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try:
             revisions = sorted(
-                    [int(x) for x in
-                        self._numeric_files_in_dir(tiddler_base_filename)])
+                    int(x) for x in
+                        self._numeric_files_in_dir(tiddler_base_filename))
         except OSError, exc:
             raise NoTiddlerError('unable to list revisions in tiddler: %s'
                     % exc)
@@ -381,14 +381,14 @@ class Store(StorageInterface):
         """
         List the filenames in a dir that do not start with .
         """
-        return [x for x in os.listdir(path) if not x.startswith('.')]
+        return (x for x in os.listdir(path) if not x.startswith('.'))
 
     def _numeric_files_in_dir(self, path):
         """
         List the filename in a dir that are not made up of
         digits.
         """
-        return [x for x in self._files_in_dir(path) if x.isdigit()]
+        return (x for x in self._files_in_dir(path) if x.isdigit())
 
     def _read_tiddler_file(self, tiddler, tiddler_filename):
         """
