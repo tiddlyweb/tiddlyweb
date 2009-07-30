@@ -215,19 +215,19 @@ def handle(args):
     try:
         if args[1] == '--load':
             args = _external_load(args)
-
-        plugins = INTERNAL_PLUGINS
-        try:
-            plugins.extend(config['twanager_plugins'])
-            for plugin in plugins:
-                logging.debug('attempting to import twanager plugin %s' % plugin)
-                # let the import fail with error if it does
-                imported_module = __import__(plugin, {}, {}, ['init'])
-                imported_module.init(config)
-        except KeyError:
-            pass # no plugins
     except IndexError:
         args = []
+
+    plugins = INTERNAL_PLUGINS
+    try:
+        plugins.extend(config['twanager_plugins'])
+        for plugin in plugins:
+            logging.debug('attempting to import twanager plugin %s' % plugin)
+            # let the import fail with error if it does
+            imported_module = __import__(plugin, {}, {}, ['init'])
+            imported_module.init(config)
+    except KeyError:
+        pass # no plugins
 
     candidate_command = None
     try:
