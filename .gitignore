@@ -11,3 +11,5 @@ tiddlyweb.log
 .figleaf
 dropall
 tiddlyweb.egg-info
+covered
+.coverage
