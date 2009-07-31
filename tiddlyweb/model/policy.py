@@ -2,15 +2,19 @@
 A module containing the Bag class.
 """
 
+class PermissionsError(Exception):
+    """
+    Base class for policy violation problems.
+    """
 
-class ForbiddenError(Exception):
+class ForbiddenError(PermissionsError):
     """
     The provided user cannot do this action.
     """
     pass
 
 
-class UserRequiredError(Exception):
+class UserRequiredError(PermissionsError):
     """
     To do this action a user is required.
     """
