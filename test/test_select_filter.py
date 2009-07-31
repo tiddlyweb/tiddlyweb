@@ -32,6 +32,11 @@ def test_simple_sorted_select():
     selected_tiddlers = select_relative_attribute('title', 'c', tiddlers, lesser=True)
     assert ['1','a','b'] == [tiddler.title for tiddler in selected_tiddlers]
 
+def test_relative_missing_args():
+    """If we forget to set lesser or greater, then we want it all."""
+    selected_tiddlers = select_relative_attribute('title', 'c', tiddlers)
+    assert ['1','c','a','b'] == [tiddler.title for tiddler in selected_tiddlers]
+
 def test_sorted_select():
     selected_tiddlers = select_relative_attribute('modified', '2009', tiddlers, greater=True)
     assert ['1','c'] == [tiddler.title for tiddler in selected_tiddlers]

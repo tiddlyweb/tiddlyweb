@@ -57,6 +57,10 @@ def test_filter_by_since():
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'new'
 
+    found_tiddlers = list(filter('select=modified:<200101010101', [tiddler_old, tiddler_new]))
+    assert len(found_tiddlers) == 1
+    assert found_tiddlers[0].title == 'old'
+
 
 def test_filter_by_tag():
     """
