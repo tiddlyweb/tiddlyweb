@@ -1,1 +1,13 @@
 *.pyc
+build
+dist
+html
+pep8.py
+interesting_files.txt
+store
+tags
+tiddlywebconfig.py
+tiddlyweb.log
+.figleaf
+dropall
+tiddlyweb.egg-info
