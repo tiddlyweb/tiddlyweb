@@ -24,5 +24,5 @@ pypi:
 	python setup.py sdist upload
 
 peermore:
-	scp dist/tiddlyweb-*.gz cdent@peermore.com:public_html/peermore.com/tiddlyweb/dist
-	scp CHANGES cdent@peermore.com:public_html/peermore.com/tiddlyweb/dist/CHANGES.tiddlyweb
+	scp -P 8022 dist/tiddlyweb-*.gz cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist
+	scp -P 8022 CHANGES cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist/CHANGES.tiddlyweb

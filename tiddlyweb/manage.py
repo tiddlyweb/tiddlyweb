@@ -5,8 +5,10 @@ importing a wiki, etc.
 """
 
 import logging
+import os
 import sys
 
+from tiddlyweb.config import merge_config
 from tiddlyweb.web.serve import config
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
@@ -210,6 +212,12 @@ def handle(args):
     Dispatch to the proper function for the command
     given in a args[1].
     """
+    try:
+        if args[1] == '--load':
+            args = _external_load(args)
+    except IndexError:
+        args = []
+
     plugins = INTERNAL_PLUGINS
     try:
         plugins.extend(config['twanager_plugins'])
@@ -244,6 +252,29 @@ def handle(args):
             usage()
     else:
         usage(args)
+
+
+def _external_load(args):
+    module = args[2]
+    args = [args[0]] + args[3:]
+
+    if module.endswith('.py'):
+        path, module = os.path.split(module)
+        module = module.replace('.py', '')
+        sys.path.insert(0, path)
+        imported_config = _import_module(module)
+        sys.path.pop(0)
+    else:
+        imported_config = _import_module(module)
+
+    merge_config(config, imported_config)
+
+    return args
+
+
+def _import_module(module):
+    imported_module = __import__(module, {}, {}, ['config'])
+    return imported_module.config
 
 
 def _put(entity, content, serialization):

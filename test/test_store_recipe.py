@@ -79,7 +79,7 @@ def test_recipe_no_recipe():
 def test_list():
     recipe = Recipe('testrecipe3')
     store.put(recipe)
-    recipes = store.list_recipes()
+    recipes = list(store.list_recipes())
 
     assert len(recipes) == 3
     assert u'testrecipe' in [recipe.name for recipe in recipes]
