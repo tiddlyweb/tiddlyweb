@@ -2,7 +2,12 @@
 The Recipe class.
 """
 
+import re
+
 from tiddlyweb.model.policy import Policy
+
+RECIPE_TEMPLATE_RE = re.compile(r'{{ (\w+) }}')
+RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
 
 
 class Recipe(list):
@@ -48,13 +53,31 @@ class Recipe(list):
         our_list = self
         real_list = []
 
-        for bag_name, filter_string in our_list:
-            for key, value in template.items():
-                if '{{ ' + key + ' }}' in bag_name:
-                    bag_name = bag_name.replace('{{ ' + key + ' }}', value)
+        for entry in our_list:
+            new_entry = []
+            for index, item in enumerate(entry):
+                value = None
+                try:
+                    match = RECIPE_TEMPLATE_DEFAULT_RE.search(item)
+                    if match:
+                        keyname = match.group(1)
+                        default = match.group(2)
+                        try:
+                            value = template[keyname]
+                        except KeyError:
+                            value = default
+                    match = RECIPE_TEMPLATE_RE.search(item)
+                    if match:
+                        keyname = match.group(1)
+                        value = template[keyname]
+                    if value:
+                        value = re.sub('{{ [\w:]+ }}', value, item)
+                        new_entry.append(value)
+                    else:
+                        new_entry.append(item)
+                except TypeError: # item is not a string
+                    new_entry.append(item)
 
-                if '{{ ' + key + ' }}' in filter_string:
-                    filter_string = filter_string.replace('{{ ' + key + ' }}', value)
-            real_list.append([bag_name, filter_string])
+            real_list.append(new_entry)
 
         return real_list

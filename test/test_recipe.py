@@ -66,6 +66,13 @@ def test_get_recipe_list_templated_filter():
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser'
 
+def test_get_recipe_list_templated_filter():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['system', 'modifier={{ user }};creator={{ user }}']
+        ])
+    list = recipe.get_recipe({'user': 'testuser'})
+    assert list[0][1] == 'modifier=testuser;creator=testuser'
 
 def test_get_recipe_list_templated_bag_filter():
     recipe = Recipe('tr')
