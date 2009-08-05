@@ -50,7 +50,11 @@ class Recipe(list):
 
         for bag_name, filter_string in our_list:
             for key, value in template.items():
-                bag_name = bag_name.replace('{{ ' + key + ' }}', value)
+                if '{{ ' + key + ' }}' in bag_name:
+                    bag_name = bag_name.replace('{{ ' + key + ' }}', value)
+
+                if '{{ ' + key + ' }}' in filter_string:
+                    filter_string = filter_string.replace('{{ ' + key + ' }}', value)
             real_list.append([bag_name, filter_string])
 
         return real_list
