@@ -61,3 +61,15 @@ def test_delete_users():
     assert len(users) == 2
     usernames = [user.usersign for user in users]
     assert 'test1' not in usernames
+
+def test_complex_username():
+    username = u'test\u00BB\u00BBuser.com/foo'
+    user = User(username)
+    store.put(user)
+
+    users = list(store.list_users())
+    assert username in [user.usersign for user in users]
+
+    user_out = User(username)
+    user_out = store.get(user_out)
+    assert user_out.usersign == username

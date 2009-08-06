@@ -499,7 +499,8 @@ class Store(StorageInterface):
         """
         Return the pathname for a user in the store.
         """
-        return os.path.join(self._store_root(), 'users', user.usersign)
+        return os.path.join(self._store_root(), 'users',
+                _encode_filename(user.usersign))
 
     def _write_bag_description(self, desc, bag_path):
         """
