@@ -1,3 +1,10 @@
+0.9.56 Thu Aug  6 13:37:58 BST 2009
+
+  * Add support for {{ style:default }} templates in recipes in both
+    bags and filters.
+  * Bug fix in processing twanager plugins.
+  * Improved error messages when checking bag contraints.
+
 0.9.55 Wed Jul 29 13:03:35 BST 2009
 
   * Add support for a --load <file or module> parameter to twanager.
