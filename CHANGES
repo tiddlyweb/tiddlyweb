@@ -1,3 +1,25 @@
+0.9.56 Thu Aug  6 13:37:58 BST 2009
+
+  * Add support for {{ style:default }} templates in recipes in both
+    bags and filters.
+  * Bug fix in processing twanager plugins.
+  * Improved error messages when checking bag contraints.
+
+0.9.55 Wed Jul 29 13:03:35 BST 2009
+
+  * Add support for a --load <file or module> parameter to twanager.
+  * Return generators from the text store where we had been returning lists.
+  * Make Bags much simpler, now they are just lists of tiddlers.
+  * In the text store, guard against writing to the wrong revision ID.
+
+0.9.54 Tue Jul 28 14:42:50 BST 2009
+
+  * Filter search results correctly.
+  * Fix bug with encoding in search handling.
+  * Correct the limit filter when dealing with generators.
+  * Use a generator to add tiddlers to a bag.
+  * Make text attribute selector case insensitive.
+
 0.9.53 Wed Jul 15 21:40:37 BST 2009
 
   * Fix sending data on stdout from tiddlyweb.config. Bad with mod_wsgi.

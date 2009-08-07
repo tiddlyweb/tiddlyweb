@@ -10,9 +10,10 @@ Prequisites:
 
 import os
 
-from fixtures import bagone, bagfour, reset_textstore, _teststore
+from fixtures import bagfour, tiddlers, reset_textstore, _teststore
 from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
 from tiddlyweb.util import write_lock, LockError
@@ -41,9 +42,12 @@ def test_simple_put():
     """
     put a tiddler to disk and make sure it is there.
     """
+    bagone = Bag('bagone')
+    bagone.add_tiddlers(tiddlers)
 
     store.put(bagone)
     tiddler = bagone.list_tiddlers()[0]
+    print tiddler.revision
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
     tiddler.modified = '200803030303'
     store.put(tiddler)
@@ -79,6 +83,10 @@ def test_get_revision():
     Test we are able to retrieve a particular revision.
     """
 
+    bagone = Bag('bagone')
+    bagone.add_tiddlers(tiddlers)
+
+    store.put(bagone)
     store.put(bagone)
     tiddler = Tiddler('RevisionTiddler')
     tiddler.text='how now 1'

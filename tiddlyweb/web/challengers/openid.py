@@ -153,7 +153,8 @@ OpenID: <input name="openid" size="60" />
         or openid.delegate and redirect the user there with proper
         parameters.
         """
-        if not openid.startswith('http://'):
+        if not (openid.startswith('http://') or
+                openid.startswith('https://')):
             openid = 'http://%s' % openid
 
         if openid.endswith('/'):

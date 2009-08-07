@@ -9,7 +9,7 @@ import urllib
 import simplejson
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
+from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
@@ -79,11 +79,16 @@ def _check_bag_constraint(environ, bag, constraint):
     to perform the requested action. Lets NoBagError
     raise.
     """
-    store = environ['tiddlyweb.store']
-    usersign = environ['tiddlyweb.usersign']
-    bag.skinny = True
-    bag = store.get(bag)
-    bag.policy.allows(usersign, constraint)
+    try:
+        store = environ['tiddlyweb.store']
+        usersign = environ['tiddlyweb.usersign']
+        bag.skinny = True
+        bag = store.get(bag)
+        bag.policy.allows(usersign, constraint)
+    except (PermissionsError), exc:
+        # XXX this throws away traceback info
+        msg = 'for bag %s: %s' % (bag.name, exc)
+        raise exc.__class__(msg)
 
 
 def _delete_tiddler(environ, start_response, tiddler):
@@ -256,7 +261,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
         try:
             _check_bag_constraint(environ, bag, 'accept')
-        except (ForbiddenError, UserRequiredError), exc:
+        except (PermissionsError), exc:
             _validate_tiddler_content(environ, tiddler)
         store.put(tiddler)
     except NoBagError, exc:

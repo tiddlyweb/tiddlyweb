@@ -7,11 +7,12 @@ things.
 import py.test
 
 from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.store import NoBagError
-from tiddlyweb import control
 
-from fixtures import tiddlers, bagone, bagtwo, bagthree, bagfour, recipe_list
+recipe_list = [
+        [u'bagone', u'select=title:TiddlerOne'],
+        [u'bagtwo', u'select=title:TiddlerTwo'],
+        [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
+         ]
 
 def setup_module(module):
     module.recipe = Recipe(name='foorecipe')
@@ -48,100 +49,49 @@ def test_get_recipe_list():
     rlist = recipe.get_recipe()
     assert rlist == recipe_list, 'stored list should be same as given list'
 
-def test_get_tiddlers():
-    """
-    Get all the tiddlers produced by this recipe.
-    """
-
-    tiddlers = control.get_tiddlers_from_recipe(recipe)
-    assert len(tiddlers) == 3, 'tiddler list should be length 3, is %s' % len(tiddlers)
-
-def test_get_tiddlers_limited():
-    """
-    Using a different recipe get different tiddlers.
-    """
-
-    short_recipe = Recipe(name='foobar')
-    short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+def test_get_recipe_list_templated_bag():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['{{ user }}', '']
         ])
-    tiddlers = control.get_tiddlers_from_recipe(short_recipe)
-    assert len(tiddlers) == 2, 'tiddler list should be length 2, is %s' % len(tiddlers)
+    list = recipe.get_recipe({'user': 'testuser'})
+    assert list[0][0] == 'testuser'
 
-def test_determine_bag_simple():
-    """
-    Given a tiddler, work out which bag in the recipe it should
-    drop into. Usually this won't be used: the client will use
-    the default bag.
 
-    This means, which bag does the filter match for.
-    """
-    bag = control.determine_bag_for_tiddler(recipe, tiddlers[0])
-    assert bag.name == bagone.name
-
-def test_determine_bag_filtered():
-    """
-    Work out which bag a tiddler should go to when no bag provided.
-    """
-    short_recipe = Recipe(name='foobar')
-    short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+def test_get_recipe_list_templated_filter():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['system', 'modifier={{ user }}']
         ])
-    bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
-    assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
+    list = recipe.get_recipe({'user': 'testuser'})
+    assert list[0][1] == 'modifier=testuser'
 
-    short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagthree']
+def test_get_recipe_list_templated_filter():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['system', 'modifier={{ user }};creator={{ user }}']
         ])
-    bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
-    assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
+    list = recipe.get_recipe({'user': 'testuser'})
+    assert list[0][1] == 'modifier=testuser;creator=testuser'
 
-def test_determine_tiddler_from_recipe():
-    """
-    Work out what bag a provided tiddler is in, when we have no knowledge of the bag,
-    but we do have a recipe.
-    """
-    short_recipe = Recipe(name='foobar')
-    short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+def test_get_recipe_list_templated_bag_filter():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['{{ bagname }}', 'modifier={{ user }}']
         ])
-    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
-    assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
+    list = recipe.get_recipe({'user': 'testuser', 'bagname': 'foobar'})
+    assert list[0][1] == 'modifier=testuser'
+    assert list[0][0] == 'foobar'
 
-    short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagthree']
+def test_get_recipe_list_templated_bag_filter_defaulted_bag():
+    recipe = Recipe('tr')
+    recipe.set_recipe([
+        ['{{ bagname:common }}', 'modifier={{ user }}']
         ])
-    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
-    assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
+    list = recipe.get_recipe({'user': 'testuser'})
+    assert list[0][1] == 'modifier=testuser'
+    assert list[0][0] == 'common'
 
-    lonely_tiddler = Tiddler('lonely')
-    lonely_tiddler.bag = 'lonelybag'
-
-    py.test.raises(NoBagError,
-            'bag = control.determine_tiddler_bag_from_recipe(short_recipe, lonely_tiddler)')
-
-def test_determine_bag_fail():
-
-    lonely_recipe = Recipe(name='thing')
-    lonely_recipe.set_recipe([
-        [bagone, 'select=tag:hello']
-        ])
-
-    lonely_tiddler = Tiddler('lonely')
-    lonely_tiddler.tags = ['hello']
-    bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)
-    assert bag.name == bagone.name
-
-    lonely_recipe.set_recipe([
-        [bagone, 'select=tag:goodbye']
-        ])
-    py.test.raises(NoBagError,
-            'bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)')
 
 def test_recipe_policy():
     policy_recipe = Recipe(name='policed')

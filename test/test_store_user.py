@@ -45,7 +45,7 @@ def test_list_users():
     store.put(user1)
     store.put(user2)
 
-    users = store.list_users()
+    users = list(store.list_users())
     assert len(users) == 3
     usernames = [user.usersign for user in users]
     assert 'test1' in usernames
@@ -57,7 +57,19 @@ def test_delete_users():
     user = User('test1')
     store.delete(user)
 
-    users = store.list_users()
+    users = list(store.list_users())
     assert len(users) == 2
     usernames = [user.usersign for user in users]
     assert 'test1' not in usernames
+
+def test_complex_username():
+    username = u'test\u00BB\u00BBuser.com/foo'
+    user = User(username)
+    store.put(user)
+
+    users = list(store.list_users())
+    assert username in [user.usersign for user in users]
+
+    user_out = User(username)
+    user_out = store.get(user_out)
+    assert user_out.usersign == username
