@@ -3,14 +3,12 @@ Present or validate a form for getting a username
 and password.
 """
 
-import Cookie
 import logging
 
 from tiddlyweb.web.challengers import ChallengerInterface
-from tiddlyweb.web.util import server_host_url
+from tiddlyweb.web.util import server_host_url, make_cookie
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError
-from sha import sha
 
 
 class Challenger(ChallengerInterface):
@@ -79,19 +77,16 @@ Password <input type="password" name="password" size="40" />
         try:
             store = environ['tiddlyweb.store']
             secret = environ['tiddlyweb.config']['secret']
+            cookie_age = environ['tiddlyweb.config'].get('cookie_age', None)
             user = User(username)
             user = store.get(user)
             if user.check_password(password):
                 uri = '%s%s' % (server_host_url(environ), redirect)
-                cookie = Cookie.SimpleCookie()
-                secret_string = sha('%s%s' % (user.usersign,
-                    secret)).hexdigest()
-                cookie['tiddlyweb_user'] = '%s:%s' % (user.usersign,
-                        secret_string)
-                cookie['tiddlyweb_user']['path'] = self._cookie_path(environ)
+                cookie_header_string = make_cookie('tiddlyweb_user', user.usersign,
+                        mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
                 logging.debug('303 to %s' % uri)
                 start_response('303 Other',
-                        [('Set-Cookie', cookie.output(header='')),
+                        [('Set-Cookie', cookie_header_string),
                             ('Location', uri)])
                 return [uri]
         except KeyError:

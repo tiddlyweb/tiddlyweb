@@ -5,7 +5,6 @@ challenger that does checkid_setup.
 Is OpenID 1.
 """
 import cgi
-import Cookie
 import logging
 import random
 import urllib
@@ -13,9 +12,7 @@ import urllib
 import html5lib
 from html5lib import treebuilders
 
-from sha import sha
-
-import tiddlyweb.web.util as web
+from tiddlyweb.web.util import server_base_url, server_host_url, make_cookie
 from tiddlyweb.web.challengers import ChallengerInterface
 
 from tiddlyweb.web.http import HTTP302
@@ -116,12 +113,11 @@ class Challenger(ChallengerInterface):
         usersign = parsed_return_to['usersign'][0]
         if 'http' in usersign:
             usersign = usersign.split('://', 2)[1]
-        uri = '%s%s' % (web.server_host_url(environ), redirect)
-        cookie = Cookie.SimpleCookie()
+        uri = '%s%s' % (server_host_url(environ), redirect)
         secret = environ['tiddlyweb.config']['secret']
-        secret_string = sha('%s%s' % (usersign, secret)).hexdigest()
-        cookie['tiddlyweb_user'] = '%s:%s' % (usersign, secret_string)
-        cookie['tiddlyweb_user']['path'] = self._cookie_path(environ)
+        cookie_age = environ['tiddlyweb.config'].get('cookie_age', None)
+        cookie_header_string = make_cookie('tiddlyweb_user', user.usersign,
+                mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
         logging.debug('303 to %s' % uri)
         start_response('303 Found',
                 [('Set-Cookie', cookie.output(header='')),
@@ -199,7 +195,7 @@ OpenID: <input name="openid" size="60" />
         """
         return ('%s/challenge/openid?nonce=%s&tiddlyweb_redirect=%s'
                 '&openid_server=%s&usersign=%s' % (
-                    web.server_base_url(environ), self._nonce(),
+                    server_base_url(environ), self._nonce(),
                     redirect, link, usersign))
 
     def _nonce(self):

@@ -129,6 +129,7 @@ def test_charset_in_content_type():
     assert e.response['status'] == '303'
     headers = {}
     headers['cookie'] = e.response['set-cookie']
+    assert 'Max-Age' not in e.response['set-cookie']
     response, content = http.request(e.response['location'], method='GET', headers=headers)
     assert response['status'] == '200'
     assert 'i am tiddler 8' in content
@@ -180,9 +181,10 @@ def test_single_challenge_redirect():
     assert raised
     assert e.response['status'] == '302'
 
-def test_cookie_path_prefix():
+def test_cookie_path_prefix_max_age():
     original_prefix = config['server_prefix']
     config['server_prefix'] = '/wiki'
+    config['cookie_age'] = '300'
     http = httplib2.Http()
     try:
         http = httplib2.Http()
@@ -197,5 +199,6 @@ def test_cookie_path_prefix():
 
     assert raised
     assert 'Path=/wiki/' in e.response['set-cookie']
+    assert 'Max-Age=300' in e.response['set-cookie']
     config['server_prefix'] = original_prefix
 

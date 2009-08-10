@@ -3,9 +3,11 @@ General utility routines shared by various
 web related modules.
 """
 
+import Cookie
 import urllib
 import time
 from datetime import datetime
+from sha import sha
 
 from tiddlyweb.web.http import HTTP415
 
@@ -80,6 +82,23 @@ def datetime_from_http_date(http_datestring):
     http_datetime = datetime(*(time.strptime(http_datestring,
         '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime
+
+def make_cookie(name, value, mac_key=None, path=None, expires=None):
+    cookie = Cookie.SimpleCookie()
+
+    if mac_key:
+        secret_string = sha('%s%s' % (value, mac_key)).hexdigest()
+        cookie[name] = '%s:%s' % (value, secret_string)
+    else:
+        cookie[name] = value
+
+    if path:
+        cookie[name]['path'] = path
+
+    if expires:
+        cookie[name]['max-age'] = expires
+
+    return cookie.output(header='')
 
 
 def server_base_url(environ):
