@@ -126,13 +126,18 @@ class Serialization(SerializationInterface):
         tiddler.text = text.rstrip()
         headers = header.split('\n')
 
-        for field, value in [x.split(': ', 1) for x in headers]:
-            if value == '':
-                continue
-            if hasattr(tiddler, field):
-                setattr(tiddler, field, value)
-            else:
-                tiddler.fields[field] = value.replace('\\n', '\n')
+        try:
+            for field, value in [x.split(': ', 1) for x in headers]:
+                if value == '':
+                    continue
+                if hasattr(tiddler, field):
+                    setattr(tiddler, field, value)
+                else:
+                    tiddler.fields[field] = value.replace('\\n', '\n')
+        except ValueError, exc:
+            raise TiddlerFormatError('bad headers in tiddler: %s, %s' %
+                    (tiddler.title, exc))
+
 
         # we used to raise TiddlerFormatError but there are
         # currently no rules for that...
