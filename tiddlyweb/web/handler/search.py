@@ -24,7 +24,6 @@ def get(environ, start_response):
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
         search_query = urllib.unquote(search_query)
-        search_query = unicode(search_query, 'utf-8')
     except (KeyError, IndexError):
         raise HTTP400('query string required')
 
