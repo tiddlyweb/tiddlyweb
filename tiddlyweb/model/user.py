@@ -48,7 +48,7 @@ class User(object):
         Set the password for this user.
         """
         password = password.strip()
-        self._password = sha(password.strip()).hexdigest()
+        self._password = sha(password.strip().encode('utf-8')).hexdigest()
 
     def check_password(self, candidate_password):
         """
@@ -56,7 +56,7 @@ class User(object):
         """
         if self._password is None:
             return False
-        crypted_thing = sha(candidate_password.strip()).hexdigest()
+        crypted_thing = sha(candidate_password.strip().encode('utf-8')).hexdigest()
         return crypted_thing == self._password
 
     def __repr__(self):
