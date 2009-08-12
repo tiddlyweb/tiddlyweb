@@ -397,7 +397,7 @@ def _not_wikitext(tiddler, config):
             tiddler.type and # type is set
             tiddler.type != 'None' and # type is not None stringified
             tiddler.type not in # type is not id'd as wikitext by config
-            config['wikitext_render_map']
+            config['wikitext.type_render_map']
             )
 
 def _send_tiddler_revisions(environ, start_response, tiddler):

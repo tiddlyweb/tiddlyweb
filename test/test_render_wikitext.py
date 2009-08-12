@@ -11,10 +11,10 @@ def setup_module(module):
 
 
 def test_render_wikitext_plain():
-    renderer = config['wikitext_renderer']
-    config['wikitext_renderer'] = 'raw'
+    renderer = config['wikitext.default_renderer']
+    config['wikitext.default_renderer'] = 'raw'
     text = render_wikitext(tiddler, {'tiddlyweb.config': config})
-    config['wikitext_renderer'] = renderer
+    config['wikitext.default_renderer'] = renderer
 
     assert '<h1' not in text
     assert '<pre>' in text
