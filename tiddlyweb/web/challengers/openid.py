@@ -112,16 +112,15 @@ class Challenger(ChallengerInterface):
         """
         usersign = parsed_return_to['usersign'][0]
         if 'http' in usersign:
-            usersign = usersign.split('://', 2)[1]
+            usersign = usersign.split('://', 1)[1]
         uri = '%s%s' % (server_host_url(environ), redirect)
         secret = environ['tiddlyweb.config']['secret']
         cookie_age = environ['tiddlyweb.config'].get('cookie_age', None)
         cookie_header_string = make_cookie('tiddlyweb_user', usersign,
                 mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
         logging.debug('303 to %s' % uri)
-        start_response('303 Found',
-                [('Set-Cookie', cookie_header_string),
-                    ('Location', uri)])
+        start_response('303 See Other', [('Location', uri.encode('utf-8')),
+                ('Set-Cookie', cookie_header_string)])
         return [uri]
 
     def _send_openid_form(self, environ, start_response, redirect,

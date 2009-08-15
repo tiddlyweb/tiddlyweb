@@ -87,7 +87,7 @@ Password <input type="password" name="password" size="40" />
                 logging.debug('303 to %s' % uri)
                 start_response('303 Other',
                         [('Set-Cookie', cookie_header_string),
-                            ('Location', uri)])
+                            ('Location', uri.encode('utf-8'))])
                 return [uri]
         except KeyError:
             pass
