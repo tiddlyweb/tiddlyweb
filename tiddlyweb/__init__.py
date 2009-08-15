@@ -26,9 +26,9 @@ extensibility.
 The primary resources presented by the server are Recipes,
 Bags and Tiddlers. See the tiddlyweb.model package.
 """
-__version__ = '0.9.57'
+__version__ = '0.9.58'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __copyright__ = 'Copyright UnaMesa Association 2008-2009'
 __contributors__ = ['Frederik Dohr',
-        'Zac Bir']
+        'Zac Bir', 'Jeremy Ruston']
 __license__ = 'BSD'

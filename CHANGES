@@ -1,3 +1,7 @@
+0.9.58 Sat Aug 15 10:07:51 BST 2009
+
+  * Remove debugging print statement that causes mod_wsgi to fail.
+
 0.9.57 Fri Aug 14 18:30:28 BST 2009
 
   * Unicode in User passwords.
