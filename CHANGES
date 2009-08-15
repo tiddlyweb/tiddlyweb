@@ -1,3 +1,11 @@
+0.9.57 Fri Aug 14 18:30:28 BST 2009
+
+  * Unicode in User passwords.
+  * Unicode in tiddlyweb.query processing.
+  * Establish cookie_age configuration setting.
+  * Escape usernames in text store.
+  * Fix https bug in OpenID challenger.
+
 0.9.56 Thu Aug  6 13:37:58 BST 2009
 
   * Add support for {{ style:default }} templates in recipes in both
