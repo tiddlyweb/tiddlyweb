@@ -116,11 +116,11 @@ class Challenger(ChallengerInterface):
         uri = '%s%s' % (server_host_url(environ), redirect)
         secret = environ['tiddlyweb.config']['secret']
         cookie_age = environ['tiddlyweb.config'].get('cookie_age', None)
-        cookie_header_string = make_cookie('tiddlyweb_user', user.usersign,
+        cookie_header_string = make_cookie('tiddlyweb_user', usersign,
                 mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
         logging.debug('303 to %s' % uri)
         start_response('303 Found',
-                [('Set-Cookie', cookie.output(header='')),
+                [('Set-Cookie', cookie_header_string),
                     ('Location', uri)])
         return [uri]
 

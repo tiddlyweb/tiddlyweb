@@ -1,3 +1,7 @@
+0.9.59 Sat Aug 15 10:41:22 BST 2009
+
+  * Fix bugs in OpenID cookie handling.
+
 0.9.58 Sat Aug 15 10:07:51 BST 2009
 
   * Remove debugging print statement that causes mod_wsgi to fail.
