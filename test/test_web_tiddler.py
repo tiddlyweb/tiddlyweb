@@ -533,6 +533,25 @@ def test_binary_tiddler():
     assert response['status'] == '200'
     assert response['content-type'] == 'image/png'
 
+def test_tiddler_put_create():
+    http = httplib2.Http()
+    tiddler_data = simplejson.dumps(dict(text='hello'))
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler', method='PUT', headers={'If-Match': 'monkeypetard'})
+    # no body raises 400
+    assert response['status'] == '400'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler', method='PUT', headers={'If-Match': 'monkeypetard'}, body=tiddler_data)
+    # no content type raises 400
+    assert response['status'] == '400'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler', method='PUT', headers={'Content-Type': 'application/json', 'If-Match': 'monkeypetard'}, body=tiddler_data)
+    # ETag causes 412 on create
+    assert response['status'] == '412'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler', method='PUT', headers={'Content-Type': 'application/json'}, body=tiddler_data)
+    # No ETag we get 204
+    assert response['status'] == '204'
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 

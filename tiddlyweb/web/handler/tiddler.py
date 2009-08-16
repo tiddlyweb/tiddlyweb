@@ -222,9 +222,12 @@ def _put_tiddler(environ, start_response, tiddler):
     The guts of putting a tiddler into the store.
     """
     store = environ['tiddlyweb.store']
-    length = environ['CONTENT_LENGTH']
+    try:
+        length = environ['CONTENT_LENGTH']
+        content_type = environ['tiddlyweb.type']
+    except KeyError:
+        raise HTTP400('Content-Length and content-type required to put tiddler')
 
-    content_type = environ['tiddlyweb.type']
 
     if content_type != 'text/plain' and content_type != 'application/json':
         tiddler.type = content_type
@@ -243,6 +246,9 @@ def _put_tiddler(environ, start_response, tiddler):
             _validate_tiddler_headers(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
+            incoming_etag = environ.get('HTTP_IF_MATCH', None)
+            if incoming_etag:
+                raise HTTP412('Tiddler does not exist, ETag disallowed.')
 
         content = environ['wsgi.input'].read(int(length))
 
