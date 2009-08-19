@@ -98,7 +98,7 @@ def make_cookie(name, value, mac_key=None, path=None, expires=None):
     if expires:
         cookie[name]['max-age'] = expires
 
-    return cookie.output(header='')
+    return cookie.output(header='').lstrip().rstrip()
 
 
 def server_base_url(environ):
