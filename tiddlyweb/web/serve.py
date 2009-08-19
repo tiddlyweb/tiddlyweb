@@ -44,23 +44,6 @@ def load_app(prefix=''):
     return app
 
 
-def start_simple():
-    """
-    Start a wsgiref.simple_server to run our app.
-
-    Provides the simplest base for testing, debugging
-    and development.
-    """
-    from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
-    hostname = config['server_host']['host']
-    port = int(config['server_host']['port'])
-    httpd = WSGIServer((hostname, port), WSGIRequestHandler)
-    httpd.set_app(load_app())
-    print >> sys.stderr, ("Serving HTTP on %s port %s ..." %
-            httpd.socket.getsockname())
-    httpd.serve_forever()
-
-
 def start_cherrypy():
     """
     Start a cherrypy webserver to run our app.
