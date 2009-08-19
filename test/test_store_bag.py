@@ -69,6 +69,21 @@ def test_failed_get():
     bag = Bag(name='bagnine')
     py.test.raises(NoBagError, 'store.get(bag)')
 
+def test_delete():
+    bag = Bag('deleteme')
+    bag.desc = 'delete me please'
+    store.put(bag)
+
+    stored_bag = Bag('deleteme')
+    stored_bag = store.get(stored_bag)
+    assert stored_bag.desc == 'delete me please'
+
+    deleted_bag = Bag('deleteme')
+    store.delete(deleted_bag)
+
+    py.test.raises(NoBagError, 'store.get(deleted_bag)')
+    py.test.raises(NoBagError, 'store.delete(deleted_bag)')
+
 def test_list():
     bag = Bag('bagtwo')
     store.put(bag)

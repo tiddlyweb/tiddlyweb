@@ -12,6 +12,7 @@ import tiddlyweb.stores.text
 
 from fixtures import reset_textstore, recipe_list_string, _teststore
 from tiddlyweb.model.recipe import Recipe
+from tiddlyweb.store import NoRecipeError
 
 expected_stored_filename = os.path.join('store', 'recipes', 'testrecipe')
 
@@ -62,6 +63,21 @@ def test_recipe_get():
     stored_recipe = store.get(stored_recipe)
 
     assert stored_recipe == recipe_list_string
+
+def test_recipe_delete():
+    recipe = Recipe('deleteme')
+    recipe.desc = 'delete me please'
+    store.put(recipe)
+
+    stored_recipe = Recipe('deleteme')
+    stored_recipe = store.get(stored_recipe)
+    assert stored_recipe.desc == 'delete me please'
+
+    deleted_recipe = Recipe('deleteme')
+    store.delete(deleted_recipe)
+
+    py.test.raises(NoRecipeError, 'store.get(deleted_recipe)')
+    py.test.raises(NoRecipeError, 'store.delete(deleted_recipe)')
 
 def test_recipe_no_recipe():
     """

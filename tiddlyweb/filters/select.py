@@ -129,8 +129,7 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
                 select(tiddler, attribute, value))
 
 
-def select_relative_attribute(attribute, value, tiddlers,
-        greater=False, lesser=False):
+def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=False):
     """
     Select tiddlers that sort greater or less than the provided value
     for the provided attribute.

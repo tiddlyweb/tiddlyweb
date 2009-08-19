@@ -62,6 +62,21 @@ def test_delete_users():
     usernames = [user.usersign for user in users]
     assert 'test1' not in usernames
 
+def test_delete():
+    user = User('deleteme')
+    user.note = 'delete me please'
+    store.put(user)
+
+    stored_user = User('deleteme')
+    stored_user = store.get(stored_user)
+    assert stored_user.note == 'delete me please'
+
+    deleted_user = User('deleteme')
+    store.delete(deleted_user)
+
+    py.test.raises(NoUserError, 'store.get(deleted_user)')
+    py.test.raises(NoUserError, 'store.delete(deleted_user)')
+
 def test_complex_username():
     username = u'test\u00BB\u00BBuser.com/foo'
     user = User(username)

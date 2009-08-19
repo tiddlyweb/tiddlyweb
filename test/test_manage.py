@@ -30,19 +30,31 @@ Hello!
 """
 
 
+
+
 def setup_module(module):
     reset_textstore()
     module.savedout = sys.stdout
     module.savedin = sys.stdin
+    module.savederr = sys.stderr
     module.output = StringIO()
+    module.error = StringIO()
     sys.stdout = output
+    sys.stderr = error
+    sys.exit = boring_exit
     module.store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
+class InternalExit(Exception):
+    pass
+
+def boring_exit(value):
+    raise InternalExit()
 
 def teardown_module(module):
     content = module.output.getvalue()
     sys.stdout = module.savedout
     sys.stdin = module.savedin
+    sys.stderr = module.savederr
 
 
 def test_adduser():
@@ -51,6 +63,25 @@ def test_adduser():
     the_user = store.get(the_user)
     assert the_user.check_password('crunk')
 
+def test_adduser_with_roles():
+    handle(['', 'adduser', 'cdent', 'crunk', 'cow', 'monkey'])
+    the_user = User('cdent')
+    the_user = store.get(the_user)
+    assert the_user.check_password('crunk')
+    assert 'cow' in the_user.list_roles()
+    assert 'monkey' in the_user.list_roles()
+
+def test_addrole():
+    handle(['', 'addrole', 'cdent', 'pig'])
+    the_user = User('cdent')
+    the_user = store.get(the_user)
+    assert 'cow' in the_user.list_roles()
+
+def test_userpass():
+    handle(['', 'userpass', 'cdent', 'drunk'])
+    the_user = User('cdent')
+    the_user = store.get(the_user)
+    assert the_user.check_password('drunk')
 
 def test_bag():
     set_stdin(BAG_STRING)
