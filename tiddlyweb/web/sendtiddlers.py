@@ -9,7 +9,7 @@ from sha import sha
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
-from tiddlyweb.web.http import HTTP404, HTTP304
+from tiddlyweb.web.http import HTTP404, HTTP304, HTTP415
 
 
 def send_tiddlers(environ, start_response, bag):
@@ -40,13 +40,15 @@ def send_tiddlers(environ, start_response, bag):
     if etag:
         response.append(etag)
 
-    start_response("200 OK", response)
 
     serializer = Serializer(serialize_type, environ)
     try:
         output = serializer.list_tiddlers(bag)
     except NoSerializationError, exc:
-        raise HTTP415('Content type not supported: %s, %s' % (mime_type, exc))
+        raise HTTP415('Content type not supported: %s:%s, %s' %
+                (serialize_type, mime_type, exc))
+
+    start_response("200 OK", response)
     return [output]
 
 

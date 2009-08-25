@@ -6,6 +6,7 @@ import urllib
 import cgi
 import simplejson
 
+from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
 

@@ -64,6 +64,39 @@ class Policy(object):
         self.manage = manage
         self.accept = accept
 
+    def _single_value_set(self, target_list, value):
+        return len(target_list) == 1 and target_list[0] == value
+
+    def _no_constraint(self, info_list):
+        # no constraints then all pass
+        try:
+            if len(info_list) == 0:
+                return True
+        except TypeError:
+            # constraint not set (weirdness in DB)
+            return True
+
+        return False
+
+    def _user_valid(self, user_sign, user_list):
+        # always allow if the constraint is ANY
+        if self._single_value_set(user_list, u'ANY'):
+            if user_sign != u'GUEST':
+                return True
+
+        # if the user is in the constraint list, return true
+        if user_sign in user_list:
+            return True
+
+        return False
+
+    def _role_valid(self, roles, role_list):
+        # if there is an intersection between the users roles and any roles
+        # in the constraint, return true
+        if [role for role in roles if role in role_list]:
+            return True
+        return False
+
     def allows(self, user, constraint):
         """
         Is user allowed to perform the action described
@@ -78,33 +111,21 @@ class Policy(object):
 
         info_list = self.__getattribute__(constraint)
 
-        # no constraints then all pass
-        try:
-            if len(info_list) == 0:
-                return True
-        except TypeError:
-            # constraint not set (weirdness in DB)
+        if self._no_constraint(info_list):
             return True
 
         user_list = [x for x in info_list if not x.startswith('R:')]
-        role_list = [x[2:] for x in info_list if x.startswith('R:')]
 
         # always reject if the constraint is NONE
-        if len(user_list) == 1 and user_list[0] == u'NONE':
+        if self._single_value_set(user_list, u'NONE'):
             raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
-        # always allow if the constraint is ANY
-        if len(user_list) == 1 and user_list[0] == u'ANY':
-            if user_sign != u'GUEST':
-                return True
-
-        # if there is an intersection between the users roles and any roles
-        # in the constraint, return true
-        if [role for role in roles if role in role_list]:
+        if self._user_valid(user_sign, user_list):
             return True
 
-        # if the user is in the constraint list, return true
-        if user_sign in user_list:
+        role_list = [x[2:] for x in info_list if x.startswith('R:')]
+
+        if self._role_valid(roles, role_list):
             return True
 
         # if the user is set to GUEST (meaning nobody in credentials)

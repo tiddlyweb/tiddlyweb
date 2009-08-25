@@ -1,0 +1,33 @@
+"""
+Cover tiddlyweb.web.util.make_cookie.
+
+It creates the string used to put in a Set-Cookie
+header.
+"""
+
+from sha import sha
+
+from tiddlyweb.web.util import make_cookie
+
+def test_cookie_name_value():
+    string = make_cookie('test1', 'alpha1')
+
+    assert string == 'test1=alpha1'
+
+def test_cookie_path():
+    string = make_cookie('test2', 'alpha2', path='/path/to/location')
+
+    assert string == 'test2=alpha2; Path=/path/to/location'
+
+def test_cookie_expire():
+    string = make_cookie('test3', 'alpha3', expires=50)
+
+    assert string == 'test3=alpha3; Max-Age=50'
+
+def test_cookie_mac():
+    string = make_cookie('test4', 'alpha4', mac_key='secret')
+
+    secret_string = sha('%s%s' % ('alpha4', 'secret')).hexdigest()
+
+    assert string == 'test4="alpha4:%s"' % secret_string
+
