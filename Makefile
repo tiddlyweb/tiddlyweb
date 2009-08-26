@@ -7,10 +7,12 @@
 clean:
 	find . -name "*.pyc" |xargs rm || true
 	rm -r dist || true
+	rm -r build || true
 
 cleanagain:
 	find . -name "*.pyc" |xargs rm || true
 	rm -r dist || true
+	rm -r build || true
 
 test: 
 	py.test -x test
