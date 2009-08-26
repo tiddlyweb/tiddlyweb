@@ -247,8 +247,8 @@ def _put_tiddler(environ, start_response, tiddler):
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
             incoming_etag = environ.get('HTTP_IF_MATCH', None)
-            if incoming_etag:
-                raise HTTP412('Tiddler does not exist, ETag disallowed.')
+            if incoming_etag and not incoming_etag == _new_tiddler_etag(tiddler):
+                raise HTTP412('Etag incorrect for new tiddler')
 
         content = environ['wsgi.input'].read(int(length))
 
@@ -432,6 +432,17 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
 
     return send_tiddlers(environ, start_response, tmp_bag)
 
+
+def _new_tiddler_etag(tiddler):
+    """
+    Calculate the ETag of a tiddler that does not
+    yet exist. This is a bastardization of ETag handling
+    but is useful for doing edit contention handling.
+    """
+    return str('"%s/%s/%s"' %
+            (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
+                urllib.quote(tiddler.title.encode('utf-8'), safe=''),
+                '0'))
 
 def _tiddler_etag(tiddler):
     """
