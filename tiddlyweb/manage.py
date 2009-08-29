@@ -44,6 +44,11 @@ def info(args):
     """Display info about TiddlyWeb."""
     print """This is TiddlyWeb version %s.
 The current store is: %s.""" % (VERSION, config['server_store'][0])
+    if config['system_plugins']:
+        print "System Plugins:"
+        for plugin in config['system_plugins']:
+            module = __import__(plugin)
+            print '\t%s (%s)' % (plugin, getattr(module, '__version__', 'unknown')) 
 
 
 @make_command()
