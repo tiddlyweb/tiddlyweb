@@ -57,7 +57,7 @@ def _validate_tiddler_list(environ, bag):
     last_modified_string = http_date_from_timestamp(last_modified_number)
     last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '"%s:%s"' % (_sha_tiddler_titles(bag),
+    etag_string = '"%s:%s"' % (_sha_tiddler_titles(bag, environ),
             last_modified_number)
     etag = ('Etag', etag_string)
 
@@ -75,7 +75,11 @@ def _validate_tiddler_list(environ, bag):
     return last_modified, etag
 
 
-def _sha_tiddler_titles(bag):
+def _sha_tiddler_titles(bag, environ):
+    """
+    Make a sha hash of all the titles in the bag
+    plus the current username.
+    """
     digest = sha()
     for tiddler in bag.gen_tiddlers():
         if tiddler.recipe:
@@ -84,6 +88,8 @@ def _sha_tiddler_titles(bag):
             container = tiddler.bag
         digest.update(container.encode('utf-8') +
                 tiddler.title.encode('utf-8'))
+    usersign = environ['tiddlyweb.usersign']['name']
+    digest.update(usersign)
     return digest.hexdigest()
 
 
