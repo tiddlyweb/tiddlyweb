@@ -29,11 +29,11 @@ class HTTPException(Exception):
         """
         Output an error message.
         """
-        if not hasattr(self, 'message'):
-            self.message = '%s' % self
-        if isinstance(self.message, unicode):
-            self.message = self.message.encode('utf-8')
-        return ['%s: %s' % (self.status, self.message)]
+        if not hasattr(self, 'args'):
+            self.args = '%s' % self
+        if isinstance(self.args, unicode):
+            self.args = self.args.encode('utf-8')
+        return ['%s: %s' % (self.status, self.args)]
 
 
 class HTTP302(HTTPException):
