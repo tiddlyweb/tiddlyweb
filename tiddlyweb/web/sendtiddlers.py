@@ -4,12 +4,11 @@ to the web, including sending those tiddlers and
 validating cache headers for list of tiddlers.
 """
 
-from sha import sha
-
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
 from tiddlyweb.web.http import HTTP404, HTTP304, HTTP415
+from tiddlyweb.util import sha
 
 
 def send_tiddlers(environ, start_response, bag):

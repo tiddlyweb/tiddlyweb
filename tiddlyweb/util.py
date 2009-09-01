@@ -5,12 +5,25 @@ Miscellaneous utility functions for TiddlyWeb.
 import codecs
 import os
 
+try:
+    from hashlib import sha1
+except ImportError:
+    from sha import sha as sha1
+
 
 class LockError(IOError):
     """
     This process was unable to get a lock.
     """
     pass
+
+
+def sha(data=''):
+    """
+    Centralize creation of sha digests, to
+    manage deprecation of the sha module.
+    """
+    return sha1(data)
 
 
 def read_utf8_file(filename):

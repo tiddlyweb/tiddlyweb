@@ -2,7 +2,7 @@
 A class representing a simple user entity.
 """
 
-from sha import sha
+from tiddlyweb.util import sha
 
 
 class User(object):

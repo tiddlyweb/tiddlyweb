@@ -10,7 +10,7 @@ from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.web.http import HTTP400
-from sha import sha
+from tiddlyweb.util import sha
 
 
 class Extractor(ExtractorInterface):
