@@ -7,9 +7,9 @@ import Cookie
 import urllib
 import time
 from datetime import datetime
-from sha import sha
 
 from tiddlyweb.web.http import HTTP415
+from tiddlyweb.util import sha
 
 
 def get_serialize_type(environ):
