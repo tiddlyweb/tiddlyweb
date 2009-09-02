@@ -1,3 +1,9 @@
+0.9.62 Mon Aug 31 13:42:39 BST 2009
+
+  * Correct unicode handling in content-disposition header.
+  * List system plugins with twanager info command.
+  * Continued tweaking to ETag handling.
+
 0.9.61 Tue Aug 25 20:38:06 BST 2009
 
   * Previous release was missing code from DCVS.
