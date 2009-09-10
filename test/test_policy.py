@@ -93,8 +93,20 @@ def test_policy_insecure():
     }
 
     assert bag.policy.allows(jeremy_info, 'read', environ)
+    assert bag.policy.allows(jeremy_info, 'write', environ)
+    assert bag.policy.allows(jeremy_info, 'create', environ)
+    assert bag.policy.allows(jeremy_info, 'delete', environ)
+    assert bag.policy.allows(jeremy_info, 'manage', environ)
+    assert bag.policy.allows(jeremy_info, 'accept', environ)
+    assert bag.policy.allows(jeremy_info, 'secure', environ)
 
     assert bag.policy.allows(jeremy_info, 'read', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'write', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'create', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'delete', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'manage', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'accept', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'secure', secure_environ)
 
 
 def test_policy_secure():
@@ -109,8 +121,20 @@ def test_policy_secure():
     }
 
     raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "read", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "write", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "create", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "delete", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "manage", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "accept", environ)')
+    raises(SecureConnectionRequiredError, 'bag.policy.allows(jeremy_info, "secure", environ)')
 
     assert bag.policy.allows(jeremy_info, 'read', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'write', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'create', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'delete', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'manage', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'accept', secure_environ)
+    assert bag.policy.allows(jeremy_info, 'secure', secure_environ)
 
 
 def test_policy_any():
