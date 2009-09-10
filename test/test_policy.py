@@ -10,14 +10,14 @@ from tiddlyweb.model.policy import Policy, create_policy_check, \
 from py.test import raises
 
 
-jeremy_info = {'name':'jeremy'}
-chris_info = {'name':'chris','roles':['ADMIN']}
-roller_info = {'name':'chris','roles':['ROLLER']}
-none_info = {'name':'NONE'}
-barnabas_info = {'name':'barnabas'}
-randomer_info = {'name':'randomer'}
-boom_info = {'name':'boom'}
-guest_info = {'name':'GUEST'}
+jeremy_info = {'name': 'jeremy'}
+chris_info = {'name': 'chris', 'roles': ['ADMIN']}
+roller_info = {'name': 'chris', 'roles': ['ROLLER']}
+none_info = {'name': 'NONE'}
+barnabas_info = {'name': 'barnabas'}
+randomer_info = {'name': 'randomer'}
+boom_info = {'name': 'boom'}
+guest_info = {'name': 'GUEST'}
 
 
 def setup_module(module):
@@ -43,9 +43,9 @@ def test_policy_create():
 
 
 def test_policy_init_set():
-    policy = Policy(read=['chris','jeremy'],write=['NONE'],manage=['chris'])
+    policy = Policy(read=['chris', 'jeremy'], write=['NONE'], manage=['chris'])
 
-    assert policy.read == ['chris','jeremy']
+    assert policy.read == ['chris', 'jeremy']
     assert policy.write == ['NONE']
     assert policy.create == []
     assert policy.delete == []
@@ -53,11 +53,11 @@ def test_policy_init_set():
 
 
 def test_policy_post_set():
-    policy = Policy(read=['chris','jeremy'],write=['NONE'],manage=['chris'])
+    policy = Policy(read=['chris', 'jeremy'], write=['NONE'], manage=['chris'])
 
-    assert policy.read == ['chris','jeremy']
+    assert policy.read == ['chris', 'jeremy']
 
-    policy.read = ['one','tall']
+    policy.read = ['one', 'tall']
 
     assert 'chris' not in policy.read
     assert 'jeremy' not in policy.read
@@ -65,7 +65,7 @@ def test_policy_post_set():
 
 
 def test_policy_allows():
-    policy = Policy(read=['chris','jeremy'],write=['NONE'],delete=['R:ADMIN'],manage=['chris'])
+    policy = Policy(read=['chris', 'jeremy'], write=['NONE'], delete=['R:ADMIN'], manage=['chris'])
 
     assert policy.allows(chris_info, 'read', environ)
     assert policy.allows(chris_info, 'delete', environ)
@@ -114,7 +114,7 @@ def test_policy_secure():
 
 
 def test_policy_any():
-    policy = Policy(read=['ANY'],write=['ANY'])
+    policy = Policy(read=['ANY'], write=['ANY'])
     assert policy.allows(randomer_info, 'read', environ)
     assert policy.allows(boom_info, 'write', environ)
     raises(UserRequiredError, 'policy.allows(guest_info, "read", environ)')
@@ -123,7 +123,7 @@ def test_policy_any():
 def test_bag_policy():
 
     bag = Bag('policy_tester')
-    bag.policy = Policy(read=['chris','jeremy'])
+    bag.policy = Policy(read=['chris', 'jeremy'])
 
     assert bag.policy.allows(chris_info, 'read', environ)
     raises(UserRequiredError, 'bag.policy.allows(guest_info, "read", environ)')
@@ -131,25 +131,25 @@ def test_bag_policy():
 
 def test_user_perms():
     policy = Policy()
-    assert policy.user_perms(chris_info) == ['read','write','create','delete']
+    assert policy.user_perms(chris_info) == ['read', 'write', 'create', 'delete']
 
     policy = Policy(read=['R:ADMIN'], write=['R:ADMIN'], create=['jeremy'], delete=['jeremy'])
-    assert policy.user_perms(chris_info) == ['read','write']
+    assert policy.user_perms(chris_info) == ['read', 'write']
 
     assert policy.user_perms(jeremy_info) == ['create', 'delete']
 
 
 def test_create_policy_check():
-    no_environ = {'tiddlyweb.config':{'bag_create_policy':''}}
-    all_environ = {'tiddlyweb.config':{'recipe_create_policy':''}}
-    any_environ = {'tiddlyweb.config':{'recipe_create_policy':'ANY'}}
-    admin_environ = {'tiddlyweb.config':{'recipe_create_policy':'ADMIN'}}
-    weird_environ = {'tiddlyweb.config':{'recipe_create_policy':'WEIRD'}}
+    no_environ = {'tiddlyweb.config': {'bag_create_policy': ''}}
+    all_environ = {'tiddlyweb.config': {'recipe_create_policy': ''}}
+    any_environ = {'tiddlyweb.config': {'recipe_create_policy': 'ANY'}}
+    admin_environ = {'tiddlyweb.config': {'recipe_create_policy': 'ADMIN'}}
+    weird_environ = {'tiddlyweb.config': {'recipe_create_policy': 'WEIRD'}}
 
     raises(ForbiddenError, 'create_policy_check(no_environ, "recipe", chris_info)')
     assert create_policy_check(all_environ, "recipe", chris_info)
     assert create_policy_check(any_environ, "recipe", chris_info)
-    raises(UserRequiredError, 'create_policy_check(any_environ, "recipe", {"name":"GUEST"})')
+    raises(UserRequiredError, 'create_policy_check(any_environ, "recipe", {"name": "GUEST"})')
     assert create_policy_check(admin_environ, "recipe", chris_info)
     raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", jeremy_info)')
     raises(ForbiddenError, 'create_policy_check(admin_environ, "recipe", roller_info)')
@@ -167,4 +167,3 @@ def test_confirm_attributes():
     attributes = Policy.attributes
     for name in ['read', 'write', 'create', 'delete', 'accept', 'manage', 'owner']:
         assert name in attributes
-
