@@ -21,6 +21,13 @@ class UserRequiredError(PermissionsError):
     pass
 
 
+class SecureConnectionRequiredError(PermissionsError):
+    """
+    Traffic encryption (HTTPS/SSL) is required.
+    """
+    pass
+
+
 class Policy(object):
     """
     A container for information about the
@@ -37,11 +44,11 @@ class Policy(object):
     """
 
     attributes = ['read', 'write', 'create', 'delete', 'manage', 'accept',
-            'owner']
+            'secure', 'owner']
 
     def __init__(self, owner=None,
             read=None, write=None, create=None, delete=None,
-            manage=None, accept=None):
+            manage=None, accept=None, secure=None):
         # avoid "dangerous" warnings from pylint and
         # and possible memory leaks
         if read is None:
@@ -56,6 +63,8 @@ class Policy(object):
             manage = []
         if accept is None:
             accept = []
+        if secure is None: # XXX: rename to encrypted?
+            secure = False
         self.owner = owner
         self.read = read
         self.write = write
@@ -63,6 +72,7 @@ class Policy(object):
         self.delete = delete
         self.manage = manage
         self.accept = accept
+        self.secure = secure
 
     def _single_value_set(self, target_list, value):
         return len(target_list) == 1 and target_list[0] == value
@@ -97,12 +107,15 @@ class Policy(object):
             return True
         return False
 
-    def allows(self, user, constraint):
+    def allows(self, user, constraint, environ):
         """
         Is user allowed to perform the action described
         by constraint. The user has a name and some roles,
         either may match in the constraint.
         """
+        protocol = environ['tiddlyweb.config']['server_host']['scheme']
+        if self.secure and protocol != 'https':
+            raise SecureConnectionRequiredError('secure connection required')
         try:
             roles = user['roles']
         except KeyError:
@@ -141,7 +154,7 @@ class Policy(object):
         matched_perms = []
         for perm in perms:
             try:
-                self.allows(usersign, perm)
+                self.allows(usersign, perm, environ) # XXX: environ N/A
                 matched_perms.append(perm)
             except (UserRequiredError, ForbiddenError):
                 pass

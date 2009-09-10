@@ -29,7 +29,7 @@ def delete(environ, start_response):
     recipe = _determine_recipe(environ)
     store = environ['tiddlyweb.store']
 
-    recipe.policy.allows(environ['tiddlyweb.usersign'], 'manage')
+    recipe.policy.allows(environ['tiddlyweb.usersign'], 'manage', environ)
 
     try:
         store.delete(recipe)
@@ -47,7 +47,7 @@ def get(environ, start_response):
     of bags and filters that make up the recipe.
     """
     recipe = _determine_recipe(environ)
-    recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
+    recipe.policy.allows(environ['tiddlyweb.usersign'], 'read', environ)
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
@@ -73,7 +73,7 @@ def get_tiddlers(environ, start_response):
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
 
-    recipe.policy.allows(usersign, 'read')
+    recipe.policy.allows(usersign, 'read', environ)
 
     # get the tiddlers from the recipe and uniquify them
     try:
@@ -98,14 +98,14 @@ def get_tiddlers(environ, start_response):
     for tiddler in tiddlers:
         bag_name = tiddler.bag
         try:
-            policies[bag_name].allows(usersign, 'read')
+            policies[bag_name].allows(usersign, 'read', environ)
         except KeyError:
             bag = Bag(tiddler.bag)
             bag.skinny = True
             bag = store.get(bag)
             policy = bag.policy
             policies[bag_name] = policy
-            policies[bag_name].allows(usersign, 'read')
+            policies[bag_name].allows(usersign, 'read', environ)
 
         tiddler.recipe = recipe.name
         tmp_bag.add_tiddler(tiddler)
@@ -123,7 +123,7 @@ def list(environ, start_response):
     for recipe in recipes:
         try:
             recipe = store.get(recipe)
-            recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
+            recipe.policy.allows(environ['tiddlyweb.usersign'], 'read', environ)
             kept_recipes.append(recipe)
         except(UserRequiredError, ForbiddenError):
             pass
@@ -158,7 +158,7 @@ def put(environ, start_response):
 
     try:
         recipe = store.get(recipe)
-        recipe.policy.allows(usersign, 'manage')
+        recipe.policy.allows(usersign, 'manage', environ)
     except NoRecipeError:
         create_policy_check(environ, 'recipe', usersign)
 

@@ -84,7 +84,7 @@ def _check_bag_constraint(environ, bag, constraint):
         usersign = environ['tiddlyweb.usersign']
         bag.skinny = True
         bag = store.get(bag)
-        bag.policy.allows(usersign, constraint)
+        bag.policy.allows(usersign, constraint, environ)
     except (PermissionsError), exc:
         # XXX this throws away traceback info
         msg = 'for bag %s: %s' % (bag.name, exc)

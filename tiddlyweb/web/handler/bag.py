@@ -33,7 +33,7 @@ def delete(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     bag = _get_bag(environ, bag_name, True)
-    bag.policy.allows(usersign, 'manage')
+    bag.policy.allows(usersign, 'manage', environ)
     # reuse the store attribute that was set on the
     # bag when we "got" it.
     # we don't need to check for existence here because
@@ -57,7 +57,7 @@ def get(environ, start_response):
     bag_name = web.handle_extension(environ, bag_name)
     bag = _get_bag(environ, bag_name, True)
 
-    bag.policy.allows(environ['tiddlyweb.usersign'], 'manage')
+    bag.policy.allows(environ['tiddlyweb.usersign'], 'manage', environ)
 
     try:
         serialize_type, mime_type = web.get_serialize_type(environ)
@@ -87,7 +87,7 @@ def get_tiddlers(environ, start_response):
 
     usersign = environ['tiddlyweb.usersign']
     # will raise exception if there are problems
-    bag.policy.allows(usersign, 'read')
+    bag.policy.allows(usersign, 'read', environ)
 
     try:
         tiddlers = control.filter_tiddlers_from_bag(bag, filters)
@@ -110,7 +110,7 @@ def list(environ, start_response):
         try:
             bag.skinny = True
             bag = store.get(bag)
-            bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
+            bag.policy.allows(environ['tiddlyweb.usersign'], 'read', environ)
             kept_bags.append(bag)
         except(UserRequiredError, ForbiddenError):
             pass
@@ -144,7 +144,7 @@ def put(environ, start_response):
     try:
         bag.skinny = True
         bag = store.get(bag)
-        bag.policy.allows(usersign, 'manage')
+        bag.policy.allows(usersign, 'manage', environ)
         try:
             delattr(bag, 'skinny')
         except AttributeError:
