@@ -106,8 +106,7 @@ def server_base_url(environ):
     Using information in tiddlyweb.config, construct
     the base URL of the server, sans the trailing /.
     """
-    url = '%s%s' % (server_host_url(environ), _server_prefix(environ))
-    return url
+    return '%s%s' % (server_host_url(environ), _server_prefix(environ))
 
 
 def server_host_url(environ):
@@ -120,8 +119,7 @@ def server_host_url(environ):
         port = ''
     else:
         port = ':%s' % port
-    url = '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
-    return url
+    return '%s://%s%s' % (server_host['scheme'], server_host['host'], port)
 
 
 def _server_prefix(environ):
