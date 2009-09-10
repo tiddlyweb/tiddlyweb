@@ -154,7 +154,14 @@ class Policy(object):
         matched_perms = []
         for perm in perms:
             try:
-                self.allows(usersign, perm, environ) # XXX: environ N/A
+                environ = { # XXX: hack; secure flag unsupported for UserS!?
+                    'tiddlyweb.config': {
+                        'server_host': {
+                            'scheme': 'http'
+                        }
+                    }
+                }
+                self.allows(usersign, perm, environ)
                 matched_perms.append(perm)
             except (UserRequiredError, ForbiddenError):
                 pass

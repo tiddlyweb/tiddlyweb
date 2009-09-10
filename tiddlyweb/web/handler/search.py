@@ -52,7 +52,7 @@ def get(environ, start_response):
             bag.skinny = True
             bag = store.get(bag)
             try:
-                bag.policy.allows(usersign, 'read')
+                bag.policy.allows(usersign, 'read', environ)
                 tmp_bag.add_tiddler(store.get(tiddler))
                 bag_readable[tiddler.bag] = True
             except(ForbiddenError, UserRequiredError):

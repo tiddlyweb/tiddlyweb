@@ -18,6 +18,13 @@ boom_info = {'name':'boom'}
 guest_info = {'name':'GUEST'}
 
 def setup_module(module):
+    module.environ = {
+        'tiddlyweb.config': {
+            'server_host': {
+                'scheme': 'http'
+            }
+        }
+    }
     pass
 
 def test_policy_create():
@@ -53,32 +60,32 @@ def test_policy_post_set():
 def test_policy_allows():
     policy = Policy(read=['chris','jeremy'],write=['NONE'],delete=['R:ADMIN'],manage=['chris'])
 
-    assert policy.allows(chris_info, 'read')
-    assert policy.allows(chris_info, 'delete')
-    assert policy.allows(jeremy_info, 'read')
-    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "write")')
-    assert policy.allows(chris_info, 'manage')
-    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "manage")')
-    assert policy.allows(chris_info, 'create')
-    py.test.raises(ForbiddenError, 'policy.allows(none_info, "write")')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "read")')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "write")')
-    assert policy.allows(barnabas_info, 'create')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "manage")')
+    assert policy.allows(chris_info, 'read', environ)
+    assert policy.allows(chris_info, 'delete', environ)
+    assert policy.allows(jeremy_info, 'read', environ)
+    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "write", environ)')
+    assert policy.allows(chris_info, 'manage', environ)
+    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "manage", environ)')
+    assert policy.allows(chris_info, 'create', environ)
+    py.test.raises(ForbiddenError, 'policy.allows(none_info, "write", environ)')
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "read", environ)')
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "write", environ)')
+    assert policy.allows(barnabas_info, 'create', environ)
+    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "manage", environ)')
 
 def test_policy_any():
     policy = Policy(read=['ANY'],write=['ANY'])
-    assert policy.allows(randomer_info, 'read')
-    assert policy.allows(boom_info, 'write')
-    py.test.raises(UserRequiredError, 'policy.allows(guest_info, "read")')
+    assert policy.allows(randomer_info, 'read', environ)
+    assert policy.allows(boom_info, 'write', environ)
+    py.test.raises(UserRequiredError, 'policy.allows(guest_info, "read", environ)')
 
 def test_bag_policy():
 
     bag = Bag('policy_tester')
     bag.policy = Policy(read=['chris','jeremy'])
 
-    assert bag.policy.allows(chris_info, 'read')
-    py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read")')
+    assert bag.policy.allows(chris_info, 'read', environ)
+    py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read", environ)')
 
 def test_user_perms():
     policy = Policy()
@@ -108,7 +115,7 @@ def test_create_policy_check():
 def test_malformed_policy():
     policy = Policy()
     policy.read = None # set the policy to a bad form
-    assert policy.allows(guest_info, 'read')
+    assert policy.allows(guest_info, 'read', environ)
 
 def test_confirm_attributes():
     """Confirm the class attributes of a policy."""
