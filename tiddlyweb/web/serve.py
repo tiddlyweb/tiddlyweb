@@ -51,8 +51,13 @@ def start_cherrypy():
     from cherrypy import wsgiserver
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
+    ssl_cert = config['ssl.certificate'] # XXX: should be part of server_host!?
+    ssl_key = config['ssl.private_key'] # XXX: should be part of server_host!?
     app = load_app(prefix=config['server_prefix'])
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
+    if ssl_cert and ssl_key: # XXX: CherryPy takes care of this
+        server.ssl_certificate = ssl_cert
+        server.ssl_private_key = ssl_key
     try:
         logging.debug('starting cherrypy at %s:%s' % (hostname, port))
         print >> sys.stderr, "Starting CherryPy at %s:%s" % (hostname, port)
@@ -74,6 +79,9 @@ class Environator(object):
         self.application = application
 
     def __call__(self, environ, start_response):
+        protocol = environ['wsgi.url_scheme']
+        if protocol == 'https': # XXX: ugly hack!?
+            environ['tiddlyweb.config']['server_host']['scheme'] = protocol
         request_method = environ.get('REQUEST_METHOD', None)
         request_uri = environ.get('REQUEST_URI', None)
         script_name = environ.get('SCRIPT_NAME', None)

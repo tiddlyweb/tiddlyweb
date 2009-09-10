@@ -171,6 +171,8 @@ DEFAULT_CONFIG = {
             'host': '0.0.0.0',
             'port': '8080',
             },
+        'ssl.certificate': None, # TODO: document (should be absolute file path)
+        'ssl.private_key': None, # TODO: document (should be absolute file path)
         'server_prefix': '',
         'extension_types': {
             'txt': 'text/plain',
