@@ -53,8 +53,10 @@ def send_tiddlers(environ, start_response, bag):
 
 def _validate_tiddler_list(environ, bag):
     last_modified_number = _last_modified_tiddler(bag)
-    last_modified_string = http_date_from_timestamp(last_modified_number)
-    last_modified = ('Last-Modified', last_modified_string)
+    last_modified = None
+    if last_modified_number:
+        last_modified_string = http_date_from_timestamp(last_modified_number)
+        last_modified = ('Last-Modified', last_modified_string)
 
     etag_string = '"%s:%s"' % (_sha_tiddler_titles(bag),
             last_modified_number)
@@ -91,4 +93,4 @@ def _last_modified_tiddler(bag):
     try:
         return str(max(int(tiddler.modified) for tiddler in bag.gen_tiddlers()))
     except ValueError:
-        raise HTTP404('No tiddlers in container')
+        return ''
