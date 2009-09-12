@@ -5,9 +5,6 @@ coming in from the web to be tiddlers, bags or
 recipes.
 """
 
-import html5lib
-from html5lib import sanitizer
-
 
 class InvalidTiddlerError(Exception):
     """
@@ -125,6 +122,9 @@ def sanitize_html_fragment(fragment):
     Santize an html fragment, returning a copy of the fragment,
     cleaned up.
     """
+    import html5lib
+    from html5lib import sanitizer
+
     parser = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
     output = parser.parseFragment(fragment)
     return output.toxml()
