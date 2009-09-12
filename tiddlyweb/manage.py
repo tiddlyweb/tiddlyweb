@@ -8,8 +8,7 @@ import logging
 import os
 import sys
 
-from tiddlyweb.config import merge_config
-from tiddlyweb.web.serve import config
+from tiddlyweb.config import config, merge_config
 from tiddlyweb.store import Store
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
