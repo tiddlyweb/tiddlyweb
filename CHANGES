@@ -1,3 +1,9 @@
+0.9.64 Sat Sep 12 22:52:18 BST 2009
+
+  * When returning a collection of tiddlers if that set is empty,
+    return an empty set not a 404. This could break existing client code.
+  * Clean up some imports for better dependency handling.
+
 0.9.63 Wed Sep  2 23:00:38 BST 2009
 
   * Quiet Python 2.6.x deprecation warnings.
