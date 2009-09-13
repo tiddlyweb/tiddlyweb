@@ -163,7 +163,7 @@ def recipe(args):
     recipe = Recipe(recipe_name)
 
     content = sys.stdin.read()
-    _put(recipe, content, 'text')
+    _put(recipe, unicode(content, 'UTF-8'), 'text')
 
 
 @make_command()
@@ -182,7 +182,7 @@ def bag(args):
     content = sys.stdin.read()
     if not len(content):
         content = '{"policy":{}}'
-    _put(bag, content, 'json')
+    _put(bag, unicode(content, 'UTF-8'), 'json')
 
 
 @make_command()
@@ -200,7 +200,7 @@ def tiddler(args):
     tiddler.bag = bag_name
 
     content = sys.stdin.read()
-    _put(tiddler, content, 'text')
+    _put(tiddler, unicode(content, 'UTF-8'), 'text')
 
 
 @make_command()
