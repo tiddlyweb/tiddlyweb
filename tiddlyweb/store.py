@@ -2,6 +2,8 @@
 Put and Get TiddlyWeb things to and from some store.
 """
 
+from tiddlyweb.web.http import HTTP403
+
 
 class StoreMethodNotImplemented(IOError):
     """
@@ -85,6 +87,7 @@ class Store(object):
         """
         Delete a known object.
         """
+        self._check_security(thing) # XXX: not required here!?
         func = self._figure_function('delete', thing)
         return func(thing)
 
@@ -92,6 +95,7 @@ class Store(object):
         """
         Get a thing, recipe, bag or tiddler
         """
+        self._check_security(thing)
         func = self._figure_function('get', thing)
         thing = func(thing)
         thing.store = self
@@ -104,6 +108,7 @@ class Store(object):
         Should there be handling here for things of
         wrong type?
         """
+        self._check_security(thing)
         func = self._figure_function('put', thing)
         return func(thing)
 
@@ -154,3 +159,10 @@ class Store(object):
         """
         list_func = getattr(self.storage, 'search')
         return list_func(search_query)
+
+    def _check_security(self, entity): # TODO: rename? -- should be decorator!?
+        protocol = self.environ.get('wsgi.url_scheme')
+        if protocol != 'https' and entity.__class__.__name__ == 'Bag':
+            secure_bags = self.environ['tiddlyweb.config'].get('secure_bags') # XXX: rename config value!?
+            if secure_bags and entity.name in secure_bags:
+                raise HTTP403('secure connection required') # XXX: 403 inappropriate? -- TODO: auto-redirect?
