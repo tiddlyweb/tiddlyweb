@@ -73,7 +73,7 @@ def parse_for_filters(query_string):
 
             func = FILTER_PARSERS[key](argument)
             filters.append(func)
-        except(KeyError, IndexError):
+        except(KeyError, IndexError, ValueError):
             leftovers.append(string)
 
     leftovers = ';'.join(leftovers)

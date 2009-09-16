@@ -123,7 +123,7 @@ def test_get_recipe_tiddler_list_filtered_empty():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?select=title:tiddlerfoo',
             method='GET')
 
-    assert response['status'] == '404'
+    assert response['status'] == '200'
 
 def test_get_recipe_tiddler_list_bogus_filter():
     http = httplib2.Http()

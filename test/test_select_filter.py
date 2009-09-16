@@ -12,6 +12,7 @@ dates = ['200905090011', '20090509000000', '2008', '2007']
 for i, tiddler in enumerate(tiddlers):
     tiddler.tags.append(tags[i])
     tiddler.modified = dates[i]
+    tiddler.fields['index'] = str(i)
 
 def has_year(tiddler, attribute, value):
     return tiddler.modified.startswith(value)
@@ -48,3 +49,11 @@ def test_custom_select():
     assert [] == [tiddler.title for tiddler in selected_tiddlers]
     selected_tiddlers = select_by_attribute('year', '2009', tiddlers, negate=True)
     assert ['a','b'] == [tiddler.title for tiddler in selected_tiddlers]
+
+def test_sorted_field_select():
+    selected_tiddlers = select_relative_attribute('index', '2', tiddlers, greater=True)
+    assert ['b'] == [tiddler.title for tiddler in selected_tiddlers]
+
+def test_sorted_field_select_no_exist():
+    selected_tiddlers = select_relative_attribute('indix', '2', tiddlers, greater=True)
+    assert [] == [tiddler.title for tiddler in selected_tiddlers]

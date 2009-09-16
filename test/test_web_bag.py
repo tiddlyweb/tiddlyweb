@@ -183,17 +183,25 @@ def test_get_bags_unsupported_neg_format_with_accept():
 
 def test_get_bag_tiddler_list_empty():
     """
-    A request for the tiddlers in an empty bag gives a 404.
+    A request for the tiddlers in an empty bag gives a 200, empty page.
     """
 
     bag = Bag('bagempty');
     store.put(bag)
 
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.txt',
+    response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.json',
             method='GET')
 
-    assert response['status'] == '404'
+    assert response['status'] == '200'
+
+    results = simplejson.loads(content)
+    assert len(results) == 0
+
+    response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.html',
+            method='GET')
+
+    print content
 
 def test_put_bag():
     """
