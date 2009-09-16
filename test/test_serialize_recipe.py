@@ -9,7 +9,7 @@ from tiddlyweb.serializer import Serializer
 from fixtures import recipe_list
 
 expected_string = """desc: 
-policy: {"secure": false, "read": [], "create": [], "manage": [], "accept": [], "write": [], "owner": null, "delete": []}
+policy: {"read": [], "create": [], "manage": [], "accept": [], "write": [], "owner": null, "delete": []}
 
 /bags/bagone/tiddlers?select=title:TiddlerOne
 /bags/bagtwo/tiddlers?select=title:TiddlerTwo
