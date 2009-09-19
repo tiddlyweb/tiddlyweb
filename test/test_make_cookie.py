@@ -5,7 +5,7 @@ It creates the string used to put in a Set-Cookie
 header.
 """
 
-from sha import sha
+from tiddlyweb.util import sha
 
 from tiddlyweb.web.util import make_cookie
 

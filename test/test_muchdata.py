@@ -77,5 +77,5 @@ def test_filter_tiddlers_from_bag():
     bag = store.get(bag)
 
     tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=tag:tagfour'))
-    assert len(tiddlers) == 3, 'there are 3 tiddlers when filters on tagfour'
+    assert len(tiddlers) == 3
 
