@@ -1,11 +1,10 @@
 """
-The System's Configuration, to be carried
+The system's configuration, to be carried
 around in the environ as 'tiddlyweb.config'.
 
-If there is a tiddlywebconfig.py
-file in the working directory where twanager or the
-server is started, its values will override the defaults
-in this file.
+If there is a tiddlywebconfig.py file in the working directory
+where twanager or the server is started, its values will
+override these defaults.
 
 The server administrator may add additional keys
 to the config if they are useful in extensions.
@@ -24,26 +23,20 @@ twanager_plugins -- A list of Python module names that
 act as plugins for twanager, adding command line functionality.
 As with system_plugins init(config) is called.
 
-instance_tiddlers -- A list of URLs pointing to tiddlers
-on the to be imported by from_svn during the instance
-and update twanager commands.
-(This format is subject to change.)
+server_store -- A list containing a module name and a dictionary
+configuration dictionary. The module is an implementation of
+tiddlyweb.stores.StorageInterface (first looked up in the
+tiddlyweb.stores package space, then in sys.path).
+The configuration is an arbitrary dictionary of information to
+be passed to the store (e.g. database username and password).
 
-server_store -- The name of a module implementing 
-tiddlyweb.stores.StorageInterface. First the module name
-is looked up in the tiddlyweb.stores package space, if
-it is not found there, sys.path is searched. Following the
-name of the module is an arbitrary dictionary of configuration
-information that is passed to the store. This could, for
-example, include database username and password information.
-
-server_request_filters -- A list of WSGI applications 
+server_request_filters -- A list of WSGI applications
 which, in order, process the incoming requests made to the
-server. This can extract, add, or filter information as 
+server. This can extract, add, or filter information as
 necessary.
 
 server_response_filters -- A list of WSGI applications
-which, in order, process the outgoing response from the 
+which, in order, process the outgoing response from the
 server. This can transform, log, or handle exceptions as
 necessary.
 
@@ -57,30 +50,30 @@ TiddlyWeb in a subdirectory. Default is ''.
 
 extension_types -- A dictionary that pairs extension
 strings used in URLs as human controlled content-negotiation
-with the MIME types they represent. Add to this if you 
+with the MIME types they represent. Add to this if you
 add to serializers.
 
 serializers -- Incoming request Accept headers, or extension
 MIME types paired with a tiddlyweb.serializations.Serializer
-implementation and an outgoing MIME type for that type of 
+implementation and an outgoing MIME type for that type of
 serialization.
 
 extractors -- A extractor is a credential extractor (see
 tiddlyweb.web.extractors.ExtractorInterface) that looks in
 an incoming request to attempt to extract information from
-it that indicates a potential user in the system. This 
-config item is an ordered list of extractors, tried in 
+it that indicates a potential user in the system. This
+config item is an ordered list of extractors, tried in
 succession until one returns tiddlyweb.usersign information
 or there are no more left.
 
-auth_systems -- A list of challengers available to the 
+auth_systems -- A list of challengers available to the
 system when it needs to ask for a user. (See
 tiddlyweb.web.challengers.ChallengerInterface) If there
 is more than one challenger the user is presented with a
 list of those available. If there is only one, the user
 is automatically directed to just that one. A challenger
-needs to work with the extractors system so that the 
-challenger puts something in future requests that the 
+needs to work with the extractors system so that the
+challenger puts something in future requests that the
 extractor can extract.
 
 secret -- A string used to encrypt the cookie installed by
@@ -96,7 +89,7 @@ to change this.
 
 bag_create_policy -- A policy statement on who or what
 kind of user can create new bags on the system through the
-web API. ANY means any authenticated user can. ADMIN means 
+web API. ANY means any authenticated user can. ADMIN means
 any user with role ADMIN can. '' means anyone can.
 
 recipe_create_policy -- A policy statement on who or what kind
@@ -105,7 +98,7 @@ API. See bag_create_policy.
 
 log_file -- Path and filename of the TiddlyWeb log file.
 
-log_level -- String of loglevel to log. Pick one of 
+log_level -- String of loglevel to log. Pick one of
 'CRITICAL', 'DEBUG', 'ERROR', 'INFO', 'WARNING'.
 
 css_uri -- A url of a css file that can be used to style
@@ -142,7 +135,7 @@ from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, Header, HTMLPresenter, PermissionsExceptor
 
-# A dict containing the configuration of TiddlyWeb, both 
+# A dict containing the configuration of TiddlyWeb, both
 # as a server and as a library. This dictionary can contain
 # anything. If there is a file called tiddlywebconfig.py in
 # the startup working directory of twanager or other tiddlyweb
@@ -150,7 +143,6 @@ from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, Header, HTMLPres
 DEFAULT_CONFIG = {
         'system_plugins': [],
         'twanager_plugins': [],
-        'instance_tiddlers': [ ],
         'server_store': ['text', {'store_root': 'store'}],
         'server_request_filters': [
             Query,
@@ -246,7 +238,7 @@ try:
         current_command = ''
         current_sub_command = ''
     # there's tiddlywebconfig.py here and it says log level is high, so log
-    if config['log_level'] != 'INFO': 
+    if config['log_level'] != 'INFO':
         raise IndexError
     # we're running the server so we want to log
     if 'twanager' in current_command and current_sub_command == 'server':
