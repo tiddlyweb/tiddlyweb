@@ -1,3 +1,8 @@
+0.9.65 Sat Sep 19 14:10:48 EDT 2009
+
+  * Remove the included cherrypy wsgiserver.
+  * Fix bugs in select filters.
+
 0.9.64 Sat Sep 12 22:52:18 BST 2009
 
   * When returning a collection of tiddlers if that set is empty,
