@@ -44,7 +44,7 @@ def info(args):
     print """This is TiddlyWeb version %s.
 The current store is: %s.""" % (VERSION, config['server_store'][0])
     if config['system_plugins']:
-        print "System Plugins:"
+        print 'System Plugins:'
         for plugin in config['system_plugins']:
             module = __import__(plugin)
             print '\t%s (%s)' % (plugin, getattr(module, '__version__', 'unknown')) 
@@ -58,8 +58,8 @@ def server(args):
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print >> sys.stderr, "you must include both a hostname or ip number and a " \
-                "port if using arguments: %s" % exc
+            print >> sys.stderr, 'you must include both a hostname or ip number and a ' \
+                'port if using arguments: %s' % exc
             usage()
         else:
             pass
@@ -81,7 +81,7 @@ def userpass(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must provide a user and a password: %s" % exc
+        print >> sys.stderr, 'you must provide a user and a password: %s' % exc
         usage()
 
     try:
@@ -104,7 +104,7 @@ def addrole(args):
         username = args.pop(0)
         roles = args[0:]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must provide a user and at least one role: %s" % exc
+        print >> sys.stderr, 'you must provide a user and at least one role: %s' % exc
         usage()
 
     try:
@@ -127,7 +127,7 @@ def adduser(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must include at least a username and password: %s" % exc
+        print >> sys.stderr, 'you must include at least a username and password: %s' % exc
         usage()
 
     try:
@@ -155,7 +155,7 @@ def recipe(args):
     try:
         recipe_name = args[0]
     except IndexError, exc:
-        print >> sys.stderr, "you must include a recipe name: %s" % exc
+        print >> sys.stderr, 'you must include a recipe name: %s' % exc
         usage()
 
     from tiddlyweb.model.recipe import Recipe
@@ -172,7 +172,7 @@ def bag(args):
     try:
         bag_name = args[0]
     except IndexError, exc:
-        print >> sys.stderr, "you must include a bag name: %s" % exc
+        print >> sys.stderr, 'you must include a bag name: %s' % exc
         usage()
 
     from tiddlyweb.model.bag import Bag
@@ -191,7 +191,7 @@ def tiddler(args):
     try:
         tiddler_name, bag_name = args[0:3]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, "you must include a tiddler and bag name: %s" % exc
+        print >> sys.stderr, 'you must include a tiddler and bag name: %s' % exc
         usage()
 
     from tiddlyweb.model.tiddler import Tiddler
@@ -207,7 +207,7 @@ def tiddler(args):
 def usage(*args):
     """List this help"""
     for key in sorted(COMMANDS):
-        print >> sys.stderr, "%10s: %s" % (key, COMMANDS[key].description)
+        print >> sys.stderr, '%10s: %s' % (key, COMMANDS[key].description)
     sys.exit(1)
 
 
@@ -249,10 +249,10 @@ def handle(args):
             logging.debug('running command %s with %s' % (candidate_command, args))
             COMMANDS[candidate_command](args)
         except IndexError, exc:
-            print >> sys.stderr, "Incorect number of arguments: %s" % exc
+            print >> sys.stderr, 'Incorect number of arguments: %s' % exc
             usage()
         except IOError, exc:
-            print >> sys.stderr, "IOError: %s" % exc
+            print >> sys.stderr, 'IOError: %s' % exc
             usage()
     else:
         usage(args)
