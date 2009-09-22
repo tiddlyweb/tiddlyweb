@@ -142,7 +142,6 @@ def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, normalize_value)
 
-    print attribute
     if greater:
         return (tiddler for tiddler in tiddlers if
                 func(getattr(tiddler, attribute, tiddler.fields.get(attribute, None))) > func(value))
