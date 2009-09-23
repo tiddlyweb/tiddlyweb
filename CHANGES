@@ -1,3 +1,7 @@
+0.9.66 Tue Sep 22 21:50:08 EDT 2009
+
+  * Correct output under mod_wsgi when using filters.
+
 0.9.65 Sat Sep 19 14:10:48 EDT 2009
 
   * Remove the included cherrypy wsgiserver.
