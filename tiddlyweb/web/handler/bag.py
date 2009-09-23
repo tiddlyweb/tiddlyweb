@@ -163,6 +163,8 @@ def put(environ, start_response):
 
         _validate_bag(environ, bag)
         store.put(bag)
+    except TypeError:
+        raise HTTP400('Content-type header required')
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % serialize_type)
 

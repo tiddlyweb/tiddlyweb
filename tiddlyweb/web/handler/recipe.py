@@ -171,6 +171,8 @@ def put(environ, start_response):
 
         _validate_recipe(environ, recipe)
         store.put(recipe)
+    except TypeError:
+        raise HTTP400('Content-type header required')
     except NoSerializationError:
         raise HTTP415('Content type %s not supported' % serialize_type)
 
