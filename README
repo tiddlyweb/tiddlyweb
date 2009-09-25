@@ -2,6 +2,8 @@
 TiddlyWeb Home Site: http://tiddlyweb.peermore.com/
 See also: http://tiddlywiki.org/wiki/TiddlyWeb
 
+For installation instructions see http://tiddlyweb.peermore.com/
+
 TiddlyWeb, aka mo'ass, is a RESTful data store which forms the core
 of a reference implementation of an ideal server side implementation
 for TiddlyWiki. It attempts to provide a tested, documented, and clear
@@ -28,13 +30,13 @@ of the tiddler: a small chunk of data used to build up a greater whole.
 
 REQUIREMENTS:
 
-* Python 2.4 or 2.5 (or beyond. Python 3 has not been tested.)
+* Python 2.4, 2.5 or 2.6. (Python 3 has not yet been tested.)
 * selector: http://lukearno.com/projects/selector/
 * simplejson: http://undefined.org/python/#simplejson
 * html5lib (for sanitizing input which may be rendered as HTML):
   http://code.google.com/p/html5lib/
 
-If wish to use TiddlyWeb as a server-side for TiddlyWiki to generate
+If you wish to use TiddlyWeb as a server-side for TiddlyWiki to generate
 a multi-user TiddlyWiki system, you will also need:
 
 * tiddlywebwiki (a Python package containing the necessary TiddlyWeb
