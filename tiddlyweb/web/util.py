@@ -146,7 +146,7 @@ def escape_attribute_value(text):
     This assumes values are enclosed in double quotes (key="value").
     """
     try:
-        return text.replace('"', r'\"')
+        return text.replace('"', '&quot;')
     except AttributeError: # value might be None
         return text
 

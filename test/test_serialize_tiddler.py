@@ -104,10 +104,10 @@ def test_html_attribute_escape():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    assert r'''title="escape \"double\" quotes in tiddler field values"''' in string
-    assert r'''modifier="Chris \"sensei\" Dent"''' in string
-    assert r'''tags="foo [[xxx \"yyy\" zzz]]"''' in string
-    assert r'''custom="lorem 'ipsum' dolor \"sit\" amet"''' in string
+    assert r'''title="escape &quot;double&quot; quotes in tiddler field values"''' in string
+    assert r'''modifier="Chris &quot;sensei&quot; Dent"''' in string
+    assert r'''tags="foo [[xxx &quot;yyy&quot; zzz]]"''' in string
+    assert r'''custom="lorem 'ipsum' dolor &quot;sit&quot; amet"''' in string
 
 def test_tiddler_json_base64():
     serializer = Serializer('json')
