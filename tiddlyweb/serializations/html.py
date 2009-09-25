@@ -45,7 +45,7 @@ class Serialization(SerializationInterface):
         lines = []
         output = '<ul id="bags" class="listing">\n'
         for bag in bags:
-            line = '<li><a href="bags/%s">%s</a></li>' % (
+            line = '<li><a href="bags/%s/tiddlers">%s</a></li>' % (
                     encode_name(bag.name), bag.name)
             lines.append(line)
         output += "\n".join(lines)
@@ -59,6 +59,7 @@ class Serialization(SerializationInterface):
         lines = []
         title = 'Tiddlers'
         representation_link = ''
+        bag_link = ''
         for tiddler in bag.gen_tiddlers():
             base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
@@ -73,15 +74,26 @@ class Serialization(SerializationInterface):
         if bag.searchbag:
             title = 'Found Tiddlers'
 
+        try:
+            routing_args = self.environ.get('wsgiorg.routing_args')[1]
+        except (TypeError, IndexError, KeyError):
+            routing_args = {}
+
+        if 'bag_name' in routing_args and not 'tiddler_name' in routing_args:
+            bag_name = routing_args['bag_name']
+            bag_link = '<div class="baglink"><a href="%s/bags/%s">Bag %s</a></div>' % (
+                    self._server_prefix(), encode_name(bag_name), bag_name)
+
         output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
 
         return """
 %s
+%s
 <ul id="tiddlers" class="listing">
 %s
 </ul>
-""" % (self._tiddler_list_header(representation_link), output)
+""" % (self._tiddler_list_header(representation_link), bag_link, output)
 
     def recipe_as(self, recipe):
         """
