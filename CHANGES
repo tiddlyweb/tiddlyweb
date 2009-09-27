@@ -1,3 +1,9 @@
+0.9.67 Sun Sep 27 16:44:51 BST 2009
+
+  * Improved tiddlyweb.config docs.
+  * Better bag navigability in the face of strict polices.
+  * Better errors when no content-type provided with PUT.
+
 0.9.66 Tue Sep 22 21:50:08 EDT 2009
 
   * Correct output under mod_wsgi when using filters.
