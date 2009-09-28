@@ -121,7 +121,7 @@ class Store(StorageInterface):
         if not (hasattr(bag, 'skinny') and bag.skinny):
             try:
                 tiddlers = self._files_in_dir(tiddlers_dir)
-            except OSError, exc:
+            except (IOError, OSError), exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
             bag.add_tiddlers(Tiddler(urllib.unquote(title).decode('utf-8')) for title in tiddlers)
 
