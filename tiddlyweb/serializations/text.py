@@ -123,11 +123,11 @@ class Serialization(SerializationInterface):
         Transform a text representation of a tiddler into
         tiddler attributes.
         """
-        header, text = input_string.split('\n\n', 1)
-        tiddler.text = text.rstrip()
-        headers = header.split('\n')
-
         try:
+            header, text = input_string.split('\n\n', 1)
+            tiddler.text = text.rstrip()
+            headers = header.split('\n')
+
             for field, value in [x.split(': ', 1) for x in headers]:
                 if value == '':
                     continue
