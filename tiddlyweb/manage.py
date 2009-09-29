@@ -187,9 +187,9 @@ def bag(args):
 
 @make_command()
 def tiddler(args):
-    """Import a single tiddler into an existing bag from stdin: <tiddler> <bag>"""
+    """Import a single tiddler into an existing bag from stdin: <bag> <tiddler>"""
     try:
-        tiddler_name, bag_name = args[0:3]
+        bag_name, tiddler_name = args[0:3]
     except (IndexError, ValueError), exc:
         print >> sys.stderr, 'you must include a tiddler and bag name: %s' % exc
         usage()

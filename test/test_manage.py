@@ -108,7 +108,7 @@ def test_recipe():
 
 def test_tiddler():
     set_stdin(TIDDLER_STRING)
-    handle(['', 'tiddler', 'tiddler1', 'bag1'])
+    handle(['', 'tiddler', 'bag1', 'tiddler1'])
 
     the_tiddler = Tiddler('tiddler1', 'bag1')
     the_tiddler = store.get(the_tiddler)
