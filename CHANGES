@@ -1,3 +1,10 @@
+0.9.68 Thu Oct  1 10:42:40 BST 2009
+
+  * Change ordering on twanager tiddler command. Bag now comes first.
+  * When using merge_config, reread the local tiddlywebconfig to preserve
+    overrides.
+  * Add lusers, lbags, lrecipes, ltiddlers twanager commands.
+
 0.9.67 Sun Sep 27 16:44:51 BST 2009
 
   * Improved tiddlyweb.config docs.
