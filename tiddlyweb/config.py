@@ -220,10 +220,11 @@ def read_config():
     What is expected in the override file is a dict with the
     name config.
     """
-    from tiddlywebconfig import config as custom_config
-    global config
-    config = DEFAULT_CONFIG
-    merge_config(config, custom_config, reconfig=False)
+    if os.path.exists('tiddlywebconfig.py'):
+        from tiddlywebconfig import config as custom_config
+        global config
+        config = DEFAULT_CONFIG
+        merge_config(config, custom_config, reconfig=False)
 
 
 if os.path.exists('tiddlywebconfig.py'):
