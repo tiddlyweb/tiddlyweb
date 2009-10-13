@@ -101,9 +101,8 @@ def get_tiddlers_from_bag(bag):
     Return the list of tiddlers that are in a bag.
     """
 
-    tiddlers = bag.gen_tiddlers()
     if bag.store:
-        for tiddler in tiddlers:
+        for tiddler in bag.gen_tiddlers():
             try:
                 tiddler = bag.store.get(tiddler)
             except TiddlerFormatError:
