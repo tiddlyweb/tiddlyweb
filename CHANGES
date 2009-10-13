@@ -1,3 +1,8 @@
+0.9.69 Tue Oct 13 11:39:34 BST 2009
+
+  * Performance fixes in JSON serialization.
+  * Fix bug where a lack of tiddlywebconfig.py would cause an exit.
+
 0.9.68 Thu Oct  1 10:42:40 BST 2009
 
   * Change ordering on twanager tiddler command. Bag now comes first.
