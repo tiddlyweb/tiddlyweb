@@ -6,10 +6,7 @@ this the best it can be.
 
 import os
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 from tiddlyweb import __version__ as VERSION
 
@@ -19,11 +16,10 @@ setup(name = 'tiddlyweb',
         long_description=file(os.path.join(os.path.dirname(__file__), 'README')).read(),
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
-        url = 'http://tiddlyweb.com/',
-        download_url = 'http://tiddlyweb.peermore.com/dist/',
+        url = 'http://pypi.python.org/pypi/tiddlyweb',
         packages = ['tiddlyweb', 'tiddlyweb.filters', 'tiddlyweb.model', 'tiddlyweb.wikitext', 'tiddlyweb.serializations', 'tiddlyweb.stores', 'tiddlyweb.web', 'tiddlyweb.web.challengers', 'tiddlyweb.web.extractors', 'tiddlyweb.web.handler', ],
         scripts = ['twanager',],
         platforms = 'Posix; MacOS X; Windows',
-        install_requires = ['selector', 'simplejson', 'html5lib', 'cherrypy'],
+        install_requires = ['setuptools', 'selector', 'simplejson', 'html5lib', 'cherrypy'],
         include_package_data = True,
         )
