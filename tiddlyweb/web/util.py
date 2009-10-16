@@ -79,6 +79,8 @@ def datetime_from_http_date(http_datestring):
     Turn an HTTP formatted date into a datetime
     object.
     """
+    if ';' in http_datestring:
+        http_datestring = http_datestring.split(';', 1)[0].rstrip().lstrip()
     http_datetime = datetime(*(time.strptime(http_datestring,
         '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime

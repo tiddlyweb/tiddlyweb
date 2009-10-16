@@ -88,3 +88,14 @@ def test_datetime_from_http_date():
     assert 'May' in datestring
     assert new_timestamp == timestamp
 
+def test_datetime_from_http_date_semi():
+    """
+    IE likes to send a length attribute with the http date on an If-Modified-Since.
+    """
+    timestamp = '200805231010'
+    datestring = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
+    datestring = datestring + "; length=443333"
+    datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
+    new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
+    assert new_timestamp == timestamp
+
