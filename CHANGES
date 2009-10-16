@@ -1,3 +1,8 @@
+0.9.70 Fri Oct 16 13:53:47 BST 2009
+
+  * Fix If-Modified-Since handling for IE.
+  * Add long-description to setup.py
+
 0.9.69 Tue Oct 13 11:39:34 BST 2009
 
   * Performance fixes in JSON serialization.
