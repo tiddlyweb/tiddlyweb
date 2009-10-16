@@ -4,6 +4,8 @@ Seem to be missing some details on how to make
 this the best it can be.
 """
 
+import os
+
 try:
     from setuptools import setup
 except ImportError:
@@ -14,6 +16,7 @@ from tiddlyweb import __version__ as VERSION
 setup(name = 'tiddlyweb',
         version = VERSION,
         description = 'An optionally headless, extensible RESTful datastore for tiddlers: bits of stuff.',
+        long_description=file(os.path.join(os.path.dirname(__file__), 'README')).read(),
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://tiddlyweb.com/',
