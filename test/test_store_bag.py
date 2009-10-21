@@ -50,7 +50,7 @@ def test_simple_get():
 
     print bag.list_tiddlers()
     assert bag.list_tiddlers()[0].title == tiddler.title
-    assert bag.list_tiddlers()[0].text == None
+    assert bag.list_tiddlers()[0].text == ''
     assert bag.list_tiddlers()[0].tags == []
     assert bag.policy.read == bagone.policy.read
     assert bag.policy.write == bagone.policy.write

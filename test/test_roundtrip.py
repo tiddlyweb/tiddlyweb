@@ -82,7 +82,7 @@ def test_tiddler_unique_by_bags():
     tiddler_two = Tiddler('testbag')
     tiddler_two.bag = 'bag2'
 
-    assert tiddler_one.text == tiddler_two.text == None, \
+    assert tiddler_one.text == tiddler_two.text == '', \
             'empty tiddlers have equally empty content'
 
     tiddler_one = store.get(tiddler_one)

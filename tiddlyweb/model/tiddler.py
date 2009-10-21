@@ -101,7 +101,7 @@ class Tiddler(object):
         self.modifier = None
         self.tags = []
         self.fields = {}
-        self.text = None
+        self.text = ''
         self.type = None
         self.revision = 0
         self.recipe = None
