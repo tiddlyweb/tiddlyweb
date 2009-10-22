@@ -178,7 +178,7 @@ def recipe_url(environ, recipe):
 
 def bag_url(environ, bag):
     """
-    Construct a URL for a recipe.
+    Construct a URL for a bag.
     """
     return '%s/bags/%s' % (server_base_url(environ),
             encode_name(bag.name))
