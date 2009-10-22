@@ -1,3 +1,9 @@
+0.9.71 Thu Oct 22 18:16:05 BST 2009
+
+  * Correct ETag handling when creating new tiddlers in stores
+    that do not support revisions.
+  * Make default tiddler.text value be the empty string rather than None.
+
 0.9.70 Fri Oct 16 13:53:47 BST 2009
 
   * Fix If-Modified-Since handling for IE.
