@@ -32,7 +32,7 @@ class Bag(object):
         self.policy = Policy() # set to default policy
         self.tmpbag = tmpbag
         self.revbag = revbag
-        self.tiddlers = []
+        self._tiddlers = []
         self.searchbag = searchbag
         self.store = None
 
@@ -53,7 +53,7 @@ class Bag(object):
         a tiddler of the same name in the bag.
         """
         tiddler = self._tiddler_copy(tiddler)
-        self.tiddlers.append(tiddler)
+        self._tiddlers.append(tiddler)
 
     def add_tiddlers(self, tiddlers):
         """
@@ -68,11 +68,11 @@ class Bag(object):
         Make a generator of all the tiddlers in the bag, 
         in the order they were added.
         """
-        return (tiddler for tiddler in self.tiddlers)
+        return (tiddler for tiddler in self._tiddlers)
 
     def list_tiddlers(self):
         """
         List all the tiddlers in the bag, in the order
         they were added.
         """
-        return self.tiddlers
+        return self._tiddlers
