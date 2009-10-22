@@ -238,6 +238,12 @@ def _put_tiddler(environ, start_response, tiddler):
             try:
                 revision = store.list_tiddler_revisions(tiddler)[0]
             except StoreMethodNotImplemented:
+                # If list_tiddler_revisions is not implemented
+                # we still need to check if the tiddler exists.
+                # If it doesn't NoTiddlerError gets raised and 
+                # the except block below is run.
+                test_tiddler = Tiddler(tiddler.title, tiddler.bag)
+                store.get(test_tiddler)
                 revision = 1
             tiddler.revision = revision
             # These both next will raise exceptions if
@@ -246,6 +252,7 @@ def _put_tiddler(environ, start_response, tiddler):
             _validate_tiddler_headers(environ, tiddler)
         except NoTiddlerError:
             _check_bag_constraint(environ, bag, 'create')
+            tiddler.revision = 0
             incoming_etag = environ.get('HTTP_IF_MATCH', None)
             if incoming_etag and not incoming_etag == _new_tiddler_etag(tiddler):
                 raise HTTP412('Etag incorrect for new tiddler')
