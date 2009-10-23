@@ -1,3 +1,7 @@
+0.9.72 Sat Oct 24 00:33:19 BST 2009
+
+  * Better handling of blank values of CGI paramters.
+
 0.9.71 Thu Oct 22 18:16:05 BST 2009
 
   * Correct ETag handling when creating new tiddlers in stores
