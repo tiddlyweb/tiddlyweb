@@ -34,10 +34,10 @@ class Query(object):
                 content_type.startswith('application/x-www-form-urlencoded'):
             length = environ['CONTENT_LENGTH']
             content = environ['wsgi.input'].read(int(length))
-            posted_data = cgi.parse_qs(content)
+            posted_data = cgi.parse_qs(content, keep_blank_values=True)
             self._update_query(environ, posted_data)
         filters, leftovers = parse_for_filters(environ.get('QUERY_STRING', ''))
-        query_data = cgi.parse_qs(leftovers)
+        query_data = cgi.parse_qs(leftovers, keep_blank_values=True)
         self._update_query(environ, query_data)
         environ['tiddlyweb.filters'] = filters
 
