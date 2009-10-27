@@ -22,6 +22,15 @@ def test_parsing():
     assert len(filters) == 5
     assert leftovers == 'slag=absolute;foo=;fat=1'
 
+    text_filters = []
+    for filter, text in filters:
+        text_filters.append(text)
+    assert len(text_filters) == 5
+    assert text_filters[0][1] == 'tag:systemConfig'
+    assert text_filters[1][1] == 'tag:blog'
+    assert text_filters[2][1] == '-modified'
+    assert text_filters[3][1] == '0,10'
+
     tiddlers = [Tiddler('a'), Tiddler('monkey')]
     tiddlers[1].tags = ['systemConfig', 'blog']
     tiddlers = list(recursive_filter(filters, tiddlers))

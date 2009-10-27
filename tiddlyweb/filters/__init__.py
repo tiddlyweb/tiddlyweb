@@ -72,7 +72,7 @@ def parse_for_filters(query_string):
                 argument = value[0]
 
             func = FILTER_PARSERS[key](argument)
-            filters.append(func)
+            filters.append((func, (key, argument)))
         except(KeyError, IndexError, ValueError):
             leftovers.append(string)
 
@@ -92,6 +92,10 @@ def recursive_filter(filters, tiddlers):
     if len(filters) == 0:
         return (tiddler for tiddler in tiddlers)
     filter = filters.pop(0)
+    try:
+        filter, args = filter
+    except ValueError:
+        pass
     try:
         return recursive_filter(filters, filter(tiddlers))
     except AttributeError, exc:
