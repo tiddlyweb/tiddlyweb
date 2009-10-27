@@ -6,7 +6,6 @@ produced by a recipe.
 
 import urllib
 
-from tiddlyweb.filters import FilterError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import \
@@ -78,18 +77,11 @@ def get_tiddlers(environ, start_response):
     # get the tiddlers from the recipe and uniquify them
     try:
         tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
-        tmp_bag = Bag('tmp_bag1', tmpbag=True)
-        tmp_bag.add_tiddlers(tiddlers)
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
-    # then filter those tiddlers
-    try:
-        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
-    except FilterError, exc:
-        raise HTTP400('malformed filter: %s' % exc)
-    tmp_bag = Bag('tmp_bag2', tmpbag=True)
+    tmp_bag = Bag('tmp_bag1', tmpbag=True)
 
     # Make an optimization so we are not going
     # to the database to load the policies of

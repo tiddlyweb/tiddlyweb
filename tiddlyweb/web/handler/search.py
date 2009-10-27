@@ -41,8 +41,6 @@ def get(environ, start_response):
     on the search implementation (if any) in the
     chosen store.
     """
-
-    filters = environ['tiddlyweb.filters']
     store = environ['tiddlyweb.store']
 
     tiddlers = get_tiddlers(environ)
@@ -66,10 +64,5 @@ def get(environ, start_response):
                 bag_readable[tiddler.bag] = True
             except(ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
-
-    if len(filters):
-        tiddlers = control.filter_tiddlers_from_bag(tmp_bag, filters)
-        tmp_bag = Bag('tmp_bag', tmpbag=True, searchbag=True)
-        tmp_bag.add_tiddlers(tiddlers)
 
     return send_tiddlers(environ, start_response, tmp_bag)

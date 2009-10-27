@@ -4,11 +4,14 @@ to the web, including sending those tiddlers and
 validating cache headers for list of tiddlers.
 """
 
+from tiddlyweb import control
+from tiddlyweb.filters import FilterError
+from tiddlyweb.model.bag import Bag
 from tiddlyweb.serializer import Serializer, NoSerializationError
+from tiddlyweb.util import sha
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
-from tiddlyweb.web.http import HTTP404, HTTP304, HTTP415
-from tiddlyweb.util import sha
+from tiddlyweb.web.http import HTTP400, HTTP404, HTTP304, HTTP415
 
 
 def send_tiddlers(environ, start_response, bag):
@@ -20,10 +23,20 @@ def send_tiddlers(environ, start_response, bag):
     last_modified = None
     etag = None
     download = environ['tiddlyweb.query'].get('download', [None])[0]
+    filters = environ['tiddlyweb.filters']
+
+    try:
+        tiddlers = control.filter_tiddlers_from_bag(bag, filters)
+    except FilterError, exc:
+        raise HTTP400('malformed filter: %s' % exc)
+    # We need to inherit revbag and searchbag setting from the provided bag.
+    tmp_bag = Bag('tmp_bag', tmpbag=True, revbag=bag.revbag,
+            searchbag=bag.searchbag)
+    tmp_bag.add_tiddlers(tiddlers)
 
     # If there are no tiddlers in the bag, validation will
     # raise 404. If incoming Etag is acceptable, will raise 304.
-    last_modified, etag = _validate_tiddler_list(environ, bag)
+    last_modified, etag = _validate_tiddler_list(environ, tmp_bag)
 
     serialize_type, mime_type = get_serialize_type(environ)
 
@@ -39,10 +52,9 @@ def send_tiddlers(environ, start_response, bag):
     if etag:
         response.append(etag)
 
-
     serializer = Serializer(serialize_type, environ)
     try:
-        output = serializer.list_tiddlers(bag)
+        output = serializer.list_tiddlers(tmp_bag)
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s:%s, %s' %
                 (serialize_type, mime_type, exc))
