@@ -201,8 +201,6 @@ def test_get_bag_tiddler_list_empty():
     response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.html',
             method='GET')
 
-    print content
-
 def test_put_bag():
     """
     PUT a new bag to the server.
