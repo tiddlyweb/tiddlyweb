@@ -162,22 +162,29 @@ OpenID: <input name="openid" size="60" />
                     environ, start_response, redirect,
                     message='Unable to talk to opendid server: %s' % exc)
 
-        parser = html5lib.HTMLParser(
-                tree=treebuilders.getTreeBuilder('beautifulsoup'))
-        soup = parser.parse(htmlpage)
+        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder('dom'))
+        dom = parser.parse(htmlpage)
 
-        try:
-            link = soup.find('link', rel='openid.server')['href']
-        except TypeError:
+        # Save aside the original open id, in case we'll be doing a
+        # delegation.
+        original_openid = openid
+
+        # XXX This next bit of complexity brought to you by the letters
+        # D, O and M.
+        links = dom.getElementsByTagName('link')
+        link = None
+        for candidate_link in links:
+            attributes = candidate_link.attributes
+            if attributes.has_key('rel') and \
+                    attributes.getNamedItem('rel').value == 'openid.server':
+                link = attributes.getNamedItem('href').value
+            if attributes.has_key('rel') and \
+                    attributes.getNamedItem('rel').value == 'openid.delegate':
+                openid = attributes.getNamedItem('href').value
+        if not link:
             return self._send_openid_form(
                     environ, start_response, redirect,
                     message='Unable to find openid server')
-
-        original_openid = openid
-        try:
-            openid = soup.find('link', rel='openid.delegate')['href']
-        except TypeError:
-            pass
 
         request_uri = ('%s?openid.mode=checkid_setup&openid.identity=%s'
                 '&openid.return_to=%s' % (link, urllib.quote(openid, safe=''),
