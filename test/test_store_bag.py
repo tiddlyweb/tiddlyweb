@@ -48,7 +48,6 @@ def test_simple_get():
     bag = Bag(name='bagone')
     bag = store.get(bag)
 
-    print bag.list_tiddlers()
     assert bag.list_tiddlers()[0].title == tiddler.title
     assert bag.list_tiddlers()[0].text == ''
     assert bag.list_tiddlers()[0].tags == []
