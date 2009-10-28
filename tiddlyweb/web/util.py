@@ -85,6 +85,7 @@ def datetime_from_http_date(http_datestring):
         '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
     return http_datetime
 
+
 def make_cookie(name, value, mac_key=None, path=None, expires=None):
     cookie = Cookie.SimpleCookie()
 

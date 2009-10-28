@@ -56,7 +56,8 @@ class User(object):
         """
         if self._password is None:
             return False
-        crypted_thing = sha(candidate_password.strip().encode('utf-8')).hexdigest()
+        crypted_thing = sha(candidate_password.strip().encode(
+            'utf-8')).hexdigest()
         return crypted_thing == self._password
 
     def __repr__(self):

@@ -31,6 +31,7 @@ class Negotiate(object):
         else:
             _figure_type_for_other(environ)
 
+
 def _figure_type_for_other(environ):
     """
     Determine the type for PUT and POST
@@ -42,6 +43,7 @@ def _figure_type_for_other(environ):
         logging.debug('negotiating for content-type %s', content_type)
         content_type = content_type.split(';')[0]
         environ['tiddlyweb.type'] = content_type
+
 
 def _figure_type_for_get(environ):
     """
@@ -76,6 +78,7 @@ def _figure_type_for_get(environ):
     environ['tiddlyweb.type'] = our_types
 
     return
+
 
 def _parse_accept_header(header):
     """

@@ -4,6 +4,7 @@ but instead wraps it in pre tags.
 """
 from tiddlyweb.web.util import html_encode
 
+
 def render(tiddler, environ):
     """
     Wrap html encoded wikitext with pre tags.

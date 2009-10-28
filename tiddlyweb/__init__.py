@@ -26,7 +26,7 @@ extensibility.
 The primary resources presented by the server are Recipes,
 Bags and Tiddlers. See the tiddlyweb.model package.
 
-TiddlyWeb includes twanager, a command line tool for 
+TiddlyWeb includes twanager, a command line tool for
 doing a variety of TiddlyWeb activities. Run twanager
 without arguments for a list of commands.
 """

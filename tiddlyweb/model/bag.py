@@ -63,7 +63,7 @@ class Bag(object):
 
     def gen_tiddlers(self):
         """
-        Make a generator of all the tiddlers in the bag, 
+        Make a generator of all the tiddlers in the bag,
         in the order they were added.
         """
         return (tiddler for tiddler in self._tiddlers)

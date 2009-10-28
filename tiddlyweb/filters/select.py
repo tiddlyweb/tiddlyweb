@@ -129,11 +129,13 @@ def select_by_attribute(attribute, value, tiddlers, negate=False):
                 select(tiddler, attribute, value))
 
 
-def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=False):
+def select_relative_attribute(attribute, value, tiddlers,
+        greater=False, lesser=False):
     """
     Select tiddlers that sort greater or less than the provided value
     for the provided attribute.
     """
+
     def normalize_value(value):
         try:
             return value.lower()
@@ -144,9 +146,11 @@ def select_relative_attribute(attribute, value, tiddlers, greater=False, lesser=
 
     if greater:
         return (tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute, tiddler.fields.get(attribute, None))) > func(value))
+                func(getattr(tiddler, attribute, tiddler.fields.get(
+                    attribute, None))) > func(value))
     elif lesser:
         return (tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute, tiddler.fields.get(attribute, None))) < func(value))
+                func(getattr(tiddler, attribute, tiddler.fields.get(
+                    attribute, None))) < func(value))
     else:
         return (tiddler for tiddler in tiddlers)

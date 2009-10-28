@@ -129,7 +129,7 @@ def list_recipes(environ, start_response):
         output = serializer.list_recipes(kept_recipes)
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
-    
+
     return [output]
 
 
@@ -172,6 +172,7 @@ def put(environ, start_response):
             [('Location', web.recipe_url(environ, recipe))])
 
     return []
+
 
 def _validate_recipe(environ, recipe):
     """

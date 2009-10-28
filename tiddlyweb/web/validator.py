@@ -35,7 +35,7 @@ class InvalidRecipeError(Exception):
 
 def sanitize_desc(entity, environ):
     """
-    Strip any bad HTML which may be present in a 
+    Strip any bad HTML which may be present in a
     bag or recipe description.
     """
     desc = entity.desc

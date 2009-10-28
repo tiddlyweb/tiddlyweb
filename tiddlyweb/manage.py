@@ -47,7 +47,8 @@ The current store is: %s.""" % (VERSION, config['server_store'][0])
         print 'System Plugins:'
         for plugin in config['system_plugins']:
             module = __import__(plugin)
-            print '\t%s (%s)' % (plugin, getattr(module, '__version__', 'unknown')) 
+            print '\t%s (%s)' % (plugin,
+                    getattr(module, '__version__', 'unknown'))
 
 
 @make_command()

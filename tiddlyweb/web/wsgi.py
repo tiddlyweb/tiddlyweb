@@ -99,9 +99,8 @@ class HTMLPresenter(object):
 </html>
 """ % (footer_extra, VERSION, environ['tiddlyweb.usersign']['name'])
 
-    # XXX: to make these stackable this can't just
+    # XXX: to make these stackable this shouldn't just
     # be a method, we need some kind of registry.
-
     def header_extra(self, environ):
         """
         Override this in plugins to add to the header.
@@ -174,14 +173,16 @@ class SimpleLog(object):
 
 class StoreSet(object):
     """
-    WSGI Middleware that sets our choice of Store (tiddlyweb.store) in the environment.
+    WSGI Middleware that sets our choice of Store (tiddlyweb.store)
+    in the environment.
     """
 
     def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
-        database = Store(environ['tiddlyweb.config']['server_store'][0], environ)
+        database = Store(environ['tiddlyweb.config']['server_store'][0],
+                environ)
         environ['tiddlyweb.store'] = database
         return self.application(environ, start_response)
 
@@ -196,9 +197,10 @@ class EncodeUTF8(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        return [_encoder(output) for output in self.application(environ, start_response)]
+        return [_encoder(output) for output in
+                self.application(environ, start_response)]
 
-    
+
 def _encoder(string):
     """
     Take a potentially unicode string and encode it
@@ -249,4 +251,5 @@ class PermissionsExceptor(object):
         if query_string:
             redirect += '?%s' % query_string
         redirect = urllib.quote(redirect, safe='')
-        return '%s/challenge?tiddlyweb_redirect=%s' % (server_base_url(environ), redirect)
+        return '%s/challenge?tiddlyweb_redirect=%s' % (
+                server_base_url(environ), redirect)

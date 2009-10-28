@@ -61,7 +61,8 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
         # the store. If there's not, then we can just use the list that is
         # already in the bag, saving a bit of time.
         if filter_string:
-            for candidate_tiddler in filter_tiddlers_from_bag(bag, filter_string):
+            for candidate_tiddler in filter_tiddlers_from_bag(bag,
+                    filter_string):
                 if tiddler.title == candidate_tiddler.title:
                     return bag
         else:
@@ -87,7 +88,8 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
         # ignore the bag and make a new bag
         tmpbag = Bag(filter_string, tmpbag=True)
         tmpbag.add_tiddler(tiddler)
-        for candidate_tiddler in filter_tiddlers_from_bag(tmpbag, filter_string):
+        for candidate_tiddler in filter_tiddlers_from_bag(tmpbag,
+                filter_string):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
                     bag = Bag(name=bag)

@@ -41,6 +41,7 @@ class Query(object):
         _update_tiddlyweb_query(environ, query_data)
         environ['tiddlyweb.filters'] = filters
 
+
 def _update_tiddlyweb_query(environ, data):
     environ['tiddlyweb.query'].update(dict(
         [(unicode(key, 'UTF-8'), [unicode(value, 'UTF-8') for value in values])

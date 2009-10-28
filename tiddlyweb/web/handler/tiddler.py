@@ -226,7 +226,8 @@ def _put_tiddler(environ, start_response, tiddler):
         length = environ['CONTENT_LENGTH']
         content_type = environ['tiddlyweb.type']
     except KeyError:
-        raise HTTP400('Content-Length and content-type required to put tiddler')
+        raise HTTP400(
+                'Content-Length and content-type required to put tiddler')
 
 
     if content_type != 'text/plain' and content_type != 'application/json':
@@ -240,7 +241,7 @@ def _put_tiddler(environ, start_response, tiddler):
             except StoreMethodNotImplemented:
                 # If list_tiddler_revisions is not implemented
                 # we still need to check if the tiddler exists.
-                # If it doesn't NoTiddlerError gets raised and 
+                # If it doesn't NoTiddlerError gets raised and
                 # the except block below is run.
                 test_tiddler = Tiddler(tiddler.title, tiddler.bag)
                 store.get(test_tiddler)
@@ -254,7 +255,8 @@ def _put_tiddler(environ, start_response, tiddler):
             _check_bag_constraint(environ, bag, 'create')
             tiddler.revision = 0
             incoming_etag = environ.get('HTTP_IF_MATCH', None)
-            if incoming_etag and not incoming_etag == _new_tiddler_etag(tiddler):
+            if incoming_etag and not (
+                    incoming_etag == _new_tiddler_etag(tiddler)):
                 raise HTTP412('Etag incorrect for new tiddler')
 
         content = environ['wsgi.input'].read(int(length))
@@ -405,13 +407,13 @@ def _send_tiddler(environ, start_response, tiddler):
 
     return [content]
 
+
 def _not_wikitext(tiddler, config):
-    return (
-            tiddler.type and # type is set
+    return (tiddler.type and # type is set
             tiddler.type != 'None' and # type is not None stringified
             tiddler.type not in # type is not id'd as wikitext by config
-            config['wikitext.type_render_map']
-            )
+            config['wikitext.type_render_map'])
+
 
 def _send_tiddler_revisions(environ, start_response, tiddler):
     """
@@ -450,6 +452,7 @@ def _new_tiddler_etag(tiddler):
             (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
                 urllib.quote(tiddler.title.encode('utf-8'), safe=''),
                 '0'))
+
 
 def _tiddler_etag(tiddler):
     """

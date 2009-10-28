@@ -100,6 +100,7 @@ def _sha_tiddler_titles(bag):
 
 def _last_modified_tiddler(bag):
     try:
-        return str(max(int(tiddler.modified) for tiddler in bag.gen_tiddlers()))
+        return str(max(int(tiddler.modified)
+            for tiddler in bag.gen_tiddlers()))
     except ValueError:
         return ''

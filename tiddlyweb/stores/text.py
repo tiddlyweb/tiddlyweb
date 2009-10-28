@@ -123,13 +123,16 @@ class Store(StorageInterface):
                 tiddlers = self._files_in_dir(tiddlers_dir)
             except (IOError, OSError), exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
-            bag.add_tiddlers(Tiddler(urllib.unquote(title).decode('utf-8')) for title in tiddlers)
+            bag.add_tiddlers(Tiddler(urllib.unquote(
+                title).decode('utf-8')) for title in tiddlers)
 
         try:
             bag.desc = self._read_bag_description(bag_path)
             bag.policy = self._read_policy(bag_path)
         except IOError, exc:
-            raise NoBagError('unable to read policy or description at %s: %s' % (bag_path, exc))
+            raise NoBagError(
+                    'unable to read policy or description at %s: %s' %
+                    (bag_path, exc))
 
         return bag
 
@@ -181,7 +184,8 @@ class Store(StorageInterface):
             # set created on new tiddler from modified on base_tiddler
             # (might be the same)
             tiddler.created = base_tiddler.modified
-            if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
+            if (tiddler.type and tiddler.type != 'None' and not
+                    tiddler.type.startswith('text/')):
                 tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
             return tiddler
         except IOError, exc:
@@ -220,7 +224,8 @@ class Store(StorageInterface):
         revision = self._tiddler_revision_filename(tiddler) + 1
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
 
-        if tiddler.type and tiddler.type != 'None' and not tiddler.type.startswith('text/'):
+        if (tiddler.type and tiddler.type != 'None' and not
+                tiddler.type.startswith('text/')):
             tiddler.text = b64encode(tiddler.text)
         self.serializer.object = tiddler
         write_utf8_file(tiddler_filename, self.serializer.to_string())

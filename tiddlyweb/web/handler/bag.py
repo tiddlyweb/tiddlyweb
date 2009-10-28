@@ -112,7 +112,7 @@ def list_bags(environ, start_response):
         output = serializer.list_bags(kept_bags)
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s, %a' % (mime_type, exc))
-    
+
     return [output]
 
 

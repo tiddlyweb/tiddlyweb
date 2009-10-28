@@ -2,10 +2,12 @@
 A module containing the Bag class.
 """
 
+
 class PermissionsError(Exception):
     """
     Base class for policy violation problems.
     """
+
 
 class ForbiddenError(PermissionsError):
     """
@@ -163,12 +165,14 @@ def _no_constraint(info_list):
 
     return False
 
+
 def _role_valid(roles, role_list):
     # if there is an intersection between the users roles and any roles
     # in the constraint, return true
     if [role for role in roles if role in role_list]:
         return True
     return False
+
 
 def _user_valid(user_sign, user_list):
     # always allow if the constraint is ANY

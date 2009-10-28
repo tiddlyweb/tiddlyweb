@@ -133,7 +133,8 @@ from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
-from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, Header, HTMLPresenter, PermissionsExceptor
+from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, \
+        Header, HTMLPresenter, PermissionsExceptor
 
 # A dict containing the configuration of TiddlyWeb, both
 # as a server and as a library. This dictionary can contain
@@ -149,44 +150,38 @@ DEFAULT_CONFIG = {
             StoreSet,
             UserExtract,
             Header,
-            Negotiate
-            ],
+            Negotiate],
         'server_response_filters': [
             HTMLPresenter,
             PermissionsExceptor,
             HTTPExceptor,
             EncodeUTF8,
-            SimpleLog
-            ],
+            SimpleLog],
         'server_host': {
             'scheme': 'http',
             'host': '0.0.0.0',
-            'port': '8080',
-            },
+            'port': '8080'},
         'server_prefix': '',
         'extension_types': {
             'txt': 'text/plain',
             'html': 'text/html',
-            'json': 'application/json',
-        },
+            'json': 'application/json'},
         'serializers': {
             'text/html': ['html', 'text/html; charset=UTF-8'],
             'text/plain': ['text', 'text/plain; charset=UTF-8'],
             'application/json': ['json', 'application/json; charset=UTF-8'],
-            'default': ['html', 'text/html; charset=UTF-8'],
-        },
+            'default': ['html', 'text/html; charset=UTF-8']},
         'extractors': [
             'http_basic',
-            'simple_cookie',
-            ],
+            'simple_cookie'],
         'auth_systems': [
             'cookie_form',
-            'openid',
-            ],
+            'openid'],
         # XXX this should come from a file
         'secret': 'this should come from a file',
         'urls_map': URLS_MAP,
-        'bag_create_policy': '', # ANY (authenticated user) or ADMIN (role) or '' (all can create)
+        'bag_create_policy': '', # ANY (authenticated user)
+                                 # or ADMIN (role) or '' (all can create)
         'recipe_create_policy': '', # ANY or ADMIN or ''
         'log_level': 'INFO',
         'log_file': './tiddlyweb.log',
@@ -194,6 +189,7 @@ DEFAULT_CONFIG = {
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
         }
+
 
 def merge_config(global_config, additional_config, reconfig=True):
     """
@@ -214,6 +210,7 @@ def merge_config(global_config, additional_config, reconfig=True):
             global_config[key] = additional_config[key]
     if reconfig:
         read_config()
+
 
 def read_config():
     """

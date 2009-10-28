@@ -22,6 +22,7 @@ def get_search_query(environ):
         raise HTTP400('query string required')
     return search_query
 
+
 def get_tiddlers(environ):
     search_query = get_search_query(environ)
     store = environ['tiddlyweb.store']
@@ -31,6 +32,7 @@ def get_tiddlers(environ):
     except StoreMethodNotImplemented:
         raise HTTP400('Search system not implemented')
     return tiddlers
+
 
 def get(environ, start_response):
     """

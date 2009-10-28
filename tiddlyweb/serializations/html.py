@@ -65,7 +65,8 @@ class Serialization(SerializationInterface):
                     self._tiddler_list_info(tiddler)
             if bag.revbag:
                 line = self._tiddler_revision_info(base, base_link, tiddler)
-                representation_link += '/%s/revisions' % encode_name(tiddler.title)
+                representation_link += '/%s/revisions' % encode_name(
+                        tiddler.title)
                 title = 'Revisions of Tiddler %s' % tiddler.title
             else:
                 line = self._tiddler_in_bag_info(base, base_link, tiddler)
@@ -81,8 +82,9 @@ class Serialization(SerializationInterface):
 
         if 'bag_name' in routing_args and not 'tiddler_name' in routing_args:
             bag_name = routing_args['bag_name']
-            bag_link = '<div class="baglink"><a href="%s/bags/%s">Bag %s</a></div>' % (
-                    self._server_prefix(), encode_name(bag_name), bag_name)
+            bag_link = ('<div class="baglink"><a href="%s/bags/%s">'
+                    'Bag %s</a></div>' % (
+                    self._server_prefix(), encode_name(bag_name), bag_name))
 
         output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
@@ -202,10 +204,12 @@ class Serialization(SerializationInterface):
         The string we present at the top of a list of tiddlers.
         """
         if representation_link:
-            extension_types = self.environ.get('tiddlyweb.config', {}).get('extension_types', {}).keys()
+            extension_types = self.environ.get('tiddlyweb.config',
+                    {}).get('extension_types', {}).keys()
             links = []
             for extension in extension_types:
-                link = '<a href="%s.%s">%s</a>' % (representation_link, extension, extension)
+                link = '<a href="%s.%s">%s</a>' % (representation_link,
+                        extension, extension)
                 links.append(link)
             link_info = ' '.join(links)
             return """
@@ -226,8 +230,8 @@ class Serialization(SerializationInterface):
         else:
             base = 'bags'
             base_link = encode_name(tiddler.bag)
-            representation_link = '%s/bags/%s/tiddlers' % (self._server_prefix(),
-                    base_link)
+            representation_link = '%s/bags/%s/tiddlers' % (
+                    self._server_prefix(), base_link)
             title = 'Tiddlers in Bag %s' % tiddler.bag
         return base, base_link, representation_link, title
 
