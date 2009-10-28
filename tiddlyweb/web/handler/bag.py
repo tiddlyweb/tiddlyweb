@@ -88,7 +88,7 @@ def get_tiddlers(environ, start_response):
     return send_tiddlers(environ, start_response, bag)
 
 
-def list(environ, start_response):
+def list_bags(environ, start_response):
     """
     List all the bags that the current user can read.
     """

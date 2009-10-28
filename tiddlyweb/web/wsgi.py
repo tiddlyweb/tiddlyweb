@@ -136,16 +136,16 @@ class SimpleLog(object):
             req_uri += '?'+environ['QUERY_STRING']
 
         def replacement_start_response(status, headers, exc_info=None):
-            bytes = None
+            size = None
             for name, value in headers:
                 if name.lower() == 'content-length':
-                    bytes = value
-            self.write_log(environ, req_uri, status, bytes)
+                    size = value
+            self.write_log(environ, req_uri, status, size)
             return start_response(status, headers, exc_info)
 
         return self.application(environ, replacement_start_response)
 
-    def write_log(self, environ, req_uri, status, bytes):
+    def write_log(self, environ, req_uri, status, size):
         """
         Print the log info out in a formatted for to stdout.
         """
@@ -154,8 +154,8 @@ class SimpleLog(object):
             environ['REMOTE_USER'] = environ['tiddlyweb.usersign']['name']
         except KeyError:
             pass
-        if bytes is None:
-            bytes = '-'
+        if size is None:
+            size = '-'
         log_format = {
                 'REMOTE_ADDR': environ.get('REMOTE_ADDR') or '-',
                 'REMOTE_USER': environ.get('REMOTE_USER') or '-',
@@ -164,7 +164,7 @@ class SimpleLog(object):
                 'HTTP_VERSION': environ.get('SERVER_PROTOCOL'),
                 'time': time.strftime('%d/%b/%Y:%H:%M:%S ', time.localtime()),
                 'status': status.split(None, 1)[0],
-                'bytes': bytes,
+                'bytes': size,
                 'HTTP_REFERER': environ.get('HTTP_REFERER', '-'),
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
                 }

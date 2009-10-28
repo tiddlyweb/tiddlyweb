@@ -91,12 +91,12 @@ def recursive_filter(filters, tiddlers):
     """
     if len(filters) == 0:
         return (tiddler for tiddler in tiddlers)
-    filter = filters.pop(0)
+    current_filter = filters.pop(0)
     try:
-        filter, args = filter
+        current_filter, args = current_filter
     except ValueError:
         pass
     try:
-        return recursive_filter(filters, filter(tiddlers))
+        return recursive_filter(filters, current_filter(tiddlers))
     except AttributeError, exc:
         raise FilterError('malformed filter: %s' % exc)

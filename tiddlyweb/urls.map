@@ -36,7 +36,7 @@
 
 
 /recipes[.{format}]
-    GET tiddlyweb.web.handler.recipe:list
+    GET tiddlyweb.web.handler.recipe:list_recipes
 # List of recipes in a variety of formats.
 # Supports GET: text/plain: list of recipe_name
 #               text/html: list of links to /recipes/{recipe_name}
@@ -96,7 +96,7 @@
 
 
 /bags[.{format}]
-    GET tiddlyweb.web.handler.bag:list
+    GET tiddlyweb.web.handler.bag:list_bags
 # The list of bags available on the system (to the current user)
 # Supports GET: text/plain: a list of bag names
 #               text/html: a list of bag names linking to the the list of tidders in the bag

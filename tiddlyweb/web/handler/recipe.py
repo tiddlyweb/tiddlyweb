@@ -105,7 +105,7 @@ def get_tiddlers(environ, start_response):
     return send_tiddlers(environ, start_response, tmp_bag)
 
 
-def list(environ, start_response):
+def list_recipes(environ, start_response):
     """
     Get a list of all recipes the current user can read.
     """
