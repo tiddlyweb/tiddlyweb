@@ -2,8 +2,6 @@
 A module containing the Bag class.
 """
 
-import copy
-
 from tiddlyweb.model.policy import Policy
 
 

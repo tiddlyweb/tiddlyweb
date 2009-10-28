@@ -3,7 +3,6 @@ Functions and Classes for running the TiddlyWeb
 web server.
 """
 import logging
-import os
 import selector
 import sys
 

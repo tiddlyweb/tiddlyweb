@@ -11,7 +11,7 @@ from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import \
         get_serialize_type, http_date_from_timestamp, datetime_from_http_date
-from tiddlyweb.web.http import HTTP400, HTTP404, HTTP304, HTTP415
+from tiddlyweb.web.http import HTTP400, HTTP304, HTTP415
 
 
 def send_tiddlers(environ, start_response, bag):
@@ -34,8 +34,6 @@ def send_tiddlers(environ, start_response, bag):
             searchbag=bag.searchbag)
     tmp_bag.add_tiddlers(tiddlers)
 
-    # If there are no tiddlers in the bag, validation will
-    # raise 404. If incoming Etag is acceptable, will raise 304.
     last_modified, etag = _validate_tiddler_list(environ, tmp_bag)
 
     serialize_type, mime_type = get_serialize_type(environ)
@@ -101,7 +99,6 @@ def _sha_tiddler_titles(bag):
 
 
 def _last_modified_tiddler(bag):
-    # If there are no tiddlers, raise a 404
     try:
         return str(max(int(tiddler.modified) for tiddler in bag.gen_tiddlers()))
     except ValueError:

@@ -7,12 +7,10 @@ import logging
 
 import urllib
 
-from tiddlyweb import control
 from tiddlyweb.web.http import HTTP400
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented
-from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 

@@ -3,7 +3,6 @@ Text based serializers.
 """
 
 import urllib
-import cgi
 import simplejson
 
 from tiddlyweb.serializer import TiddlerFormatError
