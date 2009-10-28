@@ -1,3 +1,8 @@
+0.9.73 Wed Oct 28 11:14:56 GMT 2009
+
+  * Enable tiddlyweb.filters to be translated back to a string in UI.
+  * Remove code duplication in filter handling.
+
 0.9.72 Sat Oct 24 00:33:19 BST 2009
 
   * Better handling of blank values of CGI paramters.
