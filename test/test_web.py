@@ -12,6 +12,9 @@ import tiddlyweb.web
 import tiddlyweb.web.util
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.web import serve
+
+from test.simpleplugin import PluginHere
 
 expected_content="""<ul id="root" class="listing">
 <li><a href="recipes">recipes</a></li>
@@ -19,7 +22,6 @@ expected_content="""<ul id="root" class="listing">
 </ul>"""
 
 def setup_module(module):
-    from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
     # Selector just _is_ the callable
     def app_fn():
@@ -54,6 +56,18 @@ def test_with_header_and_css():
             headers={'User-Agent': 'Mozilla/5'})
     assert response['status'] == '200'
     assert 'link rel="stylesheet" href="http://example.com/example.css"' in content
+
+def test_missing_system_plugin():
+    from tiddlyweb.config import config
+    config['system_plugins'] = ['missingplugin']
+    py.test.raises(ImportError, 'serve.load_app()')
+    config['system_plugins'] = []
+
+def test_existing_system_plugin():
+    from tiddlyweb.config import config
+    config['system_plugins'] = ['test.simpleplugin']
+    py.test.raises(PluginHere, 'serve.load_app()')
+    config['system_plugins'] = []
 
 def test_recipe_url():
     environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
