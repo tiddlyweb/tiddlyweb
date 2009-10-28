@@ -196,6 +196,11 @@ DEFAULT_CONFIG = {
         }
 
 def merge_config(global_config, additional_config, reconfig=True):
+    """
+    Update the global_config with the additional data provided in
+    the dict additional_config. If reconfig is True, then reread
+    tiddlywebconfig.py so its overrides continue to operate.
+    """
     for key in additional_config:
         try:
             # If this config item is a dict, update to
@@ -250,4 +255,4 @@ except IndexError:
     logging.basicConfig(level=getattr(logging, config['log_level']),
             format='%(asctime)s %(levelname)-8s %(message)s',
             filename=config['log_file'])
-    logging.debug('TiddlyWeb starting up as %s' % sys.argv[0])
+    logging.debug('TiddlyWeb starting up as %s', sys.argv[0])

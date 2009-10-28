@@ -281,7 +281,7 @@ def handle(args):
     try:
         plugins.extend(config['twanager_plugins'])
         for plugin in plugins:
-            logging.debug('attempting to import twanager plugin %s' % plugin)
+            logging.debug('attempting to import twanager plugin %s', plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -301,7 +301,7 @@ def handle(args):
 
     if candidate_command and candidate_command in COMMANDS:
         try:
-            logging.debug('running command %s with %s' % (candidate_command, args))
+            logging.debug('running command %s with %s', candidate_command, args)
             COMMANDS[candidate_command](args)
         except IndexError, exc:
             print >> sys.stderr, 'Incorect number of arguments: %s' % exc

@@ -22,10 +22,10 @@ class Serializer(object):
     You must set object after initialization.
     """
 
-    def __init__(self, format, environ=None):
+    def __init__(self, engine, environ=None):
         if environ is None:
             environ = {}
-        self.format = format
+        self.engine = engine
         self.object = None
         self.environ = environ
         self.serialization = None
@@ -36,14 +36,14 @@ class Serializer(object):
         Import the required Serialization.
         """
         try:
-            imported_module = __import__('tiddlyweb.serializations.%s' % self.format,
+            imported_module = __import__('tiddlyweb.serializations.%s' % self.engine,
                     {}, {}, ['Serialization'])
         except ImportError, err:
             err1 = err
             try:
-                imported_module = __import__(self.format, {}, {}, ['Serialization'])
+                imported_module = __import__(self.engine, {}, {}, ['Serialization'])
             except ImportError, err:
-                raise ImportError("couldn't load module for %s: %s, %s" % (self.format, err, err1))
+                raise ImportError("couldn't load module for %s: %s, %s" % (self.engine, err, err1))
         self.serialization = imported_module.Serialization(self.environ)
 
     def __str__(self):

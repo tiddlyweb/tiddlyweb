@@ -330,8 +330,8 @@ def _validate_tiddler_headers(environ, tiddler):
     request_method = environ['REQUEST_METHOD']
     tiddler_etag = _tiddler_etag(tiddler)
 
-    logging.debug('attempting to validate %s with revision %s' %
-            (tiddler.title, tiddler.revision))
+    logging.debug('attempting to validate %s with revision %s',
+            tiddler.title, tiddler.revision)
 
     etag = None
     last_modified = None
@@ -349,8 +349,8 @@ def _validate_tiddler_headers(environ, tiddler):
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
-        logging.debug('attempting to validate incoming etag: %s against %s' %
-                (incoming_etag, tiddler_etag))
+        logging.debug('attempting to validate incoming etag: %s against %s',
+                incoming_etag, tiddler_etag)
         if incoming_etag and incoming_etag != tiddler_etag:
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')

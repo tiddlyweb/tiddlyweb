@@ -27,7 +27,7 @@ class Extractor(ExtractorInterface):
         """
         try:
             user_cookie = environ['HTTP_COOKIE']
-            logging.debug('simple_cookie looking at cookie string: %s' %
+            logging.debug('simple_cookie looking at cookie string: %s',
                     user_cookie)
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)

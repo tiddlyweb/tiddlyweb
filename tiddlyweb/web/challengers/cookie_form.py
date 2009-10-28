@@ -84,7 +84,7 @@ Password <input type="password" name="password" size="40" />
                 uri = '%s%s' % (server_host_url(environ), redirect)
                 cookie_header_string = make_cookie('tiddlyweb_user', user.usersign,
                         mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
-                logging.debug('303 to %s' % uri)
+                logging.debug('303 to %s', uri)
                 start_response('303 Other',
                         [('Set-Cookie', cookie_header_string),
                             ('Location', uri.encode('utf-8'))])

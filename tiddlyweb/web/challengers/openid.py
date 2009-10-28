@@ -118,7 +118,7 @@ class Challenger(ChallengerInterface):
         cookie_age = environ['tiddlyweb.config'].get('cookie_age', None)
         cookie_header_string = make_cookie('tiddlyweb_user', usersign,
                 mac_key=secret, path=self._cookie_path(environ), expires=cookie_age)
-        logging.debug('303 to %s' % uri)
+        logging.debug('303 to %s', uri)
         start_response('303 See Other', [('Location', uri.encode('utf-8')),
                 ('Set-Cookie', cookie_header_string)])
         return [uri]
@@ -191,7 +191,7 @@ OpenID: <input name="openid" size="60" />
                     urllib.quote(self._return_to(environ, redirect, link,
                     original_openid), safe='')))
 
-        logging.debug('302 to %s' % request_uri)
+        logging.debug('302 to %s', request_uri)
         raise HTTP302(request_uri)
 
     def _return_to(self, environ, redirect, link, usersign):

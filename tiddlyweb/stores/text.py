@@ -356,8 +356,8 @@ class Store(StorageInterface):
                             found_tiddlers.append(tiddler)
                             break
                 except (OSError, NoTiddlerError), exc:
-                    logging.warn('malformed tiddler during search: %s:%s' %
-                            (bagname, tiddler_name))
+                    logging.warn('malformed tiddler during search: %s:%s',
+                            bagname, tiddler_name)
         return found_tiddlers
 
     def _bag_filenames(self):

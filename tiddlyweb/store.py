@@ -60,8 +60,8 @@ class Store(object):
     to and from persistent storage.
     """
 
-    def __init__(self, format, environ=None):
-        self.format = format
+    def __init__(self, engine, environ=None):
+        self.engine = engine
         self.environ = environ
         self.storage = None
         self._import()
@@ -71,14 +71,14 @@ class Store(object):
         Import the required StorageInterface.
         """
         try:
-            imported_module = __import__('tiddlyweb.stores.%s' % self.format,
+            imported_module = __import__('tiddlyweb.stores.%s' % self.engine,
                     {}, {}, ['Store'])
         except ImportError, err:
             err1 = err
             try:
-                imported_module = __import__(self.format, {}, {}, ['Store'])
+                imported_module = __import__(self.engine, {}, {}, ['Store'])
             except ImportError, err:
-                raise ImportError("couldn't load store for %s: %s, %s" % (self.format, err, err1))
+                raise ImportError("couldn't load store for %s: %s, %s" % (self.engine, err, err1))
         self.storage = imported_module.Store(self.environ)
 
     def delete(self, thing):

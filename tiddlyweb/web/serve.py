@@ -25,7 +25,7 @@ def load_app(prefix=''):
     try:
         plugins = config['system_plugins']
         for plugin in plugins:
-            logging.debug('attempt to import system plugin %s' % plugin)
+            logging.debug('attempt to import system plugin %s', plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -39,7 +39,7 @@ def load_app(prefix=''):
     wrappers.extend(config['server_response_filters'])
     if wrappers:
         for wrapper in wrappers:
-            logging.debug('wrapping app with %s' % wrapper)
+            logging.debug('wrapping app with %s', wrapper)
             app = wrapper(app)
     return app
 
@@ -54,7 +54,7 @@ def start_cherrypy():
     app = load_app(prefix=config['server_prefix'])
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
-        logging.debug('starting cherrypy at %s:%s' % (hostname, port))
+        logging.debug('starting cherrypy at %s:%s', hostname, port)
         print >> sys.stderr, "Starting CherryPy at %s:%s" % (hostname, port)
         server.start()
     except KeyboardInterrupt:
@@ -80,8 +80,8 @@ class Environator(object):
         path_info = environ.get('PATH_INFO', None)
         query_string = environ.get('QUERY_STRING', None)
         logging.debug('starting "%s" request with uri "%s", script_name "%s"'
-                ', path_info "%s" and query "%s"' % (request_method,
-                request_uri, script_name, path_info, query_string))
+                ', path_info "%s" and query "%s"', request_method,
+                request_uri, script_name, path_info, query_string)
         # do no cleaning for now
         return self.application(environ, start_response)
 
