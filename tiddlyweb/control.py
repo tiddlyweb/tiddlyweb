@@ -111,21 +111,34 @@ def get_tiddlers_from_bag(bag):
             yield tiddler
 
 
+import inspect
 def filter_tiddlers_from_bag(bag, filters):
     """
     Return the list of tiddlers resulting from filtering
     bag by filter. The filter is a string that will be
     parsed to a list of filters.
     """
+    index = None
+    if bag.tmpbag or bag.searchbag or bag.revbag:
+        print 'bag: %s unindexed' % bag.name
+        print inspect.stack()[2]
+    else:
+        print 'bag: %s indexable' % bag.name
+        print inspect.stack()[2]
+        index = get_index_for_bag(bag)
     store = bag.store
 
     # XXX isinstance considered harmful
     if isinstance(filters, basestring):
         filters, leftovers = parse_for_filters(filters)
     if store:
-        return recursive_filter(filters, get_tiddlers_from_bag(bag))
+        return recursive_filter(filters, get_tiddlers_from_bag(bag), index=index)
     else:
-        return recursive_filter(filters, bag.gen_tiddlers())
+        return recursive_filter(filters, bag.gen_tiddlers(), index=index)
+
+
+def get_index_for_bag(bag):
+    return None
 
 
 def _recipe_template(environ):

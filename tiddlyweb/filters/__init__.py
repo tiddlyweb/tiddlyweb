@@ -80,7 +80,7 @@ def parse_for_filters(query_string):
     return filters, leftovers
 
 
-def recursive_filter(filters, tiddlers):
+def recursive_filter(filters, tiddlers, index=None):
     """
     Recursively process the list of filters found
     by parse_for_filters against the given list
@@ -97,6 +97,6 @@ def recursive_filter(filters, tiddlers):
     except ValueError:
         pass
     try:
-        return recursive_filter(filters, current_filter(tiddlers))
+        return recursive_filter(filters, current_filter(tiddlers), index=index)
     except AttributeError, exc:
         raise FilterError('malformed filter: %s' % exc)
