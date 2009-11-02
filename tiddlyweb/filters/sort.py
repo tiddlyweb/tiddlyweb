@@ -42,12 +42,12 @@ def sort_parse(attribute):
     if attribute.startswith('-'):
         attribute = attribute.replace('-', '', 1)
 
-        def sorter(tiddlers):
+        def sorter(tiddlers, indexable=False, environ={}):
             return sort_by_attribute(attribute, tiddlers, reverse=True)
 
     else:
 
-        def sorter(tiddlers):
+        def sorter(tiddlers, indexable=False, environ={}):
             return sort_by_attribute(attribute, tiddlers)
 
     return sorter

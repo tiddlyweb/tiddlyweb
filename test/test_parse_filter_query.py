@@ -23,7 +23,7 @@ def test_parsing():
     assert leftovers == 'slag=absolute;foo=;fat=1'
 
     text_filters = []
-    for filter, text in filters:
+    for filter, text, environ in filters:
         text_filters.append(text)
     assert len(text_filters) == 5
     assert text_filters[0][1] == 'tag:systemConfig'

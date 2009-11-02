@@ -46,7 +46,7 @@ FILTER_PARSERS = {
         }
 
 
-def parse_for_filters(query_string):
+def parse_for_filters(query_string, environ={}):
     """
     Take a string that looks like a CGI query
     string and parse if for filters. Return
@@ -72,7 +72,7 @@ def parse_for_filters(query_string):
                 argument = value[0]
 
             func = FILTER_PARSERS[key](argument)
-            filters.append((func, (key, argument)))
+            filters.append((func, (key, argument), environ))
         except(KeyError, IndexError, ValueError):
             leftovers.append(string)
 
@@ -80,7 +80,7 @@ def parse_for_filters(query_string):
     return filters, leftovers
 
 
-def recursive_filter(filters, tiddlers):
+def recursive_filter(filters, tiddlers, indexable=False):
     """
     Recursively process the list of filters found
     by parse_for_filters against the given list
@@ -93,10 +93,11 @@ def recursive_filter(filters, tiddlers):
         return (tiddler for tiddler in tiddlers)
     current_filter = filters.pop(0)
     try:
-        current_filter, args = current_filter
+        current_filter, args, environ = current_filter
     except ValueError:
         pass
     try:
-        return recursive_filter(filters, current_filter(tiddlers))
+        return recursive_filter(filters, current_filter(tiddlers, indexable, environ),
+                indexable=False)
     except AttributeError, exc:
         raise FilterError('malformed filter: %s' % exc)

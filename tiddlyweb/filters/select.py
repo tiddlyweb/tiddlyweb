@@ -50,27 +50,27 @@ def select_parse(command):
     if args.startswith('!'):
         args = args.replace('!', '', 1)
 
-        def selector(tiddlers):
+        def selector(tiddlers, indexable=False, environ={}):
             return select_by_attribute(attribute, args, tiddlers, negate=True)
 
     elif args.startswith('<'):
         args = args.replace('<', '', 1)
 
-        def selector(tiddlers):
+        def selector(tiddlers, indexable=False, environ={}):
             return select_relative_attribute(attribute, args, tiddlers,
                     lesser=True)
 
     elif args.startswith('>'):
         args = args.replace('>', '', 1)
 
-        def selector(tiddlers):
+        def selector(tiddlers, indexable=False, environ={}):
             return select_relative_attribute(attribute, args, tiddlers,
                     greater=True)
 
     else:
 
-        def selector(tiddlers):
-            return select_by_attribute(attribute, args, tiddlers)
+        def selector(tiddlers, indexable=False, environ={}):
+            return select_by_attribute(attribute, args, tiddlers, indexable=indexable, environ=environ)
 
     return selector
 
@@ -114,12 +114,30 @@ def default_func(tiddler, attribute, value):
             return False
 
 
-def select_by_attribute(attribute, value, tiddlers, negate=False):
+def select_by_attribute(attribute, value, tiddlers, negate=False, indexable=False, environ={}):
     """
     Select tiddlers where value of attribute matches the provide value.
 
     If negate is true, get those that don't match.
     """
+
+    if indexable:
+        if environ.get('tiddlyweb.config', {}).get('indexed', False):
+            try:
+                import whoosher
+                from tiddlyweb.model.tiddler import Tiddler
+                store = environ['tiddlyweb.store']
+                query = 'bag:%s %s:%s' % (indexable.name, attribute, value)
+                print 'query is %s' % query
+                results = whoosher.search(environ['tiddlyweb.config'], query)
+                def tiddler_from_result(result):
+                    bag, title = result['id'].split(':', 1)
+                    tiddler = Tiddler(title, bag)
+                    return store.get(tiddler)
+                return (tiddler_from_result(result) for result in results)
+            except KeyError:
+                pass
+
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
         return (tiddler for tiddler in tiddlers if not

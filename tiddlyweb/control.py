@@ -121,13 +121,18 @@ def filter_tiddlers_from_bag(bag, filters):
     """
     store = bag.store
 
+    if bag.tmpbag or bag.revbag or bag.searchbag:
+        indexable = False
+    else:
+        indexable = bag
+
     # XXX isinstance considered harmful
     if isinstance(filters, basestring):
         filters, leftovers = parse_for_filters(filters)
     if store:
-        return recursive_filter(filters, get_tiddlers_from_bag(bag))
+        return recursive_filter(filters, get_tiddlers_from_bag(bag), indexable=indexable)
     else:
-        return recursive_filter(filters, bag.gen_tiddlers())
+        return recursive_filter(filters, bag.gen_tiddlers(), indexable=indexable)
 
 
 def _recipe_template(environ):
