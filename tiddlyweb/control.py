@@ -32,6 +32,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
+            bag.skinny = True
             bag = store.get(bag)
         for tiddler in filter_tiddlers_from_bag(bag, filter_string):
             uniquifier[tiddler.title] = tiddler
@@ -104,6 +105,9 @@ def get_tiddlers_from_bag(bag):
     """
 
     if bag.store:
+        if hasattr(bag, 'skinny') and bag.skinny:
+            bag.skinny = False
+            bag = bag.store.get(bag)
         for tiddler in bag.gen_tiddlers():
             try:
                 tiddler = bag.store.get(tiddler)

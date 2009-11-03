@@ -79,7 +79,7 @@ def get_tiddlers(environ, start_response):
     serialization chosen.
     """
     bag_name = _determine_bag_name(environ)
-    bag = _get_bag(environ, bag_name)
+    bag = _get_bag(environ, bag_name, True)
 
     usersign = environ['tiddlyweb.usersign']
     # will raise exception if there are problems
