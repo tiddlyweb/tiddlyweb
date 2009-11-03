@@ -125,7 +125,6 @@ def select_by_attribute(attribute, value, tiddlers, negate=False, indexable=Fals
         indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
         if indexer:
             # If there is an exception, just let it raise.
-            print 'indexer: %s'  % indexer
             imported_module = __import__(indexer, {}, {}, ['index_query'])
             # dict keys may not be unicode
             kwords = {str(attribute): value, 'bag': indexable.name}

@@ -115,6 +115,10 @@ def get_tiddlers_from_bag(bag):
                 # XXX do more here?
                 pass
             yield tiddler
+    else:
+        print bag
+        for tiddler in bag.gen_tiddlers():
+            yield tiddler
 
 
 def filter_tiddlers_from_bag(bag, filters):
