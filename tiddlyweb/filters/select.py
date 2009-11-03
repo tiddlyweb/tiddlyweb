@@ -122,21 +122,14 @@ def select_by_attribute(attribute, value, tiddlers, negate=False, indexable=Fals
     """
 
     if indexable:
-        if environ.get('tiddlyweb.config', {}).get('indexed', False):
-            try:
-                import whoosher
-                from tiddlyweb.model.tiddler import Tiddler
-                store = environ['tiddlyweb.store']
-                query = 'bag:%s %s:%s' % (indexable.name, attribute, value)
-                print 'query is %s' % query
-                results = whoosher.search(environ['tiddlyweb.config'], query)
-                def tiddler_from_result(result):
-                    bag, title = result['id'].split(':', 1)
-                    tiddler = Tiddler(title, bag)
-                    return store.get(tiddler)
-                return (tiddler_from_result(result) for result in results)
-            except KeyError:
-                pass
+        indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
+        if indexer:
+            # If there is an exception, just let it raise.
+            print 'indexer: %s'  % indexer
+            imported_module = __import__(indexer, {}, {}, ['index_query'])
+            # dict keys may not be unicode
+            kwords = {str(attribute): value, 'bag': indexable.name}
+            return imported_module.index_query(environ, **kwords)
 
     select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
     if negate:
