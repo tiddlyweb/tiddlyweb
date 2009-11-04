@@ -1,3 +1,8 @@
+0.9.74 Wed Nov  4 16:54:32 GMT 2009
+
+  * Special case indexed filtering. See pydoc tiddlyweb.filters.
+  * Lots of pylint cleanups.
+
 0.9.73 Wed Oct 28 11:14:56 GMT 2009
 
   * Enable tiddlyweb.filters to be translated back to a string in UI.
