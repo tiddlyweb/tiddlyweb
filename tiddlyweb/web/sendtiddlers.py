@@ -62,6 +62,21 @@ def send_tiddlers(environ, start_response, bag):
 
 
 def _validate_tiddler_list(environ, bag):
+    """
+    Calculate the Last modified and ETag for
+    the tiddlers in bag. If the ETag matches an
+    incoming If-None-Match, then raise a 304 and
+    don't send the tiddler content. If the modified
+    string in an If-Modified-Since is newer than the
+    last-modified on the tiddlers, raise 304.
+
+    If ETag testing is done, no last modified handling
+    is done, even if the ETag testing fails.
+
+    If no 304 is raised, then just return last-modified
+    and ETag for the caller to use in constructing
+    its HTTP response.
+    """
     last_modified_number = _last_modified_tiddler(bag)
     last_modified = None
     if last_modified_number:
@@ -87,6 +102,11 @@ def _validate_tiddler_list(environ, bag):
 
 
 def _sha_tiddler_titles(bag):
+    """
+    Create a sha digest of the titles of all the
+    tiddlers in the bag. Include the recipe or
+    bag name for disambiguation.
+    """
     digest = sha()
     for tiddler in bag.gen_tiddlers():
         if tiddler.recipe:
@@ -99,6 +119,11 @@ def _sha_tiddler_titles(bag):
 
 
 def _last_modified_tiddler(bag):
+    """
+    Generate the last modified time for the tiddlers
+    in this bag. It is the most recently modified time
+    of all the tiddlers.
+    """
     try:
         return str(max(int(tiddler.modified)
             for tiddler in bag.gen_tiddlers()))

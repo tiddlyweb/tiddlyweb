@@ -87,6 +87,10 @@ def datetime_from_http_date(http_datestring):
 
 
 def make_cookie(name, value, mac_key=None, path=None, expires=None):
+    """
+    Create a cookie string, optionally with a MAC, path and 
+    expires value. Expires is in seconds.
+    """
     cookie = Cookie.SimpleCookie()
 
     if mac_key:
@@ -134,10 +138,18 @@ def _server_prefix(environ):
 
 
 def encode_name(name):
+    """
+    Encode a unicode as utf-8 and then url encode that
+    string. Use for entity titles in URLs.
+    """
     return urllib.quote(name.encode('utf-8'), safe='')
 
 
 def html_encode(text):
+    """
+    Encode &, < and > entities in text that will 
+    be used in/as HTML.
+    """
     return (text.replace('&', '&amp;').replace('<', '&lt;').
             replace('>', '&gt;'))
 
