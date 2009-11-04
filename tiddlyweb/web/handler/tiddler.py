@@ -217,47 +217,70 @@ def _store_tiddler_revisions(environ, content, tiddler):
         store.put(tiddler)
 
 
-def _put_tiddler(environ, start_response, tiddler):
+def _length_and_type(environ):
     """
-    The guts of putting a tiddler into the store.
+    To PUT we must have content-length and content-type
+    headers. Raise 400 if we cannot get these things.
     """
-    store = environ['tiddlyweb.store']
     try:
         length = environ['CONTENT_LENGTH']
         content_type = environ['tiddlyweb.type']
     except KeyError:
         raise HTTP400(
                 'Content-Length and content-type required to put tiddler')
+    return length, content_type
 
+
+def _check_and_validate_tiddler(environ, bag, tiddler):
+    """
+    If the tiddler does not exist, check we have create
+    in the bag, if the tiddler does exist, check we 
+    have edit. Properly the revision of the tiddler.
+    """
+    store = environ['tiddlyweb.store']
+    try:
+        try:
+            revision = store.list_tiddler_revisions(tiddler)[0]
+        except StoreMethodNotImplemented:
+            # If list_tiddler_revisions is not implemented
+            # we still need to check if the tiddler exists.
+            # If it doesn't NoTiddlerError gets raised and
+            # the except block below is run.
+            test_tiddler = Tiddler(tiddler.title, tiddler.bag)
+            store.get(test_tiddler)
+            revision = 1
+        tiddler.revision = revision
+        # These both next will raise exceptions if
+        # the contraints don't match.
+        _check_bag_constraint(environ, bag, 'write')
+        _validate_tiddler_headers(environ, tiddler)
+    except NoTiddlerError:
+        _check_bag_constraint(environ, bag, 'create')
+        tiddler.revision = 0
+        incoming_etag = environ.get('HTTP_IF_MATCH', None)
+        if incoming_etag and not (
+                incoming_etag == _new_tiddler_etag(tiddler)):
+            raise HTTP412('Etag incorrect for new tiddler')
+    return tiddler.revision
+
+
+def _put_tiddler(environ, start_response, tiddler):
+    """
+    The guts of putting a tiddler into the store.
+
+    There's a fair bit of special handling done here
+    depending on whether the tiddler already exists or
+    not.
+    """
+    store = environ['tiddlyweb.store']
+    length, content_type = _length_and_type(environ)
 
     if content_type != 'text/plain' and content_type != 'application/json':
         tiddler.type = content_type
 
     try:
         bag = Bag(tiddler.bag)
-        try:
-            try:
-                revision = store.list_tiddler_revisions(tiddler)[0]
-            except StoreMethodNotImplemented:
-                # If list_tiddler_revisions is not implemented
-                # we still need to check if the tiddler exists.
-                # If it doesn't NoTiddlerError gets raised and
-                # the except block below is run.
-                test_tiddler = Tiddler(tiddler.title, tiddler.bag)
-                store.get(test_tiddler)
-                revision = 1
-            tiddler.revision = revision
-            # These both next will raise exceptions if
-            # the contraints don't match.
-            _check_bag_constraint(environ, bag, 'write')
-            _validate_tiddler_headers(environ, tiddler)
-        except NoTiddlerError:
-            _check_bag_constraint(environ, bag, 'create')
-            tiddler.revision = 0
-            incoming_etag = environ.get('HTTP_IF_MATCH', None)
-            if incoming_etag and not (
-                    incoming_etag == _new_tiddler_etag(tiddler)):
-                raise HTTP412('Etag incorrect for new tiddler')
+        tiddler.revision = _check_and_validate_tiddler(environ, bag, tiddler)
 
         content = environ['wsgi.input'].read(int(length))
 
@@ -273,11 +296,11 @@ def _put_tiddler(environ, start_response, tiddler):
         if not user == 'GUEST':
             tiddler.modifier = user
 
-
         try:
             _check_bag_constraint(environ, bag, 'accept')
         except (PermissionsError), exc:
             _validate_tiddler_content(environ, tiddler)
+
         store.put(tiddler)
     except NoBagError, exc:
         raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
@@ -381,7 +404,7 @@ def _send_tiddler(environ, start_response, tiddler):
     # we need the revision, which is sad
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
-    # XXX If we have content that doesn't look like wikitext,
+    # If we have content that doesn't look like wikitext,
     # we send it out straight up rather than using the serializer.
     if _not_wikitext(tiddler, environ['tiddlyweb.config']):
         mime_type = tiddler.type
@@ -409,6 +432,12 @@ def _send_tiddler(environ, start_response, tiddler):
 
 
 def _not_wikitext(tiddler, config):
+    """
+    Determine if the type of the tiddler indicates
+    whether the content is consider wikitext by the
+    system. In this context wikitext means something
+    that can be rendered.
+    """
     return (tiddler.type and # type is set
             tiddler.type != 'None' and # type is not None stringified
             tiddler.type not in # type is not id'd as wikitext by config

@@ -15,6 +15,10 @@ from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
 def get_search_query(environ):
+    """
+    Inspect tiddlyweb.query in the environment to get
+    the search query.
+    """
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
         search_query = urllib.unquote(search_query)
@@ -24,6 +28,11 @@ def get_search_query(environ):
 
 
 def get_tiddlers(environ):
+    """
+    Call search in the store with search query to
+    get the generator of tiddlers matching the
+    query.
+    """
     search_query = get_search_query(environ)
     store = environ['tiddlyweb.store']
     try:

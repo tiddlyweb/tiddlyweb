@@ -13,11 +13,11 @@ from tiddlyweb.model.policy import \
 from tiddlyweb.store import NoRecipeError, NoBagError, \
         StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
-from tiddlyweb.web.http import HTTP400, HTTP415, HTTP404
+from tiddlyweb.web.http import HTTP400, HTTP409, HTTP415, HTTP404
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb import control
 from tiddlyweb.web import util as web
-from tiddlyweb.web.validator import validate_recipe
+from tiddlyweb.web.validator import validate_recipe, InvalidBagError
 
 
 def delete(environ, start_response):
@@ -67,7 +67,6 @@ def get_tiddlers(environ, start_response):
     Get the list of tiddlers produced by this
     recipe.
     """
-    filters = environ['tiddlyweb.filters']
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)

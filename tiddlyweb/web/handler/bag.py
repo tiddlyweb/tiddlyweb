@@ -15,7 +15,7 @@ from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
-from tiddlyweb.web.http import HTTP400, HTTP404, HTTP415
+from tiddlyweb.web.http import HTTP400, HTTP404, HTTP409, HTTP415
 from tiddlyweb.web.validator import validate_bag, InvalidBagError
 
 
