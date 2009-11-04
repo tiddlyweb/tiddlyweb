@@ -21,6 +21,40 @@ Filters can be extended by adding more parsers to
 FILTER_PARSERS. Parsers for existing filter types
 may be extended as well (see the documentation for
 each type).
+
+The call signature for a filter is:
+
+    filter(tiddlers, indexable=indexable, environ=environ)
+
+The attribute and value for which filter filters is
+established in the parsing stage and set as upvalues
+of the filter closure that gets created.
+
+indexable and environ are optional parameters that 
+in special cases allow a select style filter to be
+optimized with the use of an index. In the current
+implementation this is only done when:
+
+ * the select filter is the first filter in a stack
+   of filters passed to recursive_filter
+ * the list of tiddlers to be filtered is a standard
+   bag (wherein all the tiddlers in the bag "live"
+   in that bag)
+
+When both of the above are true the system looks for a
+module named by tiddlyweb.config['indexer'], imports it,
+looks for a function called indexy_query, and passes
+environ and information about the bag and the attribute
+being selected.
+
+What index_query does to satify the query is up to the
+module. It should return a list of tiddlers that have
+been loaded from tiddlyweb.store.
+
+If for some reason index_query does not wish to perform
+the query (e.g. the index cannot satisfy the query) it
+may raise FilterIndexRefused and the normal filtering
+process will be performed.
 """
 
 import cgi
@@ -35,6 +69,13 @@ class FilterError(Exception):
     """
     An exception to throw when an attempt is made to
     filter on an unavailable attribute.
+    """
+    pass
+
+class FilterIndexRefused(FilterError):
+    """
+    A filter index has refused to satisfy a filter
+    with its index.
     """
     pass
 
@@ -93,11 +134,16 @@ def recursive_filter(filters, tiddlers, indexable=False):
         return (tiddler for tiddler in tiddlers)
     current_filter = filters.pop(0)
     try:
-        current_filter, args, environ = current_filter
+        active_filter, args, environ = current_filter
     except ValueError:
+        active_filter = current_filter
+        environ = {}
         pass
     try:
-        return recursive_filter(filters, current_filter(tiddlers, indexable, environ),
+        return recursive_filter(filters, active_filter(tiddlers, indexable, environ),
                 indexable=False)
+    except FilterIndexRefused, exc:
+        filters.insert(0, current_filter)
+        return recursive_filter(filters, tiddlers, indexable=False)
     except AttributeError, exc:
         raise FilterError('malformed filter: %s' % exc)
