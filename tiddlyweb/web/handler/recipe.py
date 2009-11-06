@@ -58,7 +58,8 @@ def get(environ, start_response):
 
     # setting the cookie for text/plain is harmless
     start_response("200 OK",
-            [('Content-Type', mime_type)])
+            [('Content-Type', mime_type),
+                ('Vary', 'Accept')])
     return [content]
 
 
@@ -120,7 +121,8 @@ def list_recipes(environ, start_response):
             pass
 
     serialize_type, mime_type = web.get_serialize_type(environ)
-    start_response("200 OK", [('Content-Type', mime_type)])
+    start_response("200 OK", [('Content-Type', mime_type),
+                ('Vary', 'Accept')])
 
     serializer = Serializer(serialize_type, environ)
 

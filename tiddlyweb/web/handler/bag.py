@@ -67,7 +67,8 @@ def get(environ, start_response):
         raise HTTP415('Content type not supported: %s' % mime_type)
 
     start_response("200 Ok",
-            [('Content-Type', mime_type)])
+            [('Content-Type', mime_type),
+                ('Vary', 'Accept')])
 
     return [content]
 
@@ -105,7 +106,8 @@ def list_bags(environ, start_response):
             pass
 
     serialize_type, mime_type = web.get_serialize_type(environ)
-    start_response("200 OK", [('Content-Type', mime_type)])
+    start_response("200 OK", [('Content-Type', mime_type),
+                ('Vary', 'Accept')])
     serializer = Serializer(serialize_type, environ)
 
     try:

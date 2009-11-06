@@ -223,21 +223,41 @@ def test_get_tiddler_etag_bag():
 def test_get_tiddler_cached():
     [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
     http = httplib2.Http('.test_cache')
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
+            headers={'Accept': 'application/json'},
             method='GET')
+    assert not response.fromcache
     assert response['status'] == '200'
     assert response['etag'] == '"bag28/tiddler8/1"'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response.fromcache
+    assert response['status'] == '304'
+    assert response['etag'] == '"bag28/tiddler8/1"'
+    
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
+            headers={'Accept': 'text/html'},
+            method='GET')
     assert not response.fromcache
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
+    assert response['status'] == '200'
+    assert response['etag'] == '"bag28/tiddler8/1"'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
+            headers={'Accept': 'application/json'},
             method='GET')
+    assert not response.fromcache
+    assert response['status'] == '200'
+    assert response['etag'] == '"bag28/tiddler8/1"'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response.fromcache
     assert response['status'] == '304'
     assert response['etag'] == '"bag28/tiddler8/1"'
-    assert response.fromcache
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
-            method='GET')
-    assert response['status'] == '304'
-    assert response['etag'] == '"bag28/tiddler8/1"'
-    assert response.fromcache
+
 
 def test_put_tiddler_cache_fakey():
     [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]

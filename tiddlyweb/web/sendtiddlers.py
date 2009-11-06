@@ -40,7 +40,8 @@ def send_tiddlers(environ, start_response, bag):
 
     content_header = ('Content-Type', mime_type)
     cache_header = ('Cache-Control', 'no-cache')
-    response = [content_header, cache_header]
+    vary_header = ('Vary', 'Accept')
+    response = [content_header, cache_header, vary_header]
 
     if download:
         response.append(('Content-Disposition',

@@ -419,9 +419,10 @@ def _send_tiddler(environ, start_response, tiddler):
         except TiddlerFormatError, exc:
             raise HTTP415(exc)
 
+    vary_header = ('Vary', 'Accept')
     cache_header = ('Cache-Control', 'no-cache')
     content_header = ('Content-Type', str(mime_type))
-    response = [cache_header, content_header]
+    response = [cache_header, content_header, vary_header]
     if last_modified:
         response.append(last_modified)
     if etag:
