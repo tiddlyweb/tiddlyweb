@@ -362,19 +362,23 @@ def _validate_tiddler_headers(environ, tiddler):
     last_modified = None
     if request_method == 'GET':
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-        if incoming_etag == tiddler_etag:
-            raise HTTP304(incoming_etag)
-        last_modified_string = web.http_date_from_timestamp(tiddler.modified)
-        last_modified = ('Last-Modified', last_modified_string)
-        incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
-        if incoming_modified and \
-                (web.datetime_from_http_date(incoming_modified) >=
-                        web.datetime_from_http_date(last_modified_string)):
-            raise HTTP304('')
+        if incoming_etag:
+            logging.debug('attempting to validate incoming etag(GET): %s against %s',
+                    incoming_etag, tiddler_etag)
+            if incoming_etag == tiddler_etag:
+                raise HTTP304(incoming_etag)
+        else:
+            last_modified_string = web.http_date_from_timestamp(tiddler.modified)
+            last_modified = ('Last-Modified', last_modified_string)
+            incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
+            if incoming_modified and \
+                    (web.datetime_from_http_date(incoming_modified) >=
+                            web.datetime_from_http_date(last_modified_string)):
+                raise HTTP304('')
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
-        logging.debug('attempting to validate incoming etag: %s against %s',
+        logging.debug('attempting to validate incoming etag(PUT): %s against %s',
                 incoming_etag, tiddler_etag)
         if incoming_etag and not _etag_write_match(incoming_etag, tiddler_etag):
             raise HTTP412('Provided ETag does not match. '
