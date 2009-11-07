@@ -84,8 +84,13 @@ def _validate_tiddler_list(environ, bag):
         last_modified_string = http_date_from_timestamp(last_modified_number)
         last_modified = ('Last-Modified', last_modified_string)
 
-    etag_string = '"%s:%s"' % (_sha_tiddler_titles(bag),
-            last_modified_number)
+    try:
+        serialize_type, mime_type = get_serialize_type(environ)
+        mime_type = mime_type.split(';', 1)[0].strip()
+    except TypeError:
+        mime_type = ''
+    etag_string = '"%s:%s;%s"' % (_sha_tiddler_titles(bag),
+            last_modified_number, mime_type)
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)

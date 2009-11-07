@@ -309,7 +309,7 @@ def _put_tiddler(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
 
-    etag = ('Etag', _tiddler_etag(tiddler))
+    etag = ('Etag', _tiddler_etag(environ, tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]
     if etag:
         response.append(etag)
@@ -353,7 +353,7 @@ def _validate_tiddler_headers(environ, tiddler):
     b) we have edit contention when trying to write.
     """
     request_method = environ['REQUEST_METHOD']
-    tiddler_etag = _tiddler_etag(tiddler)
+    tiddler_etag = _tiddler_etag(environ, tiddler)
 
     logging.debug('attempting to validate %s with revision %s',
             tiddler.title, tiddler.revision)
@@ -376,11 +376,22 @@ def _validate_tiddler_headers(environ, tiddler):
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         logging.debug('attempting to validate incoming etag: %s against %s',
                 incoming_etag, tiddler_etag)
-        if incoming_etag and incoming_etag != tiddler_etag:
+        if incoming_etag and not _etag_write_match(incoming_etag, tiddler_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
     etag = ('Etag', '%s' % tiddler_etag)
     return last_modified, etag
+
+
+def _etag_write_match(incoming_etag, server_etag):
+    """
+    Compare two tiddler etags for a satisfactory match
+    for a PUT or DELETE. This means comparing without the
+    content type that _may_ be on the end.
+    """
+    incoming_etag = incoming_etag.split(';', 1)[0].strip('"')
+    server_etag = server_etag.split(';', 1)[0].strip('"')
+    return (incoming_etag == server_etag)
 
 
 def _send_tiddler(environ, start_response, tiddler):
@@ -478,18 +489,19 @@ def _new_tiddler_etag(tiddler):
     yet exist. This is a bastardization of ETag handling
     but is useful for doing edit contention handling.
     """
-    return str('"%s/%s/%s"' %
-            (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
-                urllib.quote(tiddler.title.encode('utf-8'), safe=''),
-                '0'))
+    return str('"%s/%s/%s"' % (web.encode_name(tiddler.bag),
+        web.encode_name(tiddler.title), '0'))
 
 
-def _tiddler_etag(tiddler):
+def _tiddler_etag(environ, tiddler):
     """
     Calculate the ETAG of a tiddler, based on
     bag name, tiddler title and revision.
     """
-    return str('"%s/%s/%s"' %
-            (urllib.quote(tiddler.bag.encode('utf-8'), safe=''),
-                urllib.quote(tiddler.title.encode('utf-8'), safe=''),
-                tiddler.revision))
+    try:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        mime_type = mime_type.split(';', 1)[0].strip()
+    except TypeError:
+        mime_type = ''
+    return str('"%s/%s/%s;%s"' % (web.encode_name(tiddler.bag),
+        web.encode_name(tiddler.title), tiddler.revision, mime_type))

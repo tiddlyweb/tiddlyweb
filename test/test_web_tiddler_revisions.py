@@ -52,7 +52,7 @@ def test_put_tiddler_txt_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
-    assert response['etag'] == '"bag1/TestOne/3"'
+    assert response['etag'] == '"bag1/TestOne/3;text/plain"'
 
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
@@ -80,7 +80,7 @@ def test_get_tiddler_revision_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
             method='GET')
     assert response['status'] == '200'
-    assert response['etag'] == '"bag1/TestOne/3"'
+    assert response['etag'] == '"bag1/TestOne/3;text/html"'
 
 def test_get_tiddler_revision_4_fail():
     http = httplib2.Http()
@@ -153,17 +153,18 @@ def test_etag_generation():
     from tiddlyweb.web.handler.tiddler import _tiddler_etag
     from tiddlyweb.model.bag import Bag
     from tiddlyweb.model.tiddler import Tiddler
+    from tiddlyweb.config import config
 
     tiddler = Tiddler('monkey', 'bar')
-    etag = _tiddler_etag(tiddler)
+    etag = _tiddler_etag({'tiddlyweb.config': config}, tiddler)
 
-    assert etag == '"bar/monkey/0"'
+    assert etag == '"bar/monkey/0;"'
 
     bag = Bag('bar')
     store.put(bag)
     store.put(tiddler)
-    etag = _tiddler_etag(tiddler)
-    assert etag == '"bar/monkey/1"'
+    etag = _tiddler_etag({'tiddlyweb.config': config}, tiddler)
+    assert etag == '"bar/monkey/1;"'
 
 
 def test_post_revision_etag_handling():
