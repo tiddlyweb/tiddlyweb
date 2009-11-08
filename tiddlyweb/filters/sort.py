@@ -16,16 +16,13 @@ is reversed.
 """
 
 
-def date_to_canonical(x):
+def date_to_canonical(datestring):
     """
     Take a string of 14 or less digits
     and turn it into 14 digits for the
     sake of comparing tiddler dates.
     """
-    gap = 14 - len(x)
-    if gap > 0:
-        x = x + '0' * gap
-    return x
+    return datestring.ljust(14, '0')
 
 
 ATTRIBUTE_SORT_KEY = {
@@ -42,12 +39,12 @@ def sort_parse(attribute):
     if attribute.startswith('-'):
         attribute = attribute.replace('-', '', 1)
 
-        def sorter(tiddlers, indexable=False, environ={}):
+        def sorter(tiddlers, indexable=False, environ=None):
             return sort_by_attribute(attribute, tiddlers, reverse=True)
 
     else:
 
-        def sorter(tiddlers, indexable=False, environ={}):
+        def sorter(tiddlers, indexable=False, environ=None):
             return sort_by_attribute(attribute, tiddlers)
 
     return sorter
@@ -63,12 +60,12 @@ def sort_by_attribute(attribute, tiddlers, reverse=False):
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
-    def key_gen(x):
+    def key_gen(tiddler):
         try:
-            return func(getattr(x, attribute))
+            return func(getattr(tiddler, attribute))
         except AttributeError:
             try:
-                return func(x.fields[attribute])
+                return func(tiddler.fields[attribute])
             except KeyError, exc:
                 raise AttributeError('no attribute: %s, %s' % (attribute, exc))
 

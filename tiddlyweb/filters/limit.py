@@ -22,7 +22,7 @@ def limit_parse(count='0'):
     index = int(index)
     count = int(count)
 
-    def limiter(tiddlers, indexable=False, environ={}):
+    def limiter(tiddlers, indexable=False, environ=None):
         return limit(tiddlers, index=index, count=count)
 
     return limiter

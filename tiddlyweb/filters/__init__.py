@@ -87,7 +87,7 @@ FILTER_PARSERS = {
         }
 
 
-def parse_for_filters(query_string, environ={}):
+def parse_for_filters(query_string, environ=None):
     """
     Take a string that looks like a CGI query
     string and parse if for filters. Return
@@ -95,6 +95,9 @@ def parse_for_filters(query_string, environ={}):
     a string of whatever was in the query string that
     did not result in a filter.
     """
+    if environ == None:
+        environ = {}
+
     if ';' in query_string:
         strings = query_string.split(';')
     else:
@@ -138,10 +141,9 @@ def recursive_filter(filters, tiddlers, indexable=False):
     except ValueError:
         active_filter = current_filter
         environ = {}
-        pass
     try:
-        return recursive_filter(filters, active_filter(tiddlers, indexable, environ),
-                indexable=False)
+        return recursive_filter(filters, active_filter(tiddlers, indexable,
+            environ), indexable=False)
     except FilterIndexRefused, exc:
         filters.insert(0, current_filter)
         return recursive_filter(filters, tiddlers, indexable=False)
