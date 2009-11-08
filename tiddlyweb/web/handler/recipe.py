@@ -8,13 +8,13 @@ import urllib
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.model.policy import \
-        create_policy_check, UserRequiredError, ForbiddenError
+from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoRecipeError, NoBagError, \
         StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP409, HTTP415, HTTP404
 from tiddlyweb.web.sendtiddlers import send_tiddlers
+from tiddlyweb.web.listentities import list_entities
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.validator import validate_recipe, InvalidBagError
@@ -110,28 +110,10 @@ def list_recipes(environ, start_response):
     Get a list of all recipes the current user can read.
     """
     store = environ['tiddlyweb.store']
-    recipes = store.list_recipes()
-    kept_recipes = []
-    for recipe in recipes:
-        try:
-            recipe = store.get(recipe)
-            recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
-            kept_recipes.append(recipe)
-        except(UserRequiredError, ForbiddenError):
-            pass
-
     serialize_type, mime_type = web.get_serialize_type(environ)
-    start_response("200 OK", [('Content-Type', mime_type),
-                ('Vary', 'Accept')])
-
     serializer = Serializer(serialize_type, environ)
-
-    try:
-        output = serializer.list_recipes(kept_recipes)
-    except NoSerializationError:
-        raise HTTP415('Content type not supported: %s' % mime_type)
-
-    return [output]
+    return list_entities(environ, start_response, mime_type, store.list_recipes,
+            serializer.list_recipes)
 
 
 def put(environ, start_response):

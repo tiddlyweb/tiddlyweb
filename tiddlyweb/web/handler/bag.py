@@ -9,12 +9,12 @@ These need some refactoring.
 import urllib
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.policy import \
-        create_policy_check, UserRequiredError, ForbiddenError
+from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
+from tiddlyweb.web.listentities import list_entities
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP409, HTTP415
 from tiddlyweb.web.validator import validate_bag, InvalidBagError
 
@@ -94,28 +94,10 @@ def list_bags(environ, start_response):
     List all the bags that the current user can read.
     """
     store = environ['tiddlyweb.store']
-    bags = store.list_bags()
-    kept_bags = []
-    for bag in bags:
-        try:
-            bag.skinny = True
-            bag = store.get(bag)
-            bag.policy.allows(environ['tiddlyweb.usersign'], 'read')
-            kept_bags.append(bag)
-        except(UserRequiredError, ForbiddenError):
-            pass
-
     serialize_type, mime_type = web.get_serialize_type(environ)
-    start_response("200 OK", [('Content-Type', mime_type),
-                ('Vary', 'Accept')])
     serializer = Serializer(serialize_type, environ)
-
-    try:
-        output = serializer.list_bags(kept_bags)
-    except NoSerializationError, exc:
-        raise HTTP415('Content type not supported: %s, %a' % (mime_type, exc))
-
-    return [output]
+    return list_entities(environ, start_response, mime_type, store.list_bags,
+            serializer.list_bags)
 
 
 def put(environ, start_response):
