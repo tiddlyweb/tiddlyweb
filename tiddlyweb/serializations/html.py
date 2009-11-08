@@ -17,9 +17,7 @@ class Serialization(SerializationInterface):
     """
 
     def __init__(self, environ=None):
-        if environ is None:
-            environ = {}
-        self.environ = environ
+        SerializationInterface.__init__(self, environ)
         self.environ['tiddlyweb.title'] = ''
         self.environ['tiddlyweb.links'] = []
 

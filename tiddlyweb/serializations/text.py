@@ -56,6 +56,9 @@ class Serialization(SerializationInterface):
         """
 
         def _handle_headers(recipe, header):
+            """
+            Parse recipe headers from text.
+            """
             headers = header.split('\n')
             for field, value in [x.split(': ', 1) for x in headers]:
                 if field == 'policy':
