@@ -363,12 +363,13 @@ def _validate_tiddler_headers(environ, tiddler):
     if request_method == 'GET':
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
         if incoming_etag:
-            logging.debug('attempting to validate incoming etag(GET): %s against %s',
-                    incoming_etag, tiddler_etag)
+            logging.debug('attempting to validate incoming etag(GET):'
+                '%s against %s', incoming_etag, tiddler_etag)
             if incoming_etag == tiddler_etag:
                 raise HTTP304(incoming_etag)
         else:
-            last_modified_string = web.http_date_from_timestamp(tiddler.modified)
+            last_modified_string = web.http_date_from_timestamp(
+                    tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
             incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
             if incoming_modified and \
@@ -378,8 +379,8 @@ def _validate_tiddler_headers(environ, tiddler):
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
-        logging.debug('attempting to validate incoming etag(PUT): %s against %s',
-                incoming_etag, tiddler_etag)
+        logging.debug('attempting to validate incoming etag(PUT):'
+            '%s against %s', incoming_etag, tiddler_etag)
         if incoming_etag and not _etag_write_match(incoming_etag, tiddler_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
@@ -421,18 +422,7 @@ def _send_tiddler(environ, start_response, tiddler):
 
     # If we have content that doesn't look like wikitext,
     # we send it out straight up rather than using the serializer.
-    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
-        mime_type = tiddler.type
-        content = tiddler.text
-    else:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = tiddler
-
-        try:
-            content = serializer.to_string()
-        except TiddlerFormatError, exc:
-            raise HTTP415(exc)
+    content, mime_type = _get_tiddler_content(environ, tiddler)
 
     vary_header = ('Vary', 'Accept')
     cache_header = ('Cache-Control', 'no-cache')
@@ -445,6 +435,26 @@ def _send_tiddler(environ, start_response, tiddler):
     start_response("200 OK", response)
 
     return [content]
+
+
+def _get_tiddler_content(environ, tiddler):
+    """
+    Extract the content of the tiddler, either straight up if
+    the content is not considered text, or serialized if it is
+    """
+    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
+        mime_type = tiddler.type
+        content = tiddler.text
+    else:
+        serialize_type, mime_type = web.get_serialize_type(environ)
+        serializer = Serializer(serialize_type, environ)
+        serializer.object = tiddler
+
+        try:
+            content = serializer.to_string()
+        except TiddlerFormatError, exc:
+            raise HTTP415(exc)
+    return content, mime_type
 
 
 def _not_wikitext(tiddler, config):
@@ -503,7 +513,7 @@ def _tiddler_etag(environ, tiddler):
     bag name, tiddler title and revision.
     """
     try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
+        mime_type = web.get_serialize_type(environ)[1]
         mime_type = mime_type.split(';', 1)[0].strip()
     except TypeError:
         mime_type = ''
