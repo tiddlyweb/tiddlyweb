@@ -59,8 +59,8 @@ def server(args):
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print >> sys.stderr, 'you must include both a hostname or ip number and a ' \
-                'port if using arguments: %s' % exc
+            print >> sys.stderr, ('you must include both a hostname or ip '
+                'number and a port if using arguments: %s' % exc)
             usage()
         else:
             pass
@@ -105,7 +105,8 @@ def addrole(args):
         username = args.pop(0)
         roles = args[0:]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, 'you must provide a user and at least one role: %s' % exc
+        print >> sys.stderr, ('you must provide a user and at least one '
+            'role: %s' % exc)
         usage()
 
     try:
@@ -128,7 +129,8 @@ def adduser(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, 'you must include at least a username and password: %s' % exc
+        print >> sys.stderr, ('you must include at least a username and '
+                'password: %s' % exc)
         usage()
 
     try:
@@ -192,7 +194,8 @@ def tiddler(args):
     try:
         bag_name, tiddler_name = args[0:3]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, 'you must include a tiddler and bag name: %s' % exc
+        print >> sys.stderr, ('you must include a tiddler and bag '
+            'name: %s' % exc)
         usage()
 
     from tiddlyweb.model.tiddler import Tiddler
@@ -315,6 +318,9 @@ def handle(args):
 
 
 def _external_load(args):
+    """
+    Load a module from by request of the command line.
+    """
     module = args[2]
     args = [args[0]] + args[3:]
 
@@ -322,17 +328,20 @@ def _external_load(args):
         path, module = os.path.split(module)
         module = module.replace('.py', '')
         sys.path.insert(0, path)
-        imported_config = _import_module(module)
+        imported_config = _import_module_config(module)
         sys.path.pop(0)
     else:
-        imported_config = _import_module(module)
+        imported_config = _import_module_config(module)
 
     merge_config(config, imported_config)
 
     return args
 
 
-def _import_module(module):
+def _import_module_config(module):
+    """
+    Import the module named module to get at its config.
+    """
     imported_module = __import__(module, {}, {}, ['config'])
     return imported_module.config
 

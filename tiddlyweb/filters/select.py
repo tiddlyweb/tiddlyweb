@@ -50,27 +50,30 @@ def select_parse(command):
     if args.startswith('!'):
         args = args.replace('!', '', 1)
 
-        def selector(tiddlers, indexable=False, environ={}):
+        def selector(tiddlers, indexable=False, environ=None):
             return select_by_attribute(attribute, args, tiddlers, negate=True)
 
     elif args.startswith('<'):
         args = args.replace('<', '', 1)
 
-        def selector(tiddlers, indexable=False, environ={}):
+        def selector(tiddlers, indexable=False, environ=None):
             return select_relative_attribute(attribute, args, tiddlers,
                     lesser=True)
 
     elif args.startswith('>'):
         args = args.replace('>', '', 1)
 
-        def selector(tiddlers, indexable=False, environ={}):
+        def selector(tiddlers, indexable=False, environ=None):
             return select_relative_attribute(attribute, args, tiddlers,
                     greater=True)
 
     else:
 
-        def selector(tiddlers, indexable=False, environ={}):
-            return select_by_attribute(attribute, args, tiddlers, indexable=indexable, environ=environ)
+        def selector(tiddlers, indexable=False, environ=None):
+            if environ == None:
+                environ = {}
+            return select_by_attribute(attribute, args, tiddlers,
+                    indexable=indexable, environ=environ)
 
     return selector
 
@@ -114,12 +117,15 @@ def default_func(tiddler, attribute, value):
             return False
 
 
-def select_by_attribute(attribute, value, tiddlers, negate=False, indexable=False, environ={}):
+def select_by_attribute(attribute, value, tiddlers, negate=False,
+        indexable=None, environ=None):
     """
     Select tiddlers where value of attribute matches the provide value.
 
     If negate is true, get those that don't match.
     """
+    if environ == None:
+        environ = {}
 
     if indexable:
         indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
