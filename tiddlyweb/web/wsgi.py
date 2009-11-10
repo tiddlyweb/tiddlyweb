@@ -135,6 +135,10 @@ class SimpleLog(object):
             req_uri += '?'+environ['QUERY_STRING']
 
         def replacement_start_response(status, headers, exc_info=None):
+            """
+            We need to gaze at the content-length, if set, to
+            write log info.
+            """
             size = None
             for name, value in headers:
                 if name.lower() == 'content-length':
@@ -235,21 +239,21 @@ class PermissionsExceptor(object):
             # scripts and javascript, where follow
             # behavior is inconsistent.
             if environ['REQUEST_METHOD'] == 'GET':
-                url = self._challenge_url(environ)
+                url = _challenge_url(environ)
                 raise HTTP302(url)
             raise HTTP403(exc)
 
-    def _challenge_url(self, environ):
-        """
-        Generate the URL of the challenge system
-        so that GET requests are redirected to the
-        right place.
-        """
-        script_name = environ.get('SCRIPT_NAME', '')
-        query_string = environ.get('QUERY_STRING', None)
-        redirect = script_name
-        if query_string:
-            redirect += '?%s' % query_string
-        redirect = urllib.quote(redirect, safe='')
-        return '%s/challenge?tiddlyweb_redirect=%s' % (
-                server_base_url(environ), redirect)
+def _challenge_url(environ):
+    """
+    Generate the URL of the challenge system
+    so that GET requests are redirected to the
+    right place.
+    """
+    script_name = environ.get('SCRIPT_NAME', '')
+    query_string = environ.get('QUERY_STRING', None)
+    redirect = script_name
+    if query_string:
+        redirect += '?%s' % query_string
+    redirect = urllib.quote(redirect, safe='')
+    return '%s/challenge?tiddlyweb_redirect=%s' % (
+            server_base_url(environ), redirect)
