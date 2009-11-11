@@ -44,7 +44,7 @@ def test_generated_text():
 
 def test_simple_recipe():
     recipe = Recipe('other')
-    recipe.set_recipe([['bagbuzz', '']])
+    recipe.set_recipe([('bagbuzz', '')])
     recipe.policy.manage = ['a']
     recipe.policy.read = ['b']
     recipe.policy.create = ['c']
@@ -61,7 +61,7 @@ def test_simple_recipe():
     assert recipe == new_recipe, 'recipe and new_recipe have equality'
 
     recipe = Recipe('other')
-    recipe.set_recipe([['bagboom', '']])
+    recipe.set_recipe([('bagboom', '')])
     assert recipe != new_recipe, 'modified recipe not equal new_recipe'
 
 def test_json_recipe():
@@ -69,7 +69,7 @@ def test_json_recipe():
     JSON serializer roundtrips.
     """
     recipe = Recipe('other')
-    recipe.set_recipe([['bagbuzz', '']])
+    recipe.set_recipe([('bagbuzz', '')])
     recipe.policy.manage = ['a']
     recipe.policy.read = ['b']
     recipe.policy.create = ['c']
@@ -82,8 +82,6 @@ def test_json_recipe():
     other_recipe = Recipe('other')
     serializer.object = other_recipe
     serializer.from_string(string)
-
-    assert recipe == other_recipe
 
     serializer.object = other_recipe
     other_string = serializer.to_string()

@@ -168,5 +168,5 @@ class Serialization(SerializationInterface):
                     bag = line
                     filter_string = ''
                 bagname = urllib.unquote(bag.split('/')[2])
-                recipe_lines.append([bagname, filter_string])
+                recipe_lines.append((bagname, filter_string))
         return recipe_lines

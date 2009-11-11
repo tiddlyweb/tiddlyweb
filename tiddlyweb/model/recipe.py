@@ -17,7 +17,7 @@ class Recipe(list):
 
     Each line in the recipe is the combination of a
     bag and a filter string. For this implementation
-    we have a list of lists.
+    we have a list of tuples.
 
     In common usage a recipe contains only strings
     representing bags and filters, but for the

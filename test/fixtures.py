@@ -45,15 +45,15 @@ bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
 
 recipe_list = [
-        [bagone, u'select=title:TiddlerOne'],
-        [bagtwo, u'select=title:TiddlerTwo'],
-        [bagthree, u'select=tag:tagone;select=tag:tagthree']
+        (bagone, u'select=title:TiddlerOne'),
+        (bagtwo, u'select=title:TiddlerTwo'),
+        (bagthree, u'select=tag:tagone;select=tag:tagthree')
         ]
 
 recipe_list_string = [
-        [u'bagone', u'select=title:TiddlerOne'],
-        [u'bagtwo', u'select=title:TiddlerTwo'],
-        [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
+        (u'bagone', u'select=title:TiddlerOne'),
+        (u'bagtwo', u'select=title:TiddlerTwo'),
+        (u'bagthree', u'select=tag:tagone;select=tag:tagthree')
          ]
 
 def _teststore():
@@ -71,7 +71,7 @@ def muchdata(store):
 
     recipe = Recipe('long')
 
-    recipe_list = [[u'bag1', '']]
+    recipe_list = [(u'bag1', '')]
     for numeral in range(0, 30, 2):
         bag_name = u'bag%s' % numeral
         filter_string = u'select=title:tiddler%s' % (numeral % 10)

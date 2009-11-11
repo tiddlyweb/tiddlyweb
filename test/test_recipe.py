@@ -52,7 +52,7 @@ def test_get_recipe_list():
 def test_get_recipe_list_templated_bag():
     recipe = Recipe('tr')
     recipe.set_recipe([
-        ['{{ user }}', '']
+        ('{{ user }}', '')
         ])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][0] == 'testuser'
@@ -61,7 +61,7 @@ def test_get_recipe_list_templated_bag():
 def test_get_recipe_list_templated_filter():
     recipe = Recipe('tr')
     recipe.set_recipe([
-        ['system', 'modifier={{ user }}']
+        ('system', 'modifier={{ user }}')
         ])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser'
@@ -69,7 +69,7 @@ def test_get_recipe_list_templated_filter():
 def test_get_recipe_list_templated_filter():
     recipe = Recipe('tr')
     recipe.set_recipe([
-        ['system', 'modifier={{ user }};creator={{ user }}']
+        ('system', 'modifier={{ user }};creator={{ user }}')
         ])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser;creator=testuser'
@@ -77,7 +77,7 @@ def test_get_recipe_list_templated_filter():
 def test_get_recipe_list_templated_bag_filter():
     recipe = Recipe('tr')
     recipe.set_recipe([
-        ['{{ bagname }}', 'modifier={{ user }}']
+        ('{{ bagname }}', 'modifier={{ user }}')
         ])
     list = recipe.get_recipe({'user': 'testuser', 'bagname': 'foobar'})
     assert list[0][1] == 'modifier=testuser'
@@ -86,7 +86,7 @@ def test_get_recipe_list_templated_bag_filter():
 def test_get_recipe_list_templated_bag_filter_defaulted_bag():
     recipe = Recipe('tr')
     recipe.set_recipe([
-        ['{{ bagname:common }}', 'modifier={{ user }}']
+        ('{{ bagname:common }}', 'modifier={{ user }}')
         ])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser'

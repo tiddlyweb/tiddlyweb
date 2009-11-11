@@ -27,8 +27,8 @@ def test_get_tiddlers_limited():
 
     short_recipe = Recipe(name='foobar')
     short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+        (bagone, ''),
+        (bagfour, 'select=tag:tagone')
         ])
     tiddlers = control.get_tiddlers_from_recipe(short_recipe)
     assert len(tiddlers) == 2, 'tiddler list should be length 2, is %s' % len(tiddlers)
@@ -50,15 +50,15 @@ def test_determine_bag_filtered():
     """
     short_recipe = Recipe(name='foobar')
     short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+        (bagone, ''),
+        (bagfour, 'select=tag:tagone')
         ])
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
 
     short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagthree']
+        (bagone, ''),
+        (bagfour, 'select=tag:tagthree')
         ])
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
@@ -70,15 +70,15 @@ def test_determine_tiddler_from_recipe():
     """
     short_recipe = Recipe(name='foobar')
     short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagone']
+        (bagone, ''),
+        (bagfour, 'select=tag:tagone')
         ])
     bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
 
     short_recipe.set_recipe([
-        [bagone, ''],
-        [bagfour, 'select=tag:tagthree']
+        (bagone, ''),
+        (bagfour, 'select=tag:tagthree')
         ])
     bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
@@ -93,7 +93,7 @@ def test_determine_bag_fail():
 
     lonely_recipe = Recipe(name='thing')
     lonely_recipe.set_recipe([
-        [bagone, 'select=tag:hello']
+        (bagone, 'select=tag:hello')
         ])
 
     lonely_tiddler = Tiddler('lonely')
@@ -102,7 +102,7 @@ def test_determine_bag_fail():
     assert bag.name == bagone.name
 
     lonely_recipe.set_recipe([
-        [bagone, 'select=tag:goodbye']
+        (bagone, 'select=tag:goodbye')
         ])
     py.test.raises(NoBagError,
             'bag = control.determine_bag_for_tiddler(lonely_recipe, lonely_tiddler)')
