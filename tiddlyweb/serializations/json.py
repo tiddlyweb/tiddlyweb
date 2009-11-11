@@ -61,15 +61,12 @@ class Serialization(SerializationInterface):
         the policy.
         """
         info = simplejson.loads(input_string)
-        try:
-            recipe.set_recipe(info['recipe'])
-            recipe.desc = info['desc']
-            if info['policy']:
-                recipe.policy = Policy()
-                for key, value in info['policy'].items():
-                    recipe.policy.__setattr__(key, value)
-        except KeyError:
-            pass
+        recipe.set_recipe(info.get('recipe', []))
+        recipe.desc = info.get('desc', '')
+        if info.get('policy', {}):
+            recipe.policy = Policy()
+            for key, value in info['policy'].items():
+                recipe.policy.__setattr__(key, value)
         return recipe
 
     def bag_as(self, bag):
@@ -89,7 +86,7 @@ class Serialization(SerializationInterface):
         Turn a JSON string into a bag.
         """
         info = simplejson.loads(input_string)
-        if info['policy']:
+        if info.get('policy', {}):
             bag.policy = Policy()
             for key, value in info['policy'].items():
                 bag.policy.__setattr__(key, value)
