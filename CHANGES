@@ -1,3 +1,10 @@
+0.9.75 Wed Nov 11 14:24:41 GMT 2009
+
+  * Fix a bug in ETag validation and caching that meant some resources
+    were returning 304 when of different content-types that the cached
+    resource.
+  * Many more pylint based cleanups.
+
 0.9.74 Wed Nov  4 16:54:32 GMT 2009
 
   * Special case indexed filtering. See pydoc tiddlyweb.filters.
