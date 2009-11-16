@@ -44,6 +44,7 @@ def test_tiddler_full_create():
             'tiddler has a bag of bagone'
     assert tiddler.revision == 0, \
             'tiddler revision is 0'
+    assert tiddler.creator == 'test@example.com'
 
 def test_tiddler_revision_create():
     """

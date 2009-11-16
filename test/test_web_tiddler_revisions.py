@@ -18,6 +18,14 @@ tags: [[tag three]]
 Hello, I'm John Smith \xbb and I have something to sell.
 """
 
+text_put_body2=u"""modifier: Frank
+created: 
+modified: 200803030303
+tags: [[tag three]]
+
+Hello, I'm John Smith \xbb and I have something to sell.
+"""
+
 def setup_module(module):
     from tiddlyweb.web import serve
     # we have to have a function that returns the callable,
@@ -54,6 +62,14 @@ def test_put_tiddler_txt_3():
     assert response['status'] == '204'
     assert response['etag'] == '"bag1/TestOne/3;text/plain"'
 
+def test_put_tiddler_txt_4():
+    http = httplib2.Http()
+    encoded_body = text_put_body2.encode('utf-8')
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    assert response['status'] == '204'
+    assert response['etag'] == '"bag1/TestOne/4;text/plain"'
+
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions',
@@ -82,9 +98,9 @@ def test_get_tiddler_revision_3():
     assert response['status'] == '200'
     assert response['etag'] == '"bag1/TestOne/3;text/html"'
 
-def test_get_tiddler_revision_4_fail():
+def test_get_tiddler_revision_5_fail():
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/4',
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/5',
             method='GET')
     assert response['status'] == '404'
 
@@ -123,7 +139,7 @@ def test_get_tiddler_revision_list_json():
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
-    assert len(info) == 3
+    assert len(info) == 4
 
 def test_tiddler_revision_list_json_fat():
     http = httplib2.Http()
@@ -132,8 +148,12 @@ def test_tiddler_revision_list_json_fat():
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
-    assert len(info) == 3
-    assert info[0]['revision'] == 3
+    assert len(info) == 4
+    assert info[0]['revision'] == 4
+    assert info[0]['modifier'] == 'Frank'
+    assert info[0]['creator'] == 'JohnSmith'
+    assert info[-1]['modifier'] == 'JohnSmith'
+    assert info[-1]['creator'] == 'JohnSmith'
     assert 'I have something to sell' in info[0]['text']
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',

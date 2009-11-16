@@ -74,6 +74,7 @@ class Tiddler(object):
             'created',
             'modified',
             'modifier',
+            'creator',
             'tags',
             'fields',
             'text',
@@ -96,9 +97,10 @@ class Tiddler(object):
         self.title = title
         self.bag = bag
 
+        self._creator = ''
+        self.modifier = None
         self.created = ''
         self.modified = current_timestring()
-        self.modifier = None
         self.tags = []
         self.fields = {}
         self.text = ''
@@ -107,6 +109,16 @@ class Tiddler(object):
         self.recipe = None
         # reference to the store which 'got' us
         self.store = None
+
+    def _get_creator(self):
+        if not self._creator:
+            self._creator = self.modifier
+        return self._creator
+
+    def _set_creator(self, creator):
+        self._creator = creator
+
+    creator = property(_get_creator, _set_creator)
 
     def __repr__(self):
         """

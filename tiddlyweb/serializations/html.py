@@ -167,10 +167,11 @@ class Serialization(SerializationInterface):
         The string that starts the div that contains a tiddler.
         """
         return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
-                'modifier="%s" modified="%s" created="%s" tags="%s" %s>' % \
+                'modifier="%s" creator="%s" modified="%s" created="%s" tags="%s" %s>' % \
                     (escape_attribute_value(tiddler.title),
                         tiddler.revision,
                         escape_attribute_value(tiddler.modifier),
+                        escape_attribute_value(tiddler.creator),
                         tiddler.modified,
                         tiddler.created,
                         escape_attribute_value(self.tags_as(tiddler.tags)),
