@@ -20,6 +20,9 @@ class StorageInterface(object):
     There are also four supporting methods, list_recipes(),
     list_bags(), list_users(), and list_tiddler_revisions() that provide
     methods for presenting a collection.
+
+    It is useful to understand the classes in the tiddlyweb.model
+    package when implementing new StorageInterface classes.
     """
 
     def __init__(self, environ=None):
@@ -87,9 +90,9 @@ class StorageInterface(object):
 
     def tiddler_get(self, tiddler):
         """
-        Get a tiddler from the store,
-        returning a populated tiddler
-        object.
+        Get a tiddler from the store, returning a populated tiddler
+        object. tiddler.creator and tiddler.created are based on
+        the modifier and modified of the first revision of a tiddler.
         """
         raise StoreMethodNotImplemented
 
