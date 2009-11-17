@@ -21,13 +21,13 @@ cleanagain:
 test: 
 	py.test -x test
 
-makebundle:
-	pip bundle tiddlyweb-`date +%F`.bundle tiddlyweb
+makebundle: clean dist
+	pip bundle tiddlyweb-`date +%F`.bundle dist/tiddlyweb*.tar.gz
 
 uploadbundle:
 	scp -P 8022 *.bundle cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist
 
-bundle: makebundle uploadbundle
+bundle: clean dist makebundle uploadbundle
 
 dist: test
 	python setup.py sdist

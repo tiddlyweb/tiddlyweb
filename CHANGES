@@ -1,3 +1,8 @@
+0.9.76 Tue Nov 17 12:10:18 GMT 2009
+
+  * Add creator attribute to tiddler.
+  * Fix JSON serialization bug with recipes.
+
 0.9.75 Wed Nov 11 14:24:41 GMT 2009
 
   * Fix a bug in ETag validation and caching that meant some resources
