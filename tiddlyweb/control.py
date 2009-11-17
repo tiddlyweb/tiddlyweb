@@ -143,10 +143,16 @@ def filter_tiddlers_from_bag(bag, filters):
 
 
 def _recipe_template(environ):
+    """
+    provide a means to specify custom {{ key }} values in recipes
+    which are then replaced with the value specified in environ['tiddlyweb.recipe_template']
+    """
     template = {}
-    try:
-        if environ:
-            template['user'] = environ['tiddlyweb.usersign']['name']
-    except KeyError:
-        pass
+    if environ:
+        template = environ.get('tiddlyweb.recipe_template', {})
+        try:     
+                template['user'] = environ['tiddlyweb.usersign']['name']
+        except KeyError:
+            pass
+        
     return template
