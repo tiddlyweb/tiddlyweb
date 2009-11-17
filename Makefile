@@ -9,15 +9,25 @@ clean:
 	rm -r dist || true
 	rm -r build || true
 	rm -r tiddlyweb.egg-info || true
+	rm *.bundle || true
 
 cleanagain:
 	find . -name "*.pyc" |xargs rm || true
 	rm -r dist || true
 	rm -r build || true
 	rm -r tiddlyweb.egg-info || true
+	rm *.bundle || true
 
 test: 
 	py.test -x test
+
+makebundle:
+	pip bundle tiddlyweb-`date +%F`.bundle tiddlyweb
+
+uploadbundle:
+	scp -P 8022 *.bundle cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist
+
+bundle: makebundle uploadbundle
 
 dist: test
 	python setup.py sdist
