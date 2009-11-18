@@ -5,7 +5,10 @@ tiddlyweb.query in the same structure that
 cgi.py users (dictionary of lists).
 """
 
-import cgi
+try:
+    from urlparse import parse_qs
+except ImportError:
+    from cgi import parse_qs
 
 from tiddlyweb.filters import parse_for_filters
 
@@ -34,10 +37,10 @@ class Query(object):
                 content_type.startswith('application/x-www-form-urlencoded'):
             length = environ['CONTENT_LENGTH']
             content = environ['wsgi.input'].read(int(length))
-            posted_data = cgi.parse_qs(content, keep_blank_values=True)
+            posted_data = parse_qs(content, keep_blank_values=True)
             _update_tiddlyweb_query(environ, posted_data)
         filters, leftovers = parse_for_filters(environ.get('QUERY_STRING', ''), environ)
-        query_data = cgi.parse_qs(leftovers, keep_blank_values=True)
+        query_data = parse_qs(leftovers, keep_blank_values=True)
         _update_tiddlyweb_query(environ, query_data)
         environ['tiddlyweb.filters'] = filters
 

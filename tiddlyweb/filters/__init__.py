@@ -57,7 +57,10 @@ may raise FilterIndexRefused and the normal filtering
 process will be performed.
 """
 
-import cgi
+try:
+    from urlparse import parse_qs
+except ImportError:
+    from cgi import parse_qs
 
 from tiddlyweb.filters.select import select_by_attribute, \
         select_relative_attribute, select_parse
@@ -106,7 +109,7 @@ def parse_for_filters(query_string, environ=None):
     filters = []
     leftovers = []
     for string in strings:
-        query = cgi.parse_qs(string)
+        query = parse_qs(string)
         try:
             key, value = query.items()[0]
 

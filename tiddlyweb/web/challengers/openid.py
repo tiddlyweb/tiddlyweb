@@ -4,7 +4,11 @@ challenger that does checkid_setup.
 
 Is OpenID 1.
 """
-import cgi
+try:
+    from urlparse import parse_qs
+except ImportError:
+    from cgi import parse_qs
+
 import logging
 import random
 import urllib
@@ -76,7 +80,7 @@ class Challenger(ChallengerInterface):
         cookie to the user.
         """
         request_info = environ['tiddlyweb.query']
-        parsed_return_to = cgi.parse_qs(request_info['openid.return_to'][0])
+        parsed_return_to = parse_qs(request_info['openid.return_to'][0])
         openid_server = parsed_return_to['openid_server'][0]
         redirect = parsed_return_to['tiddlyweb_redirect'][0]
         data = {
