@@ -16,7 +16,7 @@ class UserExtract(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        userinfo = {"name": u'GUEST'}
+        userinfo = {"name": u'GUEST', "roles": []}
 
         candidate_userinfo = _try_extractors(environ, start_response)
 
