@@ -229,10 +229,8 @@ def read_config():
         merge_config(config, custom_config, reconfig=False)
 
 
-if os.path.exists('tiddlywebconfig.py'):
-    read_config()
-else:
-    config = DEFAULT_CONFIG
+config = DEFAULT_CONFIG
+read_config()
 
 # Avoid writing a tiddlyweb.log under some circumstances
 try:
