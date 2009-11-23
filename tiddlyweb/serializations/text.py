@@ -142,12 +142,13 @@ class Serialization(SerializationInterface):
                     (tiddler.title, exc))
 
 
-        # we used to raise TiddlerFormatError but there are
-        # currently no rules for that...
-
-        tag_string = tiddler.tags
-        if tag_string:
-            tiddler.tags = self.as_tags(tag_string)
+        # In some strange situations tiddler.tags will not
+        # be a string here, so will still have its default
+        # value of [], which we want to keep.
+        if isinstance(tiddler.tags, basestring):
+            tag_string = tiddler.tags
+            if tag_string:
+                tiddler.tags = self.as_tags(tag_string)
 
         return tiddler
 
