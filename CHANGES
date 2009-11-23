@@ -1,3 +1,8 @@
+0.9.77 Mon Nov 23 10:38:03 GMT 2009
+
+  * Added tiddlyweb.recipe_template dict environment variable processing 
+    for managing templates in recipes.
+
 0.9.76 Tue Nov 17 12:10:18 GMT 2009
 
   * Add creator attribute to tiddler.
