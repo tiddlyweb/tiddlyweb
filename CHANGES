@@ -1,3 +1,7 @@
+0.9.78 not yet
+
+  * Improved error message handling for twanager.
+
 0.9.77 Mon Nov 23 10:38:03 GMT 2009
 
   * Added tiddlyweb.recipe_template dict environment variable processing 
