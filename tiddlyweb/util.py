@@ -48,7 +48,7 @@ def std_error_message(message):
         try:
             print >> sys.stderr, message
         except UnicodeDecodeError:
-            print >> sys.stderr, 'there was an error but terminal character encoding will not let me display it'
+            print >> sys.stderr, 'cannot display message due to mismatching terminal character encoding'
 
 
 def write_utf8_file(filename, content):
