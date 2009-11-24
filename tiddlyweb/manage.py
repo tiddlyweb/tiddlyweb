@@ -12,6 +12,7 @@ from tiddlyweb.config import config, merge_config
 from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
+from tiddlyweb.util import std_error_message
 
 from tiddlyweb import __version__ as VERSION
 
@@ -131,16 +132,13 @@ def adduser(args):
     except IndexError:
         roles = []
 
-    try:
-        store = _store()
-        user = User(username)
-        user.set_password(password)
-        for role in roles:
-            user.add_role(role)
-        store.put(user)
-    except Exception, exc:
-        print >> sys.stderr, 'unable to create or update user: %s' % exc
-        raise
+    # this will raise an except to be caught by the handler
+    store = _store()
+    user = User(username)
+    user.set_password(password)
+    for role in roles:
+        user.add_role(role)
+    store.put(user)
 
     return True
 
@@ -254,21 +252,10 @@ def ltiddlers(args):
 def usage(*args):
     """List this help"""
     if args:
-        error_message('ERROR: ' + ' '.join(args) + '\n')
+        std_error_message('ERROR: ' + ' '.join(args) + '\n')
     for key in sorted(COMMANDS):
-        error_message('%10s: %s' % (key, COMMANDS[key].description))
+        std_error_message('%10s: %s' % (key, COMMANDS[key].description))
     sys.exit(1)
-
-
-def error_message(message):
-    try:
-        print >> sys.stderr, message.encode('utf-8', 'replace')
-    # there's a mismatch between our encoding and the output terminal
-    except UnicodeDecodeError:
-        try:
-            print >> sys.stderr, message
-        except UnicodeDecodeError:
-            print >> sys.stderr, 'there was an error but terminal character encoding will not let me display it'
 
 
 def handle(args):

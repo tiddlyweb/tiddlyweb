@@ -7,6 +7,7 @@ import selector
 import sys
 
 from tiddlyweb.config import config
+from tiddlyweb.util import std_error_message
 
 
 def load_app(prefix=''):
@@ -54,7 +55,7 @@ def start_cherrypy():
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
         logging.debug('starting cherrypy at %s:%s', hostname, port)
-        print >> sys.stderr, "Starting CherryPy at %s:%s" % (hostname, port)
+        std_error_message("Starting CherryPy at %s:%s" % (hostname, port))
         server.start()
     except KeyboardInterrupt:
         server.stop()

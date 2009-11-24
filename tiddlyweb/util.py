@@ -4,6 +4,7 @@ Miscellaneous utility functions for TiddlyWeb.
 
 import codecs
 import os
+import sys
 
 try:
     from hashlib import sha1
@@ -34,6 +35,20 @@ def read_utf8_file(filename):
     content = source_file.read()
     source_file.close()
     return content
+
+
+def std_error_message(message):
+    """
+    Display a message on the stderr console.
+    """
+    try:
+        print >> sys.stderr, message.encode('utf-8', 'replace')
+    # there's a mismatch between our encoding and the output terminal
+    except UnicodeDecodeError:
+        try:
+            print >> sys.stderr, message
+        except UnicodeDecodeError:
+            print >> sys.stderr, 'there was an error but terminal character encoding will not let me display it'
 
 
 def write_utf8_file(filename, content):
