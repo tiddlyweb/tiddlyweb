@@ -261,7 +261,14 @@ def usage(*args):
 
 
 def error_message(message):
-    print >> sys.stderr, message.encode('utf-8', 'replace')
+    try:
+        print >> sys.stderr, message.encode('utf-8', 'replace')
+    # there's a mismatch between our encoding and the output terminal
+    except UnicodeDecodeError:
+        try:
+            print >> sys.stderr, message
+        except UnicodeDecodeError:
+            print >> sys.stderr, 'there was an error but terminal character encoding will not let me display it'
 
 
 def handle(args):
