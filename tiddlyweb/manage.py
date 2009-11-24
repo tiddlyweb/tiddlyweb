@@ -59,9 +59,8 @@ def server(args):
         hostname, port = args[0:2]
     except(IndexError, ValueError), exc:
         if 0 < len(args) < 2:
-            print >> sys.stderr, ('you must include both a hostname or ip '
+            usage('you must include both a hostname or ip '
                 'number and a port if using arguments: %s' % exc)
-            usage()
         else:
             pass
 
@@ -82,8 +81,7 @@ def userpass(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, 'you must provide a user and a password: %s' % exc
-        usage()
+        usage('you must provide both a user and a password')
 
     try:
         store = _store()
@@ -92,8 +90,7 @@ def userpass(args):
         user.set_password(password)
         store.put(user)
     except Exception, exc:
-        print >> sys.stderr, 'unable to set password for user: %s' % exc
-        usage()
+        usage('unable to set password for user: %s' % exc)
 
     return True
 
@@ -105,9 +102,8 @@ def addrole(args):
         username = args.pop(0)
         roles = args[0:]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, ('you must provide a user and at least one '
+        usage('you must provide a user and at least one '
             'role: %s' % exc)
-        usage()
 
     try:
         store = _store()
@@ -117,8 +113,7 @@ def addrole(args):
             user.add_role(role)
         store.put(user)
     except Exception, exc:
-        print >> sys.stderr, 'unable to add role to user: %s' % exc
-        usage()
+        usage('unable to add role to user: %s' % exc)
 
     return True
 
@@ -129,9 +124,7 @@ def adduser(args):
     try:
         username, password = args[0:2]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, ('you must include at least a username and '
-                'password: %s' % exc)
-        usage()
+        usage('you must include at least a username and password')
 
     try:
         roles = args[2:]
@@ -158,8 +151,7 @@ def recipe(args):
     try:
         recipe_name = args[0]
     except IndexError, exc:
-        print >> sys.stderr, 'you must include a recipe name: %s' % exc
-        usage()
+        usage('you must include a recipe name')
 
     from tiddlyweb.model.recipe import Recipe
 
@@ -175,8 +167,7 @@ def bag(args):
     try:
         bag_name = args[0]
     except IndexError, exc:
-        print >> sys.stderr, 'you must include a bag name: %s' % exc
-        usage()
+        usage('you must include a bag name')
 
     from tiddlyweb.model.bag import Bag
 
@@ -194,9 +185,7 @@ def tiddler(args):
     try:
         bag_name, tiddler_name = args[0:3]
     except (IndexError, ValueError), exc:
-        print >> sys.stderr, ('you must include a tiddler and bag '
-            'name: %s' % exc)
-        usage()
+        usage('you must include a tiddler and bag name')
 
     from tiddlyweb.model.tiddler import Tiddler
 
@@ -258,16 +247,21 @@ def ltiddlers(args):
                 tiddler = store.get(tiddler)
                 print '  ', tiddler.title, tiddler.modifier
     except NoBagError, exc:
-        print >> sys.stderr, 'unable to inspect bag %s: %s' % (bag.name, exc)
-        usage()
+        usage('unable to inspect bag %s: %s' % (bag.name, exc))
 
 
 @make_command()
 def usage(*args):
     """List this help"""
+    if args:
+        error_message('ERROR: ' + ' '.join(args) + '\n')
     for key in sorted(COMMANDS):
-        print >> sys.stderr, '%10s: %s' % (key, COMMANDS[key].description)
+        error_message('%10s: %s' % (key, COMMANDS[key].description))
     sys.exit(1)
+
+
+def error_message(message):
+    print >> sys.stderr, message.encode('utf-8', 'replace')
 
 
 def handle(args):
@@ -296,7 +290,7 @@ def handle(args):
     try:
         candidate_command = args[1]
     except IndexError:
-        usage([])
+        usage('Missing command')
 
     try:
         args = args[2:]
@@ -308,13 +302,11 @@ def handle(args):
             logging.debug('running command %s with %s', candidate_command, args)
             COMMANDS[candidate_command](args)
         except IndexError, exc:
-            print >> sys.stderr, 'Incorect number of arguments: %s' % exc
-            usage()
-        except IOError, exc:
-            print >> sys.stderr, 'IOError: %s' % exc
-            usage()
+            usage('Incorect number of arguments')
+        except Exception, exc:
+            usage('%s: %s' % (exc.__class__.__name__, ', '.join(exc.args)))
     else:
-        usage(args)
+        usage('No matching command found')
 
 
 def _external_load(args):
