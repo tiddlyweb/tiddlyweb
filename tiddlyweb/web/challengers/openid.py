@@ -9,6 +9,7 @@ try:
 except ImportError:
     from cgi import parse_qs
 
+from urlparse import urlparse, urlunparse
 import logging
 import random
 import urllib
@@ -191,8 +192,14 @@ OpenID: <input name="openid" size="60" />
                     environ, start_response, redirect,
                     message='Unable to find openid server')
 
-        request_uri = ('%s?openid.mode=checkid_setup&openid.identity=%s'
-                '&openid.return_to=%s' % (link, urllib.quote(openid, safe=''),
+        # parse the openid.server link to separate out any possible query
+        # string
+        scheme, netloc, path, params, link_query, frag = urlparse(link)
+        link = urlunparse((scheme, netloc, path, params, '', ''))
+        if link_query:
+            link_query = link_query + '&'
+        request_uri = ('%s?%sopenid.mode=checkid_setup&openid.identity=%s'
+                '&openid.return_to=%s' % (link, link_query, urllib.quote(openid, safe=''),
                     urllib.quote(self._return_to(environ, redirect, link,
                     original_openid), safe='')))
 
