@@ -15,6 +15,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
+from tiddlyweb.util import sha
 from tiddlyweb.web.http import \
         HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
@@ -517,5 +518,7 @@ def _tiddler_etag(environ, tiddler):
         mime_type = mime_type.split(';', 1)[0].strip()
     except TypeError:
         mime_type = ''
+    username = environ.get('tiddlyweb.usersign', {}).get('name', '')
+    hash = sha('%s:%s' % (username, mime_type)).hexdigest()
     return str('"%s/%s/%s;%s"' % (web.encode_name(tiddler.bag),
-        web.encode_name(tiddler.title), tiddler.revision, mime_type))
+        web.encode_name(tiddler.title), tiddler.revision, hash))
