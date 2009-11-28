@@ -9,6 +9,7 @@ import httplib2
 import simplejson
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.util import sha
 
 from fixtures import muchdata, reset_textstore, _teststore
 
@@ -30,7 +31,9 @@ def test_get_sorted_tiddlers():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
             method='GET')
+    etag_hash = sha('GUEST:application/json').hexdigest()
     assert response['status'] == '200'
+    assert etag_hash in response['etag']
     tiddlers = simplejson.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
 
