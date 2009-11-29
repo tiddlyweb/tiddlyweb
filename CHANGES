@@ -1,6 +1,9 @@
-0.9.78 not yet
+0.9.78 Sun Nov 29 15:01:35 GMT 2009
 
   * Improved error message handling for twanager.
+  * Make ETags for single tiddlers and tiddler collectins unique by current
+    user.
+  * Support openid.server hrefs which contain query parameters.
 
 0.9.77 Mon Nov 23 10:38:03 GMT 2009
 
