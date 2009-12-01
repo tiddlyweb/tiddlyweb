@@ -141,6 +141,26 @@ def _determine_tiddler(environ, bag_finder):
             raise HTTP404('%s not a revision of %s: %s' %
                     (revision, tiddler_name, exc))
 
+    # We have to deserialize the tiddler here so that
+    # PUTs to recipes are aware of values like tags when
+    # doing filter checks.
+    if environ['REQUEST_METHOD'] == 'PUT':
+        length, content_type = _length_and_type(environ)
+
+        if content_type != 'text/plain' and content_type != 'application/json':
+            tiddler.type = content_type
+
+        content = environ['wsgi.input'].read(int(length))
+
+        if not tiddler.type:
+            serialize_type = web.get_serialize_type(environ)[0]
+            serializer = Serializer(serialize_type, environ)
+            serializer.object = tiddler
+            serializer.from_string(content.decode('utf-8'))
+        else:
+            tiddler.text = content
+
+
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
@@ -274,24 +294,10 @@ def _put_tiddler(environ, start_response, tiddler):
     not.
     """
     store = environ['tiddlyweb.store']
-    length, content_type = _length_and_type(environ)
-
-    if content_type != 'text/plain' and content_type != 'application/json':
-        tiddler.type = content_type
 
     try:
         bag = Bag(tiddler.bag)
         tiddler.revision = _check_and_validate_tiddler(environ, bag, tiddler)
-
-        content = environ['wsgi.input'].read(int(length))
-
-        if not tiddler.type:
-            serialize_type = web.get_serialize_type(environ)[0]
-            serializer = Serializer(serialize_type, environ)
-            serializer.object = tiddler
-            serializer.from_string(content.decode('utf-8'))
-        else:
-            tiddler.text = content
 
         user = environ['tiddlyweb.usersign']['name']
         if not user == 'GUEST':

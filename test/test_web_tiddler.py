@@ -19,6 +19,8 @@ from fixtures import muchdata, reset_textstore, _teststore
 import tiddlyweb.stores.text
 
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
 
@@ -265,6 +267,50 @@ def test_get_tiddler_cached():
     assert response['status'] == '304'
     etag_hash = sha('GUEST:application/json').hexdigest()
     assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+
+def test_put_tiddler_recipe_with_filter():
+    recipe = Recipe('recipe1')
+    bag1 = Bag('bag1')
+    bag2 = Bag('bag2')
+    recipe.set_recipe([('bag1', ''), ('bag2', 'select=tag:foo')])
+    store.put(bag1)
+    store.put(bag2)
+    store.put(recipe)
+
+    tiddler_json_one =simplejson.dumps(dict(text='hello', tags=[]))
+    tiddler_json_two =simplejson.dumps(dict(text='hello', tags=['foo']))
+
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/recipe1/tiddlers/tiddler_one',
+            headers={'Content-Type': 'application/json'},
+            method='PUT',
+            body=tiddler_json_one)
+    assert response['status'] == '204'
+    assert 'bag1' in response['etag']
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/recipe1/tiddlers/tiddler_two',
+            headers={'Content-Type': 'application/json'},
+            method='PUT',
+            body=tiddler_json_two)
+    assert response['status'] == '204'
+    assert 'bag2' in response['etag']
+
+    tiddler = Tiddler('tiddler_three', 'bag2')
+    tiddler.tags = ['foo']
+    store.put(tiddler)
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/recipe1/tiddlers/tiddler_two',
+            headers={'Content-Type': 'application/json'},
+            method='PUT',
+            body=tiddler_json_two)
+    assert response['status'] == '204'
+    assert 'bag2' in response['etag']
+
+
+
 
 
 def test_put_tiddler_cache_fakey():
