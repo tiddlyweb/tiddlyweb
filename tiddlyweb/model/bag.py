@@ -34,6 +34,9 @@ class Bag(object):
         self.searchbag = searchbag
         self.store = None
 
+    def __repr__(self):
+        return '%s:%s' % (self.name, object.__repr__(self))
+
     def _tiddler_copy(self, tiddler):
         """
         Set the bag attribute on a non tmpbag tiddler to this bag's name.
