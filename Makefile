@@ -37,6 +37,9 @@ upload: clean test cleanagain pypi peermore
 pypi:
 	python setup.py sdist upload
 
+py2app: clean
+	python setup.py py2app
+
 peermore:
 	scp -P 8022 dist/tiddlyweb-*.gz cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist
 	scp -P 8022 CHANGES cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist/CHANGES.tiddlyweb

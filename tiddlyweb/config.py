@@ -121,6 +121,9 @@ import sys
 try:
     from pkg_resources import resource_filename
     URLS_MAP = resource_filename('tiddlyweb', 'urls.map')
+except NotImplementedError:
+    # we seem to be in a py2app perhaps, so go local to RESOURCES
+    URLS_MAP = 'urls.map'
 except ImportError:
     URLS_MAP = 'tiddlyweb/urls.map'
 
