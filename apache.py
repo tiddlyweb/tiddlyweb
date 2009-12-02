@@ -2,24 +2,42 @@
 This is a handler for running tiddlyweb
 under apache using either mod_wsgi or mod_python.
 
-mod_wsgi is a better choice.
+Of those two, mod_wsgi is a better choice.
+
+This file has also been used with Passenger:
+http://www.modrails.com/
+
+There are configuration variables to set after
+this docstring.
 
 ##################################################
 For mod_wsgi
 
 Your apache must be configured to use mod_wsgi.
 
-Add the following to server config (in a virtual host section)
+Add the following to server config (this is a real virtual host,
+the name have been changed...):
 
-    WSGIDaemonProcess teamtasks.peermore.com user=cdent processes=2 threads=15
-    WSGIProcessGroup teamtasks.peermore.com
-    WSGIScriptAlias /peerwiki /home/cdent/public_html/teamtasks.peermore.com/apache.py
+<VirtualHost *>
+    ServerName barney.example.com
+    AllowEncodedSlashes On
+    Alias /static /home/barney/public_html/barney.example.com/static
+    <Directory /home/barney/public_html/barney.example.com/static>
+        Order allow,deny
+        Allow from all
+    </Directory>
+    ErrorLog /var/log/apache2/barney.example.com-error.log
+    CustomLog /var/log/apache2/barney.example.com-access.log combined
+    WSGIDaemonProcess barney.example.com user=barney processes=1 threads=10
+    WSGIProcessGroup barney.example.com
+    WSGIPassAuthorization On
+    WSGIScriptAlias /wiki /home/barney/tiddlywebs/barney.example.com/apache.py
+</VirtualHost>
 
-Replace teamtasks.peermore.com with the hostname being used.
-Replace cdent with the user the process should run as. Remove
-    the user=cdent part if you want to run as the the apache user.
-Replace /peerwiki with the prefix to the tiddlyweb.
-Replace the path after /peerwiki with the path to apache.py which
+Replace barney.example.com with the hostname being used.
+Replace barney with the user the process should run as.
+Replace /wiki with the prefix to the tiddlyweb.
+Replace the path after /wiki with the path to apache.py which
     should live in in the tiddlyweb instance directory.
 
 If you wish to use the http_basic extractor when using
@@ -28,6 +46,14 @@ mod_wsgi, you need to set
     WSGIPassAuthorization On
 
 in the apache configuration.
+
+In WSGIScriptAlias you may use just / for the path, but it
+can result in challenges for hosting other things on the same
+VirtualHost.
+
+For more mod_wsgi configuration info see:
+
+    http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives
 
 ##################################################
 For mod_python
@@ -39,21 +65,21 @@ What this script does is provide a callable
 mod_python.
 
 A gateway from mod_python to WSGI is required
-it can be found at
-http://www.aminus.net/wiki/ModPythonGateway
+it can be found at:
 
-Adjust the apache configuration something like
-the following:
+    http://www.aminus.net/wiki/ModPythonGateway
 
-        <Location /peerwiki>
-                PythonPath "['/home/cdent/www/peerwiki'] + sys.path"
-                PythonOption SCRIPT_NAME /peerwiki
+Adjust your apache configuration similar to the following:
+
+        <Location /wiki>
+                PythonPath "['/home/barney/www/wiki'] + sys.path"
+                PythonOption SCRIPT_NAME /wiki
                 SetHandler python-program
                 PythonHandler modpython_gateway::handler
                 PythonOption wsgi.application apache::application
         </Location>
 
-In your own setup the name twtest and the path to it
+In your own setup the name wiki and the path to it
 would need to be changed.
 
 ##################################################
@@ -61,7 +87,7 @@ For both
 
 In tiddlywebconfig.py:
 
-    set server_prefix to the prefix above (/peerwiki)
+    set server_prefix to the prefix above (/wiki)
     set server_host to the scheme, hostname and port being used
     set css_uri to a css file if you have one
 
@@ -72,21 +98,37 @@ server_host is a complex data structure as follows:
         'host': 'some.example.com',
         'port': '80',
     }
+##################################################
 
+If you are using Passenger, thus far the only 
+testing has been with Dreamhost's setup. For that
+rename apache.py to passenger_wsgi.py and configure
+as described here:
+
+    http://wiki.dreamhost.com/Passenger_WSGI
 """
 
 import os
 import sys
 
-# chdir to the location of this running script so we have access
-# to tiddlywebconfig.py and plugins
+# If on a hosting service with Passenger and you want to
+# use a custom Python, you may uncomment the following. Change
+# INTERP to your preferred Python.
+#INTERP = "/home/osmosoft/bin/python"
+#if sys.executable != INTERP: os.execl(INTERP, INTERP, *sys.argv)
+
+# chdir to the location of tiddlywebconfig.py
+# If you're apache.py is in the same dir as tiddlywebconfig.py
+# you can leave this as is
+# dirname = '/some/path'
 dirname = os.path.dirname(__file__)
 if dirname:
     os.chdir(dirname)
+sys.path.insert(0, dirname)
 
 # you may wish to change this path
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
-sys.path.insert(0, dirname)
+
 
 from tiddlyweb.web import serve
 
@@ -95,5 +137,5 @@ def start():
     app = serve.load_app()
     return app
 
-# apache code will look for a callable # named application
+# web server code will look for a callable # named application
 application = start()
