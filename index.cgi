@@ -57,6 +57,7 @@ tiddlywebconfig_dir = '/home/cdent/hot_html/tw'
 
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 os.chdir(tiddlywebconfig_dir)
+sys.path.insert(0, tiddlywebconfig_dir)
 
 from wsgiref.handlers import BaseCGIHandler
 from tiddlyweb.web import serve
