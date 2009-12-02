@@ -117,6 +117,9 @@ import sys
 #INTERP = "/home/osmosoft/bin/python"
 #if sys.executable != INTERP: os.execl(INTERP, INTERP, *sys.argv)
 
+# XXX The paths below could come from os.environ via
+# http://httpd.apache.org/docs/2.2/mod/mod_env.html
+
 # chdir to the location of tiddlywebconfig.py
 # If you're apache.py is in the same dir as tiddlywebconfig.py
 # you can leave this as is
