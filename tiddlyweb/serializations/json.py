@@ -40,7 +40,11 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        return simplejson.dumps([self._tiddler_dict(tiddler) for
+        try:
+            fat = self.environ['tiddlyweb.query'].get('fat', [False])[0]
+        except KeyError:
+            fat = False
+        return simplejson.dumps([self._tiddler_dict(tiddler, fat) for
             tiddler in bag.gen_tiddlers()])
 
     def recipe_as(self, recipe):
@@ -99,13 +103,7 @@ class Serialization(SerializationInterface):
         a tiddler, as described by _tiddler_dict
         plus the text of the tiddler.
         """
-        tiddler_dict = self._tiddler_dict(tiddler)
-        if (tiddler.type and tiddler.type != 'None' and not
-                tiddler.type.startswith('text/')):
-            tiddler_dict['text'] = b64encode(tiddler.text)
-        else:
-            tiddler_dict['text'] = tiddler.text
-
+        tiddler_dict = self._tiddler_dict(tiddler, fat=True)
         return simplejson.dumps(tiddler_dict)
 
     def as_tiddler(self, tiddler, input_string):
@@ -124,7 +122,7 @@ class Serialization(SerializationInterface):
 
         return tiddler
 
-    def _tiddler_dict(self, tiddler):
+    def _tiddler_dict(self, tiddler, fat=False):
         """
         Select fields from a tiddler to create
         a dictonary.
@@ -136,12 +134,12 @@ class Serialization(SerializationInterface):
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute, None)
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
-        try:
-            fat = self.environ['tiddlyweb.query'].get('fat', [None])[0]
-            if fat:
+        if fat:
+            if (tiddler.type and tiddler.type != 'None' and not
+                    tiddler.type.startswith('text/')):
+                wanted_info['text'] = b64encode(tiddler.text)
+            else:
                 wanted_info['text'] = tiddler.text
-        except KeyError:
-            pass # tiddlyweb.query is not there
         return dict(wanted_info)
 
     def _tiddler_permissions(self, tiddler):
