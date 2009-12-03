@@ -427,8 +427,7 @@ def _send_tiddler(environ, start_response, tiddler):
     # we need the revision, which is sad
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
-    # If we have content that doesn't look like wikitext,
-    # we send it out straight up rather than using the serializer.
+    # make choices between binary or serialization
     content, mime_type = _get_tiddler_content(environ, tiddler)
 
     vary_header = ('Vary', 'Accept')
@@ -449,18 +448,24 @@ def _get_tiddler_content(environ, tiddler):
     Extract the content of the tiddler, either straight up if
     the content is not considered text, or serialized if it is
     """
-    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
-        mime_type = tiddler.type
-        content = tiddler.text
-    else:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = tiddler
+    serializers = environ['tiddlyweb.config']['serializers']
+    default_serialize_type = serializers['default'][0]
+    serialize_type, mime_type = web.get_serialize_type(environ)
 
-        try:
-            content = serializer.to_string()
-        except TiddlerFormatError, exc:
-            raise HTTP415(exc)
+    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
+        if (serialize_type == default_serialize_type or
+                serialize_type == tiddler.type):
+            mime_type = tiddler.type
+            content = tiddler.text
+            return content, mime_type
+
+    serializer = Serializer(serialize_type, environ)
+    serializer.object = tiddler
+
+    try:
+        content = serializer.to_string()
+    except TiddlerFormatError, exc:
+        raise HTTP415(exc)
     return content, mime_type
 
 

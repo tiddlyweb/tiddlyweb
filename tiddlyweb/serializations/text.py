@@ -5,6 +5,8 @@ Text based serializers.
 import urllib
 import simplejson
 
+from base64 import b64encode, b64decode
+
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
@@ -101,6 +103,9 @@ class Serialization(SerializationInterface):
         """
         if not tiddler.text:
             tiddler.text = ''
+        if (tiddler.type and tiddler.type != 'None' and not
+                tiddler.type.startswith('text/')):
+            tiddler.text = b64encode(tiddler.text)
         return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
                 '%s\ntags: %s%s\n%s\n' %
                 (tiddler.modifier, tiddler.created, tiddler.modified,
@@ -150,6 +155,11 @@ class Serialization(SerializationInterface):
             if tag_string:
                 tiddler.tags = self.as_tags(tag_string)
 
+        # If this is a binary tiddler, clean up.
+        if (tiddler.type and tiddler.type != 'None' and not
+                tiddler.type.startswith('text/')):
+            tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
+        
         return tiddler
 
     def _recipe_lines(self, body):
