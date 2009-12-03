@@ -46,6 +46,10 @@ class HTTP302(HTTPException):
         return ['']
 
 
+class HTTP303(HTTP302):
+    status = '303 See Other'
+
+
 class HTTP304(HTTPException):
     status = '304 Not Modified'
 
