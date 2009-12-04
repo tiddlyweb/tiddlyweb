@@ -10,8 +10,6 @@ from setuptools import setup, find_packages
 
 from tiddlyweb import __version__ as VERSION
 
-APP = ['macapp.py']
-
 setup(name = 'tiddlyweb',
         version = VERSION,
         description = 'An optionally headless, extensible RESTful datastore for tiddlers: bits of stuff.',
@@ -24,12 +22,5 @@ setup(name = 'tiddlyweb',
         platforms = 'Posix; MacOS X; Windows',
         install_requires = ['setuptools', 'selector', 'simplejson', 'html5lib', 'cherrypy'],
         include_package_data = True,
-        app=APP,
-        options={'py2app': {
-            'argv_emulation': True,
-            'resources': ['tiddlyweb/urls.map'],
-            'packages': find_packages(exclude=['test', 'test.*', 'profile']),
-            },
-            },
         zip_safe=False,
         )
