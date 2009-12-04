@@ -1,3 +1,7 @@
+0.9.80 Fri Dec  4 13:02:48 GMT 2009
+
+  * Remove py2app stuff, it causes install errors.
+
 0.9.79 Thu Dec  3 15:57:42 GMT 2009
 
   * Correct handling of PUT of tiddler to recipe.
