@@ -206,9 +206,12 @@ def lusers(args):
 
 @make_command()
 def lbags(args):
-    """List all the bags on the system."""
+    """List all the bags on the system. [<bag> <bag> <bag>] to limit."""
+    from tiddlyweb.model.bag import Bag
     store = _store()
-    bags = store.list_bags()
+    bags = [Bag(name) for name in args]
+    if not bags:
+        bags = store.list_bags()
     serializer = Serializer('json')
     for bag in bags:
         bag = store.get(bag)
@@ -220,12 +223,17 @@ def lbags(args):
 
 @make_command()
 def lrecipes(args):
-    """List all the recipes on the system."""
+    """List all the recipes on the system. [<recipe> <recipe> <recipe>] to limit."""
+    from tiddlyweb.model.recipe import Recipe
     store = _store()
-    recipes = store.list_recipes()
+    recipes = [Recipe(name) for name in args]
+    if not recipes:
+        recipes = store.list_recipes()
     for recipe in recipes:
         recipe = store.get(recipe)
         print recipe.name, recipe.policy.owner
+        for bag, filter in recipe.get_recipe():
+            print '\t', bag, filter
 
 
 @make_command()
