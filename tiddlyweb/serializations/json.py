@@ -40,10 +40,7 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        try:
-            fat = self.environ['tiddlyweb.query'].get('fat', [False])[0]
-        except KeyError:
-            fat = False
+        fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
         return simplejson.dumps([self._tiddler_dict(tiddler, fat) for
             tiddler in bag.gen_tiddlers()])
 

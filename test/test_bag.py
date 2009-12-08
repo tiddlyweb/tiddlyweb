@@ -33,6 +33,10 @@ def test_bag_name():
 
     assert bag.name == 'foobag', 'the bag should be named foobag'
 
+def test_bag_repr():
+    bag_repr = '%s' % bag
+    assert 'foobag:<tiddlyweb.model.bag.Bag' in bag_repr
+
 def test_bag_adjusts_tiddler():
     """
     Confirm adding a tiddler to a bag updates the tiddler object

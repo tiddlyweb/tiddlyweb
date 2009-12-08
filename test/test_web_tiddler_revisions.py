@@ -162,6 +162,11 @@ def test_tiddler_revision_list_json_fat():
     assert info[-1]['creator'] == 'JohnSmith'
     assert 'I have something to sell' in info[0]['text']
 
+    response, resp_content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'text/plain'}, body=content)
+    assert response['status'] == '415'
+    assert 'application/json required' in resp_content
+
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'application/json'}, body=content)
 
