@@ -451,10 +451,12 @@ def _get_tiddler_content(environ, tiddler):
     serializers = environ['tiddlyweb.config']['serializers']
     default_serialize_type = serializers['default'][0]
     serialize_type, mime_type = web.get_serialize_type(environ)
+    extension = environ.get('tiddlyweb.extension')
 
     if _not_wikitext(tiddler, environ['tiddlyweb.config']):
         if (serialize_type == default_serialize_type or
-                serialize_type == tiddler.type):
+                mime_type.startswith(tiddler.type) or
+                extension == None or extension == 'html'):
             mime_type = tiddler.type
             content = tiddler.text
             return content, mime_type
