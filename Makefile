@@ -22,7 +22,10 @@ test:
 	py.test -x test
 
 makebundle: clean dist
-	pip bundle tiddlyweb-`date +%F`.bundle dist/tiddlyweb*.tar.gz
+	# work around errors in pip when bundling a tarball by instead
+	# bundling the thing at pypy
+	#pip bundle tiddlyweb-`date +%F`.bundle dist/tiddlyweb*.tar.gz
+	pip bundle tiddlyweb-`date +%F`.bundle tiddlyweb
 
 uploadbundle:
 	scp -P 8022 *.bundle cdent@heavy.peermore.com:public_html/tiddlyweb.peermore.com/dist
