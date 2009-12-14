@@ -306,7 +306,12 @@ def handle(args):
         except IndexError, exc:
             usage('Incorect number of arguments')
         except Exception, exc:
-            usage('%s: %s' % (exc.__class__.__name__, ', '.join(exc.args)))
+            if config.get('twanager.tracebacks', False):
+                raise
+            import traceback
+            logging.error('twanager error with command "%s %s"\n%s', candidate_command,
+                    args, traceback.format_exc())
+            usage('%s: %s' % (exc.__class__.__name__, exc.args))
     else:
         usage('No matching command found')
 
