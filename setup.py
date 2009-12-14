@@ -1,7 +1,5 @@
 """
 Try to setup tiddlyweb.
-Seem to be missing some details on how to make
-this the best it can be.
 """
 
 import os
