@@ -29,7 +29,7 @@
 # URLs that produce collections of Tiddlers accept a
 # filter query_string to filter the results.
 
-/
+[/]
     GET tiddlyweb.web.handler:root
 # A root page for the system pointing to /bags and /recipes.
 # Supports GET:  text/html

@@ -17,8 +17,8 @@ from tiddlyweb.web import serve
 from test.simpleplugin import PluginHere
 
 expected_content="""<ul id="root" class="listing">
-<li><a href="recipes">recipes</a></li>
-<li><a href="bags">bags</a></li>
+<li><a href="/recipes">recipes</a></li>
+<li><a href="/bags">bags</a></li>
 </ul>"""
 
 def setup_module(module):

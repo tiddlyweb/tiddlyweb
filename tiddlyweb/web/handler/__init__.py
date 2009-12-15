@@ -5,8 +5,8 @@ for this.
 """
 
 ROOT_PAGE = """<ul id="root" class="listing">
-<li><a href="recipes">recipes</a></li>
-<li><a href="bags">bags</a></li>
+<li><a href="%s/recipes">recipes</a></li>
+<li><a href="%s/bags">bags</a></li>
 </ul>"""
 
 
@@ -17,4 +17,5 @@ def root(environ, start_response):
 
     start_response("200 OK", [('Content-Type', 'text/html; charset=UTF-8')])
     environ['tiddlyweb.title'] = 'Home'
-    return [ROOT_PAGE]
+    server_prefix = environ['tiddlyweb.config']['server_prefix']
+    return [ROOT_PAGE % (server_prefix, server_prefix)]
