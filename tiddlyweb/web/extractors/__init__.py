@@ -2,6 +2,8 @@
 The ExtractorInterface class.
 """
 
+from tiddlyweb.model.user import User
+from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
 class ExtractorInterface(object):
     """
@@ -20,3 +22,15 @@ class ExtractorInterface(object):
         a user.
         """
         pass
+
+    def load_user(self, environ, usersign):
+        """
+        Check the user database for this user, to get roles and such.
+        """
+        user = User(usersign)
+        try:
+            store = environ['tiddlyweb.store']
+            user = store.get(user)
+        except (StoreMethodNotImplemented, NoUserError):
+            pass
+        return user

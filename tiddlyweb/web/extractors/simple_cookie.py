@@ -6,8 +6,6 @@ named 'tiddlyweb_user'.
 import Cookie
 import logging
 
-from tiddlyweb.model.user import User
-from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.web.http import HTTP400
 from tiddlyweb.util import sha
@@ -37,11 +35,7 @@ class Extractor(ExtractorInterface):
             store = environ['tiddlyweb.store']
 
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
-                user = User(usersign)
-                try:
-                    user = store.get(user)
-                except (StoreMethodNotImplemented, NoUserError):
-                    pass
+                user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
         except Cookie.CookieError, exc:
             raise HTTP400('malformed cookie: %s' % exc)

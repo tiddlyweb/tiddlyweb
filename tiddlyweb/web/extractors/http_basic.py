@@ -6,8 +6,6 @@ header and looks for Basic auth information therein.
 from base64 import b64decode
 
 from tiddlyweb.web.extractors import ExtractorInterface
-from tiddlyweb.model.user import User
-from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
 
 class Extractor(ExtractorInterface):
@@ -28,12 +26,7 @@ class Extractor(ExtractorInterface):
         if user_info.startswith('Basic'):
             user_info = user_info.strip().split(' ')[1]
             candidate_username, password = b64decode(user_info).split(':')
-            try:
-                store = environ['tiddlyweb.store']
-                user = User(candidate_username)
-                user = store.get(user)
-                if user.check_password(password):
-                    return {"name": user.usersign, "roles": user.list_roles()}
-            except (NoUserError, StoreMethodNotImplemented):
-                pass
+            user = self.load_user(environ, candidate_username)
+            if user.check_password(password):
+                return {"name": user.usersign, "roles": user.list_roles()}
         return False
