@@ -1,3 +1,7 @@
+0.9.82 Wed Dec 16 14:55:25 GMT 2009
+
+  * Do not require initial / to get root page of server.
+
 0.9.81 Mon Dec 14 14:46:09 GMT 2009
 
   * Continued improvements of binary tiddler handling.
