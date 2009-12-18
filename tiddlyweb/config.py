@@ -131,6 +131,8 @@ except ImportError:
 import urllib
 urllib.always_safe += (".!~*'()")
 
+from tiddlyweb.util import merge_config, read_config
+
 # The server filters (the WSGI MiddleWare)
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
@@ -194,46 +196,8 @@ DEFAULT_CONFIG = {
         }
 
 
-def merge_config(global_config, additional_config, reconfig=True):
-    """
-    Update the global_config with the additional data provided in
-    the dict additional_config. If reconfig is True, then reread
-    tiddlywebconfig.py so its overrides continue to operate.
-    """
-    for key in additional_config:
-        try:
-            # If this config item is a dict, update to
-            # update it
-            additional_config[key].keys()
-            try:
-                global_config[key].update(additional_config[key])
-            except KeyError:
-                global_config[key] = additional_config[key]
-        except AttributeError:
-            global_config[key] = additional_config[key]
-    if reconfig:
-        read_config()
-
-
-def read_config():
-    """
-    Read in a local configuration override, called
-    tiddlywebconfig.py, from the current working directory.
-    If the file can't be imported an exception will be
-    thrown, preventing unexpected results.
-
-    What is expected in the override file is a dict with the
-    name config.
-    """
-    if os.path.exists('tiddlywebconfig.py'):
-        from tiddlywebconfig import config as custom_config
-        global config
-        config = DEFAULT_CONFIG
-        merge_config(config, custom_config, reconfig=False)
-
-
 config = DEFAULT_CONFIG
-read_config()
+read_config(config)
 
 # Avoid writing a tiddlyweb.log under some circumstances
 try:
