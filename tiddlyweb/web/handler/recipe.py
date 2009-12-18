@@ -144,6 +144,8 @@ def put(environ, start_response):
         content = environ['wsgi.input'].read(int(length))
         serializer.from_string(content.decode('utf-8'))
 
+        recipe.policy.owner = usersign['name']
+
         _validate_recipe(environ, recipe)
         store.put(recipe)
     except TypeError:
