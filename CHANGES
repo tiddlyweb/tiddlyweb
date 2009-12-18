@@ -1,3 +1,8 @@
+0.9.83 Fri Dec 18 08:10:24 GMT 2009
+
+  * Set owner on recipe policy.
+  * Move merge_config to tiddlyweb.util.
+
 0.9.82 Wed Dec 16 14:55:25 GMT 2009
 
   * Do not require initial / to get root page of server.
