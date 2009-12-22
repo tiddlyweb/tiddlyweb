@@ -80,6 +80,8 @@ class Serialization(SerializationInterface):
 
         if 'bag_name' in routing_args and not 'tiddler_name' in routing_args:
             bag_name = routing_args['bag_name']
+            bag_name = urllib.unquote(bag_name)
+            bag_name = unicode(bag_name, 'utf-8')
             bag_link = ('<div class="baglink"><a href="%s/bags/%s">'
                     'Bag %s</a></div>' % (
                     self._server_prefix(), encode_name(bag_name), bag_name))
