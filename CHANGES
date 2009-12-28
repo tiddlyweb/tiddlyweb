@@ -1,3 +1,8 @@
+0.9.85 Mon Dec 28 13:39:33 GMT 2009
+
+  * Moving twanager commands into tiddlyweb/commands.py to
+    avoid import cycles.
+
 0.9.84 Tue Dec 22 18:54:12 GMT 2009
 
   * Unicode bag names causing error.
