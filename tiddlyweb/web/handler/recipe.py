@@ -60,7 +60,7 @@ def get(environ, start_response):
     start_response("200 OK",
             [('Content-Type', mime_type),
                 ('Vary', 'Accept')])
-    return [content]
+    return content
 
 
 def get_tiddlers(environ, start_response):

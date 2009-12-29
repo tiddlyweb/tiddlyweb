@@ -29,4 +29,4 @@ def list_entities(environ, start_response, mime_type, store_list,
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
 
-    return [output]
+    return output

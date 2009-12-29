@@ -59,7 +59,7 @@ def send_tiddlers(environ, start_response, bag):
                 (serialize_type, mime_type, exc))
 
     start_response("200 OK", response)
-    return [output]
+    return output
 
 
 def _validate_tiddler_list(environ, bag):

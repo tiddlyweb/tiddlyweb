@@ -440,7 +440,7 @@ def _send_tiddler(environ, start_response, tiddler):
         response.append(etag)
     start_response("200 OK", response)
 
-    return [content]
+    return content
 
 
 def _get_tiddler_content(environ, tiddler):
