@@ -1,3 +1,7 @@
+0.9.86 Tue Dec 29 16:15:51 GMT 2009
+
+  * Let handlers return bare iterators instead of explicit lists.
+
 0.9.85 Mon Dec 28 13:39:33 GMT 2009
 
   * Moving twanager commands into tiddlyweb/commands.py to
