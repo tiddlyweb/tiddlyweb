@@ -5,6 +5,7 @@ from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP415
 
+
 def list_entities(environ, start_response, mime_type, store_list,
         serializer_list):
     """

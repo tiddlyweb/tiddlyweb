@@ -18,6 +18,7 @@ class LockError(IOError):
     """
     pass
 
+
 def merge_config(global_config, additional_config, reconfig=True):
     """
     Update the global_config with the additional data provided in
@@ -37,6 +38,7 @@ def merge_config(global_config, additional_config, reconfig=True):
             global_config[key] = additional_config[key]
     if reconfig:
         read_config(global_config)
+
 
 def read_config(global_config):
     """

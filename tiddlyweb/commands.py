@@ -8,13 +8,19 @@ import sys
 from tiddlyweb.store import Store, NoBagError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.user import User
-from tiddlyweb.util import std_error_message
 
 from tiddlyweb.manage import make_command, usage
 
 from tiddlyweb import __version__ as VERSION
 
+
+config = None
+
+
 def init(config_in):
+    """
+    Set the config, via plugin init scheme.
+    """
     global config
     config = config_in
 
@@ -133,10 +139,10 @@ def recipe(args):
 
     from tiddlyweb.model.recipe import Recipe
 
-    recipe = Recipe(recipe_name)
+    new_recipe = Recipe(recipe_name)
 
     content = sys.stdin.read()
-    _put(recipe, unicode(content, 'UTF-8'), 'text')
+    _put(new_recipe, unicode(content, 'UTF-8'), 'text')
 
 
 @make_command()
@@ -149,12 +155,12 @@ def bag(args):
 
     from tiddlyweb.model.bag import Bag
 
-    bag = Bag(bag_name)
+    new_bag = Bag(bag_name)
 
     content = sys.stdin.read()
     if not len(content):
         content = '{"policy":{}}'
-    _put(bag, unicode(content, 'UTF-8'), 'json')
+    _put(new_bag, unicode(content, 'UTF-8'), 'json')
 
 
 @make_command()
@@ -167,11 +173,11 @@ def tiddler(args):
 
     from tiddlyweb.model.tiddler import Tiddler
 
-    tiddler = Tiddler(tiddler_name)
-    tiddler.bag = bag_name
+    new_tiddler = Tiddler(tiddler_name)
+    new_tiddler.bag = bag_name
 
     content = sys.stdin.read()
-    _put(tiddler, unicode(content, 'UTF-8'), 'text')
+    _put(new_tiddler, unicode(content, 'UTF-8'), 'text')
 
 
 @make_command()
@@ -193,10 +199,10 @@ def lbags(args):
     if not bags:
         bags = store.list_bags()
     serializer = Serializer('json')
-    for bag in bags:
-        bag = store.get(bag)
-        serializer.object = bag
-        print 'Name: %s' % bag.name
+    for listed_bag in bags:
+        listed_bag = store.get(listed_bag)
+        serializer.object = listed_bag
+        print 'Name: %s' % listed_bag.name
         print serializer.to_string()
         print
 
@@ -209,11 +215,11 @@ def lrecipes(args):
     recipes = [Recipe(name) for name in args]
     if not recipes:
         recipes = store.list_recipes()
-    for recipe in recipes:
-        recipe = store.get(recipe)
-        print recipe.name, recipe.policy.owner
-        for bag, filter in recipe.get_recipe():
-            print '\t', bag, filter
+    for listed_recipe in recipes:
+        listed_recipe = store.get(listed_recipe)
+        print listed_recipe.name, listed_recipe.policy.owner
+        for recipe_bag, recipe_filter in listed_recipe.get_recipe():
+            print '\t', recipe_bag, recipe_filter
 
 
 @make_command()
@@ -225,15 +231,15 @@ def ltiddlers(args):
     if not bags:
         bags = store.list_bags()
     try:
-        for bag in bags:
-            bag = store.get(bag)
-            print bag.name, bag.policy.owner
-            tiddlers = bag.list_tiddlers()
-            for tiddler in tiddlers:
-                tiddler = store.get(tiddler)
-                print '  ', tiddler.title, tiddler.modifier
+        for listed_bag in bags:
+            listed_bag = store.get(listed_bag)
+            print listed_bag.name, listed_bag.policy.owner
+            tiddlers = listed_bag.list_tiddlers()
+            for listed_tiddler in tiddlers:
+                listed_tiddler = store.get(listed_tiddler)
+                print '  ', listed_tiddler.title, listed_tiddler.modifier
     except NoBagError, exc:
-        usage('unable to inspect bag %s: %s' % (bag.name, exc))
+        usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 
 
 def _put(entity, content, serialization):

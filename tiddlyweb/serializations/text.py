@@ -159,7 +159,7 @@ class Serialization(SerializationInterface):
         if (tiddler.type and tiddler.type != 'None' and not
                 tiddler.type.startswith('text/')):
             tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
-        
+
         return tiddler
 
     def _recipe_lines(self, body):

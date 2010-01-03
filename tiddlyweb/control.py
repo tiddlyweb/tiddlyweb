@@ -150,9 +150,9 @@ def _recipe_template(environ):
     template = {}
     if environ:
         template = environ.get('tiddlyweb.recipe_template', {})
-        try:     
+        try:
                 template['user'] = environ['tiddlyweb.usersign']['name']
         except KeyError:
             pass
-        
+
     return template

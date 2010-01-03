@@ -160,8 +160,6 @@ def _determine_tiddler(environ, bag_finder):
         else:
             tiddler.text = content
 
-
-
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
         recipe_name = urllib.unquote(recipe_name)
@@ -255,7 +253,7 @@ def _length_and_type(environ):
 def _check_and_validate_tiddler(environ, bag, tiddler):
     """
     If the tiddler does not exist, check we have create
-    in the bag, if the tiddler does exist, check we 
+    in the bag, if the tiddler does exist, check we
     have edit. Properly the revision of the tiddler.
     """
     store = environ['tiddlyweb.store']

@@ -99,12 +99,12 @@ class HTMLPresenter(object):
 </html>
 """ % (footer_extra, VERSION, environ['tiddlyweb.usersign']['name'])
 
-    # XXX: to make these stackable this shouldn't just
-    # be a method, we need some kind of registry.
     def header_extra(self, environ):
         """
         Override this in plugins to add to the header.
         """
+        # XXX: to make these stackable this shouldn't just
+        # be a method, we need some kind of registry.
         return ''
 
     def footer_extra(self, environ):
@@ -132,7 +132,7 @@ class SimpleLog(object):
         req_uri = urllib.quote(environ.get('SCRIPT_NAME', '')
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
-            req_uri += '?'+environ['QUERY_STRING']
+            req_uri += '?' + environ['QUERY_STRING']
 
         def replacement_start_response(status, headers, exc_info=None):
             """
@@ -242,6 +242,7 @@ class PermissionsExceptor(object):
                 url = _challenge_url(environ)
                 raise HTTP302(url)
             raise HTTP403(exc)
+
 
 def _challenge_url(environ):
     """

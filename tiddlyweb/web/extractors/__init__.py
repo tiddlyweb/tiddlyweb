@@ -5,6 +5,7 @@ The ExtractorInterface class.
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError, StoreMethodNotImplemented
 
+
 class ExtractorInterface(object):
     """
     An interface for user extraction.

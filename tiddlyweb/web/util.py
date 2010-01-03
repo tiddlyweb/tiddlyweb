@@ -88,7 +88,7 @@ def datetime_from_http_date(http_datestring):
 
 def make_cookie(name, value, mac_key=None, path=None, expires=None):
     """
-    Create a cookie string, optionally with a MAC, path and 
+    Create a cookie string, optionally with a MAC, path and
     expires value. Expires is in seconds.
     """
     cookie = Cookie.SimpleCookie()
@@ -147,7 +147,7 @@ def encode_name(name):
 
 def html_encode(text):
     """
-    Encode &, < and > entities in text that will 
+    Encode &, < and > entities in text that will
     be used in/as HTML.
     """
     return (text.replace('&', '&amp;').replace('<', '&lt;').

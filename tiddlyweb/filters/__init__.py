@@ -30,7 +30,7 @@ The attribute and value for which filter filters is
 established in the parsing stage and set as upvalues
 of the filter closure that gets created.
 
-indexable and environ are optional parameters that 
+indexable and environ are optional parameters that
 in special cases allow a select style filter to be
 optimized with the use of an index. In the current
 implementation this is only done when:
@@ -74,6 +74,7 @@ class FilterError(Exception):
     filter on an unavailable attribute.
     """
     pass
+
 
 class FilterIndexRefused(FilterError):
     """
