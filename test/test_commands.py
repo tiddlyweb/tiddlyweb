@@ -8,6 +8,7 @@ from StringIO import StringIO
 
 from fixtures import reset_textstore
 
+from tiddlyweb import __version__
 from tiddlyweb.config import config
 from tiddlyweb.manage import handle
 from tiddlyweb.store import Store
@@ -30,17 +31,9 @@ Hello!
 """
 
 
-
-
 def setup_module(module):
     reset_textstore()
-    module.savedout = sys.stdout
     module.savedin = sys.stdin
-    module.savederr = sys.stderr
-    module.output = StringIO()
-    module.error = StringIO()
-    sys.stdout = output
-    sys.stderr = error
     sys.exit = boring_exit
     module.store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
 
@@ -51,10 +44,7 @@ def boring_exit(value):
     raise InternalExit()
 
 def teardown_module(module):
-    content = module.output.getvalue()
-    sys.stdout = module.savedout
     sys.stdin = module.savedin
-    sys.stderr = module.savederr
 
 
 def test_adduser():
@@ -93,7 +83,6 @@ def test_bag():
     assert the_bag.name == 'bag1'
     assert the_bag.desc == 'hello'
 
-
 def test_recipe():
     set_stdin(RECIPE_STRING)
     handle(['', 'recipe', 'recipe1'])
@@ -104,7 +93,6 @@ def test_recipe():
     assert the_recipe.name == 'recipe1'
     assert u'bag1' in the_recipe.get_recipe()[0]
     assert u'bag2' in the_recipe.get_recipe()[1]
-
 
 def test_tiddler():
     set_stdin(TIDDLER_STRING)
@@ -117,6 +105,52 @@ def test_tiddler():
     assert the_tiddler.bag == 'bag1'
     assert the_tiddler.modifier == 'cdent'
 
+def test_info(capsys):
+    handle(['', 'info'])
+    results, err = capsys.readouterr()
+    assert 'current store is' in results
+    assert __version__ in results
+
+def test_server(capsys):
+    import tiddlyweb.web.serve
+    def start_cherrypy():
+        print 'host is %s' % config['server_host']['host']
+    tiddlyweb.web.serve.start_cherrypy = start_cherrypy
+    handle(['', 'server'])
+    results, err = capsys.readouterr()
+    assert 'host is our_test_domain' in results
+
+    handle(['', 'server', '192.168.1.1', '8001'])
+    results, err = capsys.readouterr()
+    assert 'host is 192.168.1.1' in results
+    config['server_host']['host'] = 'our_test_domain'
+
+def test_lusers(capsys):
+    handle(['', 'lusers'])
+    results, err = capsys.readouterr()
+    # cdent user with role monkey was created above
+    assert 'cdent' in results
+    assert 'monkey' in results
+
+def test_lbags(capsys):
+    handle(['', 'lbags'])
+    results, err = capsys.readouterr()
+    assert 'Name: bag1' in results
+
+def test_lrecipes(capsys):
+    handle(['', 'lrecipes'])
+    results, err = capsys.readouterr()
+    assert 'recipe1 None' in results
+
+def test_ltiddlers(capsys):
+    handle(['', 'ltiddlers'])
+    results, err = capsys.readouterr()
+    assert 'bag1' in results
+    assert 'tiddler1 cdent' in results
+    handle(['', 'ltiddlers', 'bag1'])
+    results, err = capsys.readouterr()
+    assert 'bag1' in results
+    assert 'tiddler1 cdent' in results
 
 def set_stdin(content):
     f = StringIO(content)
