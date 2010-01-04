@@ -60,7 +60,11 @@ def get(environ, start_response):
     start_response("200 OK",
             [('Content-Type', mime_type),
                 ('Vary', 'Accept')])
-    return content
+
+    if isinstance(content, basestring):
+        return [content]
+    else:
+        return content
 
 
 def get_tiddlers(environ, start_response):
