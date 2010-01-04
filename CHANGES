@@ -1,3 +1,8 @@
+0.9.87 Mon Jan  4 14:28:17 GMT 2010
+
+  * Adjust the previous change to handlers returning iterators.
+  * pep8, pylint and coverage cleanups.
+
 0.9.86 Tue Dec 29 16:15:51 GMT 2009
 
   * Let handlers return bare iterators instead of explicit lists.
