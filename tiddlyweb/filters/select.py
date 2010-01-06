@@ -78,6 +78,13 @@ def select_parse(command):
     return selector
 
 
+def field_in_fields(tiddler, attribute, value):
+    """
+    Return true if the tiddler has the named field.
+    """
+    return value in tiddler.fields
+
+
 def tag_in_tags(tiddler, attribute, value):
     """
     Return true if the provide tiddler has
@@ -98,6 +105,7 @@ def text_in_text(tiddler, attribute, value):
 ATTRIBUTE_SELECTOR = {
         'tag': tag_in_tags,
         'text': text_in_text,
+        'field': field_in_fields,
         }
 
 

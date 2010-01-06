@@ -50,6 +50,19 @@ def test_custom_select():
     selected_tiddlers = select_by_attribute('year', '2009', tiddlers, negate=True)
     assert ['a','b'] == [tiddler.title for tiddler in selected_tiddlers]
 
+def test_field_exists_select():
+    selected_tiddlers = select_by_attribute('field', 'index', tiddlers)
+    assert ['1','c','a','b'] == [tiddler.title for tiddler in selected_tiddlers]
+
+def test_field_not_exists_select():
+    selected_tiddlers = select_by_attribute('field', 'barney', tiddlers, negate=True)
+    results = [tiddler.title for tiddler in selected_tiddlers]
+    assert ['1','c','a','b'] == results
+
+def test_field_not_exists_empty_select():
+    selected_tiddlers = select_by_attribute('field', 'index', tiddlers, negate=True)
+    assert [] == [tiddler.title for tiddler in selected_tiddlers]
+
 def test_sorted_field_select():
     selected_tiddlers = select_relative_attribute('index', '2', tiddlers, greater=True)
     assert ['b'] == [tiddler.title for tiddler in selected_tiddlers]
