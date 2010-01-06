@@ -12,7 +12,7 @@ import os
 
 from fixtures import bagfour, tiddlers, reset_textstore, _teststore
 from tiddlyweb.config import config
-from tiddlyweb.store import StoreLockError, NoTiddlerError
+from tiddlyweb.store import StoreLockError, NoTiddlerError, NoBagError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
@@ -169,6 +169,10 @@ def test_put_with_slash():
     tiddler2 = Tiddler('He is 5 and 1/2', 'bagone')
     store.get(tiddler2)
     assert tiddler1.title == tiddler2.title
+
+def test_put_no_bag():
+    tiddler = Tiddler('hi')
+    py.test.raises(NoBagError, 'store.put(tiddler)')
 
 def test_bad_filename():
     """
