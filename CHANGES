@@ -1,3 +1,7 @@
+0.9.89 Wed Jan  6 12:56:01 GMT 2010
+
+  * select=field:<fieldname> style filters.
+
 0.9.88 Wed Jan  6 01:12:01 GMT 2010
 
   * Properly handle unicode usernames in auth cookies.

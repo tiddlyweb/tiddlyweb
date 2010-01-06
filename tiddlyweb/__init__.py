@@ -30,7 +30,7 @@ TiddlyWeb includes twanager, a command line tool for
 doing a variety of TiddlyWeb activities. Run twanager
 without arguments for a list of commands.
 """
-__version__ = '0.9.88'
+__version__ = '0.9.89'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __copyright__ = 'Copyright UnaMesa Association 2008-2010'
 __contributors__ = ['Frederik Dohr',
