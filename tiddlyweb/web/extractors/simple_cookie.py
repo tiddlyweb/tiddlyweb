@@ -35,6 +35,7 @@ class Extractor(ExtractorInterface):
             store = environ['tiddlyweb.store']
 
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
+                usersign = usersign.decode('utf-8')
                 user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
         except Cookie.CookieError, exc:

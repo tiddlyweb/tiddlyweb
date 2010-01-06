@@ -93,6 +93,8 @@ def make_cookie(name, value, mac_key=None, path=None, expires=None):
     """
     cookie = Cookie.SimpleCookie()
 
+    value = value.encode('utf-8')
+
     if mac_key:
         secret_string = sha('%s%s' % (value, mac_key)).hexdigest()
         cookie[name] = '%s:%s' % (value, secret_string)
