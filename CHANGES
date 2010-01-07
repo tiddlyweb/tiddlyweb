@@ -1,3 +1,8 @@
+0.9.90 Thu Jan  7 23:03:32 GMT 2010
+
+  * Correctly raise Exception when trying to store a tiddler
+    when .bag has not been set.
+
 0.9.89 Wed Jan  6 12:56:01 GMT 2010
 
   * select=field:<fieldname> style filters.
