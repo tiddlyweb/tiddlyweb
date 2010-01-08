@@ -125,7 +125,9 @@ class Challenger(ChallengerInterface):
                 mac_key=secret, path=self._cookie_path(environ),
                 expires=cookie_age)
         logging.debug('303 to %s', uri)
-        start_response('303 See Other', [('Location', uri.encode('utf-8')),
+        start_response('303 See Other',
+                [('Location', uri.encode('utf-8')),
+                ('Content-Type', 'text/plain'),
                 ('Set-Cookie', cookie_header_string)])
         return [uri]
 
