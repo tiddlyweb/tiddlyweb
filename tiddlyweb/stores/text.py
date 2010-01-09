@@ -37,7 +37,6 @@ class Store(StorageInterface):
         self._root = self._fixup_root(store_config['store_root'])
         self._init_store()
 
-
     def _fixup_root(self, path):
         if not os.path.isabs(path):
             path = os.path.join(self.environ['tiddlyweb.config']['root_dir'], path)

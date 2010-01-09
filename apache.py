@@ -101,7 +101,7 @@ server_host is a complex data structure as follows:
 ##################################################
 
 If you are using Passenger, thus far the only 
-testing has been with Dreamhost's setup. For that
+testing has been with Dreamhosts setup. For that
 rename apache.py to passenger_wsgi.py and configure
 as described here:
 
@@ -117,24 +117,16 @@ import sys
 #INTERP = "/home/osmosoft/bin/python"
 #if sys.executable != INTERP: os.execl(INTERP, INTERP, *sys.argv)
 
-# chdir to the location of tiddlywebconfig.py
-# If you're apache.py is in the same dir as tiddlywebconfig.py
-# you can leave this as is
-# dirname = '/some/path'
-dirname = os.path.dirname(__file__)
-if dirname:
-    os.chdir(dirname)
-sys.path.insert(0, dirname)
-
 # you may wish to change this path
+# It can also be controlled from mod_wsgi config.
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 
-
-from tiddlyweb.web import serve
-
-
 def start():
-    app = serve.load_app(app_prefix='')
+    dirname = os.path.dirname(__file__)
+    if sys.path[0] != dirname:
+        sys.path.insert(0, dirname)
+    from tiddlyweb.web import serve
+    app = serve.load_app(app_prefix='', dirname=dirname)
     return app
 
 # web server code will look for a callable # named application

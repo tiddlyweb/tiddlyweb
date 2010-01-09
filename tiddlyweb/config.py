@@ -114,10 +114,6 @@ MIME-TYPES to modules with a render() function for
 turning that content-type into HTML.
 """
 
-import logging
-import os
-import sys
-
 try:
     from pkg_resources import resource_filename
     URLS_MAP = resource_filename('tiddlyweb', 'urls.map')
@@ -182,7 +178,7 @@ DEFAULT_CONFIG = {
         'auth_systems': [
             'cookie_form',
             'openid'],
-        # XXX this should come from a file
+        # TODO: this should come from a file
         'secret': 'this should come from a file',
         'urls_map': URLS_MAP,
         'bag_create_policy': '', # ANY (authenticated user)
