@@ -21,7 +21,7 @@ class Header(object):
     consume the output for lower requests.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -40,7 +40,7 @@ class HTMLPresenter(object):
     add some HTML framework.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -125,7 +125,7 @@ class SimpleLog(object):
             '"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
             '%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"')
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -181,7 +181,7 @@ class StoreSet(object):
     in the environment.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -197,7 +197,7 @@ class EncodeUTF8(object):
     as UTF-8. Within the application content is _unicode_ (i.e. not encoded).
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -223,7 +223,7 @@ class PermissionsExceptor(object):
     code.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):

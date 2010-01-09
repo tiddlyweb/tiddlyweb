@@ -49,7 +49,10 @@ def load_app(app_prefix=None, dirname=None):
     if wrappers:
         for wrapper in wrappers:
             logging.debug('wrapping app with %s', wrapper)
-            app = wrapper(app, config=config)
+            if wrapper == Configurator:
+                app = wrapper(app, config=config)
+            else:
+                app = wrapper(app)
     return app
 
 
@@ -79,7 +82,7 @@ class Environator(object):
     we have a server_prefix.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):

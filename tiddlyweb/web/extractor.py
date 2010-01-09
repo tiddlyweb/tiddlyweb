@@ -12,7 +12,7 @@ class UserExtract(object):
     found in the request.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):

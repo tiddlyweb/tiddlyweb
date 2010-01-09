@@ -23,7 +23,7 @@ class Query(object):
     parameter filtering and what not.
     """
 
-    def __init__(self, application, config=None):
+    def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
