@@ -34,8 +34,14 @@ class Store(StorageInterface):
         super(Store, self).__init__(environ)
         self.serializer = Serializer('text')
         store_config = self.environ['tiddlyweb.config']['server_store'][1]
-        self._root = store_config['store_root']
+        self._root = self._fixup_root(store_config['store_root'])
         self._init_store()
+
+
+    def _fixup_root(self, path):
+        if not os.path.isabs(path):
+            path = os.path.join(self.environ['tiddlyweb.config']['root_dir'], path)
+        return path
 
     def _init_store(self):
         """

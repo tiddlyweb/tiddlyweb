@@ -7,10 +7,10 @@ import selector
 import sys
 import os
 
-from tiddlyweb.util import std_error_message
+from tiddlyweb.util import std_error_message, initialize_logging
 
 
-def load_app(app_prefix=None):
+def load_app(app_prefix=None, dirname=None):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
@@ -18,6 +18,10 @@ def load_app(app_prefix=None):
     environment or modify the request, or transform output.
     """
     from tiddlyweb.config import config
+    if dirname:
+        config['root_dir'] = dirname
+
+    initialize_logging(config)
 
     mapfile = config['urls_map']
     script_name = os.environ.get('SCRIPT_NAME', '')

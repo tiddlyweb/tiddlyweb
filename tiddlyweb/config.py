@@ -131,7 +131,7 @@ except ImportError:
 import urllib
 urllib.always_safe += (".!~*'()")
 
-from tiddlyweb.util import merge_config, read_config
+from tiddlyweb.util import read_config
 
 # The server filters (the WSGI MiddleWare)
 from tiddlyweb.web.negotiate import Negotiate
@@ -193,28 +193,9 @@ DEFAULT_CONFIG = {
         'css_uri': '',
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
+        'root_dir': '',
         }
 
 
 config = DEFAULT_CONFIG
 read_config(config)
-
-# Avoid writing a tiddlyweb.log under some circumstances
-try:
-    try:
-        current_command = sys.argv[0]
-        current_sub_command = sys.argv[1]
-    except IndexError:
-        current_command = ''
-        current_sub_command = ''
-    # there's tiddlywebconfig.py here and it says log level is high, so log
-    if config['log_level'] != 'INFO':
-        raise IndexError
-    # we're running the server so we want to log
-    if 'twanager' in current_command and current_sub_command == 'server':
-        raise IndexError
-except IndexError:
-    logging.basicConfig(level=getattr(logging, config['log_level']),
-            format='%(asctime)s %(levelname)-8s %(message)s',
-            filename=config['log_file'])
-    logging.debug('TiddlyWeb starting up as %s', sys.argv[0])

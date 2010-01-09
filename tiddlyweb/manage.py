@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 
-from tiddlyweb.util import merge_config, std_error_message
+from tiddlyweb.util import merge_config, std_error_message, initialize_logging
 
 
 INTERNAL_PLUGINS = ['tiddlyweb.commands']
@@ -52,6 +52,8 @@ def handle(args):
             args = _external_load(args, config)
     except IndexError:
         args = []
+
+    initialize_logging(config)
 
     plugins = INTERNAL_PLUGINS
     try:
