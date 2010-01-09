@@ -5,20 +5,25 @@ web server.
 import logging
 import selector
 import sys
+import os
 
-from tiddlyweb.config import config
 from tiddlyweb.util import std_error_message
 
 
-def load_app(prefix=''):
+def load_app():
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
     is surround by wrappers, which either set something in the
     environment or modify the request, or transform output.
     """
+    from tiddlyweb.config import config
 
     mapfile = config['urls_map']
+    if os.environ.get('SCRIPT_NAME', '').startswith(config['server_prefix']):
+        prefix = ''
+    else:
+        prefix = config['server_prefix']
     app = selector.Selector(mapfile=mapfile, prefix=prefix)
     config['selector'] = app
 
@@ -40,18 +45,18 @@ def load_app(prefix=''):
     if wrappers:
         for wrapper in wrappers:
             logging.debug('wrapping app with %s', wrapper)
-            app = wrapper(app)
+            app = wrapper(app, config=config)
     return app
 
 
-def start_cherrypy():
+def start_cherrypy(config):
     """
     Start a cherrypy webserver to run our app.
     """
     from cherrypy import wsgiserver
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
-    app = load_app(prefix=config['server_prefix'])
+    app = load_app()
     server = wsgiserver.CherryPyWSGIServer((hostname, port), app)
     try:
         logging.debug('starting cherrypy at %s:%s', hostname, port)
@@ -70,7 +75,7 @@ class Environator(object):
     we have a server_prefix.
     """
 
-    def __init__(self, application):
+    def __init__(self, application, config=None):
         self.application = application
 
     def __call__(self, environ, start_response):
@@ -92,9 +97,10 @@ class Configurator(object):
     for every request.
     """
 
-    def __init__(self, application):
+    def __init__(self, application, config):
         self.application = application
+        self.config = config
 
     def __call__(self, environ, start_response):
-        environ['tiddlyweb.config'] = config
+        environ['tiddlyweb.config'] = self.config
         return self.application(environ, start_response)

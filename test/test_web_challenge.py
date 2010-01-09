@@ -16,7 +16,7 @@ from tiddlyweb.config import config
 
 def setup_module(module):
     from tiddlyweb.web import serve
-    serve.config['auth_systems'].append('not.really.there')
+    config['auth_systems'].append('not.really.there')
     def app_fn():
         return serve.load_app()
     httplib2_intercept.install()
@@ -186,10 +186,11 @@ def test_cookie_path_prefix_max_age():
     config['server_prefix'] = '/wiki'
     config['cookie_age'] = '300'
     http = httplib2.Http()
+    raised = 0
     try:
         http = httplib2.Http()
         response, content = http.request(
-                'http://our_test_domain:8001/challenge/cookie_form',
+                'http://our_test_domain:8001/wiki/challenge/cookie_form',
                 method='POST',
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',

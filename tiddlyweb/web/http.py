@@ -104,7 +104,7 @@ class HTTPExceptor(object):
     form we do an HTTP 500 and send a traceback.
     """
 
-    def __init__(self, application):
+    def __init__(self, application, config=None):
         self.application = application
 
     def __call__(self, environ, start_response, exc_info=None):

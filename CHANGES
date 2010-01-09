@@ -1,3 +1,7 @@
+0.9.91 TDB
+
+  * Be more strict about importing config.
+
 0.9.90 Thu Jan  7 23:03:32 GMT 2010
 
   * Correctly raise Exception when trying to store a tiddler

@@ -113,7 +113,7 @@ def test_info(capsys):
 
 def test_server(capsys):
     import tiddlyweb.web.serve
-    def start_cherrypy():
+    def start_cherrypy(config):
         print 'host is %s' % config['server_host']['host']
     tiddlyweb.web.serve.start_cherrypy = start_cherrypy
     handle(['', 'server'])
