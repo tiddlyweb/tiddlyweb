@@ -10,7 +10,7 @@ import os
 from tiddlyweb.util import std_error_message
 
 
-def load_app():
+def load_app(app_prefix=None):
     """
     Create our application from a series of layers. The innermost
     layer is a selector application based on url map in map. This
@@ -20,8 +20,10 @@ def load_app():
     from tiddlyweb.config import config
 
     mapfile = config['urls_map']
-    if os.environ.get('SCRIPT_NAME', '').startswith(config['server_prefix']):
-        prefix = ''
+    script_name = os.environ.get('SCRIPT_NAME', '')
+    logging.debug('script_name: %s', os.environ)
+    if app_prefix != None:
+        prefix = app_prefix
     else:
         prefix = config['server_prefix']
     app = selector.Selector(mapfile=mapfile, prefix=prefix)
