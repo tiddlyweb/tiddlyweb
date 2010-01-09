@@ -24,8 +24,6 @@ def load_app(app_prefix=None, dirname=None):
     initialize_logging(config)
 
     mapfile = config['urls_map']
-    script_name = os.environ.get('SCRIPT_NAME', '')
-    logging.debug('script_name: %s', os.environ)
     if app_prefix != None:
         prefix = app_prefix
     else:
