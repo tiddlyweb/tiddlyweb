@@ -1,4 +1,4 @@
-0.9.92 TDB
+0.9.92 Sat Jan  9 20:54:24 GMT 2010
 
   * Be more strict about importing config, and changing directories
     in an attempt to work better in multi-thread environments.
