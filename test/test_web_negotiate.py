@@ -9,7 +9,7 @@ what kind of store and serializer to use.
 
 
 from tiddlyweb.web.negotiate import Negotiate
-from tiddlyweb.web.serve import config
+from tiddlyweb.config import config
 
 def setup_module(module):
     module.neg = Negotiate(lambda x: x)

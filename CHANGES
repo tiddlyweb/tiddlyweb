@@ -1,3 +1,8 @@
+0.9.92 TDB
+
+  * Be more strict about importing config, and changing directories
+    in an attempt to work better in multi-thread environments.
+
 0.9.91 Fri Jan  8 23:47:49 GMT 2010
 
   * Correctly include Content-Type header in challenger redirects.

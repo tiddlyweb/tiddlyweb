@@ -14,9 +14,11 @@ from base64 import b64encode
 
 from fixtures import muchdata, reset_textstore, _teststore
 
+from tiddlyweb.config import config
+
 def setup_module(module):
     from tiddlyweb.web import serve
-    serve.config['extractors'].append('saliva')
+    config['extractors'].append('saliva')
     def app_fn():
         return serve.load_app()
     httplib2_intercept.install()
@@ -26,8 +28,7 @@ def setup_module(module):
     muchdata(module.store)
 
 def teardown_module(module):
-    from tiddlyweb.web import serve
-    serve.config['extractors'].pop()
+    config['extractors'].pop()
 
 def test_extractor_not_there_in_config():
     http = httplib2.Http()

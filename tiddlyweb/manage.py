@@ -6,7 +6,7 @@ import logging
 import os
 import sys
 
-from tiddlyweb.util import merge_config, std_error_message
+from tiddlyweb.util import merge_config, std_error_message, initialize_logging
 
 
 INTERNAL_PLUGINS = ['tiddlyweb.commands']
@@ -49,9 +49,11 @@ def handle(args):
     from tiddlyweb.config import config
     try:
         if args[1] == '--load':
-            args = _external_load(args)
+            args = _external_load(args, config)
     except IndexError:
         args = []
+
+    initialize_logging(config)
 
     plugins = INTERNAL_PLUGINS
     try:
@@ -92,7 +94,7 @@ def handle(args):
         usage('No matching command found')
 
 
-def _external_load(args):
+def _external_load(args, config):
     """
     Load a module from by request of the command line.
     """
@@ -108,7 +110,6 @@ def _external_load(args):
     else:
         imported_config = _import_module_config(module)
 
-    from tiddlyweb.config import config
     merge_config(config, imported_config)
 
     return args

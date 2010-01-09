@@ -59,7 +59,7 @@ def server(args):
                 }
 
     from tiddlyweb.web import serve
-    serve.start_cherrypy()
+    serve.start_cherrypy(config)
 
 
 @make_command()

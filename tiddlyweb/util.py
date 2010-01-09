@@ -2,6 +2,7 @@
 Miscellaneous utility functions for TiddlyWeb.
 """
 
+import logging
 import codecs
 import os
 import sys
@@ -53,9 +54,11 @@ def read_config(global_config):
     global_config is a reference to the currently operational
     main tiddlyweb config.
     """
-    if os.path.exists('tiddlywebconfig.py'):
+    try:
         from tiddlywebconfig import config as custom_config
         merge_config(global_config, custom_config, reconfig=False)
+    except ImportError:
+        pass # that's cool
 
 
 def sha(data=''):
@@ -122,6 +125,28 @@ def write_unlock(filename):
     """
     lock_filename = _lock_filename(filename)
     os.unlink(lock_filename)
+
+
+def initialize_logging(config):
+# Avoid writing a tiddlyweb.log under some circumstances
+    try:
+        try:
+            current_command = sys.argv[0]
+            current_sub_command = sys.argv[1]
+        except IndexError:
+            current_command = ''
+            current_sub_command = ''
+        # there's tiddlywebconfig.py here and it says log level is high, so log
+        if config['log_level'] != 'INFO':
+            raise IndexError
+        # we're running the server so we want to log
+        if 'twanager' in current_command and current_sub_command == 'server':
+            raise IndexError
+    except IndexError:
+        logging.basicConfig(level=getattr(logging, config['log_level']),
+                format='%(asctime)s %(levelname)-8s %(message)s',
+                filename=os.path.join(config['root_dir'], config['log_file']))
+        logging.debug('TiddlyWeb starting up as %s', sys.argv[0])
 
 
 def _lock_filename(filename):
