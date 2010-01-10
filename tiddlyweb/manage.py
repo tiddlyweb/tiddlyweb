@@ -32,10 +32,10 @@ def make_command():
 
 
 @make_command()
-def usage(*args):
+def usage(args):
     """List this help"""
     if args:
-        std_error_message('ERROR: ' + ' '.join(args) + '\n')
+        std_error_message('ERROR: ' + args + '\n')
     for key in sorted(COMMANDS):
         std_error_message('%10s: %s' % (key, COMMANDS[key].description))
     sys.exit(1)
