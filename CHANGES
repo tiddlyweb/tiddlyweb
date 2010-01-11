@@ -1,3 +1,7 @@
+0.9.94 Mon Jan 11 21:15:11 GMT 2010
+
+  * Better ETag generation for /*/*/tiddlers.
+
 0.9.93 Sun Jan 10 18:58:07 GMT 2010
 
   * Correct twanager usage command.
