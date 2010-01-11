@@ -7,6 +7,7 @@ validating cache headers for list of tiddlers.
 from tiddlyweb import control
 from tiddlyweb.filters import FilterError
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import Policy
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import \
@@ -30,9 +31,13 @@ def send_tiddlers(environ, start_response, bag):
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
     # We need to inherit revbag and searchbag setting from the provided bag.
-    tmp_bag = Bag('tmp_bag', tmpbag=True, revbag=bag.revbag,
+    # We reuse name and policy information so we can have a richer
+    # Etag when we send.
+    tmp_bag = Bag(bag.name, tmpbag=True, revbag=bag.revbag,
             searchbag=bag.searchbag)
     tmp_bag.add_tiddlers(tiddlers)
+    tmp_bag.desc = bag.desc
+    tmp_bag.policy = bag.policy
 
     last_modified, etag = _validate_tiddler_list(environ, tmp_bag)
 
@@ -121,6 +126,17 @@ def _sha_tiddler_titles(bag):
     bag name for disambiguation.
     """
     digest = sha()
+    digest.update(bag.name.encode('utf-8'))
+    digest.update(bag.desc.encode('utf-8'))
+    for attribute in Policy.attributes:
+        try:
+            constraint_value = ''.join(getattr(bag.policy, attribute))
+        except TypeError:
+            constraint_value = getattr(bag.policy, attribute)
+        if constraint_value == None:
+            constraint_value = ''
+        digest.update('%s:%s' % (attribute.encode('utf-8'),
+            constraint_value.encode('utf-8')))
     for tiddler in bag.gen_tiddlers():
         if tiddler.recipe:
             container = tiddler.recipe
