@@ -31,7 +31,6 @@ def init(config):
                 print '\t%s (%s)' % (plugin,
                         getattr(module, '__version__', 'unknown'))
 
-
     @make_command()
     def server(args):
         """Start the server using config settings. Provide <host name or IP number> <port> to override."""
@@ -55,7 +54,6 @@ def init(config):
         from tiddlyweb.web import serve
         serve.start_cherrypy(config)
 
-
     @make_command()
     def userpass(args):
         """Change the password of an existing user. <username> <password>"""
@@ -74,7 +72,6 @@ def init(config):
             usage('unable to set password for user: %s' % exc)
 
         return True
-
 
     @make_command()
     def addrole(args):
@@ -97,7 +94,6 @@ def init(config):
             usage('unable to add role to user: %s' % exc)
 
         return True
-
 
     @make_command()
     def adduser(args):
@@ -122,7 +118,6 @@ def init(config):
 
         return True
 
-
     @make_command()
     def recipe(args):
         """Create or update a recipe with the recipe text on stdin: <recipe>"""
@@ -137,7 +132,6 @@ def init(config):
 
         content = sys.stdin.read()
         _put(new_recipe, unicode(content, 'UTF-8'), 'text')
-
 
     @make_command()
     def bag(args):
@@ -156,7 +150,6 @@ def init(config):
             content = '{"policy":{}}'
         _put(new_bag, unicode(content, 'UTF-8'), 'json')
 
-
     @make_command()
     def tiddler(args):
         """Import a single tiddler into an existing bag from stdin: <bag> <tiddler>"""
@@ -173,7 +166,6 @@ def init(config):
         content = sys.stdin.read()
         _put(new_tiddler, unicode(content, 'UTF-8'), 'text')
 
-
     @make_command()
     def lusers(args):
         """List all the users on the system"""
@@ -182,7 +174,6 @@ def init(config):
         for user in users:
             user = store.get(user)
             print user.usersign, user.list_roles()
-
 
     @make_command()
     def lbags(args):
@@ -200,7 +191,6 @@ def init(config):
             print serializer.to_string()
             print
 
-
     @make_command()
     def lrecipes(args):
         """List all the recipes on the system. [<recipe> <recipe> <recipe>] to limit."""
@@ -214,7 +204,6 @@ def init(config):
             print listed_recipe.name, listed_recipe.policy.owner
             for recipe_bag, recipe_filter in listed_recipe.get_recipe():
                 print '\t', recipe_bag, recipe_filter
-
 
     @make_command()
     def ltiddlers(args):
@@ -235,7 +224,6 @@ def init(config):
         except NoBagError, exc:
             usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 
-
     def _put(entity, content, serialization):
         """
         Put entity to store, by serializing content
@@ -245,7 +233,6 @@ def init(config):
         serializer.object = entity
         serializer.from_string(content)
         _store().put(entity)
-
 
     def _store():
         """Get our Store from config."""
