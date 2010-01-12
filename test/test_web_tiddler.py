@@ -609,7 +609,6 @@ def test_binary_text_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
             method='GET')
     assert response['status'] == '200'
-    print content
     assert content == text
 
     response, content = http.request(
@@ -617,14 +616,12 @@ def test_binary_text_tiddler():
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
-    print content
     assert '"text"' in content
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js.json',
             method='GET')
     assert response['status'] == '200'
-    print content
     assert '"text"' in content
 
 def test_binary_tiddler():
