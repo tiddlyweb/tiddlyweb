@@ -60,10 +60,13 @@ class Store(object):
     to and from persistent storage.
     """
 
-    def __init__(self, engine, environ=None):
+    def __init__(self, engine, config=None, environ=None):
+        if config == None:
+            config = {}
         self.engine = engine
         self.environ = environ
         self.storage = None
+        self.config = config
         self._import()
 
     def _import(self):
@@ -79,7 +82,7 @@ class Store(object):
                 imported_module = __import__(self.engine, {}, {}, ['Store'])
             except ImportError, err:
                 raise ImportError("couldn't load store for %s: %s, %s" % (self.engine, err, err1))
-        self.storage = imported_module.Store(self.environ)
+        self.storage = imported_module.Store(self.config, self.environ)
 
     def delete(self, thing):
         """

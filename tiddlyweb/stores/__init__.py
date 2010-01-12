@@ -25,7 +25,7 @@ class StorageInterface(object):
     package when implementing new StorageInterface classes.
     """
 
-    def __init__(self, environ=None):
+    def __init__(self, store_config=None, environ=None):
         """
         The WSGI environment is made available to the storage system
         so that decisions can be made based on things like the
@@ -37,7 +37,10 @@ class StorageInterface(object):
         """
         if environ is None:
             environ = {}
+        if store_config is None:
+            store_config = {}
         self.environ = environ
+        self.store_config = store_config
 
     def recipe_delete(self, recipe):
         """

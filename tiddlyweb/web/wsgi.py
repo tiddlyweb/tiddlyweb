@@ -186,6 +186,7 @@ class StoreSet(object):
 
     def __call__(self, environ, start_response):
         database = Store(environ['tiddlyweb.config']['server_store'][0],
+                environ['tiddlyweb.config']['server_store'][1],
                 environ)
         environ['tiddlyweb.store'] = database
         return self.application(environ, start_response)

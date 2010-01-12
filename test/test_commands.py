@@ -35,7 +35,9 @@ def setup_module(module):
     reset_textstore()
     module.savedin = sys.stdin
     sys.exit = boring_exit
-    module.store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
+    module.store = Store(config['server_store'][0],
+            config['server_store'][1],
+            environ={'tiddlyweb.config': config})
 
 class InternalExit(Exception):
     pass

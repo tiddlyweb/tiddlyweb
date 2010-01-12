@@ -20,5 +20,6 @@ def test_unsupported_class():
         pass
 
     foo = Foo()
-    store = Store(config['server_store'][0], environ={'tiddlyweb.config': config})
+    store = Store(config['server_store'][0], config['server_store'][1],
+            environ={'tiddlyweb.config': config})
     py.test.raises(AttributeError, 'store.put(foo)')

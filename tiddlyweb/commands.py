@@ -237,4 +237,5 @@ def init(config):
     def _store():
         """Get our Store from config."""
         return Store(config['server_store'][0],
+                config['server_store'][1],
                 environ={'tiddlyweb.config': config})
