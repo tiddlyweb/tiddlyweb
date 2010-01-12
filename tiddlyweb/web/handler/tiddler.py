@@ -456,7 +456,7 @@ def _get_tiddler_content(environ, tiddler):
     if _not_wikitext(tiddler, environ['tiddlyweb.config']):
         if (serialize_type == default_serialize_type or
                 mime_type.startswith(tiddler.type) or
-                extension == None or extension == 'html'):
+                extension == 'html'):
             mime_type = tiddler.type
             content = tiddler.text
             return content, mime_type

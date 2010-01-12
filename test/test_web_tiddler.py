@@ -598,12 +598,20 @@ def test_tiddler_no_recipe():
 
 def test_binary_tiddler():
     image = file('test/peermore.png', 'rb')
-    content = image.read()
+    image_content = image.read()
+    image.close()
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
             method='PUT', headers={'Content-Type': 'image/png'},
-            body=content)
+            body=image_content)
+
+    assert response['status'] == '204'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
+            method='PUT', headers={'Content-Type': 'image/png'},
+            body=image_content)
 
     assert response['status'] == '204'
 
@@ -611,6 +619,37 @@ def test_binary_tiddler():
             method='GET')
     assert response['status'] == '200'
     assert response['content-type'] == 'image/png'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng.json',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'image/png'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png.json',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
 
 def test_tiddler_put_create():
     http = httplib2.Http()
