@@ -596,6 +596,37 @@ def test_tiddler_no_recipe():
             method='GET')
     assert response['status'] == '404'
 
+def test_binary_text_tiddler():
+    text = 'alert("hello");'
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
+            method='PUT', headers={'Content-Type': 'text/javascript'},
+            body=text)
+    assert response['status'] == '204'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
+            method='GET')
+    assert response['status'] == '200'
+    print content
+    assert content == text
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response['status'] == '200'
+    print content
+    assert '"text"' in content
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js.json',
+            method='GET')
+    assert response['status'] == '200'
+    print content
+    assert '"text"' in content
+
 def test_binary_tiddler():
     image = file('test/peermore.png', 'rb')
     image_content = image.read()
@@ -610,6 +641,20 @@ def test_binary_tiddler():
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
+            method='PUT', headers={'Content-Type': 'image/png'},
+            body=image_content)
+
+    assert response['status'] == '204'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png',
+            method='PUT', headers={'Content-Type': 'image/png'},
+            body=image_content)
+
+    assert response['status'] == '204'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar',
             method='PUT', headers={'Content-Type': 'image/png'},
             body=image_content)
 
@@ -646,6 +691,42 @@ def test_binary_tiddler():
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'image/png'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png.json',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png',
+            headers={'Accept': 'application/json'},
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'image/png'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar.json',
+            method='GET')
+    assert response['status'] == '200'
+    assert response['content-type'] == 'application/json; charset=UTF-8'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
