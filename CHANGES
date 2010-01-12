@@ -1,3 +1,7 @@
+0.9.95 Tue Jan 12 15:47:12 GMT 2010
+
+  * Fixes to binary tiddlers GET without extension.
+
 0.9.94 Mon Jan 11 21:15:11 GMT 2010
 
   * Better ETag generation for /*/*/tiddlers.
