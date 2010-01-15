@@ -1,5 +1,5 @@
 """
-Try to setup tiddlyweb.
+Setup file for packaging TiddlyWeb.
 """
 
 import os

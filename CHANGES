@@ -1,3 +1,7 @@
+1.0.0 TBD
+
+  * Release stable TiddlyWeb.
+
 0.9.96 Tue Jan 12 20:27:46 GMT 2010
 
   * Change Store() signature for easier management.
