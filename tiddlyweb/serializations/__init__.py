@@ -1,8 +1,9 @@
 """
-The base Class and interface for Classes
-use to transform strings of various forms
-to model objects and model objects to strings
-of various forms.
+Turn entities to and fro various representations.
+
+This base Class and interface for Classes use to
+transform strings of various forms to model objects
+and model objects to strings of various forms.
 """
 
 from tiddlyweb.serializer import NoSerializationError
@@ -28,10 +29,10 @@ class SerializationInterface(object):
     the skeletal entity to represent the information
     contain in the string (in the Serialization format).
 
-    There are also two supporting methods, list_recipes()
-    and list_bags() that provide convince methods for
-    presenting a collection of either in the Serialization
-    form. A string is returned.
+    There are also three supporting methods, list_tiddlers,
+    list_recipes() and list_bags() that provide convenience
+    methods for presenting a collection of either in the
+    Serialization form. A string is returned.
     """
 
     def __init__(self, environ=None):

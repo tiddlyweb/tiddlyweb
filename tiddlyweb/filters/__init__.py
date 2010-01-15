@@ -26,7 +26,7 @@ The call signature for a filter is:
 
     filter(tiddlers, indexable=indexable, environ=environ)
 
-The attribute and value for which filter filters is
+The attribute and value for which a filter filters is
 established in the parsing stage and set as upvalues
 of the filter closure that gets created.
 

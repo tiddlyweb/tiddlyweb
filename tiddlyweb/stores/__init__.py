@@ -1,7 +1,8 @@
 """
-The base Class and interface for Classes
-use to get and put data into a storage
-system.
+Storage systems for TiddlyWeb.
+
+The base Class and interface for Classes used to get
+and put data into a storage system.
 """
 
 from tiddlyweb.store import StoreMethodNotImplemented
@@ -19,7 +20,7 @@ class StorageInterface(object):
 
     There are also four supporting methods, list_recipes(),
     list_bags(), list_users(), and list_tiddler_revisions() that provide
-    methods for presenting a collection.
+    methods for getting a collection.
 
     It is useful to understand the classes in the tiddlyweb.model
     package when implementing new StorageInterface classes.
@@ -44,16 +45,13 @@ class StorageInterface(object):
 
     def recipe_delete(self, recipe):
         """
-        Remove the recipe from the store,
-        with no impact on the tiddlers.
+        Remove the recipe from the store, with no impact on the tiddlers.
         """
         raise StoreMethodNotImplemented('this store does not handle deleting recipes')
 
     def recipe_get(self, recipe):
         """
-        Get a recipe from the store,
-        returning a populated recipe
-        object.
+        Get a recipe from the store, returning a populated recipe object.
         """
         raise StoreMethodNotImplemented('this store does not handle getting recipes')
 
@@ -65,17 +63,13 @@ class StorageInterface(object):
 
     def bag_delete(self, bag):
         """
-        Remove the bag from the store,
-        including the tiddlers within
-        the bag.
+        Remove the bag from the store, including the tiddlers within the bag.
         """
         raise StoreMethodNotImplemented('this store does not handle deleting bags')
 
     def bag_get(self, bag):
         """
-        Get a bag from the store,
-        returning a populated  bag
-        object.
+        Get a bag from the store, returning a populated bag object.
         """
         raise StoreMethodNotImplemented('this store does not handle getting bags')
 
@@ -113,9 +107,7 @@ class StorageInterface(object):
 
     def user_get(self, user):
         """
-        Get a user from the store,
-        returning a populated user
-        object.
+        Get a user from the store, returning a populated user object.
         """
         raise StoreMethodNotImplemented('this store does not handle getting users')
 
@@ -152,15 +144,14 @@ class StorageInterface(object):
 
     def tiddler_written(self, tiddler):
         """
-        Notify the system that a tiddler has been stored.
-        This is done to cause search system to update or
-        otherwise deal with new content.
+        Notify the system that a tiddler has been stored. This is done to
+        cause search system to update, invalidate caches or otherwise deal
+        with new content.
         """
         pass
 
     def search(self, search_query):
         """
-        Search the entire tiddler store for
-        search_query.
+        Search the entire tiddler store for search_query.
         """
         raise StoreMethodNotImplemented('this store does not provide search')
