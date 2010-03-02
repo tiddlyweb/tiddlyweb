@@ -47,11 +47,12 @@ class Recipe(list):
         """
         Return the recipe list, as a list.
         """
-        if not template:
-            template = {}
-
         our_list = self
         real_list = []
+
+        # If no template is provided the below
+        # will fail over to not doing template
+        # processing. Which is what we want.
 
         for entry in our_list:
             new_entry = []
