@@ -63,7 +63,7 @@ from wsgiref.handlers import BaseCGIHandler
 from tiddlyweb.web import serve
 
 def start():
-    app = serve.load_app()
+    app = serve.load_app(app_prefix='')
     if not 'PATH_INFO' in os.environ:
         os.environ['PATH_INFO'] = '/'
     BaseCGIHandler(sys.stdin, sys.stdout, sys.stderr, os.environ).run(app)
