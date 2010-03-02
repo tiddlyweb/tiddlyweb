@@ -34,7 +34,8 @@ def merge_config(global_config, additional_config, reconfig=True):
             try:
                 global_config[key].update(additional_config[key])
             except KeyError:
-                global_config[key] = additional_config[key]
+                global_config[key] = {}
+                global_config[key].update(additional_config[key])
         except AttributeError:
             global_config[key] = additional_config[key]
     if reconfig:
