@@ -16,7 +16,12 @@ def list_entities(environ, start_response, mime_type, store_list,
     kept_entities = []
     for entity in entities:
         try:
+            entity.skinny = True
             entity = store.get(entity)
+            try:
+                delattr(entity, 'skinny')
+            except AttributeError:
+                pass
             entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_entities.append(entity)
         except(UserRequiredError, ForbiddenError):
