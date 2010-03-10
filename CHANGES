@@ -1,10 +1,11 @@
-1.0.1 TBD
+1.0.1 Wed Mar 10 14:37:03 GMT 2010
 
   * Correctly deal with config overrides.
   * Make index.cgi work with app_prefix.
     http://github.com/tiddlyweb/tiddlyweb/issues/closed#issue/2
   * Save recipes with templates correctly.
     http://github.com/tiddlyweb/tiddlyweb/issues/closed#issue/1
+  * Correct (some) performance issues when listing bags and recipes.
 
 1.0.0 Fri Jan 15 12:09:06 GMT 2010
 
