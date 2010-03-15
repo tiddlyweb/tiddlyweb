@@ -61,7 +61,6 @@ def test_put_unicode_tiddler():
             % (encoded_bag_name, encoded_tiddler_name),
             method='PUT', body=tiddler_json, headers={'Content-Type':'application/json'})
 
-    print content
     assert response['status'] == '204'
 
     tiddler = Tiddler(tiddler_name, bag=bag_name)

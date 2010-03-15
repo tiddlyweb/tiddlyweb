@@ -13,19 +13,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     """
     store = environ['tiddlyweb.store']
     entities = store_list()
-    kept_entities = []
-    for entity in entities:
-        try:
-            entity.skinny = True
-            entity = store.get(entity)
-            try:
-                delattr(entity, 'skinny')
-            except AttributeError:
-                pass
-            entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
-            kept_entities.append(entity)
-        except(UserRequiredError, ForbiddenError):
-            pass
+    kept_entities = _filter_readable(environ, entities)
 
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept')])
@@ -39,3 +27,19 @@ def list_entities(environ, start_response, mime_type, store_list,
         return [output]
     else:
         return output
+
+def _filter_readable(environ, entities):
+    store = environ['tiddlyweb.store']
+    for entity in entities:
+        try:
+            entity.skinny = True
+            entity = store.get(entity)
+            try:
+                delattr(entity, 'skinny')
+            except AttributeError:
+                pass
+            entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
+            yield entity
+        except(UserRequiredError, ForbiddenError):
+            pass
+    return

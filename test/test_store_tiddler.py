@@ -47,7 +47,6 @@ def test_simple_put():
 
     store.put(bagone)
     tiddler = bagone.list_tiddlers()[0]
-    print tiddler.revision
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
     tiddler.modified = '200803030303'
     store.put(tiddler)
@@ -87,7 +86,7 @@ def test_get_revision():
     bagone.add_tiddlers(tiddlers)
 
     store.put(bagone)
-    store.put(bagone)
+    #store.put(bagone)
     tiddler = Tiddler('RevisionTiddler')
     tiddler.text='how now 1'
     tiddler.bag = 'bagone'

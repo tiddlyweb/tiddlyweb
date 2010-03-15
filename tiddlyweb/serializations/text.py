@@ -23,13 +23,13 @@ class Serialization(SerializationInterface):
         """
         Return a linefeed separated list of recipe names.
         """
-        return "\n".join([recipe.name for recipe in recipes])
+        return ('%s\n' % recipe.name for recipe in recipes)
 
     def list_bags(self, bags):
         """
         Return a linefeed separated list of recipe names.
         """
-        return "\n".join([bag.name for bag in bags])
+        return ('%s\n' % bag.name for bag in bags)
 
     def recipe_as(self, recipe):
         """

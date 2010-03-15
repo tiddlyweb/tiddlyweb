@@ -36,7 +36,6 @@ def test_tiddler_fields_contains_stuff():
 
 def test_tiddler_fields_are_stored():
     bag = Bag('bag0')
-    print 'bo ', bag.policy.owner
     store.put(bag)
     tiddler = Tiddler('feebles', bag='bag0')
     tiddler.fields = {u'field1': u'value1', u'field2': u'value2'}

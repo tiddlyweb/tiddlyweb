@@ -114,14 +114,14 @@ def test_generated_html():
 def test_text_list():
     serializer = Serializer('text')
     recipes = [Recipe('recipe' + str(name)) for name in xrange(2)]
-    string = serializer.list_recipes(recipes)
+    string = ''.join(serializer.list_recipes(recipes))
 
-    assert string == 'recipe0\nrecipe1'
+    assert string == 'recipe0\nrecipe1\n'
 
 def test_html_list():
     serializer = Serializer('html')
     recipes = [Recipe('recipe' + str(name)) for name in xrange(2)]
-    string = serializer.list_recipes(recipes)
+    string = ''.join(serializer.list_recipes(recipes))
 
     assert 'href="recipes/recipe0' in string
     assert 'href="recipes/recipe1' in string

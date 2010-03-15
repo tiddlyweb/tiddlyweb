@@ -26,28 +26,25 @@ class Serialization(SerializationInterface):
         List the recipes on the system as html.
         """
         self.environ['tiddlyweb.title'] = 'Recipes'
-        lines = []
-        output = '<ul id="recipes" class="listing">\n'
+
+        yield '<ul id="recipes" class="listing">\n'
         for recipe in recipes:
-            line = '<li><a href="recipes/%s">%s</a></li>' % (
+            yield '<li><a href="recipes/%s">%s</a></li>\n' % (
                     encode_name(recipe.name), recipe.name)
-            lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+        yield '\n</ul>'
+        return
 
     def list_bags(self, bags):
         """
         List the bags on the system as html.
         """
         self.environ['tiddlyweb.title'] = 'Bags'
-        lines = []
-        output = '<ul id="bags" class="listing">\n'
+        yield '<ul id="bags" class="listing">\n'
         for bag in bags:
-            line = '<li><a href="bags/%s/tiddlers">%s</a></li>' % (
+            yield '<li><a href="bags/%s/tiddlers">%s</a></li>\n' % (
                     encode_name(bag.name), bag.name)
-            lines.append(line)
-        output += "\n".join(lines)
-        return output + '\n</ul>'
+        yield '\n</ul>'
+        return
 
     def list_tiddlers(self, bag):
         """
