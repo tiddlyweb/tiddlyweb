@@ -7,6 +7,7 @@ and put data into a storage system.
 
 from tiddlyweb.store import StoreMethodNotImplemented
 
+TIDDLER_WRITTEN_HANDLERS = []
 
 class StorageInterface(object):
     """
@@ -145,10 +146,11 @@ class StorageInterface(object):
     def tiddler_written(self, tiddler):
         """
         Notify the system that a tiddler has been stored. This is done to
-        cause search system to update, invalidate caches or otherwise deal
+        cause search systems to update, invalidate caches or otherwise deal
         with new content.
         """
-        pass
+        for handler in TIDDLER_WRITTEN_HANDLERS:
+            handler(self, tiddler)
 
     def search(self, search_query):
         """
