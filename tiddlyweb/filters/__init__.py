@@ -136,20 +136,23 @@ def recursive_filter(filters, tiddlers, indexable=False):
 
     Each next filter processes only those tiddlers
     that were results of the previous filter.
+
+    XXX: Misnamed
     """
     if len(filters) == 0:
-        return (tiddler for tiddler in tiddlers)
-    current_filter = filters.pop(0)
-    try:
-        active_filter, args, environ = current_filter
-    except ValueError:
-        active_filter = current_filter
-        environ = {}
-    try:
-        return recursive_filter(filters, active_filter(tiddlers, indexable,
-            environ), indexable=False)
-    except FilterIndexRefused, exc:
-        filters.insert(0, current_filter)
-        return recursive_filter(filters, tiddlers, indexable=False)
-    except AttributeError, exc:
-        raise FilterError('malformed filter: %s' % exc)
+        # tiddlers
+        pass
+    for filter in filters:
+        try:
+            active_filter, args, environ = filter
+        except ValueError:
+            active_filter = filter
+            environ = {}
+        try:
+            tiddlers = active_filter(tiddlers, indexable, environ)
+        except FilterIndexRefused, exc:
+            tiddlers = active_filter(tiddlers, False, environ)
+        except AttributeError, exc:
+            raise FilterError('malformed filter: %s' % exc)
+        indexable = False
+    return tiddlers

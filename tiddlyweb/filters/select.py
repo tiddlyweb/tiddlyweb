@@ -132,25 +132,30 @@ def select_by_attribute(attribute, value, tiddlers, negate=False,
 
     If negate is true, get those that don't match.
     """
+    from tiddlyweb.config import config
     if environ == None:
-        environ = {}
+        {}
+    environ = {'tiddlyweb.config': config}
 
-    if indexable:
-        indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
-        if indexer:
+    indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
+    if indexable and indexer:
             # If there is an exception, just let it raise.
             imported_module = __import__(indexer, {}, {}, ['index_query'])
             # dict keys may not be unicode
             kwords = {str(attribute): value, 'bag': indexable.name}
-            return imported_module.index_query(environ, **kwords)
-
-    select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
-    if negate:
-        return (tiddler for tiddler in tiddlers if not
-                select(tiddler, attribute, value))
+            for tiddler in imported_module.index_query(environ, **kwords):
+                yield tiddler
     else:
-        return (tiddler for tiddler in tiddlers if
-                select(tiddler, attribute, value))
+        select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
+        if negate:
+            for tiddler in tiddlers:
+                if not select(tiddler, attribute, value):
+                    yield tiddler
+        else:
+            for tiddler in tiddlers:
+                if select(tiddler, attribute, value):
+                    yield tiddler
+    return
 
 
 def select_relative_attribute(attribute, value, tiddlers,
@@ -169,12 +174,15 @@ def select_relative_attribute(attribute, value, tiddlers,
     func = ATTRIBUTE_SORT_KEY.get(attribute, normalize_value)
 
     if greater:
-        return (tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute, tiddler.fields.get(
-                    attribute, None))) > func(value))
+        for tiddler in tiddlers:
+            if func(getattr(tiddler, attribute, tiddler.fields.get(
+                attribute, None))) > func(value):
+                yield tiddler
     elif lesser:
-        return (tiddler for tiddler in tiddlers if
-                func(getattr(tiddler, attribute, tiddler.fields.get(
-                    attribute, None))) < func(value))
+        for tiddler in tiddlers:
+            if func(getattr(tiddler, attribute, tiddler.fields.get(
+                attribute, None))) < func(value):
+                yield tiddler
     else:
-        return (tiddler for tiddler in tiddlers)
+        for tiddler in tiddlers:
+            yield tiddler

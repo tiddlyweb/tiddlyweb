@@ -69,4 +69,4 @@ def sort_by_attribute(attribute, tiddlers, reverse=False):
             except KeyError, exc:
                 raise AttributeError('no attribute: %s, %s' % (attribute, exc))
 
-    return sorted(tiddlers, key=key_gen, reverse=reverse)
+    return (tiddler for tiddler in sorted(tiddlers, key=key_gen, reverse=reverse))
