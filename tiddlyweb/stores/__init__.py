@@ -9,6 +9,7 @@ from tiddlyweb.store import StoreMethodNotImplemented
 
 TIDDLER_WRITTEN_HANDLERS = []
 
+
 class StorageInterface(object):
     """
     A Store is a collection of methods that

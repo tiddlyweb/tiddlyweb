@@ -10,6 +10,7 @@ and generate a hash suitable for use as an ETag.
 
 from tiddlyweb.util import sha
 
+
 class Collection(object):
     """
     Base class for all collections.
@@ -58,6 +59,7 @@ class Collection(object):
         for thing in self._container:
             yield thing
 
+
 class Tiddlers(Collection):
     """
     A Collection specifically for tiddlers.
@@ -66,6 +68,7 @@ class Tiddlers(Collection):
     the digest is calculated. tiddler.title and
     either tiddler.bag or tiddler.recipe are used.
     """
+
     def __init__(self):
         Collection.__init__(self)
         self.is_revisions = False

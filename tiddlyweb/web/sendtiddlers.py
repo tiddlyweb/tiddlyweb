@@ -78,7 +78,7 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
 
 def _validate_tiddler_list(environ, tiddlers):
     """
-    Do Etag and Last modified checks on the 
+    Do Etag and Last modified checks on the
     collection of tiddlers.
 
     If ETag testing is done, no last modified handling

@@ -183,11 +183,11 @@ OpenID: <input name="openid" size="60" />
         link = None
         for candidate_link in links:
             attributes = candidate_link.attributes
-            if attributes.has_key('rel') and \
-                    attributes.getNamedItem('rel').value == 'openid.server':
+            if (attributes.has_key('rel') and
+                    attributes.getNamedItem('rel').value == 'openid.server'):
                 link = attributes.getNamedItem('href').value
-            if attributes.has_key('rel') and \
-                    attributes.getNamedItem('rel').value == 'openid.delegate':
+            if (attributes.has_key('rel') and
+                    attributes.getNamedItem('rel').value == 'openid.delegate'):
                 openid = attributes.getNamedItem('href').value
         if not link:
             return self._send_openid_form(

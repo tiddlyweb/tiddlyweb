@@ -447,6 +447,7 @@ def _send_tiddler(environ, start_response, tiddler):
     else:
         return content
 
+
 def _get_tiddler_content(environ, tiddler):
     """
     Extract the content of the tiddler, either straight up if

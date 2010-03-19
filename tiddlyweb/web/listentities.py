@@ -28,6 +28,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     else:
         return output
 
+
 def _filter_readable(environ, entities):
     store = environ['tiddlyweb.store']
     for entity in entities:

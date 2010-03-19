@@ -8,6 +8,7 @@ to SQL Limit:
 
 import itertools
 
+
 def limit_parse(count='0'):
     """
     Parse the argument of a limit filter
@@ -34,4 +35,5 @@ def limit(tiddlers, count=0, index=0):
     Make a slice of a list of tiddlers based
     on a count and index.
     """
-    return itertools.islice(tiddlers, index, index+count)
+
+    return itertools.islice(tiddlers, index, index + count)
