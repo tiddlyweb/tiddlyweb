@@ -13,6 +13,7 @@ from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web import util as web
+from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.listentities import list_entities
 from tiddlyweb.web.http import HTTP400, HTTP404, HTTP409, HTTP415
@@ -57,23 +58,7 @@ def get(environ, start_response):
 
     bag.policy.allows(environ['tiddlyweb.usersign'], 'manage')
 
-    try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = bag
-
-        content = serializer.to_string()
-    except NoSerializationError:
-        raise HTTP415('Content type not supported: %s' % mime_type)
-
-    start_response("200 Ok",
-            [('Content-Type', mime_type),
-                ('Vary', 'Accept')])
-
-    if isinstance(content, basestring):
-        return [content]
-    else:
-        return content
+    return send_entity(environ, start_response, bag)
 
 
 def get_tiddlers(environ, start_response):

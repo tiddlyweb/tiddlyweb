@@ -19,9 +19,10 @@ class StorageInterface(object):
     (optionally) exists <entity_put> and <entity>_get
     methods in each Store.
 
-    There are also four supporting methods, list_recipes(),
-    list_bags(), list_users(), and list_tiddler_revisions() that provide
-    methods for getting a collection.
+    There are also five supporting methods, list_recipes(),
+    list_bags(), list_users(), list_bag_tiddlers(), and
+    list_tiddler_revisions() that provide methods for
+    getting a collection.
 
     It is useful to understand the classes in the tiddlyweb.model
     package when implementing new StorageInterface classes.
@@ -130,7 +131,7 @@ class StorageInterface(object):
         """
         raise StoreMethodNotImplemented('this store does not handle listing bags')
 
-    def list_bag_tiddlers(self):
+    def list_bag_tiddlers(self, bag):
         """
         Retrieve a list of all bag objects in the system.
         """

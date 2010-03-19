@@ -11,7 +11,6 @@ import shutil
 import time
 import urllib
 
-from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.model.recipe import Recipe
@@ -38,8 +37,14 @@ class Store(StorageInterface):
         self._init_store()
 
     def _fixup_root(self, path):
+        """
+        Adjust the store_root path so it is absolute.
+
+        This is required in some web serving environments.
+        """
         if not os.path.isabs(path):
-            path = os.path.join(self.environ['tiddlyweb.config'].get('root_dir', ''), path)
+            path = os.path.join(self.environ['tiddlyweb.config'].
+                    get('root_dir', ''), path)
         return path
 
     def _init_store(self):

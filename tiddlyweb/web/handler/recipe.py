@@ -14,6 +14,7 @@ from tiddlyweb.store import NoRecipeError, NoBagError, \
         StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.http import HTTP400, HTTP409, HTTP415, HTTP404
+from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.listentities import list_entities
 from tiddlyweb import control
@@ -48,24 +49,7 @@ def get(environ, start_response):
     """
     recipe = _determine_recipe(environ)
     recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
-
-    try:
-        serialize_type, mime_type = web.get_serialize_type(environ)
-        serializer = Serializer(serialize_type, environ)
-        serializer.object = recipe
-        content = serializer.to_string()
-    except NoSerializationError:
-        raise HTTP415('Content type %s not supported' % mime_type)
-
-    # setting the cookie for text/plain is harmless
-    start_response("200 OK",
-            [('Content-Type', mime_type),
-                ('Vary', 'Accept')])
-
-    if isinstance(content, basestring):
-        return [content]
-    else:
-        return content
+    return send_entity(environ, start_response, recipe)
 
 
 def get_tiddlers(environ, start_response):
