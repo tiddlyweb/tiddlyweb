@@ -104,20 +104,27 @@ def get_tiddlers_from_bag(bag):
     Return the list of tiddlers that are in a bag.
     """
 
+    from time import time
+    print 'starting get bag generator', time()
     if bag.store:
         if hasattr(bag, 'skinny') and bag.skinny:
             bag.skinny = False
             bag = bag.store.get(bag)
+
         for tiddler in bag.gen_tiddlers():
-            try:
-                tiddler = bag.store.get(tiddler)
-            except TiddlerFormatError:
-                # XXX do more here?
+            if hasattr(tiddler, 'store') and tiddler.store:
                 pass
+            else:
+                try:
+                    tiddler = bag.store.get(tiddler)
+                except TiddlerFormatError:
+                    # XXX do more here?
+                    pass
             yield tiddler
     else:
         for tiddler in bag.gen_tiddlers():
             yield tiddler
+    print 'finishing get bag generator', time()
 
 
 def filter_tiddlers_from_bag(bag, filters):

@@ -9,7 +9,7 @@ config = {
         #'twanager_plugins': ['whoosher'],
         #'system_plugins': ['whoosher'],
         #'base_tiddlywiki': 'smancypants',
-        #'server_store': ['sql3', {'db_config': 'sqlite:///test.db'}],
+        'server_store': ['sql3', {'db_config': 'sqlite:///test.db'}],
         #'server_store': ['devtext', {'store_root': 'store'}],
         #'server_store': ['ramstore', {}],
         #'server_store': ['mappingsql', {'db_config': 'sqlite:///test.db'}],

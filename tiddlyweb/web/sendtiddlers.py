@@ -27,11 +27,15 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
     download = environ['tiddlyweb.query'].get('download', [None])[0]
     filters = environ['tiddlyweb.filters']
 
+    from time import time
+
     if tiddlers is None:
         candidate_tiddlers = Tiddlers()
         try:
+            print 'filtering tiddlers', time()
             for tiddler in control.filter_tiddlers_from_bag(bag, filters):
                 candidate_tiddlers.add(tiddler)
+            print 'filtered tiddlers', time()
         except FilterError, exc:
             raise HTTP400('malformed filter: %s' % exc)
     elif filters:
@@ -44,7 +48,9 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
     else:
         candidate_tiddlers = tiddlers
 
+    print 'validating tiddlers', time()
     last_modified, etag = _validate_tiddler_list(environ, candidate_tiddlers)
+    print 'validated tiddlers', time()
 
     serialize_type, mime_type = get_serialize_type(environ)
 
@@ -63,7 +69,9 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
 
     serializer = Serializer(serialize_type, environ)
     try:
+        print 'creating output', time()
         output = serializer.list_tiddlers(candidate_tiddlers)
+        print 'created output', time()
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s:%s, %s' %
                 (serialize_type, mime_type, exc))
