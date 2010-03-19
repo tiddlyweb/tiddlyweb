@@ -120,6 +120,7 @@ def filter_tiddlers(filters, tiddlers):
         filters, _ = parse_for_filters(filters)
     return recursive_filter(filters, tiddlers)
 
+
 def filter_tiddlers_from_bag(bag, filters):
     """
     Return the list of tiddlers resulting from filtering
@@ -137,7 +138,8 @@ def filter_tiddlers_from_bag(bag, filters):
 def _recipe_template(environ):
     """
     provide a means to specify custom {{ key }} values in recipes
-    which are then replaced with the value specified in environ['tiddlyweb.recipe_template']
+    which are then replaced with the value specified in
+    environ['tiddlyweb.recipe_template']
     """
     template = {}
     if environ:
