@@ -127,11 +127,7 @@ def filter_tiddlers_from_bag(bag, filters):
     parsed to a list of filters.
     """
     store = bag.store
-
-    if bag.tmpbag or bag.revbag or bag.searchbag:
-        indexable = False
-    else:
-        indexable = bag
+    indexable = bag
 
     # XXX isinstance considered harmful
     if isinstance(filters, basestring):
