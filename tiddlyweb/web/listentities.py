@@ -32,12 +32,7 @@ def _filter_readable(environ, entities):
     store = environ['tiddlyweb.store']
     for entity in entities:
         try:
-            entity.skinny = True
             entity = store.get(entity)
-            try:
-                delattr(entity, 'skinny')
-            except AttributeError:
-                pass
             entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
             yield entity
         except(UserRequiredError, ForbiddenError):

@@ -84,7 +84,6 @@ def _check_bag_constraint(environ, bag, constraint):
     try:
         store = environ['tiddlyweb.store']
         usersign = environ['tiddlyweb.usersign']
-        bag.skinny = True
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
     except (PermissionsError), exc:

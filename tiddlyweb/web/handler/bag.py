@@ -31,7 +31,7 @@ def delete(environ, start_response):
 
     usersign = environ['tiddlyweb.usersign']
 
-    bag = _get_bag(environ, bag_name, True)
+    bag = _get_bag(environ, bag_name)
     bag.policy.allows(usersign, 'manage')
     # reuse the store attribute that was set on the
     # bag when we "got" it.
@@ -54,7 +54,7 @@ def get(environ, start_response):
     """
     bag_name = _determine_bag_name(environ)
     bag_name = web.handle_extension(environ, bag_name)
-    bag = _get_bag(environ, bag_name, True)
+    bag = _get_bag(environ, bag_name)
 
     bag.policy.allows(environ['tiddlyweb.usersign'], 'manage')
 
@@ -68,7 +68,7 @@ def get_tiddlers(environ, start_response):
     serialization chosen.
     """
     bag_name = _determine_bag_name(environ)
-    bag = _get_bag(environ, bag_name, True)
+    bag = _get_bag(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
     # will raise exception if there are problems
@@ -103,13 +103,8 @@ def put(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     try:
-        bag.skinny = True
         bag = store.get(bag)
         bag.policy.allows(usersign, 'manage')
-        try:
-            delattr(bag, 'skinny')
-        except AttributeError:
-            pass
     except NoBagError:
         create_policy_check(environ, 'bag', usersign)
 
@@ -156,14 +151,12 @@ def _determine_bag_name(environ):
     return bag_name
 
 
-def _get_bag(environ, bag_name, skinny=False):
+def _get_bag(environ, bag_name):
     """
     Get the named bag out of the store.
     """
-    bag = Bag(bag_name)
-    if skinny:
-        bag.skinny = True
     store = environ['tiddlyweb.store']
+    bag = Bag(bag_name)
     try:
         bag = store.get(bag)
     except NoBagError, exc:
