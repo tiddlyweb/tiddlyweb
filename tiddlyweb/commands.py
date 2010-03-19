@@ -217,7 +217,7 @@ def init(config):
             for listed_bag in bags:
                 listed_bag = store.get(listed_bag)
                 print listed_bag.name, listed_bag.policy.owner
-                tiddlers = listed_bag.gen_tiddlers()
+                tiddlers = listed_bag.tiddlers.out()
                 for listed_tiddler in tiddlers:
                     listed_tiddler = store.get(listed_tiddler)
                     print '  ', listed_tiddler.title, listed_tiddler.modifier

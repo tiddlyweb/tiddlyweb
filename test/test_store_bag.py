@@ -48,7 +48,7 @@ def test_simple_get():
     bag = Bag(name='bagone')
     bag = store.get(bag)
 
-    the_tiddler = bag.gen_tiddlers().next()
+    the_tiddler = bag.tiddlers.out().next()
     assert the_tiddler.title == tiddler.title
     assert the_tiddler.text == ''
     assert the_tiddler.tags == []

@@ -24,50 +24,19 @@ class Bag(object):
     for use within the web handlers.
     """
 
-    def __init__(self, name, desc='',
-            tmpbag=False, revbag=False, searchbag=False):
+    def __init__(self, name, desc=''):
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
-        self.tmpbag = tmpbag
-        self.revbag = revbag
-        self._tiddlers = Tiddlers()
-        self.searchbag = searchbag
+        self.tiddlers = Tiddlers()
         self.store = None
 
     def __repr__(self):
         return '%s:%s' % (self.name, object.__repr__(self))
 
-    def _tiddler_copy(self, tiddler):
-        """
-        Set the bag attribute on a non tmpbag tiddler to this bag's name.
-        """
-        if self.tmpbag:
-            pass
-        else:
-            tiddler.bag = self.name
-        return tiddler
-
-    def add_tiddler(self, tiddler):
-        """
-        Inject a tiddler into the bag. Depending on the
-        type of bag in use, this may or may not clobber
-        a tiddler of the same name in the bag.
-        """
-        tiddler = self._tiddler_copy(tiddler)
-        self._tiddlers.add(tiddler)
-
-    def add_tiddlers(self, tiddlers):
-        """
-        Call add_tiddler() on a list of tiddlers.
-        For convenience.
-        """
-        for tiddler in tiddlers:
-            self.add_tiddler(tiddler)
-
-    def gen_tiddlers(self):
+    def xgen_tiddlers(self):
         """
         Make a generator of all the tiddlers in the bag,
         in the order they were added.
         """
-        return self._tiddlers.out()
+        return self.tiddlers.out()

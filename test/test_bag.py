@@ -18,7 +18,7 @@ def setup_module(module):
 # we need to copy tiddlers otherwise the test below which 
 # messes with the contents of tiddlers screws with others tests
     module.tiddlers = copy.deepcopy(tids)
-    module.bag.add_tiddler(module.tiddlers[0])
+    module.bag.tiddlers.add(module.tiddlers[0])
 
 def test_bag_create():
     """

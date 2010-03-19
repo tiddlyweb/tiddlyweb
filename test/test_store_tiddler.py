@@ -43,10 +43,10 @@ def test_simple_put():
     put a tiddler to disk and make sure it is there.
     """
     bagone = Bag('bagone')
-    bagone.add_tiddlers(tiddlers)
+    [bagone.tiddlers.add(tiddler) for tiddler in tiddlers]
 
     store.put(bagone)
-    tiddler = bagone.gen_tiddlers().next()
+    tiddler = bagone.tiddlers.out().next()
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
     tiddler.modified = '200803030303'
     store.put(tiddler)
@@ -83,7 +83,7 @@ def test_get_revision():
     """
 
     bagone = Bag('bagone')
-    bagone.add_tiddlers(tiddlers)
+    [bagone.tiddlers.add(tiddler) for tiddler in tiddlers]
 
     store.put(bagone)
     #store.put(bagone)

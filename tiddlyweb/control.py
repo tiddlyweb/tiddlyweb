@@ -67,7 +67,7 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
                 if tiddler.title == candidate_tiddler.title:
                     return bag
         else:
-            for candidate_tiddler in bag.gen_tiddlers():
+            for candidate_tiddler in bag.tiddlers.out():
                 if tiddler.title == candidate_tiddler.title:
                     return bag
 
@@ -87,8 +87,8 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = _recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        tmpbag = Bag(filter_string, tmpbag=True)
-        tmpbag.add_tiddler(tiddler)
+        tmpbag = Bag(filter_string)
+        tmpbag.tiddlers.add(tiddler)
         for candidate_tiddler in filter_tiddlers_from_bag(tmpbag,
                 filter_string):
             if tiddler.title == candidate_tiddler.title:
@@ -104,14 +104,12 @@ def get_tiddlers_from_bag(bag):
     Return the list of tiddlers that are in a bag.
     """
 
-    from time import time
-    print 'starting get bag generator', time()
     if bag.store:
         if hasattr(bag, 'skinny') and bag.skinny:
             bag.skinny = False
             bag = bag.store.get(bag)
 
-        for tiddler in bag.gen_tiddlers():
+        for tiddler in bag.tiddlers.out():
             if hasattr(tiddler, 'store') and tiddler.store:
                 pass
             else:
@@ -122,9 +120,8 @@ def get_tiddlers_from_bag(bag):
                     pass
             yield tiddler
     else:
-        for tiddler in bag.gen_tiddlers():
+        for tiddler in bag.tiddlers.out():
             yield tiddler
-    print 'finishing get bag generator', time()
 
 
 def filter_tiddlers_from_bag(bag, filters):
@@ -142,7 +139,7 @@ def filter_tiddlers_from_bag(bag, filters):
     if store:
         return recursive_filter(filters, get_tiddlers_from_bag(bag), indexable=indexable)
     else:
-        return recursive_filter(filters, bag.gen_tiddlers(), indexable=indexable)
+        return recursive_filter(filters, bag.tiddlers.out(), indexable=indexable)
 
 
 def _recipe_template(environ):
