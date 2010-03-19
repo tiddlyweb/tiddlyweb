@@ -417,7 +417,8 @@ def _send_tiddler(environ, start_response, tiddler):
     try:
         _check_bag_constraint(environ, bag, 'read')
     except NoBagError, exc:
-        raise HTTP404('%s not found, no bag %s, %s' % (tiddler.title, tiddler.bag, exc))
+        raise HTTP404('%s not found, no bag %s, %s' %
+                (tiddler.title, tiddler.bag, exc))
 
     try:
         tiddler = store.get(tiddler)
@@ -540,6 +541,6 @@ def _tiddler_etag(environ, tiddler):
     except TypeError:
         mime_type = ''
     username = environ.get('tiddlyweb.usersign', {}).get('name', '')
-    hash = sha('%s:%s' % (username, mime_type)).hexdigest()
+    digest = sha('%s:%s' % (username, mime_type)).hexdigest()
     return str('"%s/%s/%s;%s"' % (web.encode_name(tiddler.bag),
-        web.encode_name(tiddler.title), tiddler.revision, hash))
+        web.encode_name(tiddler.title), tiddler.revision, digest))
