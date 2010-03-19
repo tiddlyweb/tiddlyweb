@@ -6,9 +6,7 @@ validating cache headers for list of tiddlers.
 
 from tiddlyweb import control
 from tiddlyweb.filters import FilterError, recursive_filter
-from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.collections import Tiddlers
-from tiddlyweb.model.policy import Policy
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import \
@@ -56,13 +54,15 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
     if download:
         response.append(('Content-Disposition',
             'attachment; filename="%s"' % download.encode('utf-8')))
+
     if last_modified:
         response.append(last_modified)
+
     if etag:
         response.append(etag)
 
-    serializer = Serializer(serialize_type, environ)
     try:
+        serializer = Serializer(serialize_type, environ)
         output = serializer.list_tiddlers(candidate_tiddlers)
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s:%s, %s' %
@@ -97,7 +97,7 @@ def _validate_tiddler_list(environ, tiddlers):
     username = environ.get('tiddlyweb.usersign', {}).get('name', '')
 
     try:
-        serialize_type, mime_type = get_serialize_type(environ)
+        _, mime_type = get_serialize_type(environ)
         mime_type = mime_type.split(';', 1)[0].strip()
     except TypeError:
         mime_type = ''
