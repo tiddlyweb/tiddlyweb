@@ -32,7 +32,7 @@ def get(environ, start_response):
     containing bag.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_tiddler_bag_from_recipe)
+            control.determine_bag_from_recipe)
     return _send_tiddler(environ, start_response, tiddler)
 
 
@@ -41,7 +41,7 @@ def get_revisions(environ, start_response):
     Get the list of revisions for this tiddler.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_tiddler_bag_from_recipe)
+            control.determine_bag_from_recipe)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
 
@@ -51,7 +51,7 @@ def delete(environ, start_response):
     delete means is up to the store.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_tiddler_bag_from_recipe)
+            control.determine_bag_from_recipe)
     return _delete_tiddler(environ, start_response, tiddler)
 
 
@@ -62,7 +62,7 @@ def post_revisions(environ, start_response):
     That collection is known as a TiddlerChronicle.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_tiddler_bag_from_recipe)
+            control.determine_bag_from_recipe)
     return _post_tiddler_revisions(environ, start_response, tiddler)
 
 

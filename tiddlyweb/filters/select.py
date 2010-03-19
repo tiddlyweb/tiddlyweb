@@ -132,19 +132,17 @@ def select_by_attribute(attribute, value, tiddlers, negate=False,
 
     If negate is true, get those that don't match.
     """
-    from tiddlyweb.config import config
     if environ == None:
-        {}
-    environ = {'tiddlyweb.config': config}
+        environ = {}
 
     indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
     if indexable and indexer:
-            # If there is an exception, just let it raise.
-            imported_module = __import__(indexer, {}, {}, ['index_query'])
-            # dict keys may not be unicode
-            kwords = {str(attribute): value, 'bag': indexable.name}
-            for tiddler in imported_module.index_query(environ, **kwords):
-                yield tiddler
+        # If there is an exception, just let it raise.
+        imported_module = __import__(indexer, {}, {}, ['index_query'])
+        # dict keys may not be unicode
+        kwords = {str(attribute): value, 'bag': indexable.name}
+        for tiddler in imported_module.index_query(environ, **kwords):
+            yield tiddler
     else:
         select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
         if negate:
@@ -166,6 +164,7 @@ def select_relative_attribute(attribute, value, tiddlers,
     """
 
     def normalize_value(value):
+        """lower case the value if it is a string"""
         try:
             return value.lower()
         except AttributeError:

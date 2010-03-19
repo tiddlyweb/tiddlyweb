@@ -9,7 +9,6 @@ and serialize objects in filters and recipes and the
 like.
 """
 
-from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.filters import parse_for_filters, recursive_filter
 from tiddlyweb.serializer import TiddlerFormatError
@@ -40,7 +39,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     return uniquifier.values()
 
 
-def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
+def determine_bag_from_recipe(recipe, tiddler, environ=None):
     """
     We have a recipe and a tiddler. We need to
     know the bag in which this tiddler can be found.
@@ -102,7 +101,6 @@ def get_tiddlers_from_bag(bag):
                 try:
                     tiddler = bag.store.get(tiddler)
                 except TiddlerFormatError:
-                    # XXX do more here?
                     pass
             yield tiddler
     else:
@@ -120,7 +118,7 @@ def filter_tiddlers(filters, tiddlers):
     filters.
     """
     if isinstance(filters, basestring):
-        filters, leftovers = parse_for_filters(filters)
+        filters, _ = parse_for_filters(filters)
     return recursive_filter(filters, tiddlers)
 
 def filter_tiddlers_from_bag(bag, filters):
@@ -129,13 +127,12 @@ def filter_tiddlers_from_bag(bag, filters):
     bag by filter. The filter is a string that will be
     parsed to a list of filters.
     """
-    store = bag.store
     indexable = bag
 
-    # XXX isinstance considered harmful
     if isinstance(filters, basestring):
-        filters, leftovers = parse_for_filters(filters)
-    return recursive_filter(filters, get_tiddlers_from_bag(bag), indexable=indexable)
+        filters, _ = parse_for_filters(filters)
+    return recursive_filter(filters, get_tiddlers_from_bag(bag),
+            indexable=indexable)
 
 
 def _recipe_template(environ):
@@ -147,7 +144,7 @@ def _recipe_template(environ):
     if environ:
         template = environ.get('tiddlyweb.recipe_template', {})
         try:
-                template['user'] = environ['tiddlyweb.usersign']['name']
+            template['user'] = environ['tiddlyweb.usersign']['name']
         except KeyError:
             pass
 

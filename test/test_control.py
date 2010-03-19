@@ -63,7 +63,7 @@ def test_determine_bag_filtered():
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
 
-def test_determine_tiddler_from_recipe():
+def test_determine_bag_from_recipe():
     """
     Work out what bag a provided tiddler is in, when we have no knowledge of the bag,
     but we do have a recipe.
@@ -73,21 +73,21 @@ def test_determine_tiddler_from_recipe():
         (bagone, ''),
         (bagfour, 'select=tag:tagone')
         ])
-    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
+    bag = control.determine_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagfour.name, 'bag name should be bagfour, is %s' % bag.name
 
     short_recipe.set_recipe([
         (bagone, ''),
         (bagfour, 'select=tag:tagthree')
         ])
-    bag = control.determine_tiddler_bag_from_recipe(short_recipe, tiddlers[0])
+    bag = control.determine_bag_from_recipe(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
 
     lonely_tiddler = Tiddler('lonely')
     lonely_tiddler.bag = 'lonelybag'
 
     py.test.raises(NoBagError,
-            'bag = control.determine_tiddler_bag_from_recipe(short_recipe, lonely_tiddler)')
+            'bag = control.determine_bag_from_recipe(short_recipe, lonely_tiddler)')
 
 def test_determine_bag_fail():
 
