@@ -4,8 +4,6 @@ web server.
 """
 import logging
 import selector
-import sys
-import os
 
 from tiddlyweb.util import std_error_message, initialize_logging
 

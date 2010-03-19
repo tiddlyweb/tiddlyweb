@@ -27,7 +27,7 @@ class Header(object):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'HEAD':
             environ['REQUEST_METHOD'] = 'GET'
-            output = self.application(environ, start_response)
+            _ = self.application(environ, start_response)
             return []
         else:
             return self.application(environ, start_response)
@@ -51,6 +51,9 @@ class HTMLPresenter(object):
         return output
 
     def _needs_title(self, environ):
+        """
+        Determine if we are outputting html to a browser.
+        """
         return ('tiddlyweb.title' in environ and 'Mozilla'
                 in environ['HTTP_USER_AGENT'])
 
