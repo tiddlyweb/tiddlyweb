@@ -50,43 +50,50 @@ class StorageInterface(object):
         """
         Remove the recipe from the store, with no impact on the tiddlers.
         """
-        raise StoreMethodNotImplemented('this store does not handle deleting recipes')
+        raise StoreMethodNotImplemented(
+                'this store does not handle deleting recipes')
 
     def recipe_get(self, recipe):
         """
         Get a recipe from the store, returning a populated recipe object.
         """
-        raise StoreMethodNotImplemented('this store does not handle getting recipes')
+        raise StoreMethodNotImplemented(
+                'this store does not handle getting recipes')
 
     def recipe_put(self, recipe):
         """
         Put a recipe into the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle putting recipes')
+        raise StoreMethodNotImplemented(
+                'this store does not handle putting recipes')
 
     def bag_delete(self, bag):
         """
         Remove the bag from the store, including the tiddlers within the bag.
         """
-        raise StoreMethodNotImplemented('this store does not handle deleting bags')
+        raise StoreMethodNotImplemented(
+                'this store does not handle deleting bags')
 
     def bag_get(self, bag):
         """
         Get a bag from the store, returning a populated bag object.
         """
-        raise StoreMethodNotImplemented('this store does not handle getting bags')
+        raise StoreMethodNotImplemented(
+                'this store does not handle getting bags')
 
     def bag_put(self, recipe):
         """
         Put a bag into the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle putting bags')
+        raise StoreMethodNotImplemented(
+                'this store does not handle putting bags')
 
     def tiddler_delete(self, tiddler):
         """
         Delete a tiddler from the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle deleting tiddlers')
+        raise StoreMethodNotImplemented(
+                'this store does not handle deleting tiddlers')
 
     def tiddler_get(self, tiddler):
         """
@@ -94,62 +101,72 @@ class StorageInterface(object):
         object. tiddler.creator and tiddler.created are based on
         the modifier and modified of the first revision of a tiddler.
         """
-        raise StoreMethodNotImplemented('this store does not handle getting tiddlers')
+        raise StoreMethodNotImplemented(
+                'this store does not handle getting tiddlers')
 
     def tiddler_put(self, tiddler):
         """
         Put a tiddler into the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle putting tiddlers')
+        raise StoreMethodNotImplemented(
+                'this store does not handle putting tiddlers')
 
     def user_delete(self, user):
         """
         Delete a user from the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle deleting users')
+        raise StoreMethodNotImplemented(
+                'this store does not handle deleting users')
 
     def user_get(self, user):
         """
         Get a user from the store, returning a populated user object.
         """
-        raise StoreMethodNotImplemented('this store does not handle getting users')
+        raise StoreMethodNotImplemented(
+                'this store does not handle getting users')
 
     def user_put(self, user):
         """
         Put a user into the store.
         """
-        raise StoreMethodNotImplemented('this store does not handle putting users')
+        raise StoreMethodNotImplemented(
+                'this store does not handle putting users')
 
     def list_recipes(self):
         """
         Retrieve a list of all recipe objects in the system.
         """
-        raise StoreMethodNotImplemented('this store does not handle listing recipes')
+        raise StoreMethodNotImplemented(
+                'this store does not handle listing recipes')
 
     def list_bags(self):
         """
         Retrieve a list of all bag objects in the system.
         """
-        raise StoreMethodNotImplemented('this store does not handle listing bags')
+        raise StoreMethodNotImplemented(
+                'this store does not handle listing bags')
 
     def list_bag_tiddlers(self, bag):
         """
         Retrieve a list of all bag objects in the system.
         """
-        raise StoreMethodNotImplemented('this store does not handle listing bag tiddlers')
+        raise StoreMethodNotImplemented(
+                'this store does not handle listing bag tiddlers')
 
     def list_users(self):
         """
         Retrieve a list of all the user objects in the system.
         """
-        raise StoreMethodNotImplemented('this store does not handle listing users')
+        raise StoreMethodNotImplemented(
+                'this store does not handle listing users')
 
     def list_tiddler_revisions(self, tiddler):
         """
         Retrieve a list of all the revision identifiers
         for one tiddler.
         """
-        raise StoreMethodNotImplemented('this store does not handle listing tiddler revisions')
+        raise StoreMethodNotImplemented(
+                'this store does not handle listing tiddler revisions')
 
     def tiddler_written(self, tiddler):
         """
