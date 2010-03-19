@@ -46,19 +46,19 @@ class Serialization(SerializationInterface):
         yield '\n</ul>'
         return
 
-    def list_tiddlers(self, bag):
+    def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers in a bag as html.
+        List the tiddlers as html.
         """
         server_prefix = self._server_prefix()
         lines = []
         title = 'Tiddlers'
         representation_link = ''
         bag_link = ''
-        for tiddler in bag.gen_tiddlers():
+        for tiddler in tiddlers.gen_tiddlers():
             base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
-            if bag.is_revisions:
+            if tiddlers.is_revisions:
                 line = self._tiddler_revision_info(base, base_link, tiddler)
                 representation_link += '/%s/revisions' % encode_name(
                         tiddler.title)
@@ -67,7 +67,7 @@ class Serialization(SerializationInterface):
                 line = self._tiddler_in_bag_info(base, base_link, tiddler)
             lines.append(line)
 
-        if bag.is_search:
+        if tiddlers.is_search:
             title = 'Found Tiddlers'
 
         try:

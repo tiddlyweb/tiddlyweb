@@ -85,17 +85,17 @@ class Serialization(SerializationInterface):
         recipe.set_recipe(recipe_lines)
         return recipe
 
-    def list_tiddlers(self, bag):
+    def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers in a bag as text.
+        List the tiddlers as text.
         """
-        if bag.is_revisions:
+        if tiddlers.is_revisions:
             return "\n".join(
                     ["%s:%s" % (tiddler.title, tiddler.revision)
-                        for tiddler in bag.gen_tiddlers()])
+                        for tiddler in tiddlers.gen_tiddlers()])
         else:
             return "\n".join([
-                tiddler.title for tiddler in bag.gen_tiddlers()])
+                tiddler.title for tiddler in tiddlers.gen_tiddlers()])
 
     def tiddler_as(self, tiddler):
         """

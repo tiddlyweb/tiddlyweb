@@ -34,15 +34,15 @@ class Serialization(SerializationInterface):
         """
         return simplejson.dumps([bag.name for bag in bags])
 
-    def list_tiddlers(self, bag):
+    def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers in a bag as JSON.
+        List the tiddlers as JSON.
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
         fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
         return simplejson.dumps([self._tiddler_dict(tiddler, fat) for
-            tiddler in bag.gen_tiddlers()])
+            tiddler in tiddlers.gen_tiddlers()])
 
     def recipe_as(self, recipe):
         """
