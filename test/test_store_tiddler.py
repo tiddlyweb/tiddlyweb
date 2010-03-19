@@ -46,7 +46,7 @@ def test_simple_put():
     bagone.add_tiddlers(tiddlers)
 
     store.put(bagone)
-    tiddler = bagone.list_tiddlers()[0]
+    tiddler = bagone.gen_tiddlers().next()
     tiddler.tags = ['tagone', 'tagtwo', 'tag five']
     tiddler.modified = '200803030303'
     store.put(tiddler)

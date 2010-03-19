@@ -3,6 +3,7 @@ A module containing the Bag class.
 """
 
 from tiddlyweb.model.policy import Policy
+from tiddlyweb.model.collections import Tiddlers
 
 
 class Bag(object):
@@ -30,7 +31,7 @@ class Bag(object):
         self.policy = Policy() # set to default policy
         self.tmpbag = tmpbag
         self.revbag = revbag
-        self._tiddlers = []
+        self._tiddlers = Tiddlers()
         self.searchbag = searchbag
         self.store = None
 
@@ -54,7 +55,7 @@ class Bag(object):
         a tiddler of the same name in the bag.
         """
         tiddler = self._tiddler_copy(tiddler)
-        self._tiddlers.append(tiddler)
+        self._tiddlers.add(tiddler)
 
     def add_tiddlers(self, tiddlers):
         """
@@ -69,11 +70,4 @@ class Bag(object):
         Make a generator of all the tiddlers in the bag,
         in the order they were added.
         """
-        return (tiddler for tiddler in self._tiddlers)
-
-    def list_tiddlers(self):
-        """
-        List all the tiddlers in the bag, in the order
-        they were added.
-        """
-        return self._tiddlers
+        return self._tiddlers.out()
