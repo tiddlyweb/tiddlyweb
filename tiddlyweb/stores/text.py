@@ -11,6 +11,7 @@ import shutil
 import time
 import urllib
 
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.model.recipe import Recipe
@@ -125,9 +126,11 @@ class Store(StorageInterface):
                 tiddlers = self._files_in_dir(tiddlers_dir)
             except (IOError, OSError), exc:
                 raise NoBagError('unable to list tiddlers in bag: %s' % exc)
+            container = Tiddlers()
             for title in tiddlers:
                 title = urllib.unquote(title).decode('utf-8')
-                bag.tiddlers.add(Tiddler(title, bag.name))
+                container.add(Tiddler(title, bag.name))
+            bag.tiddlers = container
 
         try:
             bag.desc = self._read_bag_description(bag_path)

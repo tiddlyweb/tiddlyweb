@@ -8,6 +8,7 @@ in this case.
 """
 
 from tiddlyweb.model.bag import Bag, Policy
+from tiddlyweb.model.collections import Tiddlers
 
 import py.test
 import copy
@@ -18,7 +19,9 @@ def setup_module(module):
 # we need to copy tiddlers otherwise the test below which 
 # messes with the contents of tiddlers screws with others tests
     module.tiddlers = copy.deepcopy(tids)
-    module.bag.tiddlers.add(module.tiddlers[0])
+    container = Tiddlers()
+    container.add(module.tiddlers[0])
+    module.bag.tiddlers = container
 
 def test_bag_create():
     """

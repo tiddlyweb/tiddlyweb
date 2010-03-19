@@ -9,6 +9,7 @@ and serialize objects in filters and recipes and the
 like.
 """
 
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.filters import parse_for_filters, recursive_filter
 from tiddlyweb.serializer import TiddlerFormatError
@@ -87,10 +88,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = _recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        tmpbag = Bag(filter_string)
-        tmpbag.tiddlers.add(tiddler)
-        for candidate_tiddler in filter_tiddlers_from_bag(tmpbag,
-                filter_string):
+        for candidate_tiddler in filter_tiddlers(filter_string, [tiddler]):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
                     bag = Bag(name=bag)
@@ -123,6 +121,19 @@ def get_tiddlers_from_bag(bag):
         for tiddler in bag.tiddlers.out():
             yield tiddler
 
+
+def filter_tiddlers(filters, tiddlers):
+    """
+    Return a generator of tiddlers resulting from
+    filtering the provided iterator of tiddlers by
+    the provided filters.
+
+    If filters is a string, it will be parsed for
+    filters.
+    """
+    if isinstance(filters, basestring):
+        filters, leftovers = parse_for_filters(filters)
+    return recursive_filter(filters, tiddlers)
 
 def filter_tiddlers_from_bag(bag, filters):
     """

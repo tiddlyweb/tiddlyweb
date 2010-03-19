@@ -3,7 +3,6 @@ A module containing the Bag class.
 """
 
 from tiddlyweb.model.policy import Policy
-from tiddlyweb.model.collections import Tiddlers
 
 
 class Bag(object):
@@ -28,15 +27,8 @@ class Bag(object):
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
-        self.tiddlers = Tiddlers()
+        self.tiddlers = None
         self.store = None
 
     def __repr__(self):
         return '%s:%s' % (self.name, object.__repr__(self))
-
-    def xgen_tiddlers(self):
-        """
-        Make a generator of all the tiddlers in the bag,
-        in the order they were added.
-        """
-        return self.tiddlers.out()

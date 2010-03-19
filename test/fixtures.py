@@ -35,15 +35,25 @@ TiddlerThree.tags = [u'tagone', u'tagthree']
 tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree]
 
 bagone = Bag(name='bagone')
-bagone.tiddlers.add(tiddlers[0])
+container = Tiddlers()
+container.add(tiddlers[0])
+bagone.tiddlers = container
+
 bagtwo = Bag(name='bagtwo')
-bagtwo.tiddlers.add(tiddlers[1])
+container = Tiddlers()
+container.add(tiddlers[1])
+bagtwo.tiddlers = container
+
 bagthree = Bag(name='bagthree')
-bagthree.tiddlers.add(tiddlers[2])
+container = Tiddlers()
+container.add(tiddlers[2])
+bagthree.tiddlers = container
+
 bagfour = Bag(name='bagfour')
-bagfour.tiddlers.add(tiddlers[0])
-bagfour.tiddlers.add(tiddlers[1])
-bagfour.tiddlers.add(tiddlers[2])
+container = Tiddlers()
+for tiddler in tiddlers:
+    container.add(tiddler)
+bagfour.tiddlers = container
 
 tiddler_collection = Tiddlers()
 for tiddler in tiddlers:
