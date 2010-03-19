@@ -18,9 +18,8 @@ class Collection(object):
         self._update_digest(thing)
         self._container.append(thing)
         try:
-            modified = thing.modified
-            if modified > self.modified:
-                self.modified = modified
+            if thing.modified > self.modified:
+                self.modified = thing.modified
         except AttributeError:
             pass
 
@@ -36,6 +35,11 @@ class Collection(object):
 
 class Tiddlers(Collection):
 
+    def __init__(self):
+        Collection.__init__(self)
+        self.is_revisions = False
+        self.is_search = False
+
     def _update_digest(self, tiddler):
         if tiddler.recipe:
             container = tiddler.recipe
@@ -45,3 +49,6 @@ class Tiddlers(Collection):
             container = ''
         self._digest.update(container.encode('utf-8'))
         self._digest.update(tiddler.title.encode('utf-8'))
+
+    def gen_tiddlers(self):
+        return self.out()

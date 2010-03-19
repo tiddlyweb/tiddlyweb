@@ -5,6 +5,7 @@ Data structures required for our testing.
 import os
 import shutil
 
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.recipe import Recipe
@@ -43,6 +44,11 @@ bagfour = Bag(name='bagfour')
 bagfour.add_tiddler(tiddlers[0])
 bagfour.add_tiddler(tiddlers[1])
 bagfour.add_tiddler(tiddlers[2])
+
+tiddler_collection = Tiddlers()
+for tiddler in tiddlers:
+    tiddler.bag = 'bagfour'
+    tiddler_collection.add(tiddler)
 
 recipe_list = [
         (bagone, u'select=title:TiddlerOne'),

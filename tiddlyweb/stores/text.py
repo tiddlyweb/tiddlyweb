@@ -333,7 +333,6 @@ class Store(StorageInterface):
         This is intentionally simple, slow and broken to encourage overriding.
         """
         bag_filenames = self._bag_filenames()
-        found_tiddlers = []
 
         query = search_query.lower()
 
@@ -348,19 +347,19 @@ class Store(StorageInterface):
                 try:
                     revision_id = self.list_tiddler_revisions(tiddler)[0]
                     if query in tiddler.title.lower():
-                        found_tiddlers.append(tiddler)
+                        yield tiddler
                         continue
                     tiddler_file = codecs.open(
                         self._tiddler_full_filename(tiddler, revision_id),
                         encoding='utf-8')
                     for line in tiddler_file:
                         if query in line.lower():
-                            found_tiddlers.append(tiddler)
+                            yield tiddler
                             break
                 except (OSError, NoTiddlerError), exc:
                     logging.warn('malformed tiddler during search: %s:%s',
                             bagname, tiddler_name)
-        return found_tiddlers
+        return
 
     def _bag_filenames(self):
         """

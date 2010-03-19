@@ -6,6 +6,7 @@ produced by a recipe.
 
 import urllib
 
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import create_policy_check
@@ -80,18 +81,18 @@ def get_tiddlers(environ, start_response):
 
     # get the tiddlers from the recipe and uniquify them
     try:
-        tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
+        candidate_tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
-    tmp_bag = Bag('tmp_bag1', tmpbag=True)
+    tiddlers = Tiddlers()
 
     # Make an optimization so we are not going
     # to the database to load the policies of
     # the same bag over and over.
     policies = {}
-    for tiddler in tiddlers:
+    for tiddler in candidate_tiddlers:
         bag_name = tiddler.bag
         try:
             policies[bag_name].allows(usersign, 'read')
@@ -104,9 +105,9 @@ def get_tiddlers(environ, start_response):
             policies[bag_name].allows(usersign, 'read')
 
         tiddler.recipe = recipe.name
-        tmp_bag.add_tiddler(tiddler)
+        tiddlers.add(tiddler)
 
-    return send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tiddlers=tiddlers)
 
 
 def list_recipes(environ, start_response):

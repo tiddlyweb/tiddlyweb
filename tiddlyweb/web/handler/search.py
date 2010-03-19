@@ -8,6 +8,7 @@ import logging
 import urllib
 
 from tiddlyweb.web.http import HTTP400
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented
@@ -56,22 +57,24 @@ def get(environ, start_response):
 
     usersign = environ['tiddlyweb.usersign']
 
-    tmp_bag = Bag('tmp_bag', tmpbag=True, searchbag=True)
+    candidate_tiddlers = Tiddlers()
+    candidate_tiddlers.searchbag = True
+
     bag_readable = {}
 
     for tiddler in tiddlers:
         try:
             if bag_readable[tiddler.bag]:
-                tmp_bag.add_tiddler(store.get(tiddler))
+                candidate_tiddlers.add(store.get(tiddler))
         except KeyError:
             bag = Bag(tiddler.bag)
             bag.skinny = True
             bag = store.get(bag)
             try:
                 bag.policy.allows(usersign, 'read')
-                tmp_bag.add_tiddler(store.get(tiddler))
+                candidate_tiddlers.add(store.get(tiddler))
                 bag_readable[tiddler.bag] = True
             except(ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
 
-    return send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tiddlers=candidate_tiddlers)

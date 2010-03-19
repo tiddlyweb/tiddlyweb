@@ -8,6 +8,7 @@ import urllib
 
 import simplejson
 
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.model.recipe import Recipe
@@ -490,7 +491,8 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     """
     store = environ['tiddlyweb.store']
 
-    tmp_bag = Bag('tmp', tmpbag=True, revbag=True)
+    tiddlers = Tiddlers()
+    tiddlers.is_revisions = True
     try:
         for revision in store.list_tiddler_revisions(tiddler):
             tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
@@ -501,14 +503,14 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
                 # If a particular revision is not present in the store.
                 raise HTTP404('tiddler %s at revision % not found, %s' %
                         (tiddler.title, revision, exc))
-            tmp_bag.add_tiddler(tmp_tiddler)
+            tiddlers.add(tmp_tiddler)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
         raise HTTP404('tiddler %s not found, %s' % (tiddler.title, exc))
     except StoreMethodNotImplemented:
         raise HTTP400('no revision support')
 
-    return send_tiddlers(environ, start_response, tmp_bag)
+    return send_tiddlers(environ, start_response, tiddlers=tiddlers)
 
 
 def _new_tiddler_etag(tiddler):

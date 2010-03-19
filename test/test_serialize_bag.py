@@ -9,7 +9,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.config import config
 
-from fixtures import bagfour
+from fixtures import bagfour, tiddler_collection
 
 
 def setup_module(module):
@@ -28,24 +28,24 @@ def test_generate_json():
 
 
 def test_generated_string():
-    string = serializer.list_tiddlers(bagfour)
+    string = serializer.list_tiddlers(tiddler_collection)
 
     assert 'TiddlerOne' in string
     assert 'TiddlerTwo' in string
     assert 'TiddlerThree' in string
 
 def test_generated_string_with_revbag():
-    bagfour.revbag = True
-    string = serializer.list_tiddlers(bagfour)
+    tiddler_collection.is_revisions = True
+    string = serializer.list_tiddlers(tiddler_collection)
 
     assert 'TiddlerOne:0' in string
     assert 'TiddlerTwo:0' in string
     assert 'TiddlerThree:0' in string
-    bagfour.revbag = False
+    tiddler_collection.is_revisions = False
 
 def test_generated_html():
     html_serializer = Serializer('html')
-    string = html_serializer.list_tiddlers(bagfour)
+    string = html_serializer.list_tiddlers(tiddler_collection)
     assert '<li><a href="/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
 
 def test_generated_html_with_prefix():
@@ -53,17 +53,17 @@ def test_generated_html_with_prefix():
     new_config['server_prefix'] = '/salacious'
     environ = {'tiddlyweb.config': new_config}
     html_serializer = Serializer('html', environ)
-    string = html_serializer.list_tiddlers(bagfour)
+    string = html_serializer.list_tiddlers(tiddler_collection)
 
     assert '<li><a href="/salacious/bags/bagfour/tiddlers/TiddlerOne">TiddlerOne</a></li>' in string
 
 def test_generated_html_with_revbag():
     html_serializer = Serializer('html')
-    bagfour.revbag = True
-    string = html_serializer.list_tiddlers(bagfour)
+    tiddler_collection.is_revisions = True
+    string = html_serializer.list_tiddlers(tiddler_collection)
 
     assert '<li><a href="/bags/bagfour/tiddlers/TiddlerTwo/revisions/0">TiddlerTwo:0</a></li>' in string
-    bagfour.revbag = False
+    tiddler_collection.is_revisions = False
 
 def test_json_to_bag():
     serializer = Serializer('json')

@@ -86,9 +86,9 @@ class Serializer(object):
         """
         return self.serialization.list_bags(bags)
 
-    def list_tiddlers(self, bag):
+    def list_tiddlers(self, tiddlers):
         """
         Provide a string representation of the tiddlers in the
-        provided bag in the current serialization.
+        provided Tiddlers collection.
         """
-        return self.serialization.list_tiddlers(bag)
+        return self.serialization.list_tiddlers(tiddlers)

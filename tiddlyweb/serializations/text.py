@@ -89,7 +89,7 @@ class Serialization(SerializationInterface):
         """
         List the tiddlers in a bag as text.
         """
-        if bag.revbag:
+        if bag.is_revisions:
             return "\n".join(
                     ["%s:%s" % (tiddler.title, tiddler.revision)
                         for tiddler in bag.gen_tiddlers()])
