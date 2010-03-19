@@ -414,7 +414,10 @@ def _send_tiddler(environ, start_response, tiddler):
 
     bag = Bag(tiddler.bag)
     # this will raise 403 if constraint does not pass
-    _check_bag_constraint(environ, bag, 'read')
+    try:
+        _check_bag_constraint(environ, bag, 'read')
+    except NoBagError, exc:
+        raise HTTP404('%s not found, no bag %s, %s' % (tiddler.title, tiddler.bag, exc))
 
     try:
         tiddler = store.get(tiddler)
