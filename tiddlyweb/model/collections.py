@@ -49,6 +49,3 @@ class Tiddlers(Collection):
             container = ''
         self._digest.update(container.encode('utf-8'))
         self._digest.update(tiddler.title.encode('utf-8'))
-
-    def gen_tiddlers(self):
-        return self.out()

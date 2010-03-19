@@ -55,7 +55,7 @@ class Serialization(SerializationInterface):
         title = 'Tiddlers'
         representation_link = ''
         bag_link = ''
-        for tiddler in tiddlers.gen_tiddlers():
+        for tiddler in tiddlers.out():
             base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
             if tiddlers.is_revisions:
