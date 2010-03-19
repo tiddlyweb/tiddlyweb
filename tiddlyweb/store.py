@@ -129,6 +129,13 @@ class Store(object):
         list_func = getattr(self.storage, 'list_bags')
         return list_func()
 
+    def list_bag_tiddlers(self, bag):
+        """
+        List all the tiddlers in the bag.
+        """
+        list_func = getattr(self.storage, 'list_bag_tiddlers')
+        return list_func(bag)
+
     def list_recipes(self):
         """
         List all the available recipes in the system.

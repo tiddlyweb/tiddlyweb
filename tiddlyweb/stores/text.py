@@ -119,18 +119,6 @@ class Store(StorageInterface):
         of its tiddlers.
         """
         bag_path = self._bag_path(bag.name)
-        tiddlers_dir = self._tiddlers_dir(bag.name)
-
-        if not (hasattr(bag, 'skinny') and bag.skinny):
-            try:
-                tiddlers = self._files_in_dir(tiddlers_dir)
-            except (IOError, OSError), exc:
-                raise NoBagError('unable to list tiddlers in bag: %s' % exc)
-            container = Tiddlers()
-            for title in tiddlers:
-                title = urllib.unquote(title).decode('utf-8')
-                container.add(Tiddler(title, bag.name))
-            bag.tiddlers = container
 
         try:
             bag.desc = self._read_bag_description(bag_path)
@@ -305,6 +293,22 @@ class Store(StorageInterface):
         bags = self._bag_filenames()
 
         return (Bag(urllib.unquote(bag).decode('utf-8')) for bag in bags)
+
+    def list_bag_tiddlers(self, bag):
+        """
+        List all the tiddlers in the provided bag.
+        """
+        tiddlers_dir = self._tiddlers_dir(bag.name)
+
+        try:
+            tiddlers = self._files_in_dir(tiddlers_dir)
+        except (IOError, OSError), exc:
+            raise NoBagError('unable to list tiddlers in bag: %s' % exc)
+        for title in tiddlers:
+            title = urllib.unquote(title).decode('utf-8')
+            tiddler = self.tiddler_get(Tiddler(title, bag.name))
+            tiddler.store = self
+            yield tiddler
 
     def list_users(self):
         """

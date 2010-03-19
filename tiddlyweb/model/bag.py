@@ -27,7 +27,6 @@ class Bag(object):
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.policy = Policy() # set to default policy
-        self.tiddlers = None
         self.store = None
 
     def __repr__(self):

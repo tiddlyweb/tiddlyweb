@@ -59,18 +59,10 @@ def determine_tiddler_bag_from_recipe(recipe, tiddler, environ=None):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
-        # If there is a filter_string then we need to load the tiddlers off
-        # the store. If there's not, then we can just use the list that is
-        # already in the bag, saving a bit of time.
-        if filter_string:
-            for candidate_tiddler in filter_tiddlers_from_bag(bag,
-                    filter_string):
-                if tiddler.title == candidate_tiddler.title:
-                    return bag
-        else:
-            for candidate_tiddler in bag.tiddlers.out():
-                if tiddler.title == candidate_tiddler.title:
-                    return bag
+        for candidate_tiddler in filter_tiddlers_from_bag(bag,
+                filter_string):
+            if tiddler.title == candidate_tiddler.title:
+                return bag
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
@@ -103,11 +95,7 @@ def get_tiddlers_from_bag(bag):
     """
 
     if bag.store:
-        if hasattr(bag, 'skinny') and bag.skinny:
-            bag.skinny = False
-            bag = bag.store.get(bag)
-
-        for tiddler in bag.tiddlers.out():
+        for tiddler in bag.store.list_bag_tiddlers(bag):
             if hasattr(tiddler, 'store') and tiddler.store:
                 pass
             else:
@@ -147,10 +135,7 @@ def filter_tiddlers_from_bag(bag, filters):
     # XXX isinstance considered harmful
     if isinstance(filters, basestring):
         filters, leftovers = parse_for_filters(filters)
-    if store:
-        return recursive_filter(filters, get_tiddlers_from_bag(bag), indexable=indexable)
-    else:
-        return recursive_filter(filters, bag.tiddlers.out(), indexable=indexable)
+    return recursive_filter(filters, get_tiddlers_from_bag(bag), indexable=indexable)
 
 
 def _recipe_template(environ):

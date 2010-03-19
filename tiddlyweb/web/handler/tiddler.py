@@ -498,7 +498,10 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
             tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
             tmp_tiddler.revision = revision
             try:
-                tmp_tiddler = store.get(tmp_tiddler)
+                if hasattr(tmp_tiddler, 'store') and tmp_tiddler.store:
+                    pass
+                else:
+                    tmp_tiddler = store.get(tmp_tiddler)
             except NoTiddlerError, exc:
                 # If a particular revision is not present in the store.
                 raise HTTP404('tiddler %s at revision % not found, %s' %

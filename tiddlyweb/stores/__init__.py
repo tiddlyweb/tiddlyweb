@@ -130,6 +130,12 @@ class StorageInterface(object):
         """
         raise StoreMethodNotImplemented('this store does not handle listing bags')
 
+    def list_bag_tiddlers(self):
+        """
+        Retrieve a list of all bag objects in the system.
+        """
+        raise StoreMethodNotImplemented('this store does not handle listing bag tiddlers')
+
     def list_users(self):
         """
         Retrieve a list of all the user objects in the system.
