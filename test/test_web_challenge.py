@@ -40,7 +40,7 @@ def test_challenge_cookie_form():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge/cookie_form', method='GET')
 
-    assert response['status'] == '200'
+    assert response['status'] == '401'
     assert '<form' in content
 
 def test_challenge_not_there_in_config():
@@ -153,7 +153,7 @@ def test_openid():
             'http://our_test_domain:8001/challenge/openid?tiddlyweb_redirect=http://www.example.com/',
             method='GET')
 
-    assert response['status'] == '200'
+    assert response['status'] == '401'
     assert 'name="openid"' in content
 
     response, content = http.request(

@@ -107,7 +107,7 @@ class Challenger(ChallengerInterface):
                     start_response)
 
         return self._send_openid_form(environ, start_response, redirect,
-                status='401 Unauthorized', message=response)
+                message=response)
 
     def _respond_success(self, parsed_return_to, redirect, environ,
             start_response):
@@ -132,7 +132,7 @@ class Challenger(ChallengerInterface):
         return [uri]
 
     def _send_openid_form(self, environ, start_response, redirect,
-            status='200 OK', message=''):
+            status='401 Unauthorized', message=''):
         """
         Send a form requesting an openid to the client.
         """

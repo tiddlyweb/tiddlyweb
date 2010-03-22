@@ -44,10 +44,10 @@ class Challenger(ChallengerInterface):
                     user, password, redirect)
         except KeyError:
             return self._send_cookie_form(environ, start_response,
-                    redirect, '401 Unauthorized')
+                    redirect, message='missing input')
 
     def _send_cookie_form(self, environ, start_response, redirect,
-            status='200 OK', message=''):
+            status='401 Unauthorized', message=''):
         """
         Send a simple form to the client asking for a username
         and password.
