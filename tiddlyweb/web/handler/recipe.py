@@ -143,6 +143,10 @@ def put(environ, start_response):
 
     try:
         serialize_type = web.get_serialize_type(environ)[0]
+    except TypeError:
+        raise HTTP400('Content-type header required')
+
+    try:
         serializer = Serializer(serialize_type, environ)
         serializer.object = recipe
         content = environ['wsgi.input'].read(int(length))
@@ -152,8 +156,8 @@ def put(environ, start_response):
 
         _validate_recipe(environ, recipe)
         store.put(recipe)
-    except TypeError:
-        raise HTTP400('Content-type header required')
+    except TypeError, exc:
+        raise HTTP400('malformed input: %s' % exc)
     except NoSerializationError:
         raise HTTP415('Content type %s not supported' % serialize_type)
 
