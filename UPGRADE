@@ -1,0 +1,59 @@
+This is a set of notes that describes changes between
+versions 1.0.x and 1.1.x. At the moment it is notes and will
+be edited to some form of finery by the release time.
+
+The basic gist of the 1.1.x tree is to make architectural
+changes for the sake of performance and flexibility based
+on the real world use of 1.0.x.
+
+The main piece of knowledge is that in a regular request
+there are too many loops, and as the number of entities
+involved increases, the cost of those loops get higher and
+higher. So effort is being made to truncate some of the 
+looping.
+
+The biggest change therefore, is removing tiddlers from
+_within_ bags. When you load a bag, no tiddlers are loaded
+whether the bag is skinny or not. Now you must load the
+tiddlers separately. Most of the time this is done for you
+but if you had plugin code that looked like this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = bag.gen_tiddlers()
+    for tiddler in tiddlers:
+        tiddler = store.get(tiddler)
+
+You'll now want something like this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = store.list_bag_tiddlers(bag)
+
+Those tiddlers are fully instantiated and populated.
+Analysis has shown there's little value in a plain list
+of tiddler titles, as they were going to be populated
+later anyway, for the sake of filter. Now we allow the
+store to be smart about generating the list, which can
+lead to huge savings (in the sql store, for example,
+a bag containing 3000 tiddlers, the first block of code
+would be 3001 sql calls, in the second it would be 2).
+
+Similar changes are present throughout the code.
+
+! Collections
+
+A Collections class has been created which is designed to
+make it more efficient to calculate ETag and last-modified
+data for collections of bags, recipes or tiddlers. See
+tiddlweb.model.collections
+
+! Miscellaneous
+
+* control._recipe_template is now control.recipe_template,
+  to facillitate checking a recipe for permission issues
+  _before_ loading up all the tiddlers.
+
+* 
