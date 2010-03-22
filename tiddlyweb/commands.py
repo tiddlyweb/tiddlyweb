@@ -168,9 +168,12 @@ def init(config):
 
     @make_command()
     def lusers(args):
-        """List all the users on the system"""
+        """List all the users on the system. [<user> <user> <user>] to limit."""
+        from tiddlyweb.model.user import User
         store = _store()
-        users = store.list_users()
+        users = [User(name) for name in args]
+        if not users:
+            users = store.list_users()
         for user in users:
             user = store.get(user)
             print user.usersign, user.list_roles()
