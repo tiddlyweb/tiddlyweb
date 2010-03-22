@@ -63,15 +63,17 @@ def get(environ, start_response):
     bag_readable = {}
 
     for tiddler in tiddlers:
+        if not (hasattr(tiddler, 'store') and tiddler.store):
+            tiddler = store.get(tiddler)
         try:
             if bag_readable[tiddler.bag]:
-                candidate_tiddlers.add(store.get(tiddler))
+                candidate_tiddlers.add(tiddler)
         except KeyError:
             bag = Bag(tiddler.bag)
             bag = store.get(bag)
             try:
                 bag.policy.allows(usersign, 'read')
-                candidate_tiddlers.add(store.get(tiddler))
+                candidate_tiddlers.add(tiddler)
                 bag_readable[tiddler.bag] = True
             except(ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
