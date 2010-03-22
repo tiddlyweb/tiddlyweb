@@ -15,25 +15,76 @@ from base64 import b64encode
 from fixtures import muchdata, reset_textstore, _teststore
 
 from tiddlyweb.config import config
+from tiddlyweb.model.user import User
+
+def init(config):
+    config['selector'].add('/current_user', GET=user)
+
+def user(environ, start_response):
+    username = environ['tiddlyweb.usersign']['name']
+    start_response('200 OK', [
+        ('Content-Type', 'text/plain')])
+    return ["%s\n" % username]
 
 def setup_module(module):
     from tiddlyweb.web import serve
-    config['extractors'].append('saliva')
+    config['system_plugins'].append('test.test_web_extract')
     def app_fn():
         return serve.load_app()
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
     reset_textstore()
     module.store = _teststore()
-    muchdata(module.store)
+    user = User('cow')
+    user.set_password('pig')
+    module.store.put(user)
 
 def teardown_module(module):
     config['extractors'].pop()
 
 def test_extractor_not_there_in_config():
+    config['extractors'].append('saliva')
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/', method='GET')
 
     assert response['status'] == '500'
     assert 'ImportError' in content
+    config['extractors'].remove('saliva')
 
+def test_guest_extract():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET')
+
+    assert response['status'] == '200'
+    assert 'GUEST' in content
+
+def test_user_extract():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Authorization': 'Basic %s' % b64encode('cow:pig')})
+    assert response['status'] == '200'
+    assert 'cow' in content
+
+def test_user_extract_bad_pass():
+    """User gets their password wrong, user is GUEST"""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Authorization': 'Basic %s' % b64encode('cow:pog')})
+    assert response['status'] == '200'
+    assert 'GUEST' in content
+
+def test_user_extract_no_user():
+    """User doesn't exist, user is GUEST"""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Authorization': 'Basic %s' % b64encode('ciw:pig')})
+    assert response['status'] == '200'
+    assert 'GUEST' in content
+
+def test_user_extract_bogus_data():
+    """User doesn't exist, user is GUEST"""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Authorization': 'Basic %s' % b64encode(':')})
+    assert response['status'] == '200'
+    assert 'GUEST' in content

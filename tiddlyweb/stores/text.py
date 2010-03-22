@@ -248,9 +248,8 @@ class Store(StorageInterface):
         """
         Read a user from the store.
         """
-        user_path = self._user_path(user)
-
         try:
+            user_path = self._user_path(user)
             user_info = read_utf8_file(user_path)
             user_data = simplejson.loads(user_info)
             for key, value in user_data.items():
