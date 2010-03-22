@@ -61,7 +61,22 @@ def get_tiddlers(environ, start_response):
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
 
+    # check the recipe can be read
     recipe.policy.allows(usersign, 'read')
+
+    # check the bags in the recipe can be read
+    try:
+        template = control.recipe_template(environ)
+        for bag_name, filter in recipe.get_recipe(template):
+            bag = Bag(bag_name)
+            bag = store.get(bag)
+            bag.policy.allows(usersign, 'read')
+    except NoBagError, exc:
+        raise HTTP404('recipe %s lists an unknown bag: %s' %
+                (recipe.name, exc))
+
+    # from this point forward we know the tiddler are
+    # readable
 
     # get the tiddlers from the recipe and uniquify them
     try:
@@ -72,21 +87,7 @@ def get_tiddlers(environ, start_response):
 
     tiddlers = Tiddlers()
 
-    # Make an optimization so we are not going
-    # to the database to load the policies of
-    # the same bag over and over.
-    policies = {}
     for tiddler in candidate_tiddlers:
-        bag_name = tiddler.bag
-        try:
-            policies[bag_name].allows(usersign, 'read')
-        except KeyError:
-            bag = Bag(tiddler.bag)
-            bag = store.get(bag)
-            policy = bag.policy
-            policies[bag_name] = policy
-            policies[bag_name].allows(usersign, 'read')
-
         tiddler.recipe = recipe.name
         tiddlers.add(tiddler)
 

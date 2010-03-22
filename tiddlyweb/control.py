@@ -25,7 +25,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     over those earlier in the recipe.
     """
 
-    template = _recipe_template(environ)
+    template = recipe_template(environ)
     store = recipe.store
     uniquifier = {}
     for bag, filter_string in recipe.get_recipe(template):
@@ -51,7 +51,7 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
     tiddlers and see if ours is in there.
     """
     store = recipe.store
-    template = _recipe_template(environ)
+    template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
@@ -75,7 +75,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     if the tiddler is a part of the bag + filter. If bag+filter
     is true, return that bag.
     """
-    template = _recipe_template(environ)
+    template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
         for candidate_tiddler in filter_tiddlers(filter_string, [tiddler]):
@@ -135,7 +135,7 @@ def filter_tiddlers_from_bag(bag, filters):
             indexable=indexable)
 
 
-def _recipe_template(environ):
+def recipe_template(environ):
     """
     provide a means to specify custom {{ key }} values in recipes
     which are then replaced with the value specified in
