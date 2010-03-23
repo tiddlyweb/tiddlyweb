@@ -92,10 +92,10 @@ class Serialization(SerializationInterface):
         if tiddlers.is_revisions:
             return "\n".join(
                     ["%s:%s" % (tiddler.title, tiddler.revision)
-                        for tiddler in tiddlers.out()])
+                        for tiddler in tiddlers])
         else:
             return "\n".join([
-                tiddler.title for tiddler in tiddlers.out()])
+                tiddler.title for tiddler in tiddlers])
 
     def tiddler_as(self, tiddler):
         """

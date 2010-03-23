@@ -52,13 +52,20 @@ class Collection(object):
         """
         return self._digest.hexdigest()
 
-    def out(self):
+    def __iter__(self):
         """
         Generate the items in this container.
         """
         for thing in self._container:
             yield thing
 
+class Container(Collection):
+
+    def _update_digest(self, thing):
+        """
+        Update the digest with this thing.
+        """
+        self._digest.update(thing.name)
 
 class Tiddlers(Collection):
     """

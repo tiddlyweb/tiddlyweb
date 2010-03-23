@@ -42,7 +42,7 @@ class Serialization(SerializationInterface):
         """
         fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
         return simplejson.dumps([self._tiddler_dict(tiddler, fat) for
-            tiddler in tiddlers.out()])
+            tiddler in tiddlers])
 
     def recipe_as(self, recipe):
         """

@@ -1,6 +1,7 @@
 """
 Handle common code used for listing bags and recipes.
 """
+from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP415
@@ -33,6 +34,7 @@ def list_entities(environ, start_response, mime_type, store_list,
 
 def _filter_readable(environ, entities, filters):
     store = environ['tiddlyweb.store']
+    kept_entities = Container()
     for entity in recursive_filter(filters, entities):
         try:
             if hasattr(entity, 'store') and entity.store:
@@ -40,7 +42,7 @@ def _filter_readable(environ, entities, filters):
             else:
                 entity = store.get(entity)
             entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
-            yield entity
+            kept_entities.add(entity)
         except(UserRequiredError, ForbiddenError):
             pass
-    return
+    return kept_entities

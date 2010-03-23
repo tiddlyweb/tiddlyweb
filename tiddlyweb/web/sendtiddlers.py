@@ -35,7 +35,7 @@ def send_tiddlers(environ, start_response, bag=None, tiddlers=None):
     elif filters:
         candidate_tiddlers = Tiddlers()
         try:
-            for tiddler in recursive_filter(filters, tiddlers.out()):
+            for tiddler in recursive_filter(filters, tiddlers):
                 candidate_tiddlers.add(tiddler)
         except FilterError, exc:
             raise HTTP400('malformed filter: %s' % exc)

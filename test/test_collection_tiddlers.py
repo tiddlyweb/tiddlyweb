@@ -43,7 +43,7 @@ def test_get_things():
     collection = Collection()
     collection.add('monkey')
     collection.add('cow')
-    all = list(collection.out())
+    all = list(collection)
     assert all == ['monkey', 'cow']
 
 def test_tiddler_collection():
@@ -56,5 +56,5 @@ def test_tiddler_collection():
         tiddlers.add(tiddler)
     digest = tiddlers.hexdigest()
     modified = tiddlers.modified
-    assert ['how', 'now', 'cow'] == list(tiddler.title for tiddler in tiddlers.out())
+    assert ['how', 'now', 'cow'] == list(tiddler.title for tiddler in tiddlers)
     assert modified == 3

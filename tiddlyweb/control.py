@@ -103,7 +103,7 @@ def get_tiddlers_from_bag(bag):
                     pass
             yield tiddler
     else:
-        for tiddler in bag.tiddlers.out():
+        for tiddler in bag.tiddlers:
             yield tiddler
 
 
