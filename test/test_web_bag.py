@@ -219,6 +219,7 @@ def test_put_bag():
             headers={'Accept': 'application/json'})
 
     assert response['status'] == '200'
+    assert 'etag' in response
     info = simplejson.loads(content)
     assert info['policy']['delete'] == policy_dict['delete']
 
