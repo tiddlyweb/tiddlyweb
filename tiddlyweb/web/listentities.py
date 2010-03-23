@@ -4,6 +4,7 @@ Handle common code used for listing bags and recipes.
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP415
+from tiddlyweb.filters import recursive_filter
 
 
 def list_entities(environ, start_response, mime_type, store_list,
@@ -13,7 +14,8 @@ def list_entities(environ, start_response, mime_type, store_list,
     """
     store = environ['tiddlyweb.store']
     entities = store_list()
-    kept_entities = _filter_readable(environ, entities)
+    filters = environ['tiddlyweb.filters']
+    kept_entities = _filter_readable(environ, entities, filters)
 
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept')])
@@ -29,9 +31,9 @@ def list_entities(environ, start_response, mime_type, store_list,
         return output
 
 
-def _filter_readable(environ, entities):
+def _filter_readable(environ, entities, filters):
     store = environ['tiddlyweb.store']
-    for entity in entities:
+    for entity in recursive_filter(filters, entities):
         try:
             if hasattr(entity, 'store') and entity.store:
                 pass

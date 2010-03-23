@@ -13,7 +13,7 @@ This new style hopes to be some of those things.
 Filters are parsed from a string that is formatted
 as a CGI query string with parameters and arguments.
 The parameter is a filter type. Each filter is processed
-in sequence: the first processing all the tiddlers
+in sequence: the first processing all the entities
 handed to it, the next taking only those that result
 from the first.
 
@@ -24,7 +24,7 @@ each type).
 
 The call signature for a filter is:
 
-    filter(tiddlers, indexable=indexable, environ=environ)
+    filter(entities, indexable=indexable, environ=environ)
 
 The attribute and value for which a filter filters is
 established in the parsing stage and set as upvalues
@@ -37,9 +37,9 @@ implementation this is only done when:
 
  * the select filter is the first filter in a stack
    of filters passed to recursive_filter
- * the list of tiddlers to be filtered is a standard
-   bag (wherein all the tiddlers in the bag "live"
-   in that bag)
+ * the list of entities to be filtered are tiddlers
+   and a bag is provided (which helps managed the 
+   index)
 
 When both of the above are true the system looks for a
 module named by tiddlyweb.config['indexer'], imports it,
@@ -47,7 +47,7 @@ looks for a function called indexy_query, and passes
 environ and information about the bag and the attribute
 being selected.
 
-What index_query does to satify the query is up to the
+What index_query does to satisfy the query is up to the
 module. It should return a list of tiddlers that have
 been loaded from tiddlyweb.store.
 
@@ -128,19 +128,20 @@ def parse_for_filters(query_string, environ=None):
     return filters, leftovers
 
 
-def recursive_filter(filters, tiddlers, indexable=False):
+def recursive_filter(filters, entities, indexable=False):
     """
     Recursively process the list of filters found
     by parse_for_filters against the given list
-    of tiddlers.
+    of entities.
 
-    Each next filter processes only those tiddlers
+    Each next filter processes only those entities
     that were results of the previous filter.
 
-    XXX: Misnamed
+    XXX: Misnamed, previous versions were more truly 
+    recursive.
     """
     if len(filters) == 0:
-        # tiddlers
+        # return what we got
         pass
     for filter in filters:
         try:
@@ -149,10 +150,10 @@ def recursive_filter(filters, tiddlers, indexable=False):
             active_filter = filter
             environ = {}
         try:
-            tiddlers = active_filter(tiddlers, indexable, environ)
+            entities = active_filter(entities, indexable, environ)
         except FilterIndexRefused, exc:
-            tiddlers = active_filter(tiddlers, False, environ)
+            entities = active_filter(entities, False, environ)
         except AttributeError, exc:
             raise FilterError('malformed filter: %s' % exc)
         indexable = False
-    return tiddlers
+    return entities

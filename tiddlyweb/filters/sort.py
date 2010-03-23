@@ -1,12 +1,12 @@
 """
-Sort a collection of tiddlers by some attribute.
+Sort a collection of entities by some attribute.
 
 Part of the filtering system. The syntax is:
 
     sort=attribute
     sort=-attribute
 
-Atribute is either a real tiddler attribute or
+Atribute is either a real entity attribute or
 a key in ATTRIBUTE_SORT_KEY that has as its value
 a function used to generate a key to pass to the
 sort. ATTRIBUTE_SORT_KEY can be extended by plugins.
@@ -20,7 +20,7 @@ def date_to_canonical(datestring):
     """
     Take a string of 14 or less digits
     and turn it into 14 digits for the
-    sake of comparing tiddler dates.
+    sake of comparing entity dates.
     """
     return datestring.ljust(14, '0')
 
@@ -34,25 +34,25 @@ ATTRIBUTE_SORT_KEY = {
 def sort_parse(attribute):
     """
     Create a function which will sort a collection of
-    tiddlers.
+    entities.
     """
     if attribute.startswith('-'):
         attribute = attribute.replace('-', '', 1)
 
-        def sorter(tiddlers, indexable=False, environ=None):
-            return sort_by_attribute(attribute, tiddlers, reverse=True)
+        def sorter(entities, indexable=False, environ=None):
+            return sort_by_attribute(attribute, entities, reverse=True)
 
     else:
 
-        def sorter(tiddlers, indexable=False, environ=None):
-            return sort_by_attribute(attribute, tiddlers)
+        def sorter(entities, indexable=False, environ=None):
+            return sort_by_attribute(attribute, entities)
 
     return sorter
 
 
-def sort_by_attribute(attribute, tiddlers, reverse=False):
+def sort_by_attribute(attribute, entities, reverse=False):
     """
-    Sort a group of tiddlers by some attribute.
+    Sort a group of entities by some attribute.
     Inspect ATTRIBUTE_SORT_KEY to see if there is a special
     function by which we should generate the value for this
     attribute.
@@ -60,13 +60,13 @@ def sort_by_attribute(attribute, tiddlers, reverse=False):
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
-    def key_gen(tiddler):
+    def key_gen(entity):
         try:
-            return func(getattr(tiddler, attribute))
+            return func(getattr(entity, attribute))
         except AttributeError:
             try:
-                return func(tiddler.fields[attribute])
+                return func(entity.fields[attribute])
             except KeyError, exc:
                 raise AttributeError('no attribute: %s, %s' % (attribute, exc))
 
-    return (tiddler for tiddler in sorted(tiddlers, key=key_gen, reverse=reverse))
+    return (entity for entity in sorted(entities, key=key_gen, reverse=reverse))

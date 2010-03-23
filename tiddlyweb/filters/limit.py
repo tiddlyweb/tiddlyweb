@@ -1,5 +1,5 @@
 """
-Limit a group of tiddlers using a syntax similar
+Limit a group of entities using a syntax similar
 to SQL Limit:
 
     limit=<index>,<count>
@@ -24,16 +24,16 @@ def limit_parse(count='0'):
     index = int(index)
     count = int(count)
 
-    def limiter(tiddlers, indexable=False, environ=None):
-        return limit(tiddlers, index=index, count=count)
+    def limiter(entities, indexable=False, environ=None):
+        return limit(entities, index=index, count=count)
 
     return limiter
 
 
-def limit(tiddlers, count=0, index=0):
+def limit(entities, count=0, index=0):
     """
-    Make a slice of a list of tiddlers based
+    Make a slice of a list of entities based
     on a count and index.
     """
 
-    return itertools.islice(tiddlers, index, index + count)
+    return itertools.islice(entities, index, index + count)
