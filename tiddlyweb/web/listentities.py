@@ -1,11 +1,12 @@
 """
 Handle common code used for listing bags and recipes.
 """
+from tiddlyweb.filters import recursive_filter
 from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP415
-from tiddlyweb.filters import recursive_filter
+from tiddlyweb.util import sha
 
 
 def list_entities(environ, start_response, mime_type, store_list,
@@ -14,12 +15,15 @@ def list_entities(environ, start_response, mime_type, store_list,
     Get a list of all the bags or recipes the current user can read.
     """
     store = environ['tiddlyweb.store']
-    entities = store_list()
     filters = environ['tiddlyweb.filters']
-    kept_entities = _filter_readable(environ, entities, filters)
+    username = environ['tiddlyweb.usersign']['name']
+    kept_entities = _filter_readable(environ, store_list(), filters)
 
+    etag_string = '"%s:%s"' % (kept_entities.hexdigest(), 
+            sha('%s:%s' % (username, mime_type)).hexdigest())
     start_response("200 OK", [('Content-Type', mime_type),
-                ('Vary', 'Accept')])
+                ('Vary', 'Accept'),
+                ('Etag', etag_string)])
 
     try:
         output = serializer_list(kept_entities)

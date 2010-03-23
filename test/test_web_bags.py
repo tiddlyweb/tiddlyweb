@@ -35,6 +35,7 @@ def test_get_bags_txt():
     assert response['status'] == '200'
     for i in xrange(5):
         assert 'bag%s\n' % i in content
+    assert 'etag' in response
 
 def test_get_bags_filters():
     http = httplib2.Http()
