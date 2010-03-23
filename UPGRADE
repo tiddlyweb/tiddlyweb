@@ -43,6 +43,11 @@ would be 3001 sql calls, in the second it would be 2).
 
 Similar changes are present throughout the code.
 
+! Filtering bags and recipes
+
+/bags and /recipes now accept filter strings, such
+as /bags?select=name:>foobar;limit=2
+
 ! Collections
 
 A Collections class has been created which is designed to
