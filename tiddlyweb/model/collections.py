@@ -59,13 +59,20 @@ class Collection(object):
         for thing in self._container:
             yield thing
 
+
 class Container(Collection):
+    """
+    A collection of things which have a name attribute.
+
+    In TiddlyWeb this is for lists of bags and recipes.
+    """
 
     def _update_digest(self, thing):
         """
         Update the digest with this thing.
         """
         self._digest.update(thing.name)
+
 
 class Tiddlers(Collection):
     """

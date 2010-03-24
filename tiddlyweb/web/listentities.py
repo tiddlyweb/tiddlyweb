@@ -14,7 +14,6 @@ def list_entities(environ, start_response, mime_type, store_list,
     """
     Get a list of all the bags or recipes the current user can read.
     """
-    store = environ['tiddlyweb.store']
     filters = environ['tiddlyweb.filters']
     username = environ['tiddlyweb.usersign']['name']
     kept_entities = _filter_readable(environ, store_list(), filters)
@@ -37,6 +36,15 @@ def list_entities(environ, start_response, mime_type, store_list,
 
 
 def _filter_readable(environ, entities, filters):
+    """
+    Traverse entities to get those that are readable
+    and those that pass the filter.
+
+    XXX: There is a bug here, depending on how
+    filters are to be interpreted: If limit is used
+    it is being calculated before the readability
+    of the entities is checked.
+    """
     store = environ['tiddlyweb.store']
     kept_entities = Container()
     for entity in recursive_filter(filters, entities):
