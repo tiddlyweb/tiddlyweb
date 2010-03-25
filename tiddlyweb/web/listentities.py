@@ -18,7 +18,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     username = environ['tiddlyweb.usersign']['name']
     kept_entities = _filter_readable(environ, store_list(), filters)
 
-    etag_string = '"%s:%s"' % (kept_entities.hexdigest(), 
+    etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
             sha('%s:%s' % (username, mime_type)).hexdigest())
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept'),

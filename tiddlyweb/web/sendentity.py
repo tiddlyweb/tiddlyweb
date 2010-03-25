@@ -52,6 +52,3 @@ def _entity_etag(entity):
         # entity not a iterator
         pass
     return etag.encode('utf-8')
-    
-
-

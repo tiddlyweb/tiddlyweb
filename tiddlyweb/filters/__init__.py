@@ -38,7 +38,7 @@ implementation this is only done when:
  * the select filter is the first filter in a stack
    of filters passed to recursive_filter
  * the list of entities to be filtered are tiddlers
-   and a bag is provided (which helps managed the 
+   and a bag is provided (which helps managed the
    index)
 
 When both of the above are true the system looks for a
@@ -137,7 +137,7 @@ def recursive_filter(filters, entities, indexable=False):
     Each next filter processes only those entities
     that were results of the previous filter.
 
-    XXX: Misnamed, previous versions were more truly 
+    XXX: Misnamed, previous versions were more truly
     recursive.
     """
     if len(filters) == 0:
