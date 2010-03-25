@@ -56,7 +56,7 @@ class Recipe(list):
 
         for entry in our_list:
             new_entry = []
-            for index, item in enumerate(entry):
+            for item in entry:
                 value = None
                 try:
                     match = RECIPE_TEMPLATE_DEFAULT_RE.search(item)

@@ -145,7 +145,7 @@ def recursive_filter(filters, entities, indexable=False):
         pass
     for filter in filters:
         try:
-            active_filter, args, environ = filter
+            active_filter, _, environ = filter
         except ValueError:
             active_filter = filter
             environ = {}
