@@ -102,7 +102,7 @@ def _validate_tiddler_list(environ, tiddlers):
     except TypeError:
         mime_type = ''
     etag_string = '"%s:%s;%s"' % (tiddlers.hexdigest(),
-            last_modified_number, sha('%s:%s' %
+            str(last_modified_number), sha('%s:%s' %
                 (username, mime_type)).hexdigest())
     etag = ('Etag', etag_string)
 
