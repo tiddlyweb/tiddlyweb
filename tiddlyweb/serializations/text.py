@@ -46,7 +46,7 @@ class Serialization(SerializationInterface):
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '/bags/%s/tiddlers' % bag
+            line += '/bags/%s/tiddlers' % urllib.quote(bag.encode('utf-8'), safe='')
             if filter_string:
                 line += '?%s' % filter_string
             lines.append(line)
@@ -178,6 +178,8 @@ class Serialization(SerializationInterface):
                 else:
                     bag = line
                     filter_string = ''
-                bagname = urllib.unquote(bag.split('/')[2])
+                bagname = bag.split('/')[2]
+                bagname = urllib.unquote(bagname.encode('utf-8'))
+                bagname = bagname.decode('utf-8')
                 recipe_lines.append((bagname, filter_string))
         return recipe_lines
