@@ -101,3 +101,16 @@ def test_list():
     assert u'testrecipe' in [recipe.name for recipe in recipes]
     assert u'testrecipe2' in [recipe.name for recipe in recipes]
     assert u'testrecipe3' in [recipe.name for recipe in recipes]
+
+def test_recipe_weird_bag():
+    recipe = Recipe('weirdbags')
+    recipe.set_recipe([
+        ('foo/bar', ''),
+        ('zam/boom', ''),
+        ])
+    store.put(recipe)
+
+    new_recipe = Recipe('weirdbags')
+    new_recipe = store.get(new_recipe)
+    bags = [bag for bag,filter in new_recipe.get_recipe()]
+    assert bags == ['foo/bar', 'zam/boom']
