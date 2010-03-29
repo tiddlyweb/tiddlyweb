@@ -308,10 +308,11 @@ class Store(StorageInterface):
             tiddlers = self._files_in_dir(tiddlers_dir)
         except (IOError, OSError), exc:
             raise NoBagError('unable to list tiddlers in bag: %s' % exc)
+        store = self.environ.get('tiddlyweb.store', self)
         for title in tiddlers:
             title = urllib.unquote(title).decode('utf-8')
             tiddler = self.tiddler_get(Tiddler(title, bag.name))
-            tiddler.store = self
+            tiddler.store = store
             yield tiddler
 
     def list_users(self):
