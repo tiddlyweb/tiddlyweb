@@ -78,7 +78,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        for candidate_tiddler in filter_tiddlers(filter_string, [tiddler]):
+        for candidate_tiddler in filter_tiddlers([tiddler], filter_string):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
                     bag = Bag(name=bag)
@@ -107,7 +107,7 @@ def get_tiddlers_from_bag(bag):
             yield tiddler
 
 
-def filter_tiddlers(filters, tiddlers):
+def filter_tiddlers(tiddlers, filters):
     """
     Return a generator of tiddlers resulting from
     filtering the provided iterator of tiddlers by
