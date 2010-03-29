@@ -57,4 +57,4 @@ def test_tiddler_collection():
     digest = tiddlers.hexdigest()
     modified = tiddlers.modified
     assert ['how', 'now', 'cow'] == list(tiddler.title for tiddler in tiddlers)
-    assert modified == 3
+    assert modified == '30000000000000'

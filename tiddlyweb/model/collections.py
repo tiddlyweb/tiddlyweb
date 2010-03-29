@@ -34,8 +34,10 @@ class Collection(object):
         self._update_digest(thing)
         self._container.append(thing)
         try:
-            if thing.modified > self.modified:
-                self.modified = thing.modified
+            modified_string = str(thing.modified)
+            modified_string = modified_string.ljust(14, '0')
+            if modified_string > self.modified:
+                self.modified = modified_string
         except AttributeError:
             pass
 
@@ -71,7 +73,7 @@ class Container(Collection):
         """
         Update the digest with this thing.
         """
-        self._digest.update(thing.name)
+        self._digest.update(thing.name.encode('utf-8'))
 
 
 class Tiddlers(Collection):
