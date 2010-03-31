@@ -138,12 +138,9 @@ def _sha_tiddler_titles(bag):
         digest.update('%s:%s' % (attribute.encode('utf-8'),
             constraint_value.encode('utf-8')))
     for tiddler in bag.gen_tiddlers():
-        if tiddler.recipe:
-            container = tiddler.recipe
-        else:
-            container = tiddler.bag
+        container = tiddler.bag
         digest.update(container.encode('utf-8') +
-                tiddler.title.encode('utf-8'))
+                tiddler.title.encode('utf-8') + str(tiddler.revision))
     return digest.hexdigest()
 
 
