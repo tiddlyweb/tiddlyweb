@@ -94,11 +94,10 @@ class Tiddlers(Collection):
         """
         Update the digest with information from this tiddler.
         """
-        if tiddler.recipe:
-            container = tiddler.recipe
-        elif tiddler.bag:
+        if tiddler.bag:
             container = tiddler.bag
         else:
             container = ''
         self._digest.update(container.encode('utf-8'))
         self._digest.update(tiddler.title.encode('utf-8'))
+        self._digest.update(str(tiddler.revision))
