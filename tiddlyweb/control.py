@@ -33,7 +33,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
-        for tiddler in filter_tiddlers_from_bag(bag, filter_string):
+        for tiddler in filter_tiddlers_from_bag(bag, filter_string, environ=environ):
             uniquifier[tiddler.title] = tiddler
     return uniquifier.values()
 
@@ -58,7 +58,7 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
         if store:
             bag = store.get(bag)
         for candidate_tiddler in filter_tiddlers_from_bag(bag,
-                filter_string):
+                filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
                 return bag
 
@@ -78,7 +78,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        for candidate_tiddler in filter_tiddlers([tiddler], filter_string):
+        for candidate_tiddler in filter_tiddlers([tiddler], filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
                     bag = Bag(name=bag)
@@ -107,7 +107,7 @@ def get_tiddlers_from_bag(bag):
             yield tiddler
 
 
-def filter_tiddlers(tiddlers, filters):
+def filter_tiddlers(tiddlers, filters, environ=None):
     """
     Return a generator of tiddlers resulting from
     filtering the provided iterator of tiddlers by
@@ -117,11 +117,11 @@ def filter_tiddlers(tiddlers, filters):
     filters.
     """
     if isinstance(filters, basestring):
-        filters, _ = parse_for_filters(filters)
+        filters, _ = parse_for_filters(filters, environ)
     return recursive_filter(filters, tiddlers)
 
 
-def filter_tiddlers_from_bag(bag, filters):
+def filter_tiddlers_from_bag(bag, filters, environ=None):
     """
     Return the list of tiddlers resulting from filtering
     bag by filter. The filter is a string that will be
@@ -130,7 +130,7 @@ def filter_tiddlers_from_bag(bag, filters):
     indexable = bag
 
     if isinstance(filters, basestring):
-        filters, _ = parse_for_filters(filters)
+        filters, _ = parse_for_filters(filters, environ)
     return recursive_filter(filters, get_tiddlers_from_bag(bag),
             indexable=indexable)
 
