@@ -3,6 +3,7 @@
   * Handle incorrect recipe PUT more accurately.
   * Robustly deal with bad input to the basic auth extractor.
   * Handle '/' in bag names in recipes in the text serialization.
+  * Improve tiddler collection ETag generation (again!)
 
 1.0.1 Wed Mar 10 14:37:03 GMT 2010
 
