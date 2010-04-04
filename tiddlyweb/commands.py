@@ -173,7 +173,8 @@ def init(config):
         users = store.list_users()
         for user in users:
             user = store.get(user)
-            print user.usersign, user.list_roles()
+            print user.usersign.encode('utf-8'), ', '.join(role.encode('utf-8')
+                    for role in user.list_roles())
 
     @make_command()
     def lbags(args):
@@ -187,8 +188,8 @@ def init(config):
         for listed_bag in bags:
             listed_bag = store.get(listed_bag)
             serializer.object = listed_bag
-            print 'Name: %s' % listed_bag.name
-            print serializer.to_string()
+            print 'Name: %s' % listed_bag.name.encode('utf-8')
+            print serializer.to_string().encode('utf-8')
             print
 
     @make_command()
@@ -201,9 +202,10 @@ def init(config):
             recipes = store.list_recipes()
         for listed_recipe in recipes:
             listed_recipe = store.get(listed_recipe)
-            print listed_recipe.name, listed_recipe.policy.owner
+            owner = listed_recipe.policy.owner or ''
+            print listed_recipe.name.encode('utf-8'), owner.encode('utf-8')
             for recipe_bag, recipe_filter in listed_recipe.get_recipe():
-                print '\t', recipe_bag, recipe_filter
+                print '\t', recipe_bag.encode('utf-8'), recipe_filter.encode('utf-8')
 
     @make_command()
     def ltiddlers(args):
@@ -216,11 +218,13 @@ def init(config):
         try:
             for listed_bag in bags:
                 listed_bag = store.get(listed_bag)
-                print listed_bag.name, listed_bag.policy.owner
+                owner = listed_bag.policy.owner or ''
+                print listed_bag.name.encode('utf-8'), owner.encode('utf-8')
                 tiddlers = listed_bag.list_tiddlers()
                 for listed_tiddler in tiddlers:
                     listed_tiddler = store.get(listed_tiddler)
-                    print '  ', listed_tiddler.title, listed_tiddler.modifier
+                    print '\t%s %s' % (listed_tiddler.title.encode('utf-8'),
+                            listed_tiddler.modifier.encode('utf-8'))
         except NoBagError, exc:
             usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 
