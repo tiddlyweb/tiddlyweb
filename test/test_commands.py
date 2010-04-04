@@ -142,7 +142,7 @@ def test_lbags(capsys):
 def test_lrecipes(capsys):
     handle(['', 'lrecipes'])
     results, err = capsys.readouterr()
-    assert 'recipe1 None' in results
+    assert 'recipe1 ' in results
 
 def test_ltiddlers(capsys):
     handle(['', 'ltiddlers'])

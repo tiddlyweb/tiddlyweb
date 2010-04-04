@@ -88,3 +88,11 @@ def test_user_extract_bogus_data():
             headers={'Authorization': 'Basic %s' % b64encode(':')})
     assert response['status'] == '200'
     assert 'GUEST' in content
+
+def test_bad_cookie():
+    """confirm a bad cookie results in an error"""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Cookie': 'foo(bar)bar="monkey"'})
+    assert response['status'] == '400'
+    assert 'Illegal key value' in content
