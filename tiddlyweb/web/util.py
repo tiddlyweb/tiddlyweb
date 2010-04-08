@@ -34,7 +34,10 @@ def get_serialize_type(environ):
     if not serialize_type:
         if ext:
             raise HTTP415('%s type unsupported' % ext)
-        serialize_type, mime_type = serializers['default']
+        # If we are a PUT and we haven't found a serializer, don't 
+        # state a default as that makes no sense.
+        if environ['REQUEST_METHOD'] == 'GET':
+            serialize_type, mime_type = serializers['default']
     return serialize_type, mime_type
 
 

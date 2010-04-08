@@ -35,6 +35,8 @@ class Serializer(object):
         """
         Import the required Serialization.
         """
+        if self.engine is None:
+            raise NoSerializationError
         try:
             imported_module = __import__('tiddlyweb.serializations.%s' % self.engine,
                     {}, {}, ['Serialization'])

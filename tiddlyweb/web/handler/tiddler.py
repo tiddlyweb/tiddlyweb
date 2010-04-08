@@ -15,7 +15,7 @@ from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, TiddlerFormatError
+from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError 
 from tiddlyweb.util import sha
 from tiddlyweb.web.http import \
         HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
@@ -146,18 +146,23 @@ def _determine_tiddler(environ, bag_finder):
     # doing filter checks.
     if environ['REQUEST_METHOD'] == 'PUT':
         length, content_type = _length_and_type(environ)
-
-        if content_type != 'text/plain' and content_type != 'application/json':
-            tiddler.type = content_type
-
         content = environ['wsgi.input'].read(int(length))
 
-        if not tiddler.type:
+        try:
+            # XXX HACK! We don't want to decode content unless
+            # the serializer has a as_tiddler. We should be able
+            # to just rely on NoSerializationError, but we need
+            # to call the method to do that, and to call the method we
+            # need to decode the string...
             serialize_type = web.get_serialize_type(environ)[0]
             serializer = Serializer(serialize_type, environ)
             serializer.object = tiddler
-            serializer.from_string(content.decode('utf-8'))
-        else:
+            if hasattr(serializer.serialization, 'as_tiddler'):
+                serializer.from_string(content.decode('utf-8'))
+            else:
+                raise NoSerializationError
+        except NoSerializationError:
+            tiddler.type = content_type
             tiddler.text = content
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
@@ -538,8 +543,8 @@ def _tiddler_etag(environ, tiddler):
     try:
         mime_type = web.get_serialize_type(environ)[1]
         mime_type = mime_type.split(';', 1)[0].strip()
-    except TypeError:
-        mime_type = ''
+    except (TypeError, AttributeError):
+        mime_type = tiddler.type or ''
     username = environ.get('tiddlyweb.usersign', {}).get('name', '')
     digest = sha('%s:%s' % (username, mime_type)).hexdigest()
     return str('"%s/%s/%s;%s"' % (web.encode_name(tiddler.bag),
