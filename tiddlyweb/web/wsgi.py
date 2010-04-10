@@ -47,7 +47,13 @@ class HTMLPresenter(object):
         output = self.application(environ, start_response)
         if self._needs_title(environ):
             output = ''.join(output)
-            return [self._header(environ), output, self._footer(environ)]
+            def wrapped_output(output):
+                yield self._header(environ)
+                for item in output:
+                    yield item
+                yield self._footer(environ)
+                return
+            return wrapped_output(output)
         return output
 
     def _needs_title(self, environ):
@@ -205,8 +211,8 @@ class EncodeUTF8(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        return [_encoder(output) for output in
-                self.application(environ, start_response)]
+        return (_encoder(output) for output in
+                self.application(environ, start_response))
 
 
 def _encoder(string):

@@ -58,7 +58,7 @@ class Serialization(SerializationInterface):
         for tiddler in tiddlers:
             base, base_link, representation_link, title = \
                     self._tiddler_list_info(tiddler)
-            if tiddlers.is_revisions:
+            if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
                 line = self._tiddler_revision_info(base, base_link, tiddler)
                 representation_link += '/%s/revisions' % encode_name(
                         tiddler.title)
@@ -67,7 +67,7 @@ class Serialization(SerializationInterface):
                 line = self._tiddler_in_bag_info(base, base_link, tiddler)
             lines.append(line)
 
-        if tiddlers.is_search:
+        if hasattr(tiddlers, 'is_search') and tiddlers.is_search:
             title = 'Found Tiddlers'
 
         try:

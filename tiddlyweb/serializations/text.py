@@ -89,13 +89,13 @@ class Serialization(SerializationInterface):
         """
         List the tiddlers as text.
         """
-        if tiddlers.is_revisions:
-            return "\n".join(
-                    ["%s:%s" % (tiddler.title, tiddler.revision)
-                        for tiddler in tiddlers])
+        if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
+            for tiddler in tiddlers:
+                yield "%s:%s\n" % (tiddler.title, tiddler.revision)
         else:
-            return "\n".join([
-                tiddler.title for tiddler in tiddlers])
+            for tiddler in tiddlers:
+                yield "%s\n" % tiddler.title
+        return
 
     def tiddler_as(self, tiddler):
         """
