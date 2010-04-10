@@ -46,7 +46,6 @@ class HTMLPresenter(object):
     def __call__(self, environ, start_response):
         output = self.application(environ, start_response)
         if self._needs_title(environ):
-            output = ''.join(output)
             def wrapped_output(output):
                 yield self._header(environ)
                 for item in output:
