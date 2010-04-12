@@ -15,7 +15,7 @@ from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError 
+from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.http import \
         HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
@@ -458,12 +458,13 @@ def _get_tiddler_content(environ, tiddler):
     Extract the content of the tiddler, either straight up if
     the content is not considered text, or serialized if it is
     """
-    serializers = environ['tiddlyweb.config']['serializers']
-    default_serialize_type = serializers['default'][0]
+    config = environ['tiddlyweb.config']
+    default_serializer = config['default_serializer']
+    default_serialize_type = config['serializers'][default_serializer][0]
     serialize_type, mime_type = web.get_serialize_type(environ)
     extension = environ.get('tiddlyweb.extension')
 
-    if _not_wikitext(tiddler, environ['tiddlyweb.config']):
+    if _not_wikitext(tiddler, config):
         if (serialize_type == default_serialize_type or
                 mime_type.startswith(tiddler.type) or
                 extension == 'html'):

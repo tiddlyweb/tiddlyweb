@@ -20,8 +20,10 @@ def test_merge_sub_addition():
     merge_config(config, new_config, reconfig=False)
     assert 'text/bar' in config['serializers']
     assert config['serializers']['text/bar'] == ['bar', 'type']
-    assert 'default' in config['serializers']
-    assert 'html' in config['serializers']['default']
+    assert 'text/html' in config['serializers']
+    assert 'html' in config['serializers']['text/html']
+    assert 'default_serializer' in config
+    assert config['default_serializer'] == 'text/html'
 
 def test_merge_sub_replace():
     config = deepcopy(global_config)
@@ -33,8 +35,10 @@ def test_merge_sub_replace():
     merge_config(config, new_config, reconfig=False)
     assert 'text/html' in config['serializers']
     assert config['serializers']['text/html'] == ['bar', 'type']
-    assert 'default' in config['serializers']
-    assert 'html' in config['serializers']['default']
+    assert 'application/json' in config['serializers']
+    assert 'json' in config['serializers']['application/json']
+    assert 'default_serializer' in config
+    assert config['default_serializer'] == 'text/html'
 
 def test_merge_addition():
     config = deepcopy(global_config)

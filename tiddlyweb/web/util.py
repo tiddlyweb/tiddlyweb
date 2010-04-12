@@ -17,9 +17,10 @@ def get_serialize_type(environ):
     Look in the environ to determine which serializer
     we should use for this request.
     """
+    config = environ['tiddlyweb.config']
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
-    serializers = environ['tiddlyweb.config']['serializers']
+    serializers = config['serializers']
     serialize_type, mime_type = None, None
 
     if type(accept) == str:
@@ -34,10 +35,11 @@ def get_serialize_type(environ):
     if not serialize_type:
         if ext:
             raise HTTP415('%s type unsupported' % ext)
-        # If we are a PUT and we haven't found a serializer, don't 
+        # If we are a PUT and we haven't found a serializer, don't
         # state a default as that makes no sense.
         if environ['REQUEST_METHOD'] == 'GET':
-            serialize_type, mime_type = serializers['default']
+            default_serializer = config['default_serializer']
+            serialize_type, mime_type = serializers[default_serializer]
     return serialize_type, mime_type
 
 
