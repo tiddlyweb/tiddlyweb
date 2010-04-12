@@ -58,8 +58,9 @@ def read_config(global_config):
     try:
         from tiddlywebconfig import config as custom_config
         merge_config(global_config, custom_config, reconfig=False)
-    except ImportError:
-        pass # that's cool
+    except ImportError, exc:
+        if not exc.message.endswith('tiddlywebconfig'):
+            raise # error within tiddlywebconfig.py
 
 
 def sha(data=''):
