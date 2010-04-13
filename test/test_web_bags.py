@@ -75,3 +75,13 @@ def test_get_bags_sorted_limitedfilters():
 
     assert response['status'] == '200', content
     assert content == 'bag3\n'
+
+def test_get_bags_bad_filter():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/bags?sort=title',
+            headers={'Accept': 'text/plain'},
+            method='GET')
+
+    assert response['status'] == '400', content
+    assert 'malformed filter' in content

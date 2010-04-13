@@ -1,11 +1,11 @@
 """
 Handle common code used for listing bags and recipes.
 """
-from tiddlyweb.filters import recursive_filter
+from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
-from tiddlyweb.web.http import HTTP415
+from tiddlyweb.web.http import HTTP415, HTTP400
 from tiddlyweb.util import sha
 
 
@@ -16,7 +16,10 @@ def list_entities(environ, start_response, mime_type, store_list,
     """
     filters = environ['tiddlyweb.filters']
     username = environ['tiddlyweb.usersign']['name']
-    kept_entities = _filter_readable(environ, store_list(), filters)
+    try:
+        kept_entities = _filter_readable(environ, store_list(), filters)
+    except FilterError, exc:
+        raise HTTP400(exc)
 
     etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
             sha('%s:%s' % (username, mime_type)).hexdigest())
