@@ -25,6 +25,7 @@ def test_merge_sub_addition():
     assert 'default_serializer' in config
     assert config['default_serializer'] == 'text/html'
 
+
 def test_merge_sub_replace():
     config = deepcopy(global_config)
     new_config = {
@@ -40,6 +41,7 @@ def test_merge_sub_replace():
     assert 'default_serializer' in config
     assert config['default_serializer'] == 'text/html'
 
+
 def test_merge_addition():
     config = deepcopy(global_config)
     new_config = {
@@ -51,6 +53,7 @@ def test_merge_addition():
     assert 'extra' in config
     assert 'stuff' in config['extra']
     assert 'one' in config['extra']['stuff']
+
 
 def test_merge_addition_double_over_no_twc():
     config = deepcopy(global_config)
@@ -80,6 +83,7 @@ def test_merge_addition_double_over_no_twc():
     merge_config(config, custom_config, reconfig=False)
     assert 'show' in config['nextra']
     assert 'seven' not in config['nextra']['show']
+
 
 def test_merge_addition_double_over_twc():
     new_config = {

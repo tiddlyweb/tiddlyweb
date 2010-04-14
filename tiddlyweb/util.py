@@ -59,7 +59,7 @@ def read_config(global_config):
         from tiddlywebconfig import config as custom_config
         merge_config(global_config, custom_config, reconfig=False)
     except ImportError, exc:
-        if not exc.message.endswith('tiddlywebconfig'):
+        if not exc.args[0].endswith('tiddlywebconfig'):
             raise # error within tiddlywebconfig.py
 
 
