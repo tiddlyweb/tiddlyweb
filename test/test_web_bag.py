@@ -54,6 +54,7 @@ def test_get_bag_tiddler_list_404():
             method='GET')
 
     assert response['status'] == '404'
+    assert '(' not in content
 
 def test_get_bag_tiddler_list_text():
     http = httplib2.Http()

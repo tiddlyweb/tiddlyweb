@@ -30,10 +30,13 @@ class HTTPException(Exception):
         Output an error message.
         """
         if not hasattr(self, 'args'):
-            self.args = '%s' % self
-        if isinstance(self.args, unicode):
-            self.args = self.args.encode('utf-8')
-        return ['%s: %s' % (self.status, self.args)]
+            self.args = ('%s' % self, )
+        output = []
+        for arg in self.args:
+            if isinstance(arg, unicode):
+                arg = arg.encode('utf-8')
+            output.append('%s' % arg)
+        return ['%s: %s' % (self.status, ' '.join(output))]
 
 
 class HTTP302(HTTPException):
