@@ -148,7 +148,7 @@ class StorageInterface(object):
 
     def list_bag_tiddlers(self, bag):
         """
-        Retrieve a list of all bag objects in the system.
+        Retrieve a list of all tiddler objects in the named bag.
         """
         raise StoreMethodNotImplemented(
                 'this store does not handle listing bag tiddlers')
