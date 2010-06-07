@@ -1,9 +1,14 @@
-1.0.2 TBD
+1.0.3 Mon Jun  7 16:52:25 UTC 2010
+
+  * Deal with UTF-8 usernames and passwords in http basic auth.
+
+1.0.2 Tue Apr  6 17:54:28 UTC 2010
 
   * Handle incorrect recipe PUT more accurately.
   * Robustly deal with bad input to the basic auth extractor.
   * Handle '/' in bag names in recipes in the text serialization.
   * Improve tiddler collection ETag generation (again!)
+  * Output utf-8 when using l* twanager list commands.
 
 1.0.1 Wed Mar 10 14:37:03 GMT 2010
 

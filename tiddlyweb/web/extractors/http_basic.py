@@ -26,6 +26,8 @@ class Extractor(ExtractorInterface):
         if user_info.startswith('Basic'):
             user_info = user_info.strip().split(' ')[1]
             candidate_username, password = b64decode(user_info).split(':')
+            candidate_username = candidate_username.decode('UTF-8')
+            password = password.decode('UTF-8')
             user = self.load_user(environ, candidate_username)
             if user.check_password(password):
                 return {"name": user.usersign, "roles": user.list_roles()}
