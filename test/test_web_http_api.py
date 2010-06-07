@@ -92,7 +92,7 @@ def _run_test(test):
         response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
     else:
         response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
-                body=test['data'])
+                body=test['data'].encode('UTF-8'))
     assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 def assert_response(response, content, status, headers=None, expected=None):
