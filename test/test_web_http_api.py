@@ -28,7 +28,11 @@ from tiddlyweb.model.user import User
 authorization = b64encode('cdent:cowpig')
 base_url = 'http://our_test_domain:8001'
 
+TESTS = {}
+
 def setup_module(module):
+    global TESTS
+    TESTS = yaml.load(open('test/httptest.yaml'))
     from tiddlyweb.web import serve
     def app_fn():
         return serve.load_app()
@@ -75,7 +79,6 @@ EMPTY_TEST = {
         'expected': [],
         'data': '',
         }
-TESTS = yaml.load(open('test/httptest.yaml'))
 
 def test_the_TESTS():
     """
@@ -97,7 +100,7 @@ def _run_test(test):
 
 def assert_response(response, content, status, headers=None, expected=None):
     if response['status'] == '500': print content
-    assert response['status'] == '%s' % status
+    assert response['status'] == '%s' % status, (response, content)
 
     if headers:
         for header in headers:
@@ -105,7 +108,7 @@ def assert_response(response, content, status, headers=None, expected=None):
 
     if expected:
         for expect in expected:
-            assert expect in content
+            assert expect.encode('UTF-8') in content
 
 if __name__ == '__main__':
     for test_data in TESTS:
