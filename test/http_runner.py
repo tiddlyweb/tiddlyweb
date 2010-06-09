@@ -9,7 +9,6 @@ from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
 import simplejson
-import yaml
 
 from base64 import b64encode
 from re import match
@@ -22,10 +21,10 @@ tests = store = http = None
 
 __all__ = ('http_test', 'test_assert_response', 'test_the_TESTS')
 
-def http_test(test_file, base):
+def http_test(test_data, base):
     global tests, store, http, base_url
     base_url = base
-    tests = yaml.load(open(test_file))
+    tests = test_data
     from tiddlyweb.web import serve
     def app_fn():
         return serve.load_app()
