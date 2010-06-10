@@ -35,6 +35,11 @@ def data_from_pattern(pattern):
             data['recipe'] = [
                     ['bagurlmap1', ''],
                     ]
+    if '$bag_name' in pattern:
+        if '$tiddler_name' in pattern:
+            data['text'] = 'oh hai'
+        else:
+            data['description'] = "hey buddy"
     return simplejson.dumps(data)
 
 
