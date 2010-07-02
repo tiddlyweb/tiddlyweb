@@ -35,6 +35,8 @@ def test_challenge_base():
 
     assert response['status'] == '401'
     assert 'cookie_form' in content
+    assert '>TiddlyWeb username and password</a>' in content
+    assert '>OpenID</a>' in content
 
 def test_challenge_cookie_form():
     http = httplib2.Http()

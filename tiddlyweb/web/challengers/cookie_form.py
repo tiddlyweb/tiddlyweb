@@ -19,6 +19,8 @@ class Challenger(ChallengerInterface):
     is later used by the simple_cookie credentials extractor.
     """
 
+    desc = "TiddlyWeb username and password"
+
     def challenge_get(self, environ, start_response):
         """
         Respond to a GET request by sending a form.

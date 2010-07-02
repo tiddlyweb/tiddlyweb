@@ -22,8 +22,19 @@ def base(environ, start_response):
         raise HTTP302(_challenger_url(environ, auth_systems[0]))
     start_response('401 Unauthorized', [('Content-Type', 'text/html')])
     environ['tiddlyweb.title'] = 'Login Challengers'
-    return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in
-            [_challenger_url(environ, system) for system in auth_systems]]
+
+    challenger_info = []
+    for system in auth_systems:
+        uri = _challenger_url(environ, system)
+        try:
+            challenger = _get_challenger_module(system)
+            label = getattr(challenger, 'desc', uri)
+            challenger_info.append((uri, label))
+        except ImportError:
+            pass
+
+    return ['<li><a href="%s">%s</a></li>' % (uri, label) for uri, label in
+            challenger_info]
 
 
 def challenge_get(environ, start_response):
@@ -53,24 +64,30 @@ def _challenger_url(environ, system):
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 
 
-def _determine_challenger(environ):
+def _determine_challenger(environ, challenger_name=None):
     """
-    Determine which challenger we are using and import it
-    as necessary.
+    Determine which challenger we are using and import it as necessary.
     """
-    challenger_name = environ['wsgiorg.routing_args'][1]['challenger']
+    if challenger_name is None:
+        challenger_name = environ['wsgiorg.routing_args'][1]['challenger']
     # If the challenger is not in config, do a 404, we don't want
     # to import any old code.
     if challenger_name not in environ['tiddlyweb.config']['auth_systems']:
         raise HTTP404('Challenger Not Found')
     try:
+        return _get_challenger_module(challenger_name)
+    except ImportError, exc:
+        raise HTTP404('Unable to import challenger %s: %s' %
+                (challenger_name, exc))
+
+
+def _get_challenger_module(challenger_name):
+    """
+    Return given challenger's module, importing it as necessary.
+    """
+    try:
         imported_module = __import__('tiddlyweb.web.challengers.%s' %
                 challenger_name, {}, {}, ['Challenger'])
     except ImportError:
-        try:
-            imported_module = __import__(challenger_name, {}, {},
-                ['Challenger'])
-        except ImportError, exc:
-            raise HTTP404('Unable to import challenger %s: %s' %
-                    (challenger_name, exc))
+        imported_module = __import__(challenger_name, {}, {}, ['Challenger'])
     return imported_module.Challenger()

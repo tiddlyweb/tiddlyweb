@@ -32,6 +32,8 @@ class Challenger(ChallengerInterface):
     credential extractor.
     """
 
+    desc = "OpenID"
+
     def challenge_get(self, environ, start_response):
         """
         Respond to a GET request. If there is no openid_mode,
