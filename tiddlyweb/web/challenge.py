@@ -11,17 +11,6 @@ from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url
 
 
-def _challenger_url(environ, system):
-    """
-    Return the proper URL for a specific challenger system.
-    """
-    default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
-    redirect = (environ['tiddlyweb.query'].get('tiddlyweb_redirect',
-        [default_redirect])[0])
-    redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect, safe='')
-    return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
-
-
 def base(environ, start_response):
     """
     The basic listing page that shows all available
@@ -51,6 +40,17 @@ def challenge_post(environ, start_response):
     """
     challenger = _determine_challenger(environ)
     return challenger.challenge_post(environ, start_response)
+
+
+def _challenger_url(environ, system):
+    """
+    Return the proper URL for a specific challenger system.
+    """
+    default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
+    redirect = (environ['tiddlyweb.query'].get('tiddlyweb_redirect',
+        [default_redirect])[0])
+    redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect, safe='')
+    return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 
 
 def _determine_challenger(environ):
