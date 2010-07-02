@@ -23,7 +23,7 @@ def base(environ, start_response):
     start_response('401 Unauthorized', [('Content-Type', 'text/html')])
     environ['tiddlyweb.title'] = 'Login Challengers'
     return ['<li><a href="%s">%s</a></li>' % (uri, uri) for uri in
-        [_challenger_url(environ, system) for system in auth_systems]]
+            [_challenger_url(environ, system) for system in auth_systems]]
 
 
 def challenge_get(environ, start_response):
@@ -48,7 +48,7 @@ def _challenger_url(environ, system):
     """
     default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
     redirect = (environ['tiddlyweb.query'].get('tiddlyweb_redirect',
-        [default_redirect])[0])
+            [default_redirect])[0])
     redirect = '?tiddlyweb_redirect=%s' % urllib.quote(redirect, safe='')
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 
@@ -65,12 +65,12 @@ def _determine_challenger(environ):
         raise HTTP404('Challenger Not Found')
     try:
         imported_module = __import__('tiddlyweb.web.challengers.%s' %
-            challenger_name, {}, {}, ['Challenger'])
+                challenger_name, {}, {}, ['Challenger'])
     except ImportError:
         try:
             imported_module = __import__(challenger_name, {}, {},
                 ['Challenger'])
         except ImportError, exc:
             raise HTTP404('Unable to import challenger %s: %s' %
-                (challenger_name, exc))
+                    (challenger_name, exc))
     return imported_module.Challenger()
