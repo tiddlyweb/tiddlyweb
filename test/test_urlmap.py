@@ -55,6 +55,8 @@ def figure_tests(app):
             test['url'] = filled_pattern(pattern)
             if 'challenge' in test['url']:
                 continue
+            if 'revisions' in test['url']:
+                continue
             if 'search' in test['url']:
                 test['url'] = test['url'] + '?q=hai'
                 test['expected'] = ['tiddlerurlmap1']
@@ -63,6 +65,10 @@ def figure_tests(app):
                 test['request_headers'] = {
                         'accept': 'application/json',
                         }
+                if 'recipe_name' in pattern and 'tiddler_name' in pattern:
+                    test['expected'] = ['oh hai']
+                elif 'tiddlers' in pattern and 'tiddler_name' not in pattern:
+                    test['expected'] = ['tiddlerurlmap1']
             elif method_type == 'DELETE':
                 test['status'] = '204'
                 if 'recipe_name' in pattern and 'tiddler_name' in pattern:
@@ -89,8 +95,10 @@ def figure_tests(app):
 
 def setup_module(module):
     tests = do_run()
-    #print tests
+    print tests
     http_test(tests, 'http://our_test_domain:8001')
+    # the below is for testing tiddlynode
+    #http_test(tests, 'http://127.0.0.1:8000')
 
 
 def do_run():
