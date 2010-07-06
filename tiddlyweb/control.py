@@ -52,15 +52,32 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
     """
     store = recipe.store
     template = recipe_template(environ)
+    try:
+        indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
+        if indexer:
+            index_module = __import__(indexer, {}, {}, ['index_query'])
+    except AttributeError, KeyError:
+        indexer = None
+
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
-        for candidate_tiddler in filter_tiddlers_from_bag(bag,
-                filter_string, environ=environ):
-            if tiddler.title == candidate_tiddler.title:
+
+        import logging
+            
+        if not filter_string and indexer:
+            kwords = {'id': '"%s:%s"' % (bag.name, tiddler.title)}
+            tiddlers = index_module.index_query(environ, **kwords)
+            if list(tiddlers):
+                logging.debug('satisfied recipe bag query via filter index')
                 return bag
+        else:
+            for candidate_tiddler in filter_tiddlers_from_bag(bag,
+                    filter_string, environ=environ):
+                if tiddler.title == candidate_tiddler.title:
+                    return bag
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
