@@ -18,7 +18,7 @@ def setup_module(module):
 
 def test_tiddler_title_with_slash():
     tiddler = Tiddler('hello/monkey')
-    tiddler.bag = 'bag/puss'
+    tiddler.bag = u'bag/puss'
     tiddler.text = 'artifice'
 
     assert tiddler.title == 'hello/monkey'
@@ -26,7 +26,7 @@ def test_tiddler_title_with_slash():
     store.put(tiddler)
 
     tiddler2 = Tiddler('hello/monkey')
-    tiddler2.bag = 'bag/puss'
+    tiddler2.bag = u'bag/puss'
 
     tiddler2 = store.get(tiddler2)
 
