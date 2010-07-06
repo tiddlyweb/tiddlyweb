@@ -39,7 +39,7 @@ def setup_module(module):
 def test_no_bag_for_tiddler():
     tiddler = Tiddler(title='testnobag')
     tiddler.text = 'no bag here'
-    tiddler.bag = u'no bag of this name'
+    tiddler.bag = 'no bag of this name'
 
     py.test.raises(NoBagError, "store.put(tiddler)")
 
@@ -47,23 +47,23 @@ def test_put_and_get_tiddler():
     tiddler = Tiddler(title='testbag')
     tiddler.text = 'bag1 here'
     bag = Bag(name = 'bag1')
-    tiddler.bag = u'bag1'
+    tiddler.bag = 'bag1'
 
     store.put(bag)
     store.put(tiddler)
 
     new_tiddler = Tiddler(title='testbag')
-    new_tiddler.bag = u'bag1'
+    new_tiddler.bag = 'bag1'
     new_tiddler = store.get(new_tiddler)
 
     assert new_tiddler.text == 'bag1 here'
 
 def test_get_diddle_put_tiddler():
     new_tiddler = Tiddler(title='testbag')
-    new_tiddler.bag = u'bag1'
+    new_tiddler.bag = 'bag1'
     new_tiddler = store.get(new_tiddler)
 
-    new_tiddler.bag = u'bag2'
+    new_tiddler.bag = 'bag2'
     new_tiddler.text = 'bag2 here'
 
     py.test.raises(NoBagError, "store.put(new_tiddler)")

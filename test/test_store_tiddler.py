@@ -67,7 +67,7 @@ def test_simple_get():
     """
 
     stored_tiddler = Tiddler(title='TiddlerOne')
-    stored_tiddler.bag = u'bagone'
+    stored_tiddler.bag = 'bagone'
     stored_tiddler.modified = '200803030303'
     stored_tiddler = store.get(stored_tiddler)
 
@@ -87,7 +87,7 @@ def test_get_revision():
     store.put(bagone)
     tiddler = Tiddler('RevisionTiddler')
     tiddler.text='how now 1'
-    tiddler.bag = u'bagone'
+    tiddler.bag = 'bagone'
     store.put(tiddler)
     tiddler.text = 'how now 2'
     store.put(tiddler)
@@ -155,8 +155,8 @@ def test_store_lock():
 
     write_lock('store/bags' + '/bagone/tiddlers/foobar')
     tiddler = Tiddler('foobar')
-    tiddler.text = 'hello'
-    tiddler.bag = u'bagone'
+    tiddler.text='hello'
+    tiddler.bag = 'bagone'
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 
 def test_put_with_slash():

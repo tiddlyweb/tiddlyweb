@@ -57,7 +57,7 @@ bagfour.tiddlers = container
 
 tiddler_collection = Tiddlers()
 for tiddler in tiddlers:
-    tiddler.bag = u'bagfour'
+    tiddler.bag = 'bagfour'
     tiddler_collection.add(tiddler)
 
 recipe_list = [

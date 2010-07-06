@@ -50,13 +50,13 @@ def teardown_module(module):
 
 
 def test_adduser():
-    handle(['', u'adduser', u'cdent', u'crunk'])
+    handle(['', 'adduser', 'cdent', 'crunk'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert the_user.check_password('crunk')
 
 def test_adduser_with_roles():
-    handle(['', u'adduser', u'cdent', u'crunk', u'cow', u'monkey'])
+    handle(['', 'adduser', 'cdent', 'crunk', 'cow', 'monkey'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert the_user.check_password('crunk')
@@ -64,20 +64,20 @@ def test_adduser_with_roles():
     assert 'monkey' in the_user.list_roles()
 
 def test_addrole():
-    handle(['', u'addrole', u'cdent', u'pig'])
+    handle(['', 'addrole', 'cdent', 'pig'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert 'cow' in the_user.list_roles()
 
 def test_userpass():
-    handle(['', u'userpass', u'cdent', u'drunk'])
+    handle(['', 'userpass', 'cdent', 'drunk'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert the_user.check_password('drunk')
 
 def test_bag():
     set_stdin(BAG_STRING)
-    handle(['', u'bag', u'bag1'])
+    handle(['', 'bag', 'bag1'])
 
     the_bag = Bag('bag1')
     the_bag = store.get(the_bag)
@@ -87,7 +87,7 @@ def test_bag():
 
 def test_recipe():
     set_stdin(RECIPE_STRING)
-    handle(['', u'recipe', u'recipe1'])
+    handle(['', 'recipe', 'recipe1'])
 
     the_recipe = Recipe('recipe1')
     the_recipe = store.get(the_recipe)
@@ -98,13 +98,13 @@ def test_recipe():
 
 def test_tiddler():
     set_stdin(TIDDLER_STRING)
-    handle(['', u'tiddler', u'bag1', u'tiddler1'])
+    handle(['', 'tiddler', 'bag1', 'tiddler1'])
 
     the_tiddler = Tiddler('tiddler1', 'bag1')
     the_tiddler = store.get(the_tiddler)
 
     assert the_tiddler.title == 'tiddler1'
-    assert the_tiddler.bag == u'bag1'
+    assert the_tiddler.bag == 'bag1'
     assert the_tiddler.modifier == 'cdent'
 
 def test_info(capsys):
@@ -135,17 +135,17 @@ def test_lusers(capsys):
     assert 'monkey' in results
 
 def test_lbags(capsys):
-    handle(['', u'lbags'])
+    handle(['', 'lbags'])
     results, err = capsys.readouterr()
     assert 'Name: bag1' in results
 
 def test_lrecipes(capsys):
-    handle(['', u'lrecipes'])
+    handle(['', 'lrecipes'])
     results, err = capsys.readouterr()
     assert 'recipe1 ' in results
 
 def test_ltiddlers(capsys):
-    handle(['', u'ltiddlers'])
+    handle(['', 'ltiddlers'])
     results, err = capsys.readouterr()
     assert 'bag1' in results
     assert 'tiddler1 cdent' in results
@@ -157,3 +157,4 @@ def test_ltiddlers(capsys):
 def set_stdin(content):
     f = StringIO(content)
     sys.stdin = f
+
