@@ -2,9 +2,9 @@ config = {
         'log_level':'DEBUG',
         'extra': { 'stuff': ['one', 'two'], }, # required for test_merge_config
         #'server_prefix': '/wiki',
-        #'system_plugins': ['twp.whoosher'],
-        #'twanager_plugins': ['twp.whoosher'],
-        #'indexer': 'whoosher',
+        #'system_plugins': ['tiddlywebplugins.whoosher'],
+        #'twanager_plugins': ['tiddlywebplugins.whoosher'],
+        #'indexer': 'tiddlywebplugins.whoosher',
         #'system_plugins': ['tiddlywebwiki'],
         #'twanager_plugins': ['whoosher'],
         #'system_plugins': ['whoosher'],

@@ -9,6 +9,8 @@ and serialize objects in filters and recipes and the
 like.
 """
 
+import logging
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.filters import parse_for_filters, recursive_filter
 from tiddlyweb.serializer import TiddlerFormatError
@@ -59,25 +61,39 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
     except AttributeError, KeyError:
         indexer = None
 
+    def query_index(bag):
+        kwords = {'id': '"%s:%s"' % (bag.name, tiddler.title)}
+        tiddlers = index_module.index_query(environ, **kwords)
+        if list(tiddlers):
+            logging.debug('satisfied recipe bag query via filter index')
+            return bag
+        return None
+
+    def query_bag(bag):
+        for candidate_tiddler in filter_tiddlers_from_bag(bag,
+                filter_string, environ=environ):
+            if tiddler.title == candidate_tiddler.title:
+                return bag
+        return None
+
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
 
-        import logging
-            
         if not filter_string and indexer:
-            kwords = {'id': '"%s:%s"' % (bag.name, tiddler.title)}
-            tiddlers = index_module.index_query(environ, **kwords)
-            if list(tiddlers):
-                logging.debug('satisfied recipe bag query via filter index')
+            try:
+                found_bag = query_index(bag)
+            except (IOError, NameError), exc:
+                logging.debug('index corrupt, not using: %s', exc)
+                found_bag = query_bag(bag)
+            if found_bag:
                 return bag
         else:
-            for candidate_tiddler in filter_tiddlers_from_bag(bag,
-                    filter_string, environ=environ):
-                if tiddler.title == candidate_tiddler.title:
-                    return bag
+            found_bag = query_bag(bag)
+            if found_bag:
+                return found_bag
 
     raise NoBagError('no suitable bag for %s' % tiddler.title)
 
