@@ -42,7 +42,7 @@ def test_simple_put():
 def test_simple_get():
 
     tiddler = tiddlers[0]
-    tiddler.bag = 'bagone'
+    tiddler.bag = u'bagone'
     store.put(tiddler)
 
     bag = Bag(name='bagone')

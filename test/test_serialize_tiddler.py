@@ -86,7 +86,7 @@ def test_tiddler_from_json():
 def test_tiddler_html_encode():
     serializer = Serializer('html')
     tiddler = Tiddler('jeremy found a bug')
-    tiddler.bag = 'foo'
+    tiddler.bag = u'foo'
     tiddler.text = u'"Hello." I\'m > than 5 & < you.'
     serializer.object = tiddler
     string = serializer.to_string()
@@ -95,7 +95,7 @@ def test_tiddler_html_encode():
 
 def test_html_attribute_escape():
     tiddler = Tiddler('escape "double" quotes in tiddler field values')
-    tiddler.bag = 'foo "bar" baz'
+    tiddler.bag = u'foo "bar" baz'
     tiddler.modifier = 'Chris "sensei" Dent'
     tiddler.tags = ["foo", 'xxx "yyy" zzz']
     tiddler.fields["custom"] = u"""lorem 'ipsum' dolor "sit" amet"""
@@ -112,7 +112,7 @@ def test_html_attribute_escape():
 def test_tiddler_json_base64():
     serializer = Serializer('json')
     tiddler = Tiddler('binarytiddler')
-    tiddler.bag = 'foo'
+    tiddler.bag = u'foo'
     tiddler.text = file('test/peermore.png', 'rb').read()
     bininfo = tiddler.text
     b64expected = b64encode(tiddler.text)

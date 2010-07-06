@@ -84,7 +84,7 @@ def test_determine_bag_from_recipe():
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
 
     lonely_tiddler = Tiddler('lonely')
-    lonely_tiddler.bag = 'lonelybag'
+    lonely_tiddler.bag = u'lonelybag'
 
     py.test.raises(NoBagError,
             'bag = control.determine_bag_from_recipe(short_recipe, lonely_tiddler)')

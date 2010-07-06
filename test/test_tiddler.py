@@ -26,7 +26,7 @@ def test_tiddler_full_create():
     tiddler.modifier = 'test@example.com'
     tiddler.text = test_tiddler_text
     tiddler.tags = ['foo', 'bar']
-    tiddler.bag = 'bagone'
+    tiddler.bag = u'bagone'
 
     assert type(tiddler) == Tiddler, \
             'Tiddler returns a Tiddler'

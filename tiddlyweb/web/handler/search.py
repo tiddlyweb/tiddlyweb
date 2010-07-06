@@ -63,6 +63,7 @@ def get(environ, start_response):
     bag_readable = {}
 
     for tiddler in tiddlers:
+        logging.debug('search results got tiddler: %s', tiddler)
         if not (hasattr(tiddler, 'store') and tiddler.store):
             tiddler = store.get(tiddler)
         try:
