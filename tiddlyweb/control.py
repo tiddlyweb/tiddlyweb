@@ -12,7 +12,7 @@ like.
 import logging
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.filters import parse_for_filters, recursive_filter
+from tiddlyweb.filters import FilterIndexRefused, parse_for_filters, recursive_filter
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.store import NoBagError
 
@@ -85,8 +85,8 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
         if not filter_string and indexer:
             try:
                 found_bag = query_index(bag)
-            except (IOError, NameError), exc:
-                logging.debug('index corrupt, not using: %s', exc)
+            except FilterIndexRefused:
+                logging.debug('determined bag filter refused')
                 found_bag = query_bag(bag)
             if found_bag:
                 return bag
