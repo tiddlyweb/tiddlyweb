@@ -18,7 +18,8 @@ class UserExtract(object):
     def __call__(self, environ, start_response):
         userinfo = {"name": u'GUEST', "roles": []}
 
-        candidate_userinfo = _try_extractors(environ, start_response)
+        extractors = environ['tiddlyweb.config']['extractors']
+        candidate_userinfo = _try_extractors(environ, extractors, start_response)
 
         if candidate_userinfo:
             userinfo = candidate_userinfo
@@ -27,13 +28,13 @@ class UserExtract(object):
         return self.application(environ, start_response)
 
 
-def _try_extractors(environ, start_response):
+def _try_extractors(environ, extractors, start_response):
     """
     Loop through the available extractors until
     one returns a usersign instead of undef, or we
     run out of extractors.
     """
-    for extractor_name in environ['tiddlyweb.config']['extractors']:
+    for extractor_name in extractors:
         try:
             imported_module = __import__('tiddlyweb.web.extractors.%s' %
                     extractor_name, {}, {}, ['Extractor'])
