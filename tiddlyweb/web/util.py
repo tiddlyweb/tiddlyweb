@@ -106,13 +106,14 @@ def make_cookie(name, value, mac_key=None, path=None, expires=None):
     else:
         cookie[name] = value
 
+
     if path:
         cookie[name]['path'] = path
 
     if expires:
         cookie[name]['max-age'] = expires
 
-    return cookie.output(header='').lstrip().rstrip()
+    return cookie.output(header='').lstrip().rstrip() + '; httponly'
 
 
 def server_base_url(environ):
