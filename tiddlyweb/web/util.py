@@ -91,7 +91,8 @@ def datetime_from_http_date(http_datestring):
     return http_datetime
 
 
-def make_cookie(name, value, mac_key=None, path=None, expires=None):
+def make_cookie(name, value, mac_key=None, path=None,
+        expires=None, httponly=True):
     """
     Create a cookie string, optionally with a MAC, path and
     expires value. Expires is in seconds.
@@ -113,7 +114,10 @@ def make_cookie(name, value, mac_key=None, path=None, expires=None):
     if expires:
         cookie[name]['max-age'] = expires
 
-    return cookie.output(header='').lstrip().rstrip() + '; httponly'
+    output = cookie.output(header='').lstrip().rstrip()
+    if httponly:
+        output += '; httponly'
+    return output
 
 
 def server_base_url(environ):

@@ -19,6 +19,11 @@ def test_cookie_path():
 
     assert string == 'test2=alpha2; Path=/path/to/location; httponly'
 
+    string = make_cookie('test2', 'alpha2', path='/path/to/location',
+            httponly=False)
+
+    assert string == 'test2=alpha2; Path=/path/to/location'
+
 def test_cookie_expire():
     string = make_cookie('test3', 'alpha3', expires=50)
 
