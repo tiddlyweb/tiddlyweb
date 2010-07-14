@@ -662,6 +662,12 @@ def test_binary_tiddler():
     assert response['status'] == '200'
     assert response['content-type'] == 'image/png'
 
+    # make sure a binary tiddler in a recipe doesn't cause a select
+    # filter to blow up
+    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers?select=text:hello',
+            method='GET')
+    assert response['status'] == '200'
+
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng.json',
             method='GET')

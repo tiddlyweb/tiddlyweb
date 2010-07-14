@@ -100,7 +100,11 @@ def text_in_text(entity, attribute, value):
     the string provided in value in its
     text attribute.
     """
-    return value.lower() in entity.text.lower()
+    try:
+        return value.lower() in entity.text.lower()
+    except UnicodeDecodeError: 
+        # Binary tiddler
+        return False
 
 
 ATTRIBUTE_SELECTOR = {
