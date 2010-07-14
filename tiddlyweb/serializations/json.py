@@ -6,6 +6,7 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
+from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -107,7 +108,12 @@ class Serialization(SerializationInterface):
         """
         Turn a JSON dictionary into a Tiddler.
         """
-        dict_from_input = simplejson.loads(input_string)
+        try:
+            dict_from_input = simplejson.loads(input_string)
+        except simplejson.JSONDecodeError, exc:
+            raise TiddlerFormatError(
+                    'unable to make json into tiddler: %s, %s'
+                    % (tiddler.title, exc))
         accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
                 'text', 'type']
         for key, value in dict_from_input.iteritems():
