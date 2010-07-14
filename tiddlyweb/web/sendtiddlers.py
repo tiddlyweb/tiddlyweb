@@ -89,10 +89,8 @@ def _validate_tiddler_list(environ, tiddlers):
     its HTTP response.
     """
     last_modified_number = tiddlers.modified
-    last_modified = None
-    if last_modified_number:
-        last_modified_string = http_date_from_timestamp(last_modified_number)
-        last_modified = ('Last-Modified', last_modified_string)
+    last_modified_string = http_date_from_timestamp(last_modified_number)
+    last_modified = ('Last-Modified', last_modified_string)
 
     username = environ.get('tiddlyweb.usersign', {}).get('name', '')
 

@@ -70,12 +70,15 @@ def http_date_from_timestamp(timestamp):
     Turn a modifier or created tiddler timestamp
     into a proper formatted HTTP date.
     """
-    try:
-        timestamp_datetime = datetime(*(time.strptime(timestamp,
-            '%Y%m%d%H%M')[0:6]))
-    except ValueError:
-        timestamp_datetime = datetime(*(time.strptime(timestamp,
-            '%Y%m%d%H%M%S')[0:6]))
+    if len(timestamp) > 4:
+        try:
+            timestamp_datetime = datetime(*(time.strptime(timestamp,
+                '%Y%m%d%H%M')[0:6]))
+        except ValueError:
+            timestamp_datetime = datetime(*(time.strptime(timestamp,
+                '%Y%m%d%H%M%S')[0:6]))
+    else:
+        timestamp_datetime = datetime.now()
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
 

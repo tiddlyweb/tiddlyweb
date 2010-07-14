@@ -20,7 +20,7 @@ class Collection(object):
 
     def __init__(self):
         self._digest = sha()
-        self.modified = 0
+        self.modified = '0'
         self._container = []
 
     def __contains__(self, item):
