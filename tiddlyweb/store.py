@@ -2,50 +2,57 @@
 Put and Get TiddlyWeb things to and from some store.
 """
 
+class StoreError(IOError):
+    """
+    Base Exception for Store Exceptions.
+    """
+    def __str__(self):
+        return ' '.join(self.args)
 
-class StoreMethodNotImplemented(IOError):
+
+class StoreMethodNotImplemented(StoreError):
     """
     A StorageInterface does not implement this method.
     """
     pass
 
 
-class NoBagError(IOError):
+class NoBagError(StoreError):
     """
     No Bag was found.
     """
     pass
 
 
-class NoRecipeError(IOError):
+class NoRecipeError(StoreError):
     """
     No Recipe was found.
     """
     pass
 
 
-class NoTiddlerError(IOError):
+class NoTiddlerError(StoreError):
     """
     No Tiddler was found.
     """
     pass
 
 
-class NoUserError(IOError):
+class NoUserError(StoreError):
     """
     No User was found.
     """
     pass
 
 
-class StoreLockError(IOError):
+class StoreLockError(StoreError):
     """
     This process was unable to get a lock on the store.
     """
     pass
 
 
-class StoreEncodingError(IOError):
+class StoreEncodingError(StoreError):
     """
     Something about an entity made it impossible to be
     encoded to the form require by the store.
