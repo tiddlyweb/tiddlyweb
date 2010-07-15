@@ -71,6 +71,19 @@ def sha(data=''):
     return sha1(data)
 
 
+def psuedo_binary(content_type):
+    """
+    Return true if the content type should be treated as a psuedo-binary.
+    A pseudo binary is a type of textual content for which (this) TiddlyWeb
+    (instance) has no serialization. TiddlyWeb requires that such content
+    be uploaded encoded in UTF-8.
+    """
+    content_type = content_type.lower()
+    return (content_type.startswith('text/')
+            or content_type.endswith('+xml')
+            )
+
+
 def read_utf8_file(filename):
     """
     Read a utf-8 encoded file.

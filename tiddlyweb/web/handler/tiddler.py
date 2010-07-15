@@ -16,7 +16,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError
-from tiddlyweb.util import sha
+from tiddlyweb.util import sha, psuedo_binary
 from tiddlyweb.web.http import \
         HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
@@ -161,12 +161,18 @@ def _determine_tiddler(environ, bag_finder):
                 try:
                     serializer.from_string(content.decode('utf-8'))
                 except TiddlerFormatError, exc:
-                    raise HTTP400('unable to put tiddler: %s', exc)
+                    raise HTTP400('unable to put tiddler: %s' % exc)
             else:
                 raise NoSerializationError
         except NoSerializationError:
             tiddler.type = content_type
-            tiddler.text = content
+            if psuedo_binary(tiddler.type):
+                try:
+                    tiddler.text = content.decode('utf-8')
+                except UnicodeDecodeError, exc:
+                    raise HTTP400('unable decode tiddler: %s', exc)
+            else:
+                tiddler.text = content
 
     recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
     if recipe_name:
