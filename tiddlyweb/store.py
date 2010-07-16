@@ -7,7 +7,15 @@ class StoreError(IOError):
     Base Exception for Store Exceptions.
     """
     def __str__(self):
-        return ' '.join(self.args)
+        # self.args may or may not be a string, and when that
+        # is the case is proving rather difficult to tell between
+        # minor and micro versions of Python. woot!
+        # So here we do some extra work.
+        message = []
+        for arg in self.args:
+            if isinstance(arg, basestring):
+                message.append(arg)
+        return ' '.join(message)
 
 
 class StoreMethodNotImplemented(StoreError):
