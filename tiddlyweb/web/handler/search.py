@@ -41,6 +41,8 @@ def get_tiddlers(environ):
         logging.debug('got search results from store')
     except StoreMethodNotImplemented:
         raise HTTP400('Search system not implemented')
+    except StoreError, exc:
+        raise HTTP400('Error while handling search: %s' % exc)
     return tiddlers
 
 
