@@ -16,7 +16,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError
-from tiddlyweb.util import sha, psuedo_binary
+from tiddlyweb.util import sha, pseudo_binary
 from tiddlyweb.web.http import \
         HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
 from tiddlyweb import control
@@ -166,7 +166,7 @@ def _determine_tiddler(environ, bag_finder):
                 raise NoSerializationError
         except NoSerializationError:
             tiddler.type = content_type
-            if psuedo_binary(tiddler.type):
+            if pseudo_binary(tiddler.type):
                 try:
                     tiddler.text = content.decode('utf-8')
                 except UnicodeDecodeError, exc:

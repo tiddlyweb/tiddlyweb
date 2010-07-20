@@ -71,9 +71,19 @@ def sha(data=''):
     return sha1(data)
 
 
-def psuedo_binary(content_type):
+def binary_tiddler(tiddler):
     """
-    Return true if the content type should be treated as a psuedo-binary.
+    Return true if this Tiddler has a 'type' which suggests the
+    content of the tiddler is non-textual. This is usuallly used
+    to determine if the tiddler should be base64 encoded.
+    """
+    return (tiddler.type and tiddler.type != 'None'
+            and not pseudo_binary(tiddler.type))
+
+
+def pseudo_binary(content_type):
+    """
+    Return true if the content type should be treated as a pseudo-binary.
     A pseudo binary is a type of textual content for which (this) TiddlyWeb
     (instance) has no serialization. TiddlyWeb requires that such content
     be uploaded encoded in UTF-8.
