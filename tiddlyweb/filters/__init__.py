@@ -140,9 +140,6 @@ def recursive_filter(filters, entities, indexable=False):
     XXX: Misnamed, previous versions were more truly
     recursive.
     """
-    if len(filters) == 0:
-        # return what we got
-        pass
     for filter in filters:
         try:
             active_filter, _, environ = filter
