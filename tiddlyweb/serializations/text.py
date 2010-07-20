@@ -10,6 +10,7 @@ from base64 import b64encode, b64decode
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
+from tiddlyweb.util import psuedo_binary
 
 
 class Serialization(SerializationInterface):
@@ -104,7 +105,7 @@ class Serialization(SerializationInterface):
         if not tiddler.text:
             tiddler.text = ''
         if (tiddler.type and tiddler.type != 'None' and not
-                tiddler.type.startswith('text/')):
+                psuedo_binary(tiddler.type)):
             tiddler.text = b64encode(tiddler.text)
         return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
                 '%s\ntags: %s%s\n%s\n' %
@@ -157,7 +158,7 @@ class Serialization(SerializationInterface):
 
         # If this is a binary tiddler, clean up.
         if (tiddler.type and tiddler.type != 'None' and not
-                tiddler.type.startswith('text/')):
+                psuedo_binary(tiddler.type)):
             tiddler.text = b64decode(tiddler.text.lstrip().rstrip())
 
         return tiddler

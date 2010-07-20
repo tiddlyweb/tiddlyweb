@@ -10,6 +10,7 @@ from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
+from tiddlyweb.util import psuedo_binary
 
 
 class Serialization(SerializationInterface):
@@ -120,7 +121,7 @@ class Serialization(SerializationInterface):
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
         if (tiddler.type and tiddler.type != 'None' and not
-                tiddler.type.startswith('text/')):
+                psuedo_binary(tiddler.type)):
             tiddler.text = b64decode(tiddler.text)
 
         return tiddler
@@ -139,7 +140,7 @@ class Serialization(SerializationInterface):
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
         if fat:
             if (tiddler.type and tiddler.type != 'None' and not
-                    tiddler.type.startswith('text/')):
+                    psuedo_binary(tiddler.type)):
                 wanted_info['text'] = b64encode(tiddler.text)
             else:
                 wanted_info['text'] = tiddler.text
