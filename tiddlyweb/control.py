@@ -62,7 +62,7 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
         indexer = None
 
     def query_index(bag):
-        kwords = {'id': '"%s:%s"' % (bag.name, tiddler.title)}
+        kwords = {'id': '%s:%s' % (bag.name, tiddler.title)}
         tiddlers = index_module.index_query(environ, **kwords)
         if list(tiddlers):
             logging.debug('satisfied recipe bag query via filter index')
