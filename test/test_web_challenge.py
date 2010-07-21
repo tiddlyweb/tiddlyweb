@@ -158,14 +158,6 @@ def test_openid():
     assert response['status'] == '401'
     assert 'name="openid"' in content
 
-    response, content = http.request(
-            'http://our_test_domain:8001/challenge/openid',
-            method='POST',
-            headers={'content-type': 'application/x-www-form-urlencoded'},
-            body='openid=cdent.livejournal.com&tiddlyweb_redirect=http://www.example.com/',
-            redirections=0)
-    assert response['status'] == '302'
-
 def test_single_challenge_redirect():
     """
     When there is only one challenger configured, we should
