@@ -15,6 +15,8 @@ If the attribute is prepended with '-' the sort
 is reversed.
 """
 
+from tiddlyweb.model.tiddler import Tiddler
+
 
 def date_to_canonical(datestring):
     """
@@ -40,32 +42,44 @@ def sort_parse(attribute):
         attribute = attribute.replace('-', '', 1)
 
         def sorter(entities, indexable=False, environ=None):
-            return sort_by_attribute(attribute, entities, reverse=True)
+            return sort_by_attribute(attribute, entities, reverse=True,
+                    environ=environ)
 
     else:
 
         def sorter(entities, indexable=False, environ=None):
-            return sort_by_attribute(attribute, entities)
+            return sort_by_attribute(attribute, entities, environ=environ)
 
     return sorter
 
 
-def sort_by_attribute(attribute, entities, reverse=False):
+def sort_by_attribute(attribute, entities, reverse=False, environ=None):
     """
     Sort a group of entities by some attribute.
     Inspect ATTRIBUTE_SORT_KEY to see if there is a special
     function by which we should generate the value for this
     attribute.
     """
+    if environ == None:
+        environ = {}
+
+    store = environ.get('tiddlyweb.store', None)
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
     def key_gen(entity):
+        if store and not entity.store:
+            stored_entity = Tiddler(entity.title, entity.bag)
+            if entity.revision:
+                stored_entity.revision = entity.revision
+            stored_entity = store.get(stored_entity)
+        else:
+            stored_entity = entity
         try:
-            return func(getattr(entity, attribute))
+            return func(getattr(stored_entity, attribute))
         except AttributeError:
             try:
-                return func(entity.fields[attribute])
+                return func(stored_entity.fields[attribute])
             except KeyError, exc:
                 raise AttributeError('no attribute: %s, %s' % (attribute, exc))
 

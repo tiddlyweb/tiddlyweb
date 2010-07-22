@@ -81,7 +81,7 @@ def figure_tests(app):
                         }
             else:
                 continue
-            print test['url']
+            #print test['url']
             tests.append(test)
     def test_sorter(test):
         method = test['method']
@@ -95,7 +95,7 @@ def figure_tests(app):
 
 def setup_module(module):
     tests = do_run()
-    print tests
+    #print tests
     http_test(tests, 'http://our_test_domain:8001')
     # the below is for testing tiddlynode
     #http_test(tests, 'http://127.0.0.1:8000')

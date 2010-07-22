@@ -49,13 +49,18 @@ def _filter_readable(environ, entities, filters):
     of the entities is checked.
     """
     store = environ['tiddlyweb.store']
-    kept_entities = Container()
-    for entity in recursive_filter(filters, entities):
-        try:
+
+    def _load(entities):
+        for entity in entities:
             if hasattr(entity, 'store') and entity.store:
-                pass
+                yield entity
             else:
                 entity = store.get(entity)
+                yield entity
+
+    kept_entities = Container()
+    for entity in recursive_filter(filters, _load(entities)):
+        try:
             entity.policy.allows(environ['tiddlyweb.usersign'], 'read')
             kept_entities.add(entity)
         except(UserRequiredError, ForbiddenError):

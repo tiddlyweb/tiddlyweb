@@ -75,7 +75,7 @@ def get_tiddlers(environ, start_response):
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
-    # from this point forward we know the tiddler are
+    # from this point forward we know the tiddlers are
     # readable
 
     # get the tiddlers from the recipe and uniquify them
@@ -85,7 +85,7 @@ def get_tiddlers(environ, start_response):
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
-    tiddlers = Tiddlers()
+    tiddlers = Tiddlers(store=store)
 
     for tiddler in candidate_tiddlers:
         tiddler.recipe = recipe.name

@@ -59,14 +59,12 @@ def get(environ, start_response):
 
     usersign = environ['tiddlyweb.usersign']
 
-    candidate_tiddlers = Tiddlers()
+    candidate_tiddlers = Tiddlers(store=store)
     candidate_tiddlers.searchbag = True
 
     bag_readable = {}
 
     for tiddler in tiddlers:
-        if not (hasattr(tiddler, 'store') and tiddler.store):
-            tiddler = store.get(tiddler)
         try:
             if bag_readable[tiddler.bag]:
                 candidate_tiddlers.add(tiddler)

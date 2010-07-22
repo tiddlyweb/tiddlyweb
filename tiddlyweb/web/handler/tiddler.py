@@ -510,8 +510,9 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     """
     store = environ['tiddlyweb.store']
 
-    tiddlers = Tiddlers()
+    tiddlers = Tiddlers(store=store)
     tiddlers.is_revisions = True
+    recipe = tiddler.recipe
     try:
         for revision in store.list_tiddler_revisions(tiddler):
             tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
@@ -525,6 +526,8 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
                 # If a particular revision is not present in the store.
                 raise HTTP404('tiddler %s at revision % not found, %s' %
                         (tiddler.title, revision, exc))
+            if recipe:
+                tmp_tiddler.recipe = recipe
             tiddlers.add(tmp_tiddler)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.

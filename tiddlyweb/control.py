@@ -35,7 +35,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
             bag = Bag(name=bag)
         if store:
             bag = store.get(bag)
-        for tiddler in filter_tiddlers_from_bag(bag, filter_string, environ=environ):
+        for tiddler in _filter_tiddlers_from_bag(bag, filter_string, environ=environ):
             uniquifier[tiddler.title] = tiddler
     return uniquifier.values()
 
@@ -70,7 +70,7 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
         return None
 
     def query_bag(bag):
-        for candidate_tiddler in filter_tiddlers_from_bag(bag,
+        for candidate_tiddler in _filter_tiddlers_from_bag(bag,
                 filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
                 return bag
@@ -127,13 +127,6 @@ def get_tiddlers_from_bag(bag):
 
     if bag.store:
         for tiddler in bag.store.list_bag_tiddlers(bag):
-            if hasattr(tiddler, 'store') and tiddler.store:
-                pass
-            else:
-                try:
-                    tiddler = bag.store.get(tiddler)
-                except TiddlerFormatError:
-                    pass
             yield tiddler
     else:
         for tiddler in bag.tiddlers:
@@ -154,7 +147,7 @@ def filter_tiddlers(tiddlers, filters, environ=None):
     return recursive_filter(filters, tiddlers)
 
 
-def filter_tiddlers_from_bag(bag, filters, environ=None):
+def _filter_tiddlers_from_bag(bag, filters, environ=None):
     """
     Return the list of tiddlers resulting from filtering
     bag by filter. The filter is a string that will be

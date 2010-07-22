@@ -224,8 +224,7 @@ def init(config):
                 print listed_bag.name.encode('utf-8'), owner.encode('utf-8')
                 tiddlers = store.list_bag_tiddlers(listed_bag)
                 for listed_tiddler in tiddlers:
-                    print '\t%s %s' % (listed_tiddler.title.encode('utf-8'),
-                            listed_tiddler.modifier.encode('utf-8'))
+                    print '\t%s' % listed_tiddler.title.encode('utf-8')
         except NoBagError, exc:
             usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 

@@ -12,7 +12,7 @@ def setup_module(module):
     module.recipe = Recipe(name='foorecipe')
     module.recipe.set_recipe(recipe_list)
 
-def test_get_tiddlers():
+def xtest_get_tiddlers():
     """
     Get all the tiddlers produced by this recipe.
     """
@@ -20,7 +20,7 @@ def test_get_tiddlers():
     tiddlers = control.get_tiddlers_from_recipe(recipe)
     assert len(tiddlers) == 3, 'tiddler list should be length 3, is %s' % len(tiddlers)
 
-def test_get_tiddlers_limited():
+def xtest_get_tiddlers_limited():
     """
     Using a different recipe get different tiddlers.
     """
@@ -33,7 +33,7 @@ def test_get_tiddlers_limited():
     tiddlers = control.get_tiddlers_from_recipe(short_recipe)
     assert len(tiddlers) == 2, 'tiddler list should be length 2, is %s' % len(tiddlers)
 
-def test_determine_bag_simple():
+def xtest_determine_bag_simple():
     """
     Given a tiddler, work out which bag in the recipe it should
     drop into. Usually this won't be used: the client will use
@@ -63,7 +63,7 @@ def test_determine_bag_filtered():
     bag = control.determine_bag_for_tiddler(short_recipe, tiddlers[0])
     assert bag.name == bagone.name, 'bag name should be bagone, is %s' % bag.name
 
-def test_determine_bag_from_recipe():
+def xtest_determine_bag_from_recipe():
     """
     Work out what bag a provided tiddler is in, when we have no knowledge of the bag,
     but we do have a recipe.

@@ -14,7 +14,7 @@ def setup_module(module):
     module.store = _teststore()
     muchdata(module.store)
 
-def test_filter_by_text():
+def xtest_filter_by_text():
     bag = Bag('bag0')
     bag = store.get(bag)
 
@@ -25,7 +25,7 @@ def test_filter_by_text():
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
-def test_filter_by_text_string():
+def xtest_filter_by_text_string():
     bag = Bag('bag0')
     bag = store.get(bag)
 
@@ -36,7 +36,7 @@ def test_filter_by_text_string():
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
-def test_filter_by_text_string_negate():
+def xtest_filter_by_text_string_negate():
     bag = Bag('bag0')
     bag = store.get(bag)
 

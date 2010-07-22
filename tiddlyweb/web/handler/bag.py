@@ -67,6 +67,7 @@ def get_tiddlers(environ, start_response):
     bag. The information sent is dependent on the
     serialization chosen.
     """
+    store = environ['tiddlyweb.store']
     bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
 
@@ -74,7 +75,7 @@ def get_tiddlers(environ, start_response):
     # will raise exception if there are problems
     bag.policy.allows(usersign, 'read')
 
-    return send_tiddlers(environ, start_response, bag)
+    return send_tiddlers(environ, start_response, tiddlers=store.list_bag_tiddlers(bag))
 
 
 def list_bags(environ, start_response):

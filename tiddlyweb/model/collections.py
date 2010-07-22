@@ -10,6 +10,8 @@ and generate a hash suitable for use as an ETag.
 
 from tiddlyweb.util import sha
 
+from tiddlyweb.model.tiddler import Tiddler
+
 
 class Collection(object):
     """
@@ -85,10 +87,45 @@ class Tiddlers(Collection):
     either tiddler.bag or tiddler.recipe are used.
     """
 
-    def __init__(self):
+    def __init__(self, store=None):
         Collection.__init__(self)
         self.is_revisions = False
         self.is_search = False
+        self.store = store
+
+    def __iter__(self):
+        """
+        Generate the items in this container.
+        Since these are tiddlers, load them if they are
+        not loaded.
+        """
+        for tiddler in self._container:
+            if not tiddler.store and self.store:
+                tiddler = self.store.get(tiddler)
+            yield tiddler
+
+    def add(self, tiddler):
+        """
+        Add a reference to the tiddler to the container,
+        updating the digest and modified information.
+        """
+        self._update_digest(tiddler)
+
+        reference = Tiddler(tiddler.title, tiddler.bag)
+        if tiddler.revision:
+            reference.revision = tiddler.revision
+        if tiddler.recipe:
+            reference.recipe = tiddler.recipe
+
+        self._container.append(reference)
+
+        try:
+            modified_string = str(tiddler.modified)
+            modified_string = modified_string.ljust(14, '0')
+            if modified_string > self.modified:
+                self.modified = modified_string
+        except AttributeError:
+            pass
 
     def _update_digest(self, tiddler):
         """

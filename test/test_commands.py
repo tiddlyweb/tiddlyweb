@@ -148,11 +148,11 @@ def test_ltiddlers(capsys):
     handle(['', u'ltiddlers'])
     results, err = capsys.readouterr()
     assert 'bag1' in results
-    assert 'tiddler1 cdent' in results
+    assert '\ttiddler1' in results
     handle(['', 'ltiddlers', 'bag1'])
     results, err = capsys.readouterr()
     assert 'bag1' in results
-    assert 'tiddler1 cdent' in results
+    assert '\ttiddler1' in results
 
 def set_stdin(content):
     f = StringIO(content)

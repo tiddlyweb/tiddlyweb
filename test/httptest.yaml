@@ -124,6 +124,7 @@
 - name: get tiddler revisions
   url: /recipes/sample/tiddlers/tiddler4/revisions
   expected:
+  - /recipes/sample/tiddlers/tiddler4/revisions.json
   - tiddler4/revisions/1
 
 # GET a single revision of that tiddler

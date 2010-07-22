@@ -36,6 +36,8 @@ When doing sorting ATTRIBUTE_SORT_KEY is consulted to
 canonicalize the value. See tiddlyweb.filters.sort.
 """
 
+from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
 
 
@@ -52,21 +54,22 @@ def select_parse(command):
         args = args.replace('!', '', 1)
 
         def selector(entities, indexable=False, environ=None):
-            return select_by_attribute(attribute, args, entities, negate=True)
+            return select_by_attribute(attribute, args, entities, negate=True,
+                    environ=environ)
 
     elif args.startswith('<'):
         args = args.replace('<', '', 1)
 
         def selector(entities, indexable=False, environ=None):
             return select_relative_attribute(attribute, args, entities,
-                    lesser=True)
+                    lesser=True, environ=environ)
 
     elif args.startswith('>'):
         args = args.replace('>', '', 1)
 
         def selector(entities, indexable=False, environ=None):
             return select_relative_attribute(attribute, args, entities,
-                    greater=True)
+                    greater=True, environ=environ)
 
     else:
 
@@ -140,6 +143,7 @@ def select_by_attribute(attribute, value, entities, negate=False,
     if environ == None:
         environ = {}
 
+    store = environ.get('tiddlyweb.store', None)
     indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
     if indexable and indexer:
         # If there is an exception, just let it raise.
@@ -150,23 +154,27 @@ def select_by_attribute(attribute, value, entities, negate=False,
             yield tiddler
     else:
         select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
-        if negate:
-            for entity in entities:
-                if not select(entity, attribute, value):
+        for entity in entities:
+            stored_entity = _get_entity(entity, store)
+            if negate:
+                if not select(stored_entity, attribute, value):
                     yield entity
-        else:
-            for entity in entities:
-                if select(entity, attribute, value):
+            else:
+                if select(stored_entity, attribute, value):
                     yield entity
     return
 
 
 def select_relative_attribute(attribute, value, entities,
-        greater=False, lesser=False):
+        greater=False, lesser=False, environ=None):
     """
     Select entities that sort greater or less than the provided value
     for the provided attribute.
     """
+    if environ == None:
+        environ = {}
+
+    store = environ.get('tiddlyweb.store', None)
 
     def normalize_value(value):
         """lower case the value if it is a string"""
@@ -177,24 +185,37 @@ def select_relative_attribute(attribute, value, entities,
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, normalize_value)
 
-    if greater:
-        for entity in entities:
-            if hasattr(entity, 'fields'):
-                if func(getattr(entity, attribute, entity.fields.get(
+    for entity in entities:
+        stored_entity = _get_entity(entity, store)
+        if greater:
+            if hasattr(stored_entity, 'fields'):
+                if func(getattr(stored_entity, attribute, stored_entity.fields.get(
                     attribute, None))) > func(value):
-                    yield entity
+                    yield stored_entity
             else:
-                if func(getattr(entity, attribute, None)) > func(value):
-                    yield entity
-    elif lesser:
-        for entity in entities:
-            if hasattr(entity, 'fields'):
-                if func(getattr(entity, attribute, entity.fields.get(
+                if func(getattr(stored_entity, attribute, None)) > func(value):
+                    yield stored_entity
+        elif lesser:
+            if hasattr(stored_entity, 'fields'):
+                if func(getattr(stored_entity, attribute, stored_entity.fields.get(
                     attribute, None))) < func(value):
-                    yield entity
+                    yield stored_entity
             else:
-                if func(getattr(entity, attribute, None)) < func(value):
-                    yield entity
+                if func(getattr(stored_entity, attribute, None)) < func(value):
+                    yield stored_entity
+        else:
+            yield stored_entity
+
+
+def _get_entity(entity, store):
+    if store and not entity.store: # must be a tiddler, everything else has store
+        try:
+            stored_entity = Tiddler(entity.title, entity.bag)
+            if entity.revision:
+                stored_entity.revision = entity.revision
+            stored_entity = store.get(stored_entity)
+        except (AttributeError, NoTiddlerError):
+            stored_entity = entity
     else:
-        for entity in entities:
-            yield entity
+        stored_entity = entity
+    return stored_entity

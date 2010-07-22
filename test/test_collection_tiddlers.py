@@ -37,7 +37,6 @@ def test_hash_things():
     assert cdigest 
 
     assert mdigest != cdigest
-    print mdigest, cdigest
 
 def test_get_things():
     collection = Collection()
