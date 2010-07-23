@@ -111,13 +111,16 @@ class Tiddlers(Collection):
         """
         self._update_digest(tiddler)
 
-        reference = Tiddler(tiddler.title, tiddler.bag)
-        if tiddler.revision:
-            reference.revision = tiddler.revision
-        if tiddler.recipe:
-            reference.recipe = tiddler.recipe
+        if self.store:
+            reference = Tiddler(tiddler.title, tiddler.bag)
+            if tiddler.revision:
+                reference.revision = tiddler.revision
+            if tiddler.recipe:
+                reference.recipe = tiddler.recipe
 
-        self._container.append(reference)
+            self._container.append(reference)
+        else:
+            self._container.append(tiddler)
 
         try:
             modified_string = str(tiddler.modified)
