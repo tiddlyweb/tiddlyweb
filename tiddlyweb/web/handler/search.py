@@ -11,7 +11,7 @@ from tiddlyweb.web.http import HTTP400
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
-from tiddlyweb.store import StoreMethodNotImplemented
+from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
