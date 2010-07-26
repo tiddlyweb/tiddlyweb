@@ -244,10 +244,13 @@ def _store_tiddler_revisions(environ, content, tiddler):
     store = environ['tiddlyweb.store']
     serializer = Serializer('json', environ)
     serializer.object = tiddler
-    for json_tiddler in reversed(json_tiddlers):
-        json_string = simplejson.dumps(json_tiddler)
-        serializer.from_string(json_string.decode('utf-8'))
-        store.put(tiddler)
+    try:
+        for json_tiddler in reversed(json_tiddlers):
+            json_string = simplejson.dumps(json_tiddler)
+            serializer.from_string(json_string.decode('utf-8'))
+            store.put(tiddler)
+    except NoTiddlerError, exc:
+        raise HTTP400('Unable to store tiddler revisions: %s', exc)
 
 
 def _length_and_type(environ):
