@@ -50,10 +50,8 @@ class Serialization(SerializationInterface):
         """
         A recipe as a JSON dictionary.
         """
-        policy = recipe.policy
-        policy_dict = {}
-        for key in Policy.attributes:
-            policy_dict[key] = getattr(policy, key)
+        policy_dict = dict([(key, getattr(recipe.policy, key)) for
+                key in Policy.attributes])
         return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict,
             recipe=recipe.get_recipe()))
 
@@ -77,10 +75,8 @@ class Serialization(SerializationInterface):
         Create a JSON dictionary representing
         a Bag and Policy.
         """
-        policy = bag.policy
-        policy_dict = {}
-        for key in Policy.attributes:
-            policy_dict[key] = getattr(policy, key)
+        policy_dict = dict([(key, getattr(bag.policy, key)) for
+                key in Policy.attributes])
         info = dict(policy=policy_dict, desc=bag.desc)
         return simplejson.dumps(info)
 

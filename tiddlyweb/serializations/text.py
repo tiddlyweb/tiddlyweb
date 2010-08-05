@@ -36,10 +36,8 @@ class Serialization(SerializationInterface):
         """
         Recipe as text.
         """
-        policy = recipe.policy
-        policy_dict = {}
-        for key in Policy.attributes:
-            policy_dict[key] = getattr(policy, key)
+        policy_dict = dict([(key, getattr(recipe.policy, key)) for
+                key in Policy.attributes])
         lines = ['desc: %s' % recipe.desc, 'policy: %s' %
                 simplejson.dumps(policy_dict), '']
 
@@ -51,6 +49,7 @@ class Serialization(SerializationInterface):
             if filter_string:
                 line += '?%s' % filter_string
             lines.append(line)
+
         return "\n".join(lines)
 
     def as_recipe(self, recipe, input_string):
