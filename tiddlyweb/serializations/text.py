@@ -32,6 +32,18 @@ class Serialization(SerializationInterface):
         """
         return ('%s\n' % bag.name for bag in bags)
 
+    def list_tiddlers(self, tiddlers):
+        """
+        List the tiddlers as text.
+        """
+        if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
+            for tiddler in tiddlers:
+                yield "%s:%s\n" % (tiddler.title, tiddler.revision)
+        else:
+            for tiddler in tiddlers:
+                yield "%s\n" % tiddler.title
+        return
+
     def recipe_as(self, recipe):
         """
         Recipe as text.
@@ -84,18 +96,6 @@ class Serialization(SerializationInterface):
         recipe_lines = self._recipe_lines(body)
         recipe.set_recipe(recipe_lines)
         return recipe
-
-    def list_tiddlers(self, tiddlers):
-        """
-        List the tiddlers as text.
-        """
-        if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
-            for tiddler in tiddlers:
-                yield "%s:%s\n" % (tiddler.title, tiddler.revision)
-        else:
-            for tiddler in tiddlers:
-                yield "%s\n" % tiddler.title
-        return
 
     def tiddler_as(self, tiddler):
         """
