@@ -147,6 +147,12 @@ def test_get_tiddler_revision_list_json():
     assert response['status'] == '200'
     assert len(info) == 4
 
+    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?sort=revision',
+            method='GET')
+    info2 = simplejson.loads(content)
+    assert len(info) == 4
+    assert info[0]['revision'] == info2[-1]['revision']
+
 def test_tiddler_revision_list_json_fat():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',

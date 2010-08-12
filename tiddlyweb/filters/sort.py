@@ -27,9 +27,17 @@ def date_to_canonical(datestring):
     return datestring.ljust(14, '0')
 
 
+def as_int(attribute):
+    """
+    Treat attribute as int.
+    """
+    return int(attribute)
+
+
 ATTRIBUTE_SORT_KEY = {
         'modified': date_to_canonical,
         'created': date_to_canonical,
+        'revision': as_int,
         }
 
 
@@ -77,10 +85,10 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
             stored_entity = entity
         try:
             return func(getattr(stored_entity, attribute))
-        except AttributeError:
+        except AttributeError, attribute_exc:
             try:
                 return func(stored_entity.fields[attribute])
             except KeyError, exc:
-                raise AttributeError('no attribute: %s, %s' % (attribute, exc))
+                raise AttributeError('no attribute: %s, %s, %s' % (attribute, attribute_exc, exc))
 
     return (entity for entity in sorted(entities, key=key_gen, reverse=reverse))
