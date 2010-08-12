@@ -27,8 +27,10 @@ def setup_module(module):
 def test_simple_search():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/search?q=tiddler%200',
+            headers={'User-Agent': 'Mozilla'},
             method='GET')
 
+    print content
     assert response['status'] == '200'
 
 def test_title_search():

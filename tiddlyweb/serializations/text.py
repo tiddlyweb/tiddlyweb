@@ -32,14 +32,24 @@ class Serialization(SerializationInterface):
         """
         return ('%s\n' % bag.name for bag in bags)
 
+    def list_tiddlers(self, tiddlers):
+        """
+        List the tiddlers as text.
+        """
+        if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
+            for tiddler in tiddlers:
+                yield "%s:%s\n" % (tiddler.title, tiddler.revision)
+        else:
+            for tiddler in tiddlers:
+                yield "%s\n" % tiddler.title
+        return
+
     def recipe_as(self, recipe):
         """
         Recipe as text.
         """
-        policy = recipe.policy
-        policy_dict = {}
-        for key in Policy.attributes:
-            policy_dict[key] = getattr(policy, key)
+        policy_dict = dict([(key, getattr(recipe.policy, key)) for
+                key in Policy.attributes])
         lines = ['desc: %s' % recipe.desc, 'policy: %s' %
                 simplejson.dumps(policy_dict), '']
 
@@ -51,6 +61,7 @@ class Serialization(SerializationInterface):
             if filter_string:
                 line += '?%s' % filter_string
             lines.append(line)
+
         return "\n".join(lines)
 
     def as_recipe(self, recipe, input_string):
@@ -85,18 +96,6 @@ class Serialization(SerializationInterface):
         recipe_lines = self._recipe_lines(body)
         recipe.set_recipe(recipe_lines)
         return recipe
-
-    def list_tiddlers(self, tiddlers):
-        """
-        List the tiddlers as text.
-        """
-        if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
-            for tiddler in tiddlers:
-                yield "%s:%s\n" % (tiddler.title, tiddler.revision)
-        else:
-            for tiddler in tiddlers:
-                yield "%s\n" % tiddler.title
-        return
 
     def tiddler_as(self, tiddler):
         """
