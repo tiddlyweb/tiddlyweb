@@ -33,8 +33,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     for bag, filter_string in recipe.get_recipe(template):
         if isinstance(bag, basestring):
             bag = Bag(name=bag)
-        if store:
-            bag = store.get(bag)
+        bag.store = store
         for tiddler in _filter_tiddlers_from_bag(bag, filter_string, environ=environ):
             uniquifier[tiddler.title] = tiddler
     return uniquifier.values()
@@ -124,13 +123,8 @@ def get_tiddlers_from_bag(bag):
     """
     Return the list of tiddlers that are in a bag.
     """
-
-    if bag.store:
-        for tiddler in bag.store.list_bag_tiddlers(bag):
-            yield tiddler
-    else:
-        for tiddler in bag.tiddlers:
-            yield tiddler
+    for tiddler in bag.store.list_bag_tiddlers(bag):
+        yield tiddler
 
 
 def filter_tiddlers(tiddlers, filters, environ=None):
