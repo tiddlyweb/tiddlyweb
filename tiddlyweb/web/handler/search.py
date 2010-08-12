@@ -60,7 +60,7 @@ def get(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
 
     candidate_tiddlers = Tiddlers(store=store)
-    candidate_tiddlers.searchbag = True
+    candidate_tiddlers.is_search = True
 
     bag_readable = {}
 
