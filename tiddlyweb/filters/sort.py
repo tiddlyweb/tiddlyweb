@@ -29,9 +29,12 @@ def date_to_canonical(datestring):
 
 def as_int(attribute):
     """
-    Treat attribute as int.
+    Treat attribute as int if it looks like one.
     """
-    return int(attribute)
+    try:
+        return int(attribute)
+    except ValueError:
+        return attribute
 
 
 ATTRIBUTE_SORT_KEY = {
