@@ -30,7 +30,6 @@ def test_simple_search():
             headers={'User-Agent': 'Mozilla'},
             method='GET')
 
-    print content
     assert response['status'] == '200'
 
 def test_title_search():

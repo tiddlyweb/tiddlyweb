@@ -38,8 +38,8 @@ class Policy(object):
     installation as open-ish, or closed-ish.
     """
 
-    attributes = ['read', 'write', 'create', 'delete', 'manage', 'accept',
-            'owner']
+    attributes = [u'read', u'write', u'create', u'delete', u'manage', u'accept',
+            u'owner']
 
     def __init__(self, owner=None,
             read=None, write=None, create=None, delete=None,
