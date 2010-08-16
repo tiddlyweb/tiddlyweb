@@ -191,20 +191,20 @@ def select_relative_attribute(attribute, value, entities,
             if hasattr(stored_entity, 'fields'):
                 if func(getattr(stored_entity, attribute, stored_entity.fields.get(
                     attribute, None))) > func(value):
-                    yield stored_entity
+                    yield entity
             else:
                 if func(getattr(stored_entity, attribute, None)) > func(value):
-                    yield stored_entity
+                    yield entity
         elif lesser:
             if hasattr(stored_entity, 'fields'):
                 if func(getattr(stored_entity, attribute, stored_entity.fields.get(
                     attribute, None))) < func(value):
-                    yield stored_entity
+                    yield entity
             else:
                 if func(getattr(stored_entity, attribute, None)) < func(value):
-                    yield stored_entity
+                    yield entity
         else:
-            yield stored_entity
+            yield entity
 
 
 def _get_entity(entity, store):

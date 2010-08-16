@@ -54,7 +54,7 @@ def test_construct_from_recipe():
 
     assert 'filter:select=title:tiddler8' in html_text
 
-def xtest_get_tiddlers_from_bag():
+def test_get_tiddlers_from_bag():
     """
     Make sure a bag comes to life as expected.
     """
@@ -66,16 +66,17 @@ def xtest_get_tiddlers_from_bag():
     assert len(tiddlers) ==  10, 'there are 10 tiddlers in bag0'
     text = ''
     for tiddler in tiddlers:
+        store.get(tiddler)
         text += tiddler.text
-    assert 'i am tiddler 4' in text, 'we got some of the right text'
+    assert 'i am tiddler 4' in text
 
-def xtest_filter_tiddlers_from_bag():
+def test_filter_tiddlers_from_bag():
     """
     Make sure a bag comes to life and filters as expect.
     """
     bag = Bag('bag0')
     bag = store.get(bag)
 
-    tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=tag:tagfour'))
+    tiddlers = list(control._filter_tiddlers_from_bag(bag, 'select=tag:tagfour',
+        environ={'tiddlyweb.store': store}))
     assert len(tiddlers) == 3
-

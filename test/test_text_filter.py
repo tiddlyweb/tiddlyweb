@@ -14,34 +14,40 @@ def setup_module(module):
     module.store = _teststore()
     muchdata(module.store)
 
-def xtest_filter_by_text():
+def test_filter_by_text():
     bag = Bag('bag0')
     bag = store.get(bag)
 
     bags_tiddlers = list(store.list_bag_tiddlers(bag))
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0'))
+    found_tiddlers = list(control._filter_tiddlers_from_bag(
+        bag, 'select=text:tiddler 0',
+        environ={'tiddlyweb.store': store}))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
-def xtest_filter_by_text_string():
+def test_filter_by_text_string():
     bag = Bag('bag0')
     bag = store.get(bag)
 
     bags_tiddlers = list(store.list_bag_tiddlers(bag))
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:tiddler 0'))
+    found_tiddlers = list(control._filter_tiddlers_from_bag(
+        bag, 'select=text:tiddler 0',
+        environ={'tiddlyweb.store': store}))
     assert len(found_tiddlers) == 1
     assert found_tiddlers[0].title == 'tiddler0'
 
-def xtest_filter_by_text_string_negate():
+def test_filter_by_text_string_negate():
     bag = Bag('bag0')
     bag = store.get(bag)
 
     bags_tiddlers = list(store.list_bag_tiddlers(bag))
     assert len(bags_tiddlers) == 10
 
-    found_tiddlers = list(control.filter_tiddlers_from_bag(bag, 'select=text:!tiddler 0'))
+    found_tiddlers = list(control._filter_tiddlers_from_bag(bag,
+        'select=text:!tiddler 0',
+        environ={'tiddlyweb.store': store}))
     assert len(found_tiddlers) == 9

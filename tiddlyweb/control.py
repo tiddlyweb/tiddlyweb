@@ -152,7 +152,7 @@ def _filter_tiddlers_from_bag(bag, filters, environ=None):
 
     if isinstance(filters, basestring):
         filters, _ = parse_for_filters(filters, environ)
-    return recursive_filter(filters, get_tiddlers_from_bag(bag),
+    return recursive_filter(filters, bag.store.list_bag_tiddlers(bag),
             indexable=indexable)
 
 
