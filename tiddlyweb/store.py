@@ -2,6 +2,8 @@
 Put and Get TiddlyWeb things to and from some store.
 """
 
+from copy import deepcopy
+
 class StoreError(IOError):
     """
     Base Exception for Store Exceptions.
@@ -74,10 +76,10 @@ EMPTY_HOOKS = {
         'get': [],
         }
 HOOKS = {
-        'recipe': EMPTY_HOOKS,
-        'bag': EMPTY_HOOKS,
-        'tiddler': EMPTY_HOOKS,
-        'user': EMPTY_HOOKS,
+        'recipe': deepcopy(EMPTY_HOOKS),
+        'bag': deepcopy(EMPTY_HOOKS),
+        'tiddler': deepcopy(EMPTY_HOOKS),
+        'user': deepcopy(EMPTY_HOOKS),
         }
 
 
