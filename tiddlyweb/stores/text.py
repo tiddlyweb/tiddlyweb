@@ -161,7 +161,6 @@ class Store(StorageInterface):
             if not os.path.exists(tiddler_base_filename):
                 raise NoTiddlerError('%s not present' % tiddler_base_filename)
             shutil.rmtree(tiddler_base_filename)
-            self.tiddler_written(tiddler)
         except NoTiddlerError:
             raise
         except Exception, exc:
@@ -225,7 +224,6 @@ class Store(StorageInterface):
         write_utf8_file(tiddler_filename, self.serializer.to_string())
         write_unlock(tiddler_base_filename)
         tiddler.revision = revision
-        self.tiddler_written(tiddler)
 
     def user_delete(self, user):
         """

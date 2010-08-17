@@ -68,6 +68,19 @@ class StoreEncodingError(StoreError):
     pass
 
 
+EMPTY_HOOKS = {
+        'put': [],
+        'delete': [],
+        'get': [],
+        }
+HOOKS = {
+        'recipe': EMPTY_HOOKS,
+        'bag': EMPTY_HOOKS,
+        'tiddler': EMPTY_HOOKS,
+        'user': EMPTY_HOOKS,
+        }
+
+
 class Store(object):
     """
     Provide a facade around implementations of StorageInterface
@@ -104,7 +117,9 @@ class Store(object):
         Delete a known object.
         """
         func = self._figure_function('delete', thing)
-        return func(thing)
+        result = func(thing)
+        self._do_hook('delete', thing)
+        return result
 
     def get(self, thing):
         """
@@ -113,6 +128,7 @@ class Store(object):
         func = self._figure_function('get', thing)
         thing = func(thing)
         thing.store = self
+        self._do_hook('get', thing)
         return thing
 
     def put(self, thing):
@@ -123,7 +139,9 @@ class Store(object):
         wrong type?
         """
         func = self._figure_function('put', thing)
-        return func(thing)
+        result = func(thing)
+        self._do_hook('put', thing)
+        return result
 
     def _figure_function(self, activity, storable):
         """
@@ -179,3 +197,18 @@ class Store(object):
         """
         list_func = getattr(self.storage, 'search')
         return list_func(search_query)
+
+    def _do_hook(self, type, thing):
+        hooked_class = self._class_name(thing).upper()
+        hooks = self._get_hooks(type, hooked_class)
+        for hook in hooks:
+            hook(self, thing)
+
+    def _class_name(self, thing):
+        return thing.__class__.__name__
+
+    def _get_hooks(self, type, name):
+        try:
+            return HOOKS[name][type]
+        except KeyError:
+            return []
