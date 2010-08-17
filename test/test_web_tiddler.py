@@ -138,7 +138,9 @@ def test_put_tiddler_txt_no_modified():
 def test_put_tiddler_json():
     http = httplib2.Http()
 
-    json = simplejson.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+    json = simplejson.dumps(dict(text='i fight for the users',
+        tags=['tagone','tagtwo'], modifier='', modified='200805230303',
+        created='200803030303'))
 
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
@@ -149,16 +151,26 @@ def test_put_tiddler_json():
     assert response['status'] == '400'
     assert 'unable to make json into' in content
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body='{"text": "}')
+    assert response['status'] == '400'
+    assert 'unable to make json into' in content
 
-    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json)
+
+    assert response['status'] == '204'
     tiddler_url = response['location']
-    assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo', \
-            'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo is %s' \
-            % tiddler_url
+    assert (tiddler_url ==
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo')
 
-    response, content = http.request(tiddler_url, headers={'Accept': 'application/json'})
+    response, content = http.request(tiddler_url,
+            headers={'Accept': 'application/json'})
     info = simplejson.loads(content)
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
     assert info['title'] == 'TestTwo'
