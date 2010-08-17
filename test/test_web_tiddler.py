@@ -188,6 +188,50 @@ def test_put_tiddler_json_with_slash():
     assert response['location'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FSlash'
 
 
+def test_put_tiddler_html_in_json():
+    http = httplib2.Http()
+
+    json = simplejson.dumps(dict(
+        text='<html><head><title>HI</title><body><h1>HI</h1></body></html>'))
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestHTML',
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json)
+
+    assert response['status'] == '204'
+    location = response['location']
+
+    response, content = http.request(location,
+            headers={'User-Agent': 'Mozilla'})
+    assert response['status'] == '200'
+    assert 'text/html' in response['content-type']
+    # Title should not be there
+    assert '<title>HI</title>' not in content
+    assert '<title>TiddlyWeb - TestHTML</title>' in content
+    assert '&lt;h1&gt;HI&lt;/h1&gt;' in content
+
+    json = simplejson.dumps(dict(
+        text='<html><head><title>HI</title><body><h1>HI</h1></body></html>',
+        type='text/html'))
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestHTML',
+            method='PUT', headers={'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla'},
+            body=json)
+
+    assert response['status'] == '204'
+    location = response['location']
+
+    response, content = http.request(location)
+    assert response['status'] == '200'
+    assert 'text/html' in response['content-type']
+    # Title should not be wrapping in tiddly info
+    assert '<title>HI</title>' in content
+    assert '<h1>HI</h1>' in content
+
+
 def test_put_tiddler_json_bad_path():
     """
     / in tiddler title is an unresolved source of some confusion.
