@@ -199,7 +199,7 @@ class Store(object):
         return list_func(search_query)
 
     def _do_hook(self, type, thing):
-        hooked_class = self._class_name(thing).upper()
+        hooked_class = self._class_name(thing).lower()
         hooks = self._get_hooks(type, hooked_class)
         for hook in hooks:
             hook(self, thing)
