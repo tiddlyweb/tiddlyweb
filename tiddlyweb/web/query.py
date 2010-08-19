@@ -31,6 +31,10 @@ class Query(object):
         return self.application(environ, start_response)
 
     def extract_query(self, environ):
+        """
+        Read the QUERY_STRING and body (if a POSTed form) to extract
+        query paremeters. Put the results in tiddlyweb.query.
+        """
         content_type = environ.get('CONTENT_TYPE', '')
         environ['tiddlyweb.query'] = {}
         if environ['REQUEST_METHOD'].upper() == 'POST' and \

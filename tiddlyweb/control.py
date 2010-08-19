@@ -12,8 +12,8 @@ like.
 import logging
 
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.filters import FilterIndexRefused, parse_for_filters, recursive_filter
-from tiddlyweb.serializer import TiddlerFormatError
+from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
+        recursive_filter)
 from tiddlyweb.store import NoBagError
 
 
@@ -58,10 +58,34 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
         indexer = environ.get('tiddlyweb.config', {}).get('indexer', None)
         if indexer:
             index_module = __import__(indexer, {}, {}, ['index_query'])
-    except AttributeError, KeyError:
-        indexer = None
+        else:
+            index_module = None
+    except (AttributeError, KeyError):
+        index_module = None
 
-    def query_index(bag):
+    for bag, filter_string in reversed(recipe.get_recipe(template)):
+        bag = _look_for_tiddler_in_bag(tiddler, bag,
+                filter_string, environ, store, index_module)
+        if bag:
+            return bag
+
+    raise NoBagError('no suitable bag for %s' % tiddler.title)
+
+
+def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
+        environ, store, index_module):
+    """
+    Look up the indicated tiddler in a bag, filtered by filter_string.
+    """
+    if isinstance(bag, basestring):
+        bag = Bag(name=bag)
+    if store:
+        bag = store.get(bag)
+
+    def _query_index(bag):
+        """
+        Try looking in an available index to see if the tiddler exists.
+        """
         kwords = {'id': '%s:%s' % (bag.name, tiddler.title)}
         tiddlers = index_module.index_query(environ, **kwords)
         if list(tiddlers):
@@ -69,33 +93,30 @@ def determine_bag_from_recipe(recipe, tiddler, environ=None):
             return bag
         return None
 
-    def query_bag(bag):
+    def _query_bag(bag):
+        """
+        Look in a bag to see if tiddler is in there.
+        """
         for candidate_tiddler in _filter_tiddlers_from_bag(bag,
                 filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
                 return bag
         return None
 
-    for bag, filter_string in reversed(recipe.get_recipe(template)):
-        if isinstance(bag, basestring):
-            bag = Bag(name=bag)
-        if store:
-            bag = store.get(bag)
+    if not filter_string and index_module:
+        try:
+            found_bag = _query_index(bag)
+        except FilterIndexRefused:
+            logging.debug('determined bag filter refused')
+            found_bag = _query_bag(bag)
+        if found_bag:
+            return bag
+    else:
+        found_bag = _query_bag(bag)
+        if found_bag:
+            return found_bag
 
-        if not filter_string and indexer:
-            try:
-                found_bag = query_index(bag)
-            except FilterIndexRefused:
-                logging.debug('determined bag filter refused')
-                found_bag = query_bag(bag)
-            if found_bag:
-                return bag
-        else:
-            found_bag = query_bag(bag)
-            if found_bag:
-                return found_bag
-
-    raise NoBagError('no suitable bag for %s' % tiddler.title)
+    return None
 
 
 def determine_bag_for_tiddler(recipe, tiddler, environ=None):
@@ -111,7 +132,8 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
         # ignore the bag and make a new bag
-        for candidate_tiddler in filter_tiddlers([tiddler], filter_string, environ=environ):
+        for candidate_tiddler in filter_tiddlers([tiddler],
+                filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
                 if isinstance(bag, basestring):
                     bag = Bag(name=bag)

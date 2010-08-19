@@ -100,7 +100,7 @@ def init(config):
         """Add or update a user to the database: <username> <password> [[role] [role] ...]"""
         try:
             username, password = args[0:2]
-        except (IndexError, ValueError), exc:
+        except (IndexError, ValueError):
             usage('you must include at least a username and password')
 
         try:
@@ -123,7 +123,7 @@ def init(config):
         """Create or update a recipe with the recipe text on stdin: <recipe>"""
         try:
             recipe_name = args[0]
-        except IndexError, exc:
+        except IndexError:
             usage('you must include a recipe name')
 
         from tiddlyweb.model.recipe import Recipe
@@ -138,7 +138,7 @@ def init(config):
         """Create or update a bag with the json text on stdin: <bag>"""
         try:
             bag_name = args[0]
-        except IndexError, exc:
+        except IndexError:
             usage('you must include a bag name')
 
         from tiddlyweb.model.bag import Bag
@@ -155,7 +155,7 @@ def init(config):
         """Import a single tiddler into an existing bag from stdin: <bag> <tiddler>"""
         try:
             bag_name, tiddler_name = args[0:3]
-        except (IndexError, ValueError), exc:
+        except (IndexError, ValueError):
             usage('you must include a tiddler and bag name')
 
         from tiddlyweb.model.tiddler import Tiddler

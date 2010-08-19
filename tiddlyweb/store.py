@@ -201,17 +201,23 @@ class Store(object):
         list_func = getattr(self.storage, 'search')
         return list_func(search_query)
 
-    def _do_hook(self, type, thing):
-        hooked_class = self._class_name(thing).lower()
-        hooks = self._get_hooks(type, hooked_class)
+    def _do_hook(self, method, thing):
+        """
+        Call the hook in HOOKS identified by method on thing.
+        """
+        hooked_class = thing.__class__.__name__.lower()
+        hooks = _get_hooks(method, hooked_class)
         for hook in hooks:
             hook(self, thing)
 
-    def _class_name(self, thing):
-        return thing.__class__.__name__
 
-    def _get_hooks(self, type, name):
-        try:
-            return HOOKS[name][type]
-        except KeyError:
-            return []
+def _get_hooks(method, name):
+    """
+    Look in HOOKS for the list of functions to run
+    for the class of things named by name when store
+    method method is called.
+    """
+    try:
+        return HOOKS[name][method]
+    except KeyError:
+        return []

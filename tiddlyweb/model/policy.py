@@ -106,6 +106,10 @@ class Policy(object):
         raise ForbiddenError('%s may not %s' % (user_sign, constraint))
 
     def user_perms(self, usersign):
+        """
+        For this policy return a list of constraints for which
+        this usersign passes.
+        """
         perms = ['read', 'write', 'create', 'delete']
         matched_perms = []
         for perm in perms:
@@ -167,20 +171,24 @@ def _no_constraint(info_list):
 
 
 def _role_valid(roles, role_list):
-    # if there is an intersection between the users roles and any roles
-    # in the constraint, return true
+    """
+    Return true if there is an intersection between the users roles
+    and any roles in the constraint.
+    """
     if [role for role in roles if role in role_list]:
         return True
     return False
 
 
 def _user_valid(user_sign, user_list):
-    # always allow if the constraint is ANY
+    """
+    If the user_sign is in the constraint or the constraint value
+    is ANY, return true.
+    """
     if _single_value_set(user_list, u'ANY'):
         if user_sign != u'GUEST':
             return True
 
-    # if the user is in the constraint list, return true
     if user_sign in user_list:
         return True
 

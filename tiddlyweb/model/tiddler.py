@@ -111,11 +111,22 @@ class Tiddler(object):
         self.store = None
 
     def _get_creator(self):
+        """
+        Get the creator of this tiddler. If it has not been
+        set then use modifier.
+
+        Use the creator property instead.
+        """
         if not self._creator:
             self._creator = self.modifier
         return self._creator
 
     def _set_creator(self, creator):
+        """
+        Set the creator of this tiddler.
+
+        Use the creator property instead.
+        """
         self._creator = creator
 
     creator = property(_get_creator, _set_creator)

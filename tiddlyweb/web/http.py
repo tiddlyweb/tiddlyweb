@@ -17,6 +17,7 @@ class HTTPException(Exception):
     Base class of an HTTP exception, which in
     this context is a non 2xx response code.
     """
+
     status = ''
 
     def headers(self):
@@ -40,61 +41,99 @@ class HTTPException(Exception):
 
 
 class HTTP302(HTTPException):
-    status = '302 Found'
+    """302 Found"""
+
+    status = __doc__
 
     def headers(self):
+        """
+        A 302 requires a location header.
+        """
         return [('Location', '%s' % self)]
 
     def output(self):
+        """
+        A 302 _must_ have no output.
+        """
         return ['']
 
 
 class HTTP303(HTTP302):
-    status = '303 See Other'
+    """303 See Other"""
+
+    status = __doc__
 
 
 class HTTP304(HTTPException):
-    status = '304 Not Modified'
+    """304 Not Modified"""
+
+    status = __doc__
 
     def headers(self):
+        """
+        Send an ETag with a 304.
+        """
         return [('Etag', '%s' % self)]
 
     def output(self):
+        """
+        A 304 must not include a body.
+        """
         return ['']
 
 
 class HTTP400(HTTPException):
-    status = '400 Bad Request'
+    """400 Bad Request"""
+
+    status = __doc__
 
 
 class HTTP401(HTTPException):
-    status = '401 Unauthorized'
+    """401 Unauthorized"""
+
+    status = __doc__
 
     def headers(self):
+        """
+        A WWW-Authenticate header is expected with a 401.
+        """
         return [('WWW-Authenticate', '%s' % self)]
 
     def output(self):
+        """
+        No body with a 401.
+        """
         return ['']
 
 
 class HTTP403(HTTPException):
-    status = '403 Forbidden'
+    """403 Forbidden"""
+
+    status = __doc__
 
 
 class HTTP404(HTTPException):
-    status = '404 Not Found'
+    """404 Not Found"""
+
+    status = __doc__
 
 
 class HTTP409(HTTPException):
-    status = '409 Conflict'
+    """409 Conflict"""
+
+    status = __doc__
 
 
 class HTTP412(HTTPException):
-    status = '412 Precondition Failed'
+    """412 Precondition Failed"""
+
+    status = __doc__
 
 
 class HTTP415(HTTPException):
-    status = '415 Unsupported'
+    """415 Unsupported"""
+
+    status = __doc__
 
 
 class HTTPExceptor(object):

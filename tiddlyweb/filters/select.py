@@ -208,7 +208,11 @@ def select_relative_attribute(attribute, value, entities,
 
 
 def _get_entity(entity, store):
-    # entity must be a tiddler if no store, everything else has store
+    """
+    Load the provided entity from the store if it has not already
+    been loaded. In this context only tiddlers will not have been
+    loaded already.
+    """
     if store and not entity.store:
         try:
             stored_entity = Tiddler(entity.title, entity.bag)

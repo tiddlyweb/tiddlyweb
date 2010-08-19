@@ -34,4 +34,7 @@ class ChallengerInterface(object):
         pass
 
     def _cookie_path(self, environ):
+        """
+        The path to which the cookie applies. This is <server_prefix>/.
+        """
         return environ['tiddlyweb.config']['server_prefix'] + '/'

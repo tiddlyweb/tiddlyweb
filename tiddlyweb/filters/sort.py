@@ -79,6 +79,10 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
     func = ATTRIBUTE_SORT_KEY.get(attribute, lambda x: x.lower())
 
     def key_gen(entity):
+        """
+        Reify the attribute needed for sorting. If the entity
+        has not already been loaded from the store, do so.
+        """
         if store and not entity.store:
             stored_entity = Tiddler(entity.title, entity.bag)
             if entity.revision:
@@ -92,6 +96,8 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
             try:
                 return func(stored_entity.fields[attribute])
             except KeyError, exc:
-                raise AttributeError('no attribute: %s, %s, %s' % (attribute, attribute_exc, exc))
+                raise AttributeError('no attribute: %s, %s, %s'
+                        % (attribute, attribute_exc, exc))
 
-    return (entity for entity in sorted(entities, key=key_gen, reverse=reverse))
+    return (entity for entity in
+            sorted(entities, key=key_gen, reverse=reverse))
