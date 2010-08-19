@@ -185,14 +185,8 @@ def tiddler_url(environ, tiddler):
     """
     Construct a URL for a tiddler.
     """
-    if tiddler.recipe:
-        tiddler_link = 'recipes/%s/tiddlers/%s' \
-                % (encode_name(tiddler.recipe),
-                        encode_name(tiddler.title))
-    else:
-        tiddler_link = 'bags/%s/tiddlers/%s' \
-                % (encode_name(tiddler.bag),
-                        encode_name(tiddler.title))
+    tiddler_link = 'bags/%s/tiddlers/%s' % (encode_name(tiddler.bag),
+            encode_name(tiddler.title))
     return '%s/%s' % (server_base_url(environ), tiddler_link)
 
 

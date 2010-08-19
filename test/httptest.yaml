@@ -144,7 +144,7 @@
   data: '{"text":"i am a new revision of tiddler 4"}'
   status: 204
   response_headers:
-    location: http://our_test_domain:8001/recipes/sample/tiddlers/tiddler4
+    location: http://our_test_domain:8001/bags/bag0/tiddlers/tiddler4
 
 # Check there is a revision 2
 - name: get a 2nd revision of a tiddler
