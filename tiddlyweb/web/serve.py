@@ -37,12 +37,12 @@ def load_app(app_prefix=None, dirname=None):
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
     except KeyError:
-        pass # no plugins
+        pass  # no plugins
 
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
-    wrappers.append(Environator) # required as the first app
-    wrappers.append(Configurator) # required as the second app
+    wrappers.append(Environator)  # required as the first app
+    wrappers.append(Configurator)  # required as the second app
     wrappers.extend(config['server_response_filters'])
     if wrappers:
         for wrapper in wrappers:

@@ -110,7 +110,6 @@ def make_cookie(name, value, mac_key=None, path=None,
     else:
         cookie[name] = value
 
-
     if path:
         cookie[name]['path'] = path
 
@@ -177,7 +176,7 @@ def escape_attribute_value(text):
     """
     try:
         return text.replace('"', '&quot;')
-    except AttributeError: # value might be None
+    except AttributeError:  # value might be None
         return text
 
 

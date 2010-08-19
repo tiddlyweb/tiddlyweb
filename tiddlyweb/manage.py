@@ -64,7 +64,7 @@ def handle(args):
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
     except KeyError:
-        pass # no plugins
+        pass  # no plugins
 
     candidate_command = None
     try:

@@ -145,7 +145,6 @@ class Serialization(SerializationInterface):
             raise TiddlerFormatError('bad headers in tiddler: %s, %s' %
                     (tiddler.title, exc))
 
-
         # In some strange situations tiddler.tags will not
         # be a string here, so will still have its default
         # value of [], which we want to keep.

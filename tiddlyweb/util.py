@@ -60,7 +60,7 @@ def read_config(global_config):
         merge_config(global_config, custom_config, reconfig=False)
     except ImportError, exc:
         if not exc.args[0].endswith('tiddlywebconfig'):
-            raise # error within tiddlywebconfig.py
+            raise  # error within tiddlywebconfig.py
 
 
 def sha(data=''):
@@ -90,8 +90,7 @@ def pseudo_binary(content_type):
     """
     content_type = content_type.lower()
     return (content_type.startswith('text/')
-            or content_type.endswith('+xml')
-            )
+            or content_type.endswith('+xml'))
 
 
 def read_utf8_file(filename):

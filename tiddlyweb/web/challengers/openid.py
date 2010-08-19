@@ -99,7 +99,7 @@ class Challenger(ChallengerInterface):
             try:
                 data[key] = request_info[key][0]
             except KeyError:
-                pass # signed key not in request
+                pass  # signed key not in request
         post_data = urllib.urlencode(data)
 
         response = urllib.urlopen(openid_server, post_data).read()

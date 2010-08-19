@@ -180,9 +180,9 @@ DEFAULT_CONFIG = {
             'openid'],
         'secret': 'this should come from a file',
         'urls_map': URLS_MAP,
-        'bag_create_policy': '', # ANY (authenticated user)
-                                 # or ADMIN (role) or '' (all can create)
-        'recipe_create_policy': '', # ANY or ADMIN or ''
+        'bag_create_policy': '',  # ANY (authenticated user)
+                                  # or ADMIN (role) or '' (all can create)
+        'recipe_create_policy': '',  # ANY or ADMIN or ''
         'log_level': 'INFO',
         'log_file': './tiddlyweb.log',
         'css_uri': '',

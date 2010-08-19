@@ -22,7 +22,7 @@ class Bag(object):
     def __init__(self, name, desc=''):
         self.name = unicode(name)
         self.desc = unicode(desc)
-        self.policy = Policy() # set to default policy
+        self.policy = Policy()  # set to default policy
         self.store = None
 
     def __repr__(self):

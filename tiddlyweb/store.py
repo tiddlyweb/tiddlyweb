@@ -4,6 +4,7 @@ Put and Get TiddlyWeb things to and from some store.
 
 from copy import deepcopy
 
+
 class StoreError(IOError):
     """
     Base Exception for Store Exceptions.

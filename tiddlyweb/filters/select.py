@@ -105,7 +105,7 @@ def text_in_text(entity, attribute, value):
     """
     try:
         return value.lower() in entity.text.lower()
-    except UnicodeDecodeError: 
+    except UnicodeDecodeError:
         # Binary tiddler
         return False
 
@@ -208,7 +208,8 @@ def select_relative_attribute(attribute, value, entities,
 
 
 def _get_entity(entity, store):
-    if store and not entity.store: # must be a tiddler, everything else has store
+    # entity must be a tiddler if no store, everything else has store
+    if store and not entity.store:
         try:
             stored_entity = Tiddler(entity.title, entity.bag)
             if entity.revision:

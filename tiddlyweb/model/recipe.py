@@ -76,7 +76,7 @@ class Recipe(list):
                         new_entry.append(value)
                     else:
                         new_entry.append(item)
-                except TypeError: # item is not a string
+                except TypeError:  # item is not a string
                     new_entry.append(item)
 
             real_list.append(new_entry)
