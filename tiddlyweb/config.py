@@ -176,8 +176,7 @@ DEFAULT_CONFIG = {
             'http_basic',
             'simple_cookie'],
         'auth_systems': [
-            'cookie_form',
-            'openid'],
+            'cookie_form'],
         'secret': 'this should come from a file',
         'urls_map': URLS_MAP,
         'bag_create_policy': '',  # ANY (authenticated user)

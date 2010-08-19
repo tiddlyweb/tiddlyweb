@@ -36,7 +36,6 @@ def test_challenge_base():
     assert response['status'] == '401'
     assert 'cookie_form' in content
     assert '>TiddlyWeb username and password</a>' in content
-    assert '>OpenID</a>' in content
 
 def test_challenge_cookie_form():
     http = httplib2.Http()
@@ -143,20 +142,6 @@ def _put_policy(bag_name, policy_dict):
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
-
-def test_openid():
-    """
-    An incomplete test of the openid implementation.
-    This test confirms that our server will send a redirect
-    as expected, but that's about it.
-    """
-    http = httplib2.Http()
-    response, content = http.request(
-            'http://our_test_domain:8001/challenge/openid?tiddlyweb_redirect=http://www.example.com/',
-            method='GET')
-
-    assert response['status'] == '401'
-    assert 'name="openid"' in content
 
 def test_single_challenge_redirect():
     """
