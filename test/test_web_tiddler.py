@@ -23,6 +23,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
+from tiddlyweb.web.util import http_date_from_timestamp
 
 authorization = b64encode('cdent:cowpig')
 bad_authorization = b64encode('cdent:cdent')
@@ -172,7 +173,8 @@ def test_put_tiddler_json():
     response, content = http.request(tiddler_url,
             headers={'Accept': 'application/json'})
     info = simplejson.loads(content)
-    assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
+    now_time = http_date_from_timestamp('')
+    assert response['last-modified'].split(':', 1)[0] == now_time.split(':', 1)[0]
     assert info['title'] == 'TestTwo'
     assert info['text'] == 'i fight for the users'
 

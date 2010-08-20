@@ -78,7 +78,7 @@ def http_date_from_timestamp(timestamp):
             timestamp_datetime = datetime(*(time.strptime(timestamp,
                 '%Y%m%d%H%M%S')[0:6]))
     else:
-        timestamp_datetime = datetime.now()
+        timestamp_datetime = datetime.utcnow()
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
 
