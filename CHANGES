@@ -1,3 +1,7 @@
+1.0.4 Thu Aug 19 10:25:06 UTC 2010
+
+  * Ensure that canonical tiddler urls are always presented at /bags.
+
 1.0.3 Mon Jun  7 16:52:25 UTC 2010
 
   * Deal with UTF-8 usernames and passwords in http basic auth.
