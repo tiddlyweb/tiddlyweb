@@ -1,22 +1,20 @@
-This is a set of notes that describes changes between
-versions 1.0.x and 1.1.x. At the moment it is notes and will
-be edited to some form of finery by the release time.
+This document describes changes between version 1.0.x and what will be
+called version 1.2.x of TiddlyWeb. The 1.2.x release will be the result
+of experimental development through versions 1.1.x.
 
-The basic gist of the 1.1.x tree is to make architectural
-changes for the sake of performance and flexibility based
-on the real world use of 1.0.x.
+The focus of the 1.1.x work was to make architectural changes in
+TiddlyWeb for the sake of performance and flexibility. These changes
+were driven by shortcomings discovered through real world use of 1.0.x
+(and prior).
 
-The main piece of knowledge is that in a regular request
-there are too many loops, and as the number of entities
-involved increases, the cost of those loops get higher and
-higher. So effort is being made to truncate some of the 
-looping.
+That real world use revealed that in any regular request to the server
+there are too many loops. As the number of entities involved increases,
+the cost of those loops gets higher and higher.
 
-The biggest change therefore, is removing tiddlers from
-_within_ bags. When you load a bag, no tiddlers are loaded
-whether the bag is skinny or not. Now you must load the
-tiddlers separately. Most of the time this is done for you
-but if you had plugin code that looked like this:
+One of the largest changes is removing tiddlers from within bags. Now
+when a bag is loaded, no tiddlers are loaded, just the bag description
+and its policy. The tiddlers in the bag must be loaded separately.
+Code that used to look like this:
 
     bag = Bag('foo')
     bag = store.get(bag)
@@ -25,23 +23,23 @@ but if you had plugin code that looked like this:
     for tiddler in tiddlers:
         tiddler = store.get(tiddler)
 
-You'll now want something like this:
+now is like this:
 
     bag = Bag('foo')
     bag = store.get(bag)
     bag.policy.allows('read', usersign)
     tiddlers = store.list_bag_tiddlers(bag)
 
-Those tiddlers are fully instantiated and populated.
-Analysis has shown there's little value in a plain list
-of tiddler titles, as they were going to be populated
-later anyway, for the sake of filter. Now we allow the
-store to be smart about generating the list, which can
-lead to huge savings (in the sql store, for example,
-a bag containing 3000 tiddlers, the first block of code
-would be 3001 sql calls, in the second it would be 2).
+That tiddlers object is an iterator, usually a generator, but that
+depends on the store.
 
-Similar changes are present throughout the code.
+The other major change is that the tiddlers that are returned have
+not been loaded from the store. This is the job of the calling code.
+Surprisingly, this change saves a great deal of memory and makes
+operations much faster, especially when a caching system like 
+memcached is used.
+
+Where possible lists have been turned into generators.
 
 ! Filtering bags and recipes
 
@@ -60,5 +58,3 @@ tiddlweb.model.collections
 * control._recipe_template is now control.recipe_template,
   to facillitate checking a recipe for permission issues
   _before_ loading up all the tiddlers.
-
-* 
