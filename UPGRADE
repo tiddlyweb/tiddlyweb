@@ -58,3 +58,8 @@ tiddlweb.model.collections
 * control._recipe_template is now control.recipe_template,
   to facillitate checking a recipe for permission issues
   _before_ loading up all the tiddlers.
+
+! HTTP API
+
+* DELETE to /recipes/<recipe name>/tiddlers/<tiddler name> no
+  longer possible. Will return a 405 on try.
