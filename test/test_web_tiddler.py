@@ -596,25 +596,12 @@ def test_get_tiddler_via_recipe_with_perms():
     assert response['status'] == '403'
 
 def test_delete_tiddler_in_recipe():
+    """disabled in tiddlyweb 1.1"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
             method='DELETE')
-    assert response['status'] == '204'
+    assert response['status'] == '405'
 
-# there are multiple tiddler8s in the recipe
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='DELETE')
-    assert response['status'] == '204'
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='DELETE')
-    assert response['status'] == '204'
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='DELETE')
-    assert response['status'] == '204'
-
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8',
-            method='DELETE')
-    assert response['status'] == '404'
 
 def test_delete_tiddler_in_bag():
     http = httplib2.Http()

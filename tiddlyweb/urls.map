@@ -67,7 +67,6 @@
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.handler.tiddler:get
     PUT tiddlyweb.web.handler.tiddler:put
-    DELETE tiddlyweb.web.handler.tiddler:delete
 # A single Tiddler produced by this Recipe.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
@@ -76,7 +75,6 @@
 #                             tiddlyweb.serializations.text)
 #               application/json: a JSON dict representation of a tiddler (see
 #                                   tiddlyweb.serializations.json)
-# Supports DELETE: (irrevocably removes the tiddler)
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions/{revision:segment}
