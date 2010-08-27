@@ -36,13 +36,8 @@ def get_tiddlers(environ):
     """
     search_query = get_search_query(environ)
     store = environ['tiddlyweb.store']
-    try:
-        tiddlers = store.search(search_query)
-        logging.debug('got search results from store')
-    except StoreMethodNotImplemented:
-        raise HTTP400('Search system not implemented')
-    except StoreError, exc:
-        raise HTTP400('Error while handling search: %s' % exc)
+    tiddlers = store.search(search_query)
+    logging.debug('got search results from store')
     return tiddlers
 
 
@@ -55,27 +50,32 @@ def get(environ, start_response):
     """
     store = environ['tiddlyweb.store']
 
-    tiddlers = get_tiddlers(environ)
+    try:
+        tiddlers = get_tiddlers(environ)
 
-    usersign = environ['tiddlyweb.usersign']
+        usersign = environ['tiddlyweb.usersign']
 
-    candidate_tiddlers = Tiddlers(store=store)
-    candidate_tiddlers.is_search = True
+        candidate_tiddlers = Tiddlers(store=store)
+        candidate_tiddlers.is_search = True
 
-    bag_readable = {}
+        bag_readable = {}
 
-    for tiddler in tiddlers:
-        try:
-            if bag_readable[tiddler.bag]:
-                candidate_tiddlers.add(tiddler)
-        except KeyError:
-            bag = Bag(tiddler.bag)
-            bag = store.get(bag)
+        for tiddler in tiddlers:
             try:
-                bag.policy.allows(usersign, 'read')
-                candidate_tiddlers.add(tiddler)
-                bag_readable[tiddler.bag] = True
-            except(ForbiddenError, UserRequiredError):
-                bag_readable[tiddler.bag] = False
+                if bag_readable[tiddler.bag]:
+                    candidate_tiddlers.add(tiddler)
+            except KeyError:
+                bag = Bag(tiddler.bag)
+                bag = store.get(bag)
+                try:
+                    bag.policy.allows(usersign, 'read')
+                    candidate_tiddlers.add(tiddler)
+                    bag_readable[tiddler.bag] = True
+                except(ForbiddenError, UserRequiredError):
+                    bag_readable[tiddler.bag] = False
+    except StoreMethodNotImplemented:
+        raise HTTP400('Search system not implemented')
+    except StoreError, exc:
+        raise HTTP400('Error while handling search: %s' % exc)
 
     return send_tiddlers(environ, start_response, tiddlers=candidate_tiddlers)
