@@ -1,7 +1,6 @@
 """
-Routines related to sending a list of tiddlers out
-to the web, including sending those tiddlers and
-validating cache headers for list of tiddlers.
+Routines related to sending a list of tiddlers out to the web,
+including filter those tiddlers and validating request cache headers.
 """
 
 from tiddlyweb import control

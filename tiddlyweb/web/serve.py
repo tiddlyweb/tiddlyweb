@@ -1,6 +1,6 @@
 """
-Functions and Classes for running the TiddlyWeb
-web server.
+Functions and Classes for running a TiddlyWeb server, including
+optionally a built in web server.
 """
 import logging
 import selector
@@ -11,9 +11,9 @@ from tiddlyweb.util import std_error_message, initialize_logging
 def load_app(app_prefix=None, dirname=None):
     """
     Create our application from a series of layers. The innermost
-    layer is a selector application based on url map in map. This
+    layer is a selector application based on urls_map in config. This
     is surround by wrappers, which either set something in the
-    environment or modify the request, or transform output.
+    environment, modify the request, or transform output.
     """
     from tiddlyweb.config import config
     if dirname:
@@ -73,11 +73,10 @@ def start_cherrypy(config):
 
 class Environator(object):
     """
-    WSGI Middleware that doctors the environment
-    to make it satisfactory to Selector no matter
-    what server has mounted us. This is likely to
-    be riddled with bugs, especially in the case where
-    we have a server_prefix.
+    WSGI Middleware that doctors the environment to make it satisfactory
+    to Selector no matter what server has mounted us. This is likely to
+    be riddled with bugs given that different servers behave differently
+    with regard to SCRIPT_NAME, PATH_INFO and REQUEST_URI.
     """
 
     def __init__(self, application):

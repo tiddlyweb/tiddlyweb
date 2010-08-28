@@ -1,5 +1,5 @@
 """
-Handle common code used for listing bags and recipes.
+Common code used for listing bags and recipes.
 """
 from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container

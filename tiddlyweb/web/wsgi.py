@@ -1,6 +1,6 @@
 """
-WSGI Middleware apps that haven't gotten around
-to being extracted to their own modules.
+WSGI Middleware apps that haven't gotten around to being extracted to
+their own modules.
 """
 
 import logging

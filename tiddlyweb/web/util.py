@@ -1,6 +1,5 @@
 """
-General utility routines shared by various
-web related modules.
+General utility routines shared by various web related modules.
 """
 
 import Cookie

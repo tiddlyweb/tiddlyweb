@@ -1,6 +1,6 @@
 """
-Send a bag or recipe out HTTP, first serializing to
-the correct type.
+Send a bag or recipe out HTTP, first serializing to the correct type.
+This consolidates common code for bags and recipes.
 """
 
 from tiddlyweb.serializer import Serializer, NoSerializationError
