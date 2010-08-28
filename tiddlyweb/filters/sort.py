@@ -1,18 +1,12 @@
 """
-Sort a collection of entities by some attribute.
+Sort a collection of entities by some attribute. The syntax is:
 
-Part of the filtering system. The syntax is:
+    sort=attribute   # sort ascending
+    sort=-attribute  # sort descending
 
-    sort=attribute
-    sort=-attribute
-
-Atribute is either a real entity attribute or
-a key in ATTRIBUTE_SORT_KEY that has as its value
-a function used to generate a key to pass to the
-sort. ATTRIBUTE_SORT_KEY can be extended by plugins.
-
-If the attribute is prepended with '-' the sort
-is reversed.
+Atribute is either a real entity attribute or a key in
+ATTRIBUTE_SORT_KEY that has as its value a function used to generate a
+key to pass to the sort. ATTRIBUTE_SORT_KEY can be extended by plugins.
 """
 
 from tiddlyweb.model.tiddler import Tiddler

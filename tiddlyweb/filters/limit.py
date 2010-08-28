@@ -1,6 +1,5 @@
 """
-Limit a group of entities using a syntax similar
-to SQL Limit:
+Limit a group of entities using a syntax similar to SQL Limit:
 
     limit=<index>,<count>
     limit=<count>
