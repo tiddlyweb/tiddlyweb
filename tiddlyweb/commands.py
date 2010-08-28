@@ -1,6 +1,10 @@
 """
-A collection of routines for doing things like starting
-a server, creating a user. Command line tools.
+Command line tools for TiddlyWeb, accessed via the twanager command line
+script. Each command below is added to the availble twanager commands.
+This list is extensible via twanager_plugins in tidldyweb.config.
+
+Typical commands do things like starting a server, create a user, list
+existing entities.
 """
 
 import sys

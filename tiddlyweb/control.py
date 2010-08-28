@@ -1,12 +1,7 @@
 """
-Routines that integrate the basic object classes.
-
-Things like loading up all the tiddlers in a recipe,
-listing tiddlers in a bag, and filtering tiddlers.
-
-These are kept in here to avoid a having store
-and serialize objects in filters and recipes and the
-like.
+Routines that integrate the basic model classes with the rest of the
+system. The model classes are intentionally simple. The methods here act
+as controllers on those classes.
 """
 
 import logging
@@ -19,14 +14,13 @@ from tiddlyweb.store import NoBagError
 
 def get_tiddlers_from_recipe(recipe, environ=None):
     """
-    Return the list of tiddlers that result
-    from processing the recipe.
+    Return the list of tiddlers that result from processing the recipe.
 
-    This list of tiddlers is unique by title with
-    tiddlers later in the recipe taking precedence
-    over those earlier in the recipe.
+    This list of tiddlers is unique by title with tiddlers later in the
+    recipe taking precedence over those earlier in the recipe.
+
+    The tiddlers returned are empty objects.
     """
-
     template = recipe_template(environ)
     store = recipe.store
     uniquifier = {}
@@ -42,15 +36,17 @@ def get_tiddlers_from_recipe(recipe, environ=None):
 
 def determine_bag_from_recipe(recipe, tiddler, environ=None):
     """
-    We have a recipe and a tiddler. We need to
-    know the bag in which this tiddler can be found.
-    This is different from determine_bag_for_tiddler().
-    That one finds the bag the tiddler _could_ be in.
-    This is the bag the tiddler _is_ in.
+    We have a recipe and a tiddler. We need to know the bag in which
+    this tiddler can be found. This is different from
+    determine_bag_for_tiddler(). That one finds the bag the tiddler
+    _could_ be in. This is the bag the tiddler _is_ in.
 
-    We reverse the recipe_list, and filter each bag
-    according to the rule. Then we look in the list of
-    tiddlers and see if ours is in there.
+    We reverse the recipe_list, and filter each bag according to
+    the rule. Then we look in the list of tiddlers and see if ours
+    is in there.
+
+    If an indexer is configured use the index to determine if a bag
+    exists in a bag.
     """
     store = recipe.store
     template = recipe_template(environ)
@@ -121,17 +117,15 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
 
 def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     """
-    Return the bag which this tiddler would be in if we
-    were to save it to the recipe rather than to a default
-    bag.
+    Return the bag which this tiddler would be in if we were to save it
+    to the recipe rather than to a default bag.
 
-    This is a matter of reversing the recipe list and seeing
-    if the tiddler is a part of the bag + filter. If bag+filter
-    is true, return that bag.
+    This is a matter of reversing the recipe list and seeing if the
+    tiddler is a part of the bag + filter. If bag+filter is true,
+    return that bag.
     """
     template = recipe_template(environ)
     for bag, filter_string in reversed(recipe.get_recipe(template)):
-        # ignore the bag and make a new bag
         for candidate_tiddler in filter_tiddlers([tiddler],
                 filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
@@ -144,7 +138,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
 
 def get_tiddlers_from_bag(bag):
     """
-    Return the list of tiddlers that are in a bag.
+    Yield the tiddlers that are in a bag.
     """
     for tiddler in bag.store.list_bag_tiddlers(bag):
         yield tiddler
@@ -152,12 +146,10 @@ def get_tiddlers_from_bag(bag):
 
 def filter_tiddlers(tiddlers, filters, environ=None):
     """
-    Return a generator of tiddlers resulting from
-    filtering the provided iterator of tiddlers by
-    the provided filters.
+    Return a generator of tiddlers resulting from filtering the provided
+    iterator of tiddlers by the provided filters.
 
-    If filters is a string, it will be parsed for
-    filters.
+    If filters is a string, it will be parsed for filters.
     """
     if isinstance(filters, basestring):
         filters, _ = parse_for_filters(filters, environ)
@@ -166,9 +158,8 @@ def filter_tiddlers(tiddlers, filters, environ=None):
 
 def _filter_tiddlers_from_bag(bag, filters, environ=None):
     """
-    Return the list of tiddlers resulting from filtering
-    bag by filter. The filter is a string that will be
-    parsed to a list of filters.
+    Return the list of tiddlers resulting from filtering bag by filter.
+    The filter is a string that will be parsed to a list of filters.
     """
     indexable = bag
 
@@ -180,8 +171,8 @@ def _filter_tiddlers_from_bag(bag, filters, environ=None):
 
 def recipe_template(environ):
     """
-    provide a means to specify custom {{ key }} values in recipes
-    which are then replaced with the value specified in
+    Provide a means to specify custom {{ key }} values in recipes which
+    are then replaced with the value specified in
     environ['tiddlyweb.recipe_template']
     """
     template = {}
