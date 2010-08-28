@@ -105,8 +105,9 @@ HTTP API
   which serializations can handle a PUT. In the past we were limited
   to JSON and text, which was too limiting.
 
-* When PUTting a tiddler _always_ respond with a Location that
-  identifies the tiddler being in its bag, never in a recipe.
+* Make sure tiddlyweb.web.util:tiddler_url returns a bag-bases URI. This
+  comes in play when PUTting a tiddler: _always_ respond with a Location
+  that identifies the tiddler being in its bag, never in a recipe.
 
 * More 500s should be trapped as appropirate 40x.
 
@@ -136,4 +137,3 @@ Miscellaneous
   A pseudo binary tiddler is a text-based representation which is
   not wikitext but should be preserved as text (e.g. raw Javascript).
   "Real" binary tiddlers are base64 encoded at some stages of the system.
-

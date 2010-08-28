@@ -5,6 +5,10 @@
 For additional installation instructions see
 http://tiddlyweb.peermore.com/
 
+If you develop with TiddlyWeb and are upgrading 1.0 to 1.2 there have
+been changes you should make yourself aware of. Read `UPGRADE1.0to1.2
+<http://github.com/tiddlyweb/tiddlyweb/raw/master/UPGRADE1.0to1.2>`_.
+
 Introduction
 ------------
 
