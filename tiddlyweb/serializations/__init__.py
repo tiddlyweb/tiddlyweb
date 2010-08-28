@@ -1,7 +1,7 @@
 """
 Turn entities to and fro various representations.
 
-This base Class and interface for Classes use to
+This is the base Class and interface Class used to
 transform strings of various forms to model objects
 and model objects to strings of various forms.
 """
@@ -23,16 +23,20 @@ class SerializationInterface(object):
     in each Serialization.
 
     *_as returns a string form of the entity, perhaps as
-    HTML, Text, YAML, Atom, whatever the Serialzation does.
+    HTML, Text, YAML, Atom, whatever the Serialization does.
 
     as_* takes a provided entity and string and updates
     the skeletal entity to represent the information
-    contain in the string (in the Serialization format).
+    contained in the string (in the Serialization format).
 
     There are also three supporting methods, list_tiddlers,
     list_recipes() and list_bags() that provide convenience
     methods for presenting a collection of either in the
     Serialization form. A string is returned.
+
+    If a method doesn't exist a NoSerializationError is raised
+    and the calling code is expected to do something intelligent
+    when trapping it.
     """
 
     def __init__(self, environ=None):
