@@ -7,12 +7,8 @@ from tiddlyweb.util import sha
 
 class User(object):
     """
-    A simple representation of a user. For now
-    a user is simply a username, an optional
-    password, an optional list of roles,
-    and an optional note.
-
-    This is all subject to change.
+    A simple representation of a user. A user is a username, an optional
+    password, an optional list of roles, and an optional note.
     """
 
     def __init__(self, usersign, note=None):

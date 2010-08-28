@@ -1,5 +1,5 @@
 """
-A module containing the Bag class.
+A module containing the Policy class.
 """
 
 
@@ -25,17 +25,24 @@ class UserRequiredError(PermissionsError):
 
 class Policy(object):
     """
-    A container for information about the
-    contraints on a bag. A bag is something that
-    contains tiddlers. We need to be able to say
-    who can do what to do those tiddlers. We also
-    need to be able to say who can manage those
-    constraints.
+    A container for information about the contraints on a bag or recipe.
+    Both are containers of tiddlers. We need to be able to say who can
+    do what to do those tiddlers. We also need to be able to say who can
+    manage those constraints.
 
     The init parameters represent a default policy.
-    The default policy should really come from
-    server configuration. Then we can declare this
-    installation as open-ish, or closed-ish.
+
+    There are six constraints plus one identifying atrribute (owner).
+    The constraints are listed below with descriptions of what is allowed
+    if the constraint passes.
+
+    read -- View this entity in lists. View the contained entities.
+    write -- Edit the contained entities that already exist.
+    create -- Create new entities in the container.
+    delete -- Remove a contained entity.
+    manage -- Change the policy itself.
+    accept -- Accept the entity into the container without requiring
+              validation.
     """
 
     attributes = [u'read', u'write', u'create', u'delete', u'manage', u'accept',
