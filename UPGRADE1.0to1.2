@@ -34,6 +34,17 @@ now is similar to this:
     bag.policy.allows('read', usersign)
     tiddlers = store.list_bag_tiddlers(bag)
 
+And code like this:
+
+    start_bag = store.get(Bag(start_bag_name))
+    start_tiddlers = control.filter_tiddlers_from_bag(start_bag, 'sort=title')
+
+will be like this:
+
+    start_bag = store.get(Bag(start_bag_name))
+    start_tiddlers = control.filter_tiddlers(
+        store.list_bag_tiddlers(start_bag), 'sort=title')
+
 The tiddlers object is an iterator, usually a generator. Using a
 generator dramatically lowers memory when working with large numbers
 of tiddlers.
