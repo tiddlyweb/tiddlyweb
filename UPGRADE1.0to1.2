@@ -1,0 +1,81 @@
+This document describes changes between version 1.0.x and version 1.2.
+The 1.2.0 release is the result of experimental development through
+versions 1.1.x.
+
+The focus of the 1.1.x work was to make architectural changes in
+TiddlyWeb for the sake of performance and flexibility. These changes
+were driven by shortcomings discovered through real world use of 1.0.x
+especially the development of http://tiddlyspace.com/
+
+Collections and Generators
+--------------------------
+
+Real world use revealed that in any regular request to the server there
+are too many loops across the same set of entities, especially tiddlers.
+As the number of entities involved increases, the cost of those loops
+gets higher and higher.
+
+This insight led to removing tiddlers from within bags. When a bag is
+loaded, no tiddlers are loaded, just the bag description and its policy.
+The tiddlers in the bag must be loaded separately. Code that used to
+look similar to this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = bag.gen_tiddlers()
+    for tiddler in tiddlers:
+        tiddler = store.get(tiddler)
+
+now is similar to this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = store.list_bag_tiddlers(bag)
+
+The tiddlers object is an iterator, usually a generator. Using a
+generator dramatically lowers memory when working with large numbers
+of tiddlers.
+
+The other major change is that the tiddlers that are returned from list
+the contents of a bag have not been loaded from the store. This is now
+the job of the calling code. This makes it possible to avoid
+instantiating full tiddlers when only their identifier (bag name +
+tiddler title) is needed.
+
+Filtering
+---------
+
+Filters now return generators.
+
+/bags and /recipes now accept filter strings, such as
+/bags?select=name:>foobar;limit=2
+
+Filters will load tiddlers as needed. If a bag or recipe does not
+use filters then requesting tiddlers from it will result in the 
+tiddlers only be loaded when they are serialized.
+
+Collections
+-----------
+
+A Collections class has been created which is designed to make it more
+efficient to calculate ETag and last-modified data for collections of
+bags, recipes or tiddlers. See tiddlweb.model.collections
+
+Miscellaneous
+-------------
+
+* control._recipe_template is now control.recipe_template, to
+  facillitate checking a recipe for permission issues _before_ loading
+  up all the tiddlers.
+
+HTTP API
+--------
+
+* DELETE to /recipes/<recipe name>/tiddlers/<tiddler name> is no longer
+  possible. This is because the recipe URI does not stricly identify a
+  specific tiddler. Attempts to DELETE will return a 405.
+
+Details
+-------
