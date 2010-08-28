@@ -3,7 +3,6 @@ Routines related to sending a list of tiddlers out to the web,
 including filter those tiddlers and validating request cache headers.
 """
 
-from tiddlyweb import control
 from tiddlyweb.filters import FilterError, recursive_filter
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
