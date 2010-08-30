@@ -4,7 +4,7 @@ versions 1.1.x.
 
 The focus of the 1.1.x work was to make architectural changes in
 TiddlyWeb for the sake of performance and flexibility. These changes
-were driven by shortcomings discovered through real world use of 1.0.x
+were driven by shortcomings discovered through real world use of 1.0.x,
 especially the development of http://tiddlyspace.com/
 
 Collections and Generators
@@ -49,11 +49,11 @@ The tiddlers object is an iterator, usually a generator. Using a
 generator dramatically lowers memory when working with large numbers
 of tiddlers.
 
-The other major change is that the tiddlers that are returned from list
-the contents of a bag have not been loaded from the store. This is now
-the job of the calling code. This makes it possible to avoid
+The other major change is that the tiddlers that are returned when
+listing the contents of a bag have not been loaded from the store. This
+is now the job of the calling code. This makes it possible to avoid
 instantiating full tiddlers when only their identifier (bag name +
-tiddler title) is needed.
+tiddler title) is needed. 
 
 Authentication
 --------------
@@ -120,7 +120,7 @@ HTTP API
   comes in play when PUTting a tiddler: _always_ respond with a Location
   that identifies the tiddler being in its bag, never in a recipe.
 
-* More 500s should be trapped as appropirate 40x.
+* More 500s should be trapped as appropriate 40x.
 
 Miscellaneous
 -------------
