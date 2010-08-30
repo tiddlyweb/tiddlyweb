@@ -12,7 +12,7 @@ from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.tiddler import Tiddler, current_timestring
 from tiddlyweb.store import \
         NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError
@@ -317,6 +317,7 @@ def _put_tiddler(environ, start_response, tiddler):
         user = environ['tiddlyweb.usersign']['name']
         if not user == 'GUEST':
             tiddler.modifier = user
+        tiddler.modified = current_timestring()
 
         try:
             _check_bag_constraint(environ, bag, 'accept')
