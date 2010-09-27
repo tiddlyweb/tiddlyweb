@@ -60,7 +60,6 @@ def get(environ, start_response):
 
         bag_readable = {}
 
-    try:
         for tiddler in tiddlers:
             try:
                 if bag_readable[tiddler.bag]:
