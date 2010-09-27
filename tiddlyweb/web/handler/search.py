@@ -64,18 +64,21 @@ def get(environ, start_response):
 
     bag_readable = {}
 
-    for tiddler in tiddlers:
-        try:
-            if bag_readable[tiddler.bag]:
-                candidate_tiddlers.add(tiddler)
-        except KeyError:
-            bag = Bag(tiddler.bag)
-            bag = store.get(bag)
+    try:
+        for tiddler in tiddlers:
             try:
-                bag.policy.allows(usersign, 'read')
-                candidate_tiddlers.add(tiddler)
-                bag_readable[tiddler.bag] = True
-            except(ForbiddenError, UserRequiredError):
-                bag_readable[tiddler.bag] = False
+                if bag_readable[tiddler.bag]:
+                    candidate_tiddlers.add(tiddler)
+            except KeyError:
+                bag = Bag(tiddler.bag)
+                bag = store.get(bag)
+                try:
+                    bag.policy.allows(usersign, 'read')
+                    candidate_tiddlers.add(tiddler)
+                    bag_readable[tiddler.bag] = True
+                except(ForbiddenError, UserRequiredError):
+                    bag_readable[tiddler.bag] = False
+    except StoreError, exc:
+        raise HTTP400('Error while processing search: %s' % exc)
 
     return send_tiddlers(environ, start_response, tiddlers=candidate_tiddlers)
