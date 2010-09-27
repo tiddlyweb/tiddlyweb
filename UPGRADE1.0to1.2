@@ -1,0 +1,150 @@
+This document describes changes between version 1.0.x and version 1.2.
+The 1.2.0 release is the result of experimental development through
+versions 1.1.x.
+
+The focus of the 1.1.x work was to make architectural changes in
+TiddlyWeb for the sake of performance and flexibility. These changes
+were driven by shortcomings discovered through real world use of 1.0.x,
+especially the development of http://tiddlyspace.com/
+
+Collections and Generators
+--------------------------
+
+Real world use revealed that in any regular request to the server there
+are too many loops across the same set of entities, especially tiddlers.
+As the number of entities involved increases, the cost of those loops
+gets higher and higher.
+
+This insight led to removing tiddlers from within bags. When a bag is
+loaded, no tiddlers are loaded, just the bag description and its policy.
+The tiddlers in the bag must be loaded separately. Code that used to
+look similar to this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = bag.gen_tiddlers()
+    for tiddler in tiddlers:
+        tiddler = store.get(tiddler)
+
+now is similar to this:
+
+    bag = Bag('foo')
+    bag = store.get(bag)
+    bag.policy.allows('read', usersign)
+    tiddlers = store.list_bag_tiddlers(bag)
+
+And code like this:
+
+    start_bag = store.get(Bag(start_bag_name))
+    start_tiddlers = control.filter_tiddlers_from_bag(start_bag, 'sort=title')
+
+will be like this:
+
+    start_bag = store.get(Bag(start_bag_name))
+    start_tiddlers = control.filter_tiddlers(
+        store.list_bag_tiddlers(start_bag), 'sort=title')
+
+The tiddlers object is an iterator, usually a generator. Using a
+generator dramatically lowers memory when working with large numbers
+of tiddlers.
+
+The other major change is that the tiddlers that are returned when
+listing the contents of a bag have not been loaded from the store. This
+is now the job of the calling code. This makes it possible to avoid
+instantiating full tiddlers when only their identifier (bag name +
+tiddler title) is needed. 
+
+Authentication
+--------------
+
+The built in openid challenger has been removed. Please use
+tiddlywebplugins.openid2 instead. It works with more systems and is more
+future proof since it uses external openid libraries.
+
+Filtering
+---------
+
+Filters now return generators.
+
+/bags and /recipes now accept filter strings, such as
+/bags?select=name:>foobar;limit=2
+
+Filters will load tiddlers as needed. If a bag or recipe does not
+use filters then requesting tiddlers from it will result in the 
+tiddlers only be loaded when they are serialized.
+
+Collections
+-----------
+
+A Collections class has been created which is designed to make it more
+efficient to calculate ETag and last-modified data for collections of
+bags, recipes or tiddlers. See tiddlweb.model.collections
+
+This is most dramatically reflected in the Tiddlers subclass, which
+provides an iterator of tiddlers which can be reified from the store
+on the fly.
+
+Using Collections means the Bag class is vastly simplified.
+
+Store Hooks
+-----------
+The tiddler_written method in the StorageInterface has been replaced
+with a more general tiddlyweb.store.HOOKS system. The HOOKS dictionary
+contains lists of methods to be run when a bag, recipe, tiddler or user
+is put, get, or delete. See test/test_store_hooks.py for sample code and
+tiddlywebplugins.whoosher for an implementation.
+
+HTTP API
+--------
+
+* DELETE to /recipes/<recipe name>/tiddlers/<tiddler name> is no longer
+  possible. This is because the recipe URI does not stricly identify a
+  specific tiddler. Attempts to DELETE will return a 405.
+
+* Requesting challenger URIs returns a 401 on the first GET, not a
+  200 to more accurately what they are doing.
+
+* Individual bag or recipe entities now have ETags.
+
+* Bags and recipes collections have ETags.
+
+* ETags for individual tiddlers and tiddler collections are more
+  accurate.
+
+* When PUTting a tiddler let the instance configuration determine
+  which serializations can handle a PUT. In the past we were limited
+  to JSON and text, which was too limiting.
+
+* Make sure tiddlyweb.web.util:tiddler_url returns a bag-bases URI. This
+  comes in play when PUTting a tiddler: _always_ respond with a Location
+  that identifies the tiddler being in its bag, never in a recipe.
+
+* More 500s should be trapped as appropriate 40x.
+
+Miscellaneous
+-------------
+
+* control._recipe_template is now control.recipe_template, to
+  facillitate checking a recipe for permission issues _before_ loading
+  up all the tiddlers.
+
+* The concepts of searchbag or revbag have been moved from Bag into the
+  Tiddlers Collection class.
+
+* tiddlyweb.config gains 'default_serializer' which points to the mime
+  type for which serializer should be used. See commit:
+  5a5058e6dfe23fb22c6c6dae28eac332b667e2fc
+
+* Challengers may optional have a 'desc' attribute at the class level
+  to be used when presenting the list of challengers at /challenge.
+
+* In control.determine_bag_for_tiddler optionally use the 'indexer'
+  to locate a the tiddler in a bag. With the right index this can 
+  speed things up dramatically. See tiddlywebplugins.mysql for an
+  example.
+
+* Binary tiddlers divided into real binary and psuedo binary types.
+  A pseudo binary tiddler is a text-based representation which is
+  not wikitext but should be preserved as text (e.g. raw Javascript).
+  "Real" binary tiddlers are base64 encoded at some stages of the system.

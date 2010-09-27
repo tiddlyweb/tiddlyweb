@@ -1,5 +1,8 @@
 """
-Miscellaneous utility functions for TiddlyWeb.
+A grab bag of miscellaneous utility functions for TiddlyWeb that don't
+fit in elsewhere.
+
+Web specific utilities are in tiddlyweb.web.util.
 """
 
 import logging

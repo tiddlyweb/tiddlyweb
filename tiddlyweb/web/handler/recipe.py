@@ -67,7 +67,7 @@ def get_tiddlers(environ, start_response):
     # check the bags in the recipe can be read
     try:
         template = control.recipe_template(environ)
-        for bag_name, filter in recipe.get_recipe(template):
+        for bag_name, _ in recipe.get_recipe(template):
             bag = Bag(bag_name)
             bag = store.get(bag)
             bag.policy.allows(usersign, 'read')

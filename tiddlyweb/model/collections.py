@@ -1,11 +1,10 @@
 """
 Collection classes.
 
-These classes are used for containing the other
-model classes. Because the main reason for having a
-collection is to send it out over the web, the
-collections keep track of their last-modified time
-and generate a hash suitable for use as an ETag.
+These classes are used for containing the other model classes. Because
+the main reason for having a collection is to send it out over the web,
+the collections keep track of their last-modified time and generate a
+hash suitable for use as an ETag.
 """
 
 from tiddlyweb.util import sha
@@ -17,7 +16,10 @@ class Collection(object):
     """
     Base class for all collections.
 
-    Can be used directly for random stuff is required.
+    Can be used directly for general stuff if required.
+
+    A collection acts as generator, yield one of its contents when
+    iterated.
     """
 
     def __init__(self):
@@ -82,9 +84,16 @@ class Tiddlers(Collection):
     """
     A Collection specifically for tiddlers.
 
-    This differs from the base class in how
-    the digest is calculated. tiddler.title and
-    either tiddler.bag or tiddler.recipe are used.
+    This differs from the base class in two ways:
+    
+    The calculation of the digest is more detailed in order to create
+    stong ETags for the collection.
+
+    When iterated, if store is set on the Collection, then a yielded
+    tiddler will be loaded from the store to fill in all its attributes.
+    When a tiddler is added to the collection, if it is already filled,
+    a non-full copy is made and put into the collection. This is done
+    to save memory and because often the data is not needed.
     """
 
     def __init__(self, store=None):

@@ -1,8 +1,8 @@
 """
-WSGI Middleware that extracts CGI parameters
-from the QUERY_STRING and puts them in
-tiddlyweb.query in the same structure that
-cgi.py users (dictionary of lists).
+WSGI Middleware that extracts CGI parameters from the QUERY_STRING and
+puts them in tiddlyweb.query in the same structure that cgi.py users
+(dictionary of lists). If the current request is a POST of form data,
+parse that stuff too.
 """
 
 try:
@@ -15,12 +15,7 @@ from tiddlyweb.filters import parse_for_filters
 
 class Query(object):
     """
-    We do this for "future expansion" and to
-    remove some duplication throughout the
-    code.
-
-    Possible future expansion includes things like
-    parameter filtering and what not.
+    Extract CGI parameter data from QUERY_STRING and POSTed form data.
     """
 
     def __init__(self, application):

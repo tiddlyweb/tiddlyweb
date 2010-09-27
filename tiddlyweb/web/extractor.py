@@ -1,7 +1,8 @@
 """
-A place for handling the extraction of user
-credentials from incoming requests. UserExtract
-passes to a stack of extractors.
+A place for handling the extraction of user credentials from incoming
+requests. UserExtract passes to a stack of extractors. If an extractor
+returns something other than None, we have found valid data with
+which to set tiddlyweb.usersign.
 """
 import logging
 

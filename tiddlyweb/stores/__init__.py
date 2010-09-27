@@ -1,7 +1,7 @@
 """
 Storage systems for TiddlyWeb.
 
-The base Class and interface for Classes used to get
+The base Class and Interface for Classes used to get
 and put data into a storage system.
 """
 
@@ -15,8 +15,8 @@ class StorageInterface(object):
 
     The interface is fairly simple: For the data
     entities that exist in the TiddlyWeb system there
-    (optionally) exists <entity_put> and <entity>_get
-    methods in each Store.
+    (optionally) exists <entity>_put, <entity>_get
+    and <entity>_delete methods in each Store.
 
     There are also five supporting methods, list_recipes(),
     list_bags(), list_users(), list_bag_tiddlers(), and
@@ -25,6 +25,10 @@ class StorageInterface(object):
 
     It is useful to understand the classes in the tiddlyweb.model
     package when implementing new StorageInterface classes.
+
+    If a method is not implemented by the StorageInterface
+    a StoreMethodNotImplemented exception is raised and the 
+    calling code is expected to handle that intelligently.
     """
 
     def __init__(self, store_config=None, environ=None):

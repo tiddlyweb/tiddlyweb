@@ -1,10 +1,10 @@
 """
-A group of exception classes representating HTTP error
-statuses, along with a WSGI middleware to turn the
-exceptions into proper HTTP headers.
+A group of exception classes representing HTTP error statuses, along
+with a WSGI middleware to turn the exceptions into proper HTTP headers.
 
-These exception need messages and a base class so
-we don't need all the code in HTTPExceptor.
+Anywhere in the stack, if an HTTP response other than 2xx is required
+just raise an HTTP<something> and this module will catch it and create
+the correct response to send to the client.
 """
 
 import logging

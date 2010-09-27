@@ -1,6 +1,6 @@
 """
-Simple functions for storing stuff as textfiles
-on the filesystem.
+A text-based StorageInterface that stores entities
+in the filesystem.
 """
 
 import codecs
@@ -26,8 +26,8 @@ from tiddlyweb.util import LockError, write_lock, write_unlock, \
 
 class Store(StorageInterface):
     """
-    The text-based store on the filesystem in a
-    directory hierarchy implementation of a StorageInterface.
+    A StorageInterface which stores text-based representations
+    in a collection of directories and files.
     """
 
     def __init__(self, store_config=None, environ=None):

@@ -1,60 +1,53 @@
 """
 Overarching handler for TiddlyWeb filters.
 
-This is the second iteration of filters for TiddlyWeb.
-The first version was based on TiddlyWiki filters but
-this was found to be not entirely well suited to the
-HTTP situation in which TiddlyWeb finds itself, nor
-was it particularly easy to extend in a way that was
-simple, clear and powerful.
+Filters provide an extensible syntax for limiting any Collection by
+attributes in the entities in the collection. Though primarily for
+Tiddlers, Bags and Recipes can be filtered as well.
 
-This new style hopes to be some of those things.
+The basic filters provide selecting and sorting on attributes of the
+entities and limiting (the number of) entities. These basic types can
+be extended with plugins, and the ways attributes are handled can
+also be extended.
 
-Filters are parsed from a string that is formatted
-as a CGI query string with parameters and arguments.
-The parameter is a filter type. Each filter is processed
-in sequence: the first processing all the entities
-handed to it, the next taking only those that result
-from the first.
+Filters are parsed from a string that is formatted as a CGI query string
+with parameters and arguments. The parameter is a filter type. Each
+filter is processed in sequence: the first processing all the entities
+handed to it, the next taking only those that result from the first.
 
-Filters can be extended by adding more parsers to
-FILTER_PARSERS. Parsers for existing filter types
-may be extended as well (see the documentation for
-each type).
+Filters can be extended by adding more parsers to FILTER_PARSERS.
+Parsers for existing filter types may be extended as well (see the
+documentation for each type).
 
 The call signature for a filter is:
 
     filter(entities, indexable=indexable, environ=environ)
 
-The attribute and value for which a filter filters is
-established in the parsing stage and set as upvalues
-of the filter closure that gets created.
+The attribute and value for which a filter filters is established in
+the parsing stage and set as upvalues of the filter closure that
+gets created.
 
-indexable and environ are optional parameters that
-in special cases allow a select style filter to be
-optimized with the use of an index. In the current
-implementation this is only done when:
+indexable and environ are optional parameters that in special cases
+allow a select style filter to be optimized with the use of an index. In
+the current implementation this is only done when:
 
- * the select filter is the first filter in a stack
-   of filters passed to recursive_filter
- * the list of entities to be filtered are tiddlers
-   and a bag is provided (which helps managed the
-   index)
+ * the select filter is the first filter in a stack of filters passed to
+   recursive_filter
+ * the entities to be filtered are tiddlers and a bag is provided (which
+   helps manage the index)
 
-When both of the above are true the system looks for a
-module named by tiddlyweb.config['indexer'], imports it,
-looks for a function called indexy_query, and passes
-environ and information about the bag and the attribute
-being selected.
+When both of the above are true the system looks for a module named by
+tiddlyweb.config['indexer'], imports it, looks for a function called
+indexy_query, and passes environ and information about the bag and the
+attribute being selected.
 
-What index_query does to satisfy the query is up to the
-module. It should return a list of tiddlers that have
-been loaded from tiddlyweb.store.
+What index_query does to satisfy the query is up to the module. It
+should return a list of tiddlers that have been loaded from
+tiddlyweb.store.
 
-If for some reason index_query does not wish to perform
-the query (e.g. the index cannot satisfy the query) it
-may raise FilterIndexRefused and the normal filtering
-process will be performed.
+If for some reason index_query does not wish to perform the query (e.g.
+the index cannot satisfy the query) it may raise FilterIndexRefused and
+the normal filtering process will be performed.
 """
 
 try:
@@ -130,15 +123,13 @@ def parse_for_filters(query_string, environ=None):
 
 def recursive_filter(filters, entities, indexable=False):
     """
-    Recursively process the list of filters found
-    by parse_for_filters against the given list
-    of entities.
+    Recursively process the list of filters found by parse_for_filters
+    against the given list of entities.
 
-    Each next filter processes only those entities
-    that were results of the previous filter.
+    Each next filter processes only those entities that were results of
+    the previous filter.
 
-    XXX: Misnamed, previous versions were more truly
-    recursive.
+    Misnamed, early versions were more truly recursive.
     """
     for filter in filters:
         try:

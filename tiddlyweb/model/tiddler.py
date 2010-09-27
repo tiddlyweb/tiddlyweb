@@ -33,19 +33,18 @@ def string_to_tags_list(string):
 
 class Tiddler(object):
     """
-    The universal content object in the TiddlyWiki
-    universe, corresponding to a Page in other wiki
-    systems. A Tiddler has text and some associated
-    metadata. The text can be anything, but is usually
-    wikitext in some form, or Javascript code to be
-    used as a plugin.
+    The primary content object in the TiddlyWiki universe, vaguely
+    corresponding to a Page in other wiki systems. A Tiddler has
+    text and some associated metadata. The text can be anything, but
+    is usually wikitext in some form, or Javascript code to be used
+    as a plugin. It is possible for a Tiddler to container binary
+    content, such as image data.
 
-    Tiddler is intentional just a container of data.
-    That is, it has no methods which change the state
-    of attributes in the Tiddler or manipulate the tiddler.
-    Changing the attributes is done by directly changing
-    the attributes. This is done to make the Tiddler
-    easier to store and serialize in a diversity of ways.
+    A Tiddler is intentionally just a container of data. That is, it has
+    no methods which change the state of attributes in the Tiddler or
+    manipulate the tiddler. Changing the attributes is done by directly
+    changing the attributes. This is done to make the Tiddler easier to
+    store and serialize in many ways.
 
     A Tiddler has several attributes:
 

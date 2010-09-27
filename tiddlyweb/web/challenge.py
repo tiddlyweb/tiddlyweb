@@ -1,8 +1,6 @@
 """
-WSGI App for running the base challenge
-system, which lists and links the available
-challengers. If there is only one, redirect
-to it.
+WSGI App for running the base challenge system, which lists and links
+the available challengers. If there is only one, redirect to it.
 """
 
 import urllib

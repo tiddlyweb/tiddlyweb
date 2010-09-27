@@ -1,4 +1,28 @@
 
+1.0 to 1.2
+----------
+
+Once a stable 1.0 release of TiddlyWeb was out in the wild, the number
+of people using the system, working the code and generally contributing
+to its well being took off. The improvement of the code since then is
+entirely the result of a diverse group of people from the TiddlyWeb
+google group, the TiddlyWiki community and the people who operate in and
+about Osmosoft.
+
+The Osmosoft project to create TiddlySpace has helped make TiddlyWeb far
+more robust, flexible and scalable.
+
+I (Chris Dent) am especially grateful to FND for his continued
+enthusiasm, limitless contributions, dogged attention to detail and
+invaluable service as a rubber duck.
+
+Thanks to BT for continuing to believe that supporting open source
+development has benefits in the short and long term. Without BT's
+support there would likely be no TiddlyWeb.
+
+Birth to 1.0
+------------
+
 The architecture, attitude and action of TiddlyWeb is the result of
 ideas and interactions with many people, all of whom are impossible to
 list here, but a few highlights:

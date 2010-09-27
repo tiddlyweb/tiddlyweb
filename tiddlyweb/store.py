@@ -1,5 +1,10 @@
 """
-Put and Get TiddlyWeb things to and from some store.
+Store TiddlyWeb entities to the configured StorageInterface.
+
+This module provides the facade for accessing one of many possible
+modules which provide storage for entities. It provides a general
+interface to get, put, delete or list entities. StorageInterface
+implementations do the actual interaction with the the storage medium.
 """
 
 from copy import deepcopy

@@ -1,39 +1,34 @@
 """
-Filter routines for selecting some entities,
-usually tiddlers, from a collection of entities,
-usually by an attribute of the tiddlers.
+Filter routines for selecting some entities, usually tiddlers, from a
+collection of entities, usually by an attribute of the tiddlers.
 
 The syntax is:
 
-    select=attribute:value
-    select=attribute:!value
-    select=attribute:>value
-    select=attribute:<value
+    select=attribute:value    # attribute is value
+    select=attribute:!value   # attribute is not value
+    select=attribute:>value   # attribute is greater than value
+    select=attribute:<value   # attribute is less than value
 
-ATTRIBUTE_SELECTOR is checked for a function which returns
-true or false for whether the provide value matches for
-the entity being tested. The default case is lower case
-string equality. Other functions may be provided by
-plugins and other extensions. Attributes may be virtual,
-i.e. not real attributes on entity. For example we can
-check for the presence of a tag in a tiddlers tags attribute
-with
+ATTRIBUTE_SELECTOR is checked for a function which returns true or false
+for whether the provide value matches for the entity being tested. The
+default case is lower case string equality. Other functions may be
+provided by plugins and other extensions. Attributes may be virtual,
+i.e. not real attributes on entity. For example we can check for the
+presence of a tag in a tiddlers tags attribute with
 
     select=tag:tagvalue
 
-An attribute function takes an entity, an attribute name and
-a value, may do anything it wants with it, and must return
-True or False.
+An attribute function takes an entity, an attribute name and a value,
+may do anything it wants with it, and must return True or False.
 
-'!' negates a selection, getting all those entities that
-don't match.
+'!' negates a selection, getting all those entities that don't match.
 
 '>' gets those entities that sort greater than the value.
 
 '<' gets those entities that sort less than the value.
 
-When doing sorting ATTRIBUTE_SORT_KEY is consulted to
-canonicalize the value. See tiddlyweb.filters.sort.
+When doing sorting ATTRIBUTE_SORT_KEY is consulted to canonicalize the
+value. See tiddlyweb.filters.sort.
 """
 
 from tiddlyweb.model.tiddler import Tiddler

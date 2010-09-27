@@ -1,8 +1,10 @@
 """
-A collection of routines for validating,
-santizing and otherwise messing with content
-coming in from the web to be tiddlers, bags or
-recipes.
+A collection of routines for validating, santizing and otherwise messing
+with content coming in from the web to be tiddlers, bags or recipes.
+
+The validators can be extended by adding functions to the BAG_VALIDATORS,
+RECIPE_VALIDATORS and TIDDLER_VALIDATORS. The functions take an
+entity object, and an optional environ dict.
 """
 
 

@@ -7,16 +7,15 @@ from tiddlyweb.model.policy import Policy
 
 class Bag(object):
     """
-    A Bag is a virtual container for tiddlers.
+    A Bag is a virtual container for tiddlers. The bag provides a domain
+    for the tiddlers within identifying those tiddlers uniquely and
+    optionally acting a topical, functional or authorization container
+    for the tiddlers.
 
-    A Bag which has been retrieved from a Store will have
-    its 'store' attribute set to the store it was retrieved
-    from.
-
-    A Bag has a Policy (see tiddlyweb.model.policy) which may be used
-    to control access to both the Bag and the tiddlers within.
-    These controls are optional and are primarily designed
-    for use within the web handlers.
+    A Bag has a Policy (see tiddlyweb.model.policy) which may be used to
+    control access to both the Bag and the tiddlers within. These
+    controls are optional and are primarily designed for use within the
+    web handlers.
     """
 
     def __init__(self, name, desc=''):

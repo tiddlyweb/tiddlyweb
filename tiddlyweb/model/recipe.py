@@ -12,22 +12,19 @@ RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
 
 class Recipe(list):
     """
-    A Recipe is an ordered list that represents
-    a program for creating a collection of tiddlers.
+    A Recipe is an ordered list that represents a program for creating a
+    collection of tiddlers.
 
-    Each line in the recipe is the combination of a
-    bag and a filter string. For this implementation
-    we have a list of tuples.
+    Each line in the recipe is the combination of a bag and a filter
+    string. For this implementation we have a list of tuples.
 
-    In common usage a recipe contains only strings
-    representing bags and filters, but for the
-    sake of easy testing, the bag argument can
-    be a Bag.
+    In common usage a recipe contains only strings representing bags
+    and filters, but for the sake of easy testing, the bag argument
+    can be a Bag.
 
-    A Recipe has a Policy (see tiddlyweb.policy) which may be
-    used to control access to the Recipe. These controls are
-    optional and are primarily designed for use within the
-    web handlers.
+    A Recipe has a Policy (see tiddlyweb.policy) which may be used to
+    control access to the Recipe. These controls are optional and are
+    primarily designed for use within the web handlers.
     """
 
     def __init__(self, name, desc=''):

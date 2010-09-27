@@ -1,3 +1,11 @@
+1.2.1 Fri Sep  3 19:00:44 UTC 2010
+
+  * gunicorn package accidently included in distribution.
+
+1.2.0 Tue Aug 31 00:44:50 UTC 2010
+
+  * See UPGRADE1.0to1.2 for changes between 1.0 and 1.2.
+  
 1.0.4 Thu Aug 19 10:25:06 UTC 2010
 
   * Ensure that canonical tiddler urls are always presented at /bags.

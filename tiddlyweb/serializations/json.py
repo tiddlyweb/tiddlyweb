@@ -111,7 +111,8 @@ class Serialization(SerializationInterface):
             raise TiddlerFormatError(
                     'unable to make json into tiddler: %s, %s'
                     % (tiddler.title, exc))
-        accepted_keys = ['tags', 'fields', 'text', 'type']
+        accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
+                'text', 'type']
         for key, value in dict_from_input.iteritems():
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)

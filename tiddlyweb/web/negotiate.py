@@ -1,6 +1,10 @@
 """
-WSGI Middleware to do pseudo-content negotiation
-and put the type in tiddlyweb.type.
+WSGI Middleware to do pseudo-content negotiation and put the type in
+tiddlyweb.type.
+
+This is called psuedo-content negotiation because there is no effort
+to select the best match when multiple options are presented in the
+Accept header.
 """
 import logging
 

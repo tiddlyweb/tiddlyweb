@@ -140,8 +140,7 @@ def test_put_tiddler_json():
     http = httplib2.Http()
 
     json = simplejson.dumps(dict(text='i fight for the users',
-        tags=['tagone','tagtwo'], modifier='', modified='200805230303',
-        created='200803030303'))
+        tags=['tagone','tagtwo'], modifier=''))
 
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',

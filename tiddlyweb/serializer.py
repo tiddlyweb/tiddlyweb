@@ -1,5 +1,11 @@
 """
-Serialize TiddlyWeb things for the sake of storage and the like.
+Serialize TiddlyWeb entities for the sake of taking input, sending
+output, or formatting entities for storage.
+
+This module provides the facade for accessing the possibly many modules
+which act as serializations. It is asked by calling code to provide a
+serialization for a given MIME type. Plugins may override what MIME
+types are handled and by what modules.
 """
 
 
@@ -19,7 +25,7 @@ class NoSerializationError(Exception):
 
 class Serializer(object):
     """
-    You must set object after initialization.
+    You must set serializer.object after initialization.
     """
 
     def __init__(self, engine, environ=None):

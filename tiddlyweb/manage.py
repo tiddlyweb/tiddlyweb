@@ -1,5 +1,8 @@
 """
-Tools for managing command line tools.
+Provide the workings for the twanager command line tool.
+twanager calls handle() in this module and makes available
+all commands that have been put into the COMMANDS dictionary
+by the make_command() decorator.
 """
 
 import logging
