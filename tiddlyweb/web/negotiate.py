@@ -96,7 +96,6 @@ def _parse_accept_header(header):
     accept_types = header.strip().rstrip().split(',')
     order = 0
     for accept_type in accept_types:
-        weight = None
         splits = accept_type.strip().rstrip().split(';')
 
         if splits[0]:
@@ -104,10 +103,16 @@ def _parse_accept_header(header):
         else:
             continue
 
-        if len(splits) == 2:
+        try:
             weight = splits[1]
-            weight = weight.strip(' q=')
-            weight = float(weight)
+            weight = weight.rstrip().strip()
+            if 'q=' in weight:
+                weight = weight.strip('q=')
+                weight = float(weight)
+            else:
+                weight = None
+        except IndexError:
+            weight = None
 
         prefs.append({'name': name, 'order': order})
         order += 1

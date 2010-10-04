@@ -37,9 +37,15 @@ def test_accept_ill_formed_header():
 
     neg.figure_type(environ)
 
-    assert environ['tiddlyweb.type'][0] == 'text/plain', \
-            'tiddlyweb.type should be text/plain, found %s' % environ['tiddlyweb.type'][0]
+    assert environ['tiddlyweb.type'][0] == 'text/plain'
 
+def test_accept_extension():
+    """
+    Ignore non q= style parameters.
+    """
+    environ['HTTP_ACCEPT'] = 'text/plain; cookies=chip'
+    neg.figure_type(environ)
+    assert environ['tiddlyweb.type'][0] == 'text/plain'
 
 def test_file_extension():
     """
