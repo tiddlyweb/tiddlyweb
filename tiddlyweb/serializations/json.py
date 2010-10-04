@@ -6,7 +6,8 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
-from tiddlyweb.serializer import TiddlerFormatError, BagFormatError
+from tiddlyweb.serializer import (TiddlerFormatError, BagFormatError,
+        RecipeFormatError)
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -61,7 +62,12 @@ class Serialization(SerializationInterface):
         if it is in the proper form. Include
         the policy.
         """
-        info = simplejson.loads(input_string)
+        try:
+            info = simplejson.loads(input_string)
+        except simplejson.JSONDecodeError, exc:
+            raise RecipeFormatError(
+                    'unable to make json into recipe: %s, %s'
+                    % (recipe.name, exc))
         recipe.set_recipe(info.get('recipe', []))
         recipe.desc = info.get('desc', '')
         if info.get('policy', {}):

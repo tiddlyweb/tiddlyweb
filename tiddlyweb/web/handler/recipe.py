@@ -10,9 +10,10 @@ from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.policy import create_policy_check
-from tiddlyweb.store import NoRecipeError, NoBagError, \
-        StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, NoSerializationError
+from tiddlyweb.store import (NoRecipeError, NoBagError,
+        StoreMethodNotImplemented)
+from tiddlyweb.serializer import (Serializer, NoSerializationError,
+        RecipeFormatError)
 from tiddlyweb.web.http import HTTP400, HTTP409, HTTP415, HTTP404
 from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
@@ -141,6 +142,8 @@ def put(environ, start_response):
 
         _validate_recipe(environ, recipe)
         store.put(recipe)
+    except RecipeFormatError, exc:
+        raise HTTP400('unable to put recipe: %s' % exc)
     except TypeError, exc:
         raise HTTP400('malformed input: %s' % exc)
     except NoSerializationError:

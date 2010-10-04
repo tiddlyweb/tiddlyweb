@@ -196,6 +196,23 @@ def test_put_recipe():
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/recipes/other'
 
+def test_put_recipe_bad_json():
+    """
+    Get a recipe as json then put it back with a different name.
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes/long.json',
+            method='GET')
+
+    assert response['status'] == '200'
+    json = content[0:-1]
+
+    response, content = http.request('http://our_test_domain:8001/recipes/other',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+
+    assert response['status'] == '400'
+    assert 'unable to put recipe: unable to make json' in content
+
 def test_put_bad_recipe():
     """
     Get a recipe as json then put it back with a different name.
