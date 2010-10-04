@@ -224,6 +224,21 @@ def test_put_bag():
     info = simplejson.loads(content)
     assert info['policy']['delete'] == policy_dict['delete']
 
+def test_put_bag_bad_json():
+    """
+    PUT a new bag to the server.
+    """
+    json_string = simplejson.dumps(dict(policy=policy_dict))
+    json_string = json_string[0:-1]
+
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
+            method='PUT', headers={'Content-Type': 'application/json'}, body=json_string)
+
+    assert response['status'] == '400'
+    assert 'unable to put bag' in content
+    assert 'unable to make json into' in content
+
 def test_delete_bag():
     """
     PUT a new bag to the server and then DELETE it.

@@ -16,6 +16,20 @@ class TiddlerFormatError(Exception):
     pass
 
 
+class BagFormatError(Exception):
+    """
+    The provided input is insufficient to form a valid Bag.
+    """
+    pass
+
+
+class RecipeFormatError(Exception):
+    """
+    The provided input is insufficient to form a valid Recipe.
+    """
+    pass
+
+
 class NoSerializationError(Exception):
     """
     There is a NoSerialization of this type for the entity.

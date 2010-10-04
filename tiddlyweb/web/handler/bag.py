@@ -11,7 +11,7 @@ import urllib
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, NoSerializationError
+from tiddlyweb.serializer import Serializer, NoSerializationError, BagFormatError
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
@@ -120,6 +120,8 @@ def put(environ, start_response):
 
         _validate_bag(environ, bag)
         store.put(bag)
+    except BagFormatError, exc:
+        raise HTTP400('unable to put bag: %s' % exc)
     except TypeError:
         raise HTTP400('Content-type header required')
     except NoSerializationError:

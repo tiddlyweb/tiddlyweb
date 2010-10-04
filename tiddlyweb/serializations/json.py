@@ -6,7 +6,7 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
-from tiddlyweb.serializer import TiddlerFormatError
+from tiddlyweb.serializer import TiddlerFormatError, BagFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -84,7 +84,13 @@ class Serialization(SerializationInterface):
         """
         Turn a JSON string into a bag.
         """
-        info = simplejson.loads(input_string)
+        try:
+            info = simplejson.loads(input_string)
+        except simplejson.JSONDecodeError, exc:
+            raise BagFormatError(
+                    'unable to make json into bag: %s, %s'
+                    % (bag.name, exc))
+
         if info.get('policy', {}):
             bag.policy = Policy()
             for key, value in info['policy'].items():
