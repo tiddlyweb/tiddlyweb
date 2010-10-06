@@ -1,3 +1,7 @@
+1.2.4 Wed Oct  6 18:42:47 UTC 2010
+
+  * Correctly send permissions field in JSON tiddlers.
+
 1.2.3 Mon Oct  4 17:40:20 UTC 2010
 
   * Handle Accept headers with extended parameters.
