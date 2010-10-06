@@ -19,10 +19,6 @@ class Serialization(SerializationInterface):
     Turn various entities to and from JSON.
     """
 
-    def __init__(self, environ=None):
-        SerializationInterface.__init__(self, environ)
-        self._bag_perms_cache = {}
-
     def list_recipes(self, recipes):
         """
         Create a JSON list of recipe names from
@@ -173,12 +169,15 @@ class Serialization(SerializationInterface):
                             environ['tiddlyweb.usersign'])
             return perms
 
-        bag_name = tiddler.bag
         perms = []
-        if len(self._bag_perms_cache):
+        bag_name = tiddler.bag
+        if hasattr(self, '_bag_perms_cache'):
             if bag_name in self._bag_perms_cache:
                 perms = self._bag_perms_cache[bag_name]
             else:
                 perms = _read_bag_perms(self.environ, tiddler)
+        else:
+            self._bag_perms_cache = {}
+            perms = _read_bag_perms(self.environ, tiddler)
         self._bag_perms_cache[bag_name] = perms
         return perms
