@@ -46,6 +46,16 @@ def test_get_recipes_filters():
     assert 'recipe1\n' in content
     assert 'recipe2\n' not in content
 
+def test_get_recipes_filters_bad_select():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes?select=text:recipe1',
+            headers={'Accept': 'text/plain'},
+            method='GET')
+
+    assert response['status'] == '400', content
+    assert 'malformed filter' in content
+    assert "object has no attribute 'text'" in content
+
 def test_get_recipes_selected_sorted_filters():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes?select=name:>recipe2',
