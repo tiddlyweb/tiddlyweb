@@ -24,6 +24,7 @@ def setup_module(module):
 
     for i in xrange(5):
         recipe = Recipe('recipe%s' % i)
+        recipe.set_recipe([('monkey', '')])
         module.store.put(recipe)
 
 def test_get_recipes_txt():
@@ -55,6 +56,15 @@ def test_get_recipes_filters_bad_select():
     assert response['status'] == '400', content
     assert 'malformed filter' in content
     assert "object has no attribute 'text'" in content
+
+def test_get_recipes_filters_rbag():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/recipes?select=rbag:monkey',
+            headers={'Accept': 'text/plain'},
+            method='GET')
+
+    assert response['status'] == '200', content
+    assert 'recipe0' in content
 
 def test_get_recipes_selected_sorted_filters():
     http = httplib2.Http()

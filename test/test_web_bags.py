@@ -47,6 +47,15 @@ def test_get_bags_filters():
     assert 'bag1\n' in content
     assert 'bag2\n' not in content
 
+def test_get_bags_filters():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags?select=rbag:figgy',
+            headers={'Accept': 'text/plain'},
+            method='GET')
+
+    assert response['status'] == '400', content
+    assert 'malformed filter' in content
+
 def test_get_bags_selected_sorted_filters():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags?select=name:>bag2',

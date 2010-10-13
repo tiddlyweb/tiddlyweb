@@ -77,6 +77,14 @@ def select_parse(command):
     return selector
 
 
+def bag_in_recipe(entity, attribute, value):
+    """
+    Return true if the named bag is in the recipe.
+    """
+    bags = [bag for bag, filter in entity.get_recipe()]
+    return value in bags
+
+
 def field_in_fields(entity, attribute, value):
     """
     Return true if the entity has the named field.
@@ -109,6 +117,7 @@ ATTRIBUTE_SELECTOR = {
         'tag': tag_in_tags,
         'text': text_in_text,
         'field': field_in_fields,
+        'rbag': bag_in_recipe,
         }
 
 
