@@ -9,7 +9,7 @@ import logging
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
         recursive_filter)
-from tiddlyweb.store import NoBagError
+from tiddlyweb.store import NoBagError, StoreError
 
 
 def get_tiddlers_from_recipe(recipe, environ=None):
@@ -83,10 +83,13 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
         Try looking in an available index to see if the tiddler exists.
         """
         kwords = {'id': '%s:%s' % (bag.name, tiddler.title)}
-        tiddlers = index_module.index_query(environ, **kwords)
-        if list(tiddlers):
-            logging.debug('satisfied recipe bag query via filter index')
-            return bag
+        try:
+            tiddlers = index_module.index_query(environ, **kwords)
+            if list(tiddlers):
+                logging.debug('satisfied recipe bag query via filter index')
+                return bag
+        except StoreError, exc:
+            raise FilterIndexRefused('unable to index_query: %s' % exc)
         return None
 
     def _query_bag(bag):
