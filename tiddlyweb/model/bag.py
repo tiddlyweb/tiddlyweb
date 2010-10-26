@@ -18,7 +18,7 @@ class Bag(object):
     web handlers.
     """
 
-    def __init__(self, name, desc=''):
+    def __init__(self, name, desc=u''):
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.policy = Policy()  # set to default policy

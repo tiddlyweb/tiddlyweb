@@ -97,7 +97,7 @@ class Serialization(SerializationInterface):
             bag.policy = Policy()
             for key, value in info['policy'].items():
                 bag.policy.__setattr__(key, value)
-        bag.desc = info.get('desc', '')
+        bag.desc = info.get('desc', u'')
         return bag
 
     def tiddler_as(self, tiddler):
