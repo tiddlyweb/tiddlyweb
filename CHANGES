@@ -1,3 +1,7 @@
+1.2.6 Tue Oct 26 13:55:39 UTC 2010
+
+  * Better unicode handling in bag descriptions.
+
 1.2.5 Wed Oct 13 20:05:18 UTC 2010
 
   * Show protocol when starting CherryPy.
