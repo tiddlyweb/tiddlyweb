@@ -27,7 +27,7 @@ class Recipe(list):
     primarily designed for use within the web handlers.
     """
 
-    def __init__(self, name, desc=''):
+    def __init__(self, name, desc=u''):
         list.__init__(self)
         self.name = unicode(name)
         self.desc = unicode(desc)

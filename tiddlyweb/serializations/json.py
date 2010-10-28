@@ -65,7 +65,7 @@ class Serialization(SerializationInterface):
                     'unable to make json into recipe: %s, %s'
                     % (recipe.name, exc))
         recipe.set_recipe(info.get('recipe', []))
-        recipe.desc = info.get('desc', '')
+        recipe.desc = info.get('desc', u'')
         if info.get('policy', {}):
             recipe.policy = Policy()
             for key, value in info['policy'].items():
