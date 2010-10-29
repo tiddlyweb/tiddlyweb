@@ -9,8 +9,18 @@ A collection provides:
 * way to get stuff out
 """
 
+from tiddlyweb.config import config
 from tiddlyweb.model.collections import Collection, Tiddlers
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.bag import Bag
+
+from tiddlywebplugins.utils import get_store
+
+from fixtures import reset_textstore
+
+def setup_module(module):
+    reset_textstore()
+    module.store = get_store(config)
 
 def test_create_collection():
     collection = Collection()
@@ -57,3 +67,23 @@ def test_tiddler_collection():
     modified = tiddlers.modified
     assert ['how', 'now', 'cow'] == list(tiddler.title for tiddler in tiddlers)
     assert modified == '30000000000000'
+
+def test_tiddler_racing():
+    bag = Bag('foo')
+    store.put(bag)
+    tiddlers = Tiddlers(store=store)
+
+    for title in ['x', 'y', 'z']:
+        tiddler = Tiddler(title, 'foo')
+        store.put(tiddler)
+        tiddlers.add(tiddler)
+
+    tiddler = Tiddler('y', 'foo')
+    store.delete(tiddler)
+
+    tids = list(tiddlers)
+    assert len(tids) == 2
+    assert 'x' in [tiddler.title for tiddler in tids]
+    assert 'z' in [tiddler.title for tiddler in tids]
+    assert 'y' not in [tiddler.title for tiddler in tids]
+

@@ -7,6 +7,9 @@ the collections keep track of their last-modified time and generate a
 hash suitable for use as an ETag.
 """
 
+import logging
+
+from tiddlyweb.store import StoreError
 from tiddlyweb.util import sha
 
 from tiddlyweb.model.tiddler import Tiddler
@@ -106,11 +109,17 @@ class Tiddlers(Collection):
         """
         Generate the items in this container.
         Since these are tiddlers, load them if they are
-        not loaded.
+        not loaded. If a tiddler is now gone, skip right
+        over that.
         """
         for tiddler in self._container:
             if not tiddler.store and self.store:
-                tiddler = self.store.get(tiddler)
+                try:
+                    tiddler = self.store.get(tiddler)
+                except StoreError, exc:
+                    logging.debug('missed tiddler in collection: %s, %s',
+                            tiddler, exc)
+                    continue
             yield tiddler
 
     def add(self, tiddler):
