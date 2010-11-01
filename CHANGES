@@ -1,3 +1,8 @@
+1.2.8 Mon Nov  1 13:26:22 UTC 2010
+
+  * Trap ValueError in limit filters.
+  * Handle race condition in Tiddlers collection generators.
+
 1.2.7 Tue Oct 26 14:23:28 UTC 2010
 
   * Better handling of StoreError during index_query.
