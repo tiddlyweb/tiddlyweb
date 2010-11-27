@@ -64,7 +64,8 @@ def _figure_type_for_get(environ):
     our_types = []
 
     if path_info:
-        extension = path_info.rsplit('.', 1)
+        last_segment = path_info.rsplit('/', 1)[-1]
+        extension = last_segment.rsplit('.', 1)
         if len(extension) == 2:
             ext = extension[-1]
             environ['tiddlyweb.extension'] = ext

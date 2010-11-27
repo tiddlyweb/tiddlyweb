@@ -1,3 +1,8 @@
+1.2.9 Sat Nov 27 01:45:07 UTC 2010
+
+  * Fix problems with handling extensions when a bag or recipe
+    contains a '.'.
+
 1.2.8 Mon Nov  1 13:26:22 UTC 2010
 
   * Trap ValueError in limit filters.
