@@ -5,6 +5,10 @@ Data structures required for our testing.
 import os
 import shutil
 
+from wsgi_intercept import httplib2_intercept
+import wsgi_intercept
+
+from tiddlyweb.web.serve import load_app
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
@@ -17,6 +21,14 @@ config['server_host'] = {
         'host': 'our_test_domain',
         'port': '8001',
         }
+
+def initialize_app():
+    app = load_app()
+    def app_fn():
+        return app
+
+    httplib2_intercept.install()
+    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
 
 TiddlerOne = Tiddler('TiddlerOne')
 TiddlerOne.modifier = 'AuthorOne'

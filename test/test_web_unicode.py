@@ -3,13 +3,11 @@ Test a full suite of unicode interactions.
 """
 
 
-from wsgi_intercept import httplib2_intercept
-import wsgi_intercept
 import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore
+from fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
@@ -18,15 +16,7 @@ encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
 name = urllib.unquote(encoded_name).decode('utf-8')
 
 def setup_module(module):
-    from tiddlyweb.web import serve
-    # we have to have a function that returns the callable,
-    # Selector just _is_ the callable
-    def app_fn():
-        return serve.load_app()
-    #wsgi_intercept.debuglevel = 1
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
-
+    initialize_app()
     reset_textstore()
     module.store = _teststore()
     #muchdata(module.store)

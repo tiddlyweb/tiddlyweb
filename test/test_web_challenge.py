@@ -3,24 +3,18 @@ Test the way in which the /challenge URI produces stuff.
 """
 
 
-from wsgi_intercept import httplib2_intercept
-import wsgi_intercept
 import httplib2
 import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore
+from fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.user import User
 from tiddlyweb.config import config
 
 def setup_module(module):
-    from tiddlyweb.web import serve
     config['auth_systems'].append('not.really.there')
-    def app_fn():
-        return serve.load_app()
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
+    initialize_app()
     reset_textstore()
     module.store = _teststore()
     muchdata(module.store)
@@ -161,6 +155,12 @@ def test_single_challenge_redirect():
     assert e.response['status'] == '302'
 
 def test_cookie_path_prefix_max_age():
+    """
+    This test is a bit messed up. Because we have a persistent app
+    loaded by load_app in fixtures, the prefix that the selector uses
+    is already set and we cannot address requests there, so we address
+    a non prefixed URL, but expect a Path in the cookie.
+    """
     original_prefix = config['server_prefix']
     config['server_prefix'] = '/wiki'
     config['cookie_age'] = '300'
@@ -169,7 +169,7 @@ def test_cookie_path_prefix_max_age():
     try:
         http = httplib2.Http()
         response, content = http.request(
-                'http://our_test_domain:8001/wiki/challenge/cookie_form',
+                'http://our_test_domain:8001/challenge/cookie_form',
                 method='POST',
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
@@ -181,4 +181,3 @@ def test_cookie_path_prefix_max_age():
     assert 'Path=/wiki/' in e.response['set-cookie']
     assert 'Max-Age=300' in e.response['set-cookie']
     config['server_prefix'] = original_prefix
-

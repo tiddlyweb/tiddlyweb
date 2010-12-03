@@ -4,14 +4,12 @@ Test that GETting a tiddler in some form.
 
 import os
 
-from wsgi_intercept import httplib2_intercept
-import wsgi_intercept
 import httplib2
 import simplejson
 
 from base64 import b64encode
 
-from fixtures import reset_textstore, _teststore
+from fixtures import reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.user import User
 from tiddlyweb.model.bag import Bag
@@ -34,12 +32,7 @@ tiddlyweb.web.validator.TIDDLER_VALIDATORS = [
         ]
 
 def setup_module(module):
-    from tiddlyweb.web import serve
-    def app_fn():
-        return serve.load_app()
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
-
+    initialize_app()
     reset_textstore()
     module.store = _teststore()
 

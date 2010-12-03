@@ -5,14 +5,12 @@ XXX This test file appears to have never been completed.
 """
 
 
-from wsgi_intercept import httplib2_intercept
-import wsgi_intercept
 import httplib2
 import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore
+from fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.config import config
 from tiddlyweb.model.user import User
@@ -27,12 +25,8 @@ def user(environ, start_response):
     return ["%s\n" % username]
 
 def setup_module(module):
-    from tiddlyweb.web import serve
     config['system_plugins'].append('test.test_web_extract')
-    def app_fn():
-        return serve.load_app()
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
+    initialize_app()
     reset_textstore()
     module.store = _teststore()
     user = User('cow')

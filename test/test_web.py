@@ -3,8 +3,6 @@ Test that GETting a bag can list the tiddlers.
 """
 
 
-from wsgi_intercept import httplib2_intercept
-import wsgi_intercept
 import httplib2
 import py.test
 
@@ -16,19 +14,15 @@ from tiddlyweb.web import serve
 
 from test.simpleplugin import PluginHere
 
+from fixtures import initialize_app
+
 expected_content="""<ul id="root" class="listing">
 <li><a href="/recipes">recipes</a></li>
 <li><a href="/bags">bags</a></li>
 </ul>"""
 
 def setup_module(module):
-    # we have to have a function that returns the callable,
-    # Selector just _is_ the callable
-    def app_fn():
-        return serve.load_app()
-    #wsgi_intercept.debuglevel = 1
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
+    initialize_app()
 
 def test_get_root():
     http = httplib2.Http()
@@ -112,4 +106,3 @@ def test_datetime_from_http_date_semi():
     datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
     new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
     assert new_timestamp == timestamp
-

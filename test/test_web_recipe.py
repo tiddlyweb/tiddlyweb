@@ -4,29 +4,19 @@ Test that GETting recipes.
 """
 
 
-from wsgi_intercept import httplib2_intercept
 from base64 import b64encode
-import wsgi_intercept
 import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore
+from fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 
 authorization = b64encode('cdent:cowpig')
 
 def setup_module(module):
-    from tiddlyweb.web import serve
-    # we have to have a function that returns the callable,
-    # Selector just _is_ the callable
-    def app_fn():
-        return serve.load_app()
-    #wsgi_intercept.debuglevel = 1
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
-
+    initialize_app()
     reset_textstore()
     module.store = _teststore()
     muchdata(module.store)
