@@ -25,9 +25,10 @@ class Collection(object):
     iterated.
     """
 
-    def __init__(self):
+    def __init__(self, title=''):
         self._digest = sha()
         self.modified = '0'
+        self.title = title
         self._container = []
 
     def __contains__(self, item):
@@ -99,8 +100,8 @@ class Tiddlers(Collection):
     to save memory and because often the data is not needed.
     """
 
-    def __init__(self, store=None):
-        Collection.__init__(self)
+    def __init__(self, title='', store=None):
+        Collection.__init__(self, title)
         self.is_revisions = False
         self.is_search = False
         self.store = store

@@ -49,13 +49,16 @@ def get(environ, start_response):
     chosen store.
     """
     store = environ['tiddlyweb.store']
+    search_query = get_search_query(environ)
+    title = 'Search for %s' % search_query
+    title = environ['tiddlyweb.query'].get('title', [title])[0]
 
     try:
         tiddlers = get_tiddlers(environ)
 
         usersign = environ['tiddlyweb.usersign']
 
-        candidate_tiddlers = Tiddlers(store=store)
+        candidate_tiddlers = Tiddlers(title=title, store=store)
         candidate_tiddlers.is_search = True
 
         bag_readable = {}

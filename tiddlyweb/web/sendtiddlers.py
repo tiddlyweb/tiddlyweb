@@ -27,6 +27,12 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     if filters:
         candidate_tiddlers = Tiddlers(store=store)
         try:
+            candidate_tiddlers.title = tiddlers.title
+            candidate_tiddlers.is_search = tiddlers.is_search
+            candidate_tiddlers.is_revisions = tiddlers.is_revisions
+        except AttributeError:
+            pass
+        try:
             for tiddler in recursive_filter(filters, tiddlers):
                 recipe = tiddler.recipe
                 if not tiddler.store:

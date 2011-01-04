@@ -514,7 +514,9 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     """
     store = environ['tiddlyweb.store']
 
-    tiddlers = Tiddlers(store=store)
+    title = 'Revisions of Tiddler %s' % tiddler.title
+    title = environ['tiddlyweb.query'].get('title', [title])[0]
+    tiddlers = Tiddlers(title=title, store=store)
     tiddlers.is_revisions = True
     recipe = tiddler.recipe
     try:

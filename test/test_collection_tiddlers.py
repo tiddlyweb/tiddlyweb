@@ -27,6 +27,11 @@ def test_create_collection():
 
     assert isinstance(collection, Collection)
 
+def test_collection_title():
+    collection = Collection('barney')
+
+    assert collection.title == 'barney'
+
 def test_add_thing():
     collection = Collection()
     collection.add('monkey')

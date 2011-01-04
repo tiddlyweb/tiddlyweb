@@ -61,6 +61,8 @@ def get_tiddlers(environ, start_response):
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
     recipe = _determine_recipe(environ)
+    title = 'Tiddlers From Recipe %s' % recipe.name
+    title = environ['tiddlyweb.query'].get('title', [title])[0]
 
     # check the recipe can be read
     recipe.policy.allows(usersign, 'read')
@@ -86,7 +88,7 @@ def get_tiddlers(environ, start_response):
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
-    tiddlers = Tiddlers(store=store)
+    tiddlers = Tiddlers(title=title, store=store)
 
     for tiddler in candidate_tiddlers:
         tiddler.recipe = recipe.name
