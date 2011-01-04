@@ -131,9 +131,9 @@ class SimpleLog(object):
     Borrowed from Paste Translogger
     """
 
-    format = ('%(REMOTE_ADDR)s - %(REMOTE_USER)s [%(time)s] '
-            '"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
-            '%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"')
+    format = (u'%(REMOTE_ADDR)s - %(REMOTE_USER)s [%(time)s] '
+            u'"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
+            u'%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"')
 
     def __init__(self, application):
         self.application = application
@@ -182,7 +182,7 @@ class SimpleLog(object):
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
                 }
         message = self.format % log_format
-        logging.info(message)
+        logging.info(message.encode('UTF-8', 'replace'))
 
 
 class StoreSet(object):
