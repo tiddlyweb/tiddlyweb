@@ -36,3 +36,7 @@ def test_cookie_mac():
 
     assert string == 'test4="alpha4:%s"; httponly' % secret_string
 
+def test_cookie_domain():
+  string = make_cookie('test5', 'alpha5', domain=".tiddlyspace.com")
+
+  assert string == 'test5=alpha5; Domain=.tiddlyspace.com; httponly'
