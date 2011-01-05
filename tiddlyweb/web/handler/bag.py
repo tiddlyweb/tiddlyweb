@@ -9,6 +9,7 @@ These need some refactoring.
 import urllib
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
 from tiddlyweb.serializer import Serializer, NoSerializationError, BagFormatError
@@ -70,12 +71,18 @@ def get_tiddlers(environ, start_response):
     store = environ['tiddlyweb.store']
     bag_name = _determine_bag_name(environ)
     bag = _get_bag(environ, bag_name)
+    title = 'Tiddlers From Bag %s' % bag.name
+    title = environ['tiddlyweb.query'].get('title', [title])[0]
 
     usersign = environ['tiddlyweb.usersign']
     # will raise exception if there are problems
     bag.policy.allows(usersign, 'read')
 
-    return send_tiddlers(environ, start_response, tiddlers=store.list_bag_tiddlers(bag))
+    tiddlers = Tiddlers(title=title, store=store)
+    for tiddler in store.list_bag_tiddlers(bag):
+        tiddlers.add(tiddler)
+
+    return send_tiddlers(environ, start_response, tiddlers=tiddlers)
 
 
 def list_bags(environ, start_response):

@@ -15,8 +15,8 @@ from tiddlyweb.web.http import HTTP400, HTTP304, HTTP415
 def send_tiddlers(environ, start_response, tiddlers=None):
     """
     Output the tiddlers contained in the provided
-    bag in a Negotiated representation. Often, but
-    not always, a wiki.
+    Tiddlers collection in a Negotiated representation.
+    Often, but not always, a wiki.
     """
     last_modified = None
     etag = None
@@ -43,15 +43,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
         except FilterError, exc:
             raise HTTP400('malformed filter: %s' % exc)
     else:
-        if hasattr(tiddlers, 'modified'):
-            candidate_tiddlers = tiddlers
-        else:
-            candidate_tiddlers = Tiddlers(store=store)
-            # Don't need to worry about recipes here as this
-            # branch can only happen when tiddlers have been loaded
-            # via a bag.
-            for tiddler in tiddlers:
-                candidate_tiddlers.add(tiddler)
+        candidate_tiddlers = tiddlers
 
     last_modified, etag = _validate_tiddler_list(environ, candidate_tiddlers)
 
