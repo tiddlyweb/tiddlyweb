@@ -94,7 +94,7 @@ def datetime_from_http_date(http_datestring):
 
 
 def make_cookie(name, value, mac_key=None, path=None,
-        expires=None, httponly=True):
+        expires=None, httponly=True, domain=None):
     """
     Create a cookie string, optionally with a MAC, path and
     expires value. Expires is in seconds.
@@ -114,6 +114,9 @@ def make_cookie(name, value, mac_key=None, path=None,
 
     if expires:
         cookie[name]['max-age'] = expires
+
+    if domain:
+        cookie[name]['domain'] = domain
 
     output = cookie.output(header='').lstrip().rstrip()
     if httponly:
