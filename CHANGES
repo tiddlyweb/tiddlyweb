@@ -1,3 +1,11 @@
+1.2.12 Fri Jan  7 09:52:47 UTC 2011
+
+  * Support setting cookie domain in make_cookie.
+
+1.2.11 Wed Jan  5 15:00:00 UTC 2011
+
+  * Bug fixes in bag title handling.
+
 1.2.10 Wed Jan  5 11:11:07 UTC 2011
 
   * Add a title attribute to collections.
