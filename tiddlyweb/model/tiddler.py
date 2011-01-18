@@ -28,7 +28,7 @@ def string_to_tags_list(string):
         elif match.group(1):
             tags.append(match.group(1))
 
-    return tags
+    return list(set(tags))
 
 
 class Tiddler(object):
