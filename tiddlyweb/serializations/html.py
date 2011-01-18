@@ -60,15 +60,13 @@ class Serialization(SerializationInterface):
         lines = []
         representation_link = ''
         bag_link = ''
-        base = ''
         for tiddler in tiddlers:
-            if not base:
-                base, base_link, representation_link = \
-                        self._tiddler_list_info(tiddler)
+            if not representation_link:
+                representation_link = self._tiddler_list_info(tiddler)
             if tiddlers.is_revisions:
-                line = self._tiddler_revision_info(base, base_link, tiddler)
+                line = self._tiddler_revision_info(tiddler)
             else:
-                line = self._tiddler_in_bag_info(base, base_link, tiddler)
+                line = self._tiddler_in_container_info(tiddler)
             lines.append(line)
 
         # If we were able to load the tiddler revisions there is at
@@ -195,14 +193,20 @@ class Serialization(SerializationInterface):
             output.append('%s="%s"' % (key, escape_attribute_value(val)))
         return ' '.join(output)
 
-    def _tiddler_in_bag_info(self, base, base_link, tiddler):
+    def _tiddler_in_container_info(self, tiddler):
         """
         Get the info for a non-revision tiddler in a list.
-        """
+        """ 
+        if tiddler.recipe:
+            base = 'recipes'
+            container = tiddler.recipe
+        else:
+            base = 'bags'
+            container = tiddler.bag
         return '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
             self._server_prefix(),
             base,
-            base_link,
+            encode_name(container),
             encode_name(tiddler.title),
             tiddler.title)
 
@@ -232,26 +236,28 @@ class Serialization(SerializationInterface):
         Get the basic link info needed for listing tiddlers.
         """
         if tiddler.recipe:
-            base = 'recipes'
-            base_link = encode_name(tiddler.recipe)
             representation_link = '%s/recipes/%s/tiddlers' % (
-                    self._server_prefix(), base_link)
+                    self._server_prefix(), encode_name(tiddler.recipe))
         else:
-            base = 'bags'
-            base_link = encode_name(tiddler.bag)
             representation_link = '%s/bags/%s/tiddlers' % (
-                    self._server_prefix(), base_link)
-        return base, base_link, representation_link
+                    self._server_prefix(), encode_name(tiddler.bag))
+        return representation_link
 
-    def _tiddler_revision_info(self, base, base_link, tiddler):
+    def _tiddler_revision_info(self, tiddler):
         """
         Get the individual revision info for listing revisions.
         """
+        if tiddler.recipe:
+            base = 'recipes'
+            container = tiddler.recipe
+        else:
+            base = 'bags'
+            container = tiddler.bag
         return  ('<li><a href="%s/%s/%s/tiddlers/'
             '%s/revisions/%s">%s:%s</a></li>' % (
             self._server_prefix(),
             base,
-            base_link,
+            encode_name(container),
             encode_name(tiddler.title),
             tiddler.revision,
             tiddler.title,
