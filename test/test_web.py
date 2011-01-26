@@ -81,11 +81,14 @@ def test_http_date_from_timestamp():
 
 def test_http_date_from_timestamp_invalid():
     timestamp = '200702291010'
-    py.test.raises(ValueError, 'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
+    badone = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
+    timestamp = '20 15'
+    badtwo = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
+    assert badone[:14] == badtwo[:14]
 
-def test_http_date_from_timestamp_pre_1900():
     timestamp = '108502281010'
-    py.test.raises(ValueError, 'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
+    py.test.raises(ValueError,
+        'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
 
 def test_datetime_from_http_date():
     timestamp = '200805231010'
