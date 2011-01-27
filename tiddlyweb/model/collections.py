@@ -142,6 +142,8 @@ class Tiddlers(Collection):
             self._container.append(tiddler)
 
         try:
+            if not tiddler.store and self.store:
+                tiddler = self.store.get(tiddler)
             modified_string = str(tiddler.modified)
             modified_string = modified_string.ljust(14, '0')
             if modified_string > self.modified:
