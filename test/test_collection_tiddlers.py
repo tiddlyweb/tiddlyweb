@@ -18,6 +18,8 @@ from tiddlywebplugins.utils import get_store
 
 from fixtures import reset_textstore
 
+import time
+
 def setup_module(module):
     reset_textstore()
     module.store = get_store(config)

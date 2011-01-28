@@ -128,28 +128,21 @@ class Tiddlers(Collection):
         Add a reference to the tiddler to the container,
         updating the digest and modified information.
         """
-        self._update_digest(tiddler)
-
-        if self.store:
+        if not tiddler.store and self.store:
+            tiddler = self.store.get(tiddler)
             reference = Tiddler(tiddler.title, tiddler.bag)
             if tiddler.revision:
                 reference.revision = tiddler.revision
             if tiddler.recipe:
                 reference.recipe = tiddler.recipe
-
             self._container.append(reference)
         else:
             self._container.append(tiddler)
-
-        try:
-            if not tiddler.store and self.store:
-                tiddler = self.store.get(tiddler)
-            modified_string = str(tiddler.modified)
-            modified_string = modified_string.ljust(14, '0')
-            if modified_string > self.modified:
-                self.modified = modified_string
-        except AttributeError:
-            pass
+        self._update_digest(tiddler)
+        modified_string = str(tiddler.modified)
+        modified_string = modified_string.ljust(14, '0')
+        if modified_string > self.modified:
+            self.modified = modified_string
 
     def _update_digest(self, tiddler):
         """
