@@ -1,3 +1,9 @@
+1.2.16 Fri Jan 28 16:27:03 UTC 2011
+
+  * Correctly set modified time on tiddler collections.
+  * Avoid AttributeError in HTMLPresenter if the browser sends no
+    User-Agent.
+
 1.2.15 Wed Jan 26 14:01:41 UTC 2011
 
   * Be more robust when generating HTTP Last Modified dates.
