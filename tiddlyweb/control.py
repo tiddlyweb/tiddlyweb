@@ -86,7 +86,9 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
         try:
             tiddlers = index_module.index_query(environ, **kwords)
             if list(tiddlers):
-                logging.debug('satisfied recipe bag query via filter index')
+                logging.debug(
+                        'satisfied recipe bag query via filter index: %s:%s',
+                        bag.name, tiddler.title)
                 return bag
         except StoreError, exc:
             raise FilterIndexRefused('unable to index_query: %s' % exc)
