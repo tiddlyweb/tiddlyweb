@@ -208,7 +208,7 @@ class Serialization(SerializationInterface):
             base,
             encode_name(container),
             encode_name(tiddler.title),
-            tiddler.title.replace(' ', '&ensp;'))
+            tiddler.title.replace(' ', '&nbsp;', 1))
 
     def _tiddler_list_header(self, representation_link):
         """
