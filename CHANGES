@@ -1,3 +1,10 @@
+1.2.18 Tue Feb 22 16:40:31 UTC 2011
+
+  * SECURITY: Ensure that a password which exists but is the empty
+    string cannot auth.
+  * Make it so a tiddler with title ' ' is clickable in the HTML
+    serialization.
+
 1.2.17 Fri Jan 28 17:52:23 UTC 2011
 
   * Use correct tiddler.revision value in tiddler collection digest
