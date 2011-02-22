@@ -44,13 +44,16 @@ class User(object):
         Set the password for this user.
         """
         password = password.strip()
+        # The null password or empty password string never auths
+        if not password:
+            return
         self._password = sha(password.strip().encode('utf-8')).hexdigest()
 
     def check_password(self, candidate_password):
         """
         Check the password for this user. Return true if correct.
         """
-        if self._password is None:
+        if not self._password:
             return False
         crypted_thing = sha(candidate_password.strip().encode(
             'utf-8')).hexdigest()

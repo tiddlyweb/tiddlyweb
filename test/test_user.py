@@ -42,6 +42,9 @@ def test_user_password():
 def test_empty_password():
     user = User('ape')
     assert not user.check_password('xow'), 'no password on user returns false'
+    assert not user.check_password('')
+    user.set_password('')
+    assert not user.check_password('')
 
 def test_user_role():
     user = User('paper')
