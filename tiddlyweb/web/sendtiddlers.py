@@ -70,6 +70,8 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     except NoSerializationError, exc:
         raise HTTP415('Content type not supported: %s:%s, %s' %
                 (serialize_type, mime_type, exc))
+    except FilterError, exc:  # serializations may filter tildders
+        raise HTTP400('malformed filter or tiddler during filtering: %s' % exc)
 
     start_response("200 OK", response)
 
