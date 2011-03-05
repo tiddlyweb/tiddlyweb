@@ -1,3 +1,7 @@
+1.2.19 Sat Mar  5 12:30:04 UTC 2011
+
+  * Handle FilterError raised in <serialization>:list_tiddlers
+
 1.2.18 Tue Feb 22 16:40:31 UTC 2011
 
   * SECURITY: Ensure that a password which exists but is the empty
