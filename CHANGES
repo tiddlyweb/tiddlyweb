@@ -1,3 +1,7 @@
+1.2.20 Thu Mar 10 18:00:21 UTC 2011
+
+  * More correctly escape entities in HTML attributes.
+
 1.2.19 Sat Mar  5 12:30:04 UTC 2011
 
   * Handle FilterError raised in <serialization>:list_tiddlers
