@@ -109,3 +109,10 @@ def test_datetime_from_http_date_semi():
     datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
     new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
     assert new_timestamp == timestamp
+
+def test_datetime_form_http_date_utc():
+    datestring = 'Wed, 09 Mar 2011 00:00:00 UTC'
+    timestamp = '201103090000'
+    datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
+    new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
+    assert new_timestamp == timestamp

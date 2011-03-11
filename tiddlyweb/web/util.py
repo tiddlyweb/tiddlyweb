@@ -6,6 +6,7 @@ import Cookie
 import urllib
 import time
 from datetime import datetime
+from email.utils import parsedate
 
 from tiddlyweb.web.http import HTTP415
 from tiddlyweb.util import sha
@@ -88,9 +89,7 @@ def datetime_from_http_date(http_datestring):
     """
     if ';' in http_datestring:
         http_datestring = http_datestring.split(';', 1)[0].rstrip().lstrip()
-    http_datetime = datetime(*(time.strptime(http_datestring,
-        '%a, %d %b %Y %H:%M:%S GMT')[0:6]))
-    return http_datetime
+    return datetime(*parsedate(http_datestring)[:6])
 
 
 def make_cookie(name, value, mac_key=None, path=None,
