@@ -172,12 +172,13 @@ def html_encode(text):
 
 def escape_attribute_value(text):
     """
-    escape double quotes in attribute values
+    escape common character entities, incuding double quotes
+    in attribute values
 
     This assumes values are enclosed in double quotes (key="value").
     """
     try:
-        return text.replace('"', '&quot;')
+        return html_encode(text).replace('"', '&quot;')
     except AttributeError:  # value might be None
         return text
 

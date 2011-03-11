@@ -94,7 +94,7 @@ def test_tiddler_html_encode():
     assert '"Hello." I\'m &gt; than 5 &amp; &lt; you.' in string
 
 def test_html_attribute_escape():
-    tiddler = Tiddler('escape "double" quotes in tiddler field values')
+    tiddler = Tiddler('escape "double" quotes & &amp; in <tiddler> field values')
     tiddler.bag = u'foo "bar" baz'
     tiddler.modifier = 'Chris "sensei" Dent'
     tiddler.tags = ["foo", 'xxx "yyy" zzz']
@@ -104,7 +104,7 @@ def test_html_attribute_escape():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    assert r'''title="escape &quot;double&quot; quotes in tiddler field values"''' in string
+    assert r'''title="escape &quot;double&quot; quotes &amp; &amp;amp; in &lt;tiddler&gt; field values"''' in string
     assert r'''modifier="Chris &quot;sensei&quot; Dent"''' in string
     assert r'''tags="foo [[xxx &quot;yyy&quot; zzz]]"''' in string
     assert r'''custom="lorem 'ipsum' dolor &quot;sit&quot; amet"''' in string
