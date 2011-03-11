@@ -1,3 +1,8 @@
+1.2.21 Fri Mar 11 15:04:12 UTC 2011
+
+  * Better encoding of log output (again).
+  * More flexible parsing of HTTP date strings.
+
 1.2.20 Thu Mar 10 18:00:21 UTC 2011
 
   * More correctly escape entities in HTML attributes.
