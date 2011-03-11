@@ -131,14 +131,21 @@ class SimpleLog(object):
     Borrowed from Paste Translogger
     """
 
-    format = (u'%(REMOTE_ADDR)s - %(REMOTE_USER)s [%(time)s] '
-            u'"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
-            u'%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"')
+    format = ('%(REMOTE_ADDR)s - %(REMOTE_USER)s [%(time)s] '
+            '"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
+            '%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"')
 
     def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
+        logger = logging.getLogger()
+        if logger.isEnabledFor(logging.INFO):
+            return self._log_app(environ, start_response)
+        else:
+            return self.application(environ, start_response)
+
+    def _log_app(self, environ, start_response):
         req_uri = urllib.quote(environ.get('SCRIPT_NAME', '')
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
@@ -160,7 +167,11 @@ class SimpleLog(object):
 
     def write_log(self, environ, req_uri, status, size):
         """
-        Print the log info out in a formatted for to stdout.
+        Print the log info out in a formatted form to logging.info.
+
+        This is rather more complex than desirable because there is
+        a mix of str and unicode in the gathered data and we need to
+        make it acceptable for output.
         """
         environ['REMOTE_USER'] = None
         try:
@@ -181,8 +192,13 @@ class SimpleLog(object):
                 'HTTP_REFERER': environ.get('HTTP_REFERER', '-'),
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
                 }
+        for key, value in log_format.items():
+            try:
+                log_format[key] = value.encode('utf-8', 'replace')
+            except UnicodeDecodeError:
+                log_format[key] = value
         message = self.format % log_format
-        logging.info(message.encode('UTF-8', 'replace'))
+        logging.info(message)
 
 
 class StoreSet(object):
