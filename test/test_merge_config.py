@@ -9,6 +9,14 @@ from copy import deepcopy
 from tiddlyweb.config import config as global_config
 from tiddlyweb.util import merge_config
 
+def setup_module(module):
+    """
+    Protect against py.test's new collection mechanism
+    which carries about globals during the test collection phase.
+    """
+    if 'selector' in global_config:
+        del global_config['selector']
+
 
 def test_merge_sub_addition():
     config = deepcopy(global_config)
