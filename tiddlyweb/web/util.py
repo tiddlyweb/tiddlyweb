@@ -6,7 +6,10 @@ import Cookie
 import urllib
 import time
 from datetime import datetime
-from email.utils import parsedate
+try:
+    from email.utils import parsedate
+except ImportError: #  Python < 2.5
+    from email.Utils import parsedate
 
 from tiddlyweb.web.http import HTTP415
 from tiddlyweb.util import sha
