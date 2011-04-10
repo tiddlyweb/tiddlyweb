@@ -1,3 +1,7 @@
+1.2.22 Sun Apr 10 12:20:17 UTC 2011
+
+  * Handle Python 2.4's use of email.Utils instead of email.utils.
+
 1.2.21 Fri Mar 11 15:04:12 UTC 2011
 
   * Better encoding of log output (again).
