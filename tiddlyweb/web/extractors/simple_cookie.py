@@ -40,6 +40,6 @@ class Extractor(ExtractorInterface):
                 return {"name": user.usersign, "roles": user.list_roles()}
         except Cookie.CookieError, exc:
             raise HTTP400('malformed cookie: %s' % exc)
-        except KeyError:
+        except (KeyError, ValueError):
             pass
         return False

@@ -90,3 +90,11 @@ def test_bad_cookie():
             headers={'Cookie': 'foo(bar)bar="monkey"'})
     assert response['status'] == '400'
     assert 'Illegal key value' in content
+
+def test_malformed_tiddlyweb_cookie():
+    """confirm a malformed user cookie results in GUEST"""
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
+            headers={'Cookie': 'tiddlyweb_user="cdent.tumblr.com"'})
+    assert response['status'] == '200', content
+    assert 'GUEST' in content
