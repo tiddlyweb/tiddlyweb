@@ -1,3 +1,7 @@
+1.2.23 Mon May  2 14:05:40 UTC 2011
+
+  * Trap a ValueError when the tiddlyweb_user cookie is malformed.
+
 1.2.22 Sun Apr 10 12:20:17 UTC 2011
 
   * Handle Python 2.4's use of email.Utils instead of email.utils.
