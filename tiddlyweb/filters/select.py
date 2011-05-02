@@ -31,6 +31,9 @@ When doing sorting ATTRIBUTE_SORT_KEY is consulted to canonicalize the
 value. See tiddlyweb.filters.sort.
 """
 
+from itertools import ifilter
+from operator import gt, lt
+
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
@@ -154,19 +157,22 @@ def select_by_attribute(attribute, value, entities, negate=False,
         imported_module = __import__(indexer, {}, {}, ['index_query'])
         # dict keys may not be unicode
         kwords = {str(attribute): value, 'bag': indexable.name}
-        for tiddler in imported_module.index_query(environ, **kwords):
-            yield tiddler
+        return imported_module.index_query(environ, **kwords)
     else:
         select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
-        for entity in entities:
+
+        def _posfilter(entity):
             stored_entity = _get_entity(entity, store)
-            if negate:
-                if not select(stored_entity, attribute, value):
-                    yield entity
-            else:
-                if select(stored_entity, attribute, value):
-                    yield entity
-    return
+            return select(stored_entity, attribute, value)
+
+        if negate:
+            def _negfilter(entity):
+                return not _posfilter(entity)
+            _filter = _negfilter
+        else:
+            _filter = _posfilter
+
+        return ifilter(_filter, entities)
 
 
 def select_relative_attribute(attribute, value, entities,
@@ -189,26 +195,23 @@ def select_relative_attribute(attribute, value, entities,
 
     func = ATTRIBUTE_SORT_KEY.get(attribute, normalize_value)
 
-    for entity in entities:
+    if greater:
+        comparator = gt
+    elif lesser:
+        comparator = lt
+    else:
+        comparator = lambda x,y: True
+
+    def _select(entity):
         stored_entity = _get_entity(entity, store)
-        if greater:
-            if hasattr(stored_entity, 'fields'):
-                if func(getattr(stored_entity, attribute, stored_entity.fields.get(
-                    attribute, None))) > func(value):
-                    yield entity
-            else:
-                if func(getattr(stored_entity, attribute, None)) > func(value):
-                    yield entity
-        elif lesser:
-            if hasattr(stored_entity, 'fields'):
-                if func(getattr(stored_entity, attribute, stored_entity.fields.get(
-                    attribute, None))) < func(value):
-                    yield entity
-            else:
-                if func(getattr(stored_entity, attribute, None)) < func(value):
-                    yield entity
+        if hasattr(stored_entity, 'fields'):
+            return comparator(func(getattr(stored_entity, attribute,
+                stored_entity.fields.get(attribute, None))), func(value))
         else:
-            yield entity
+            return comparator(func(getattr(stored_entity, attribute, None)),
+                    func(value))
+
+    return ifilter(_select, entities)
 
 
 def _get_entity(entity, store):
