@@ -52,6 +52,10 @@ def select_parse(command):
         args = args.replace('!', '', 1)
 
         def selector(entities, indexable=False, environ=None):
+            """
+            Perform a negated select: match when attribute and value are not
+            equal.
+            """
             return select_by_attribute(attribute, args, entities, negate=True,
                     environ=environ)
 
@@ -59,6 +63,10 @@ def select_parse(command):
         args = args.replace('<', '', 1)
 
         def selector(entities, indexable=False, environ=None):
+            """
+            Perform a less than select: match when attribute is less than
+            value.
+            """
             return select_relative_attribute(attribute, args, entities,
                     lesser=True, environ=environ)
 
@@ -66,12 +74,19 @@ def select_parse(command):
         args = args.replace('>', '', 1)
 
         def selector(entities, indexable=False, environ=None):
+            """
+            Perform a greater than select: match when attribute is greater than
+            value.
+            """
             return select_relative_attribute(attribute, args, entities,
                     greater=True, environ=environ)
 
     else:
 
         def selector(entities, indexable=False, environ=None):
+            """
+            Perform a match select: match when attribute is equal the value.
+            """
             if environ == None:
                 environ = {}
             return select_by_attribute(attribute, args, entities,
@@ -84,7 +99,7 @@ def bag_in_recipe(entity, attribute, value):
     """
     Return true if the named bag is in the recipe.
     """
-    bags = [bag for bag, filter in entity.get_recipe()]
+    bags = [bag for bag, _ in entity.get_recipe()]
     return value in bags
 
 
@@ -162,11 +177,17 @@ def select_by_attribute(attribute, value, entities, negate=False,
         select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
 
         def _posfilter(entity):
+            """
+            Return True if the entity's attribute matches value.
+            """
             stored_entity = _get_entity(entity, store)
             return select(stored_entity, attribute, value)
 
         if negate:
             def _negfilter(entity):
+                """
+                Return True if the entity's attribute does not match value.
+                """
                 return not _posfilter(entity)
             _filter = _negfilter
         else:
@@ -200,9 +221,13 @@ def select_relative_attribute(attribute, value, entities,
     elif lesser:
         comparator = lt
     else:
-        comparator = lambda x,y: True
+        comparator = lambda x, y: True
 
     def _select(entity):
+        """
+        Return true if entity's attribute is < or > (depending on
+        comparator) the value in the filter.
+        """
         stored_entity = _get_entity(entity, store)
         if hasattr(stored_entity, 'fields'):
             return comparator(func(getattr(stored_entity, attribute,
