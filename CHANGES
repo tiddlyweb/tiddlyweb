@@ -1,3 +1,7 @@
+1.2.25 Wed May  4 14:08:56 UTC 2011
+
+  * Extract readable_tiddlers_by_bag into control from web.handler.search.
+
 1.2.24 Mon May  2 19:05:33 UTC 2011
 
   * Use itertools ifilter in select filters instead of loops.
