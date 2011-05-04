@@ -120,6 +120,31 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
     return None
 
 
+def readable_tiddlers_by_bag(store, tiddlers, usersign):
+    """
+    Yield those tiddlers which are readable by the current usersign.
+    This means, depending on the read constraint on the tiddler's 
+    bag's policy, yield or not.
+    """
+    bag_readable = {}
+
+    for tiddler in tiddlers:
+        try:
+            if bag_readable[tiddler.bag]:
+                yield tiddler
+        except KeyError:
+            bag = Bag(tiddler.bag)
+            try:
+                bag = store.get(bag)
+            except NoBagError:
+                pass
+            try:
+                bag.policy.allows(usersign, 'read')
+                bag_readable[tiddler.bag] = True
+                yield tiddler
+            except(ForbiddenError, UserRequiredError):
+                bag_readable[tiddler.bag] = False
+
 def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     """
     Return the bag which this tiddler would be in if we were to save it

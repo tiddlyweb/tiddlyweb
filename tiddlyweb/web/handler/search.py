@@ -7,12 +7,13 @@ import logging
 
 import urllib
 
-from tiddlyweb.web.http import HTTP400
+from tiddlyweb.control import readable_tiddlers_by_bag
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.web.sendtiddlers import send_tiddlers
+from tiddlyweb.web.http import HTTP400
 
 
 def get_search_query(environ):
@@ -61,21 +62,9 @@ def get(environ, start_response):
         candidate_tiddlers = Tiddlers(title=title, store=store)
         candidate_tiddlers.is_search = True
 
-        bag_readable = {}
+        for tiddler in readable_tiddlers_by_bag(store, tiddlers, usersign):
+            candidate_tiddlers.add(tiddler)
 
-        for tiddler in tiddlers:
-            try:
-                if bag_readable[tiddler.bag]:
-                    candidate_tiddlers.add(tiddler)
-            except KeyError:
-                bag = Bag(tiddler.bag)
-                bag = store.get(bag)
-                try:
-                    bag.policy.allows(usersign, 'read')
-                    candidate_tiddlers.add(tiddler)
-                    bag_readable[tiddler.bag] = True
-                except(ForbiddenError, UserRequiredError):
-                    bag_readable[tiddler.bag] = False
     except StoreMethodNotImplemented:
         raise HTTP400('Search system not implemented')
     except StoreError, exc:
