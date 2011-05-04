@@ -7,6 +7,7 @@ as controllers on those classes.
 import logging
 
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
         recursive_filter)
 from tiddlyweb.store import NoBagError, StoreError
@@ -123,7 +124,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
 def readable_tiddlers_by_bag(store, tiddlers, usersign):
     """
     Yield those tiddlers which are readable by the current usersign.
-    This means, depending on the read constraint on the tiddler's 
+    This means, depending on the read constraint on the tiddler's
     bag's policy, yield or not.
     """
     bag_readable = {}
@@ -144,6 +145,7 @@ def readable_tiddlers_by_bag(store, tiddlers, usersign):
                 yield tiddler
             except(ForbiddenError, UserRequiredError):
                 bag_readable[tiddler.bag] = False
+
 
 def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     """

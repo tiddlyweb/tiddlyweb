@@ -9,8 +9,6 @@ import urllib
 
 from tiddlyweb.control import readable_tiddlers_by_bag
 from tiddlyweb.model.collections import Tiddlers
-from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.http import HTTP400
