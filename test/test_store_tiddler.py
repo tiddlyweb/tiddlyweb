@@ -179,3 +179,25 @@ def test_bad_filename():
         py.test.skip('skipping this test for non-text store')
     tiddler = Tiddler('../nastyone', 'bagone')
     py.test.raises(NoTiddlerError, 'store.put(tiddler)')
+
+def test_put_and_get_dotted_file():
+    """
+    store and retrieve a file beginning with '.'
+    """
+    tiddlers0 = list(store.list_bag_tiddlers(Bag('bagone')))
+    tiddler1 = Tiddler('.profile', 'bagone')
+    tiddler1.text = 'alias ls ls -a'
+    tiddler1.tags = ['foo']
+    store.put(tiddler1)
+    tiddlers1 = list(store.list_bag_tiddlers(Bag('bagone')))
+
+    tiddler2 = Tiddler('.profile', 'bagone')
+    tiddler2 = store.get(tiddler2)
+
+    assert tiddler1.title == tiddler2.title
+    assert tiddler1.text == tiddler2.text
+    assert tiddler1.tags == tiddler2.tags
+    assert tiddler2.text == 'alias ls ls -a'
+    assert tiddler2.tags == ['foo']
+
+    assert len(tiddlers1) == len(tiddlers0) + 1

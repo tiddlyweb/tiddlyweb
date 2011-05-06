@@ -303,7 +303,9 @@ class Store(StorageInterface):
         tiddlers_dir = self._tiddlers_dir(bag.name)
 
         try:
-            tiddlers = self._files_in_dir(tiddlers_dir)
+            tiddlers = (filename for filename
+                    in self._files_in_dir(tiddlers_dir)
+                    if os.path.isdir(os.path.join(tiddlers_dir, filename)))
         except (IOError, OSError), exc:
             raise NoBagError('unable to list tiddlers in bag: %s' % exc)
         for title in tiddlers:
@@ -391,7 +393,7 @@ class Store(StorageInterface):
         """
         List the filenames in a dir that do not start with .
         """
-        return (x for x in os.listdir(path) if not x.startswith('.'))
+        return (x for x in os.listdir(path))
 
     def _numeric_files_in_dir(self, path):
         """
