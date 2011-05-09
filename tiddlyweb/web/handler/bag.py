@@ -27,7 +27,7 @@ def delete(environ, start_response):
     How the store chooses to handle remove and what
     it means is up to the store.
     """
-    bag_name = _determine_bag_name(environ)
+    bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
 
     usersign = environ['tiddlyweb.usersign']
@@ -53,7 +53,7 @@ def get(environ, start_response):
     Get a representation in some serialization of
     a bag (the bag itself not the tiddlers within).
     """
-    bag_name = _determine_bag_name(environ)
+    bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
     bag = _get_bag(environ, bag_name)
 
@@ -69,7 +69,7 @@ def get_tiddlers(environ, start_response):
     serialization chosen.
     """
     store = environ['tiddlyweb.store']
-    bag_name = _determine_bag_name(environ)
+    bag_name = web.get_route_value(environ, 'bag_name')
     bag = _get_bag(environ, bag_name)
     title = 'Tiddlers From Bag %s' % bag.name
     title = environ['tiddlyweb.query'].get('title', [title])[0]
@@ -101,7 +101,7 @@ def put(environ, start_response):
     Put a bag to the server, meaning the description and
     policy of the bag, if policy allows.
     """
-    bag_name = _determine_bag_name(environ)
+    bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
 
     bag = Bag(bag_name)
@@ -148,17 +148,6 @@ def _validate_bag(environ, bag):
         validate_bag(bag, environ)
     except InvalidBagError, exc:
         raise HTTP409('Bag content is invalid: %s' % exc)
-
-
-def _determine_bag_name(environ):
-    """
-    Figure out the name of the target bag by
-    parsing the URL.
-    """
-    bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-    bag_name = urllib.unquote(bag_name)
-    bag_name = unicode(bag_name, 'utf-8')
-    return bag_name
 
 
 def _get_bag(environ, bag_name):

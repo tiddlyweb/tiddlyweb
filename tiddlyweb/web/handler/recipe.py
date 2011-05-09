@@ -115,9 +115,7 @@ def put(environ, start_response):
     """
     Put a new recipe to the server.
     """
-    recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
-    recipe_name = urllib.unquote(recipe_name)
-    recipe_name = unicode(recipe_name, 'utf-8')
+    recipe_name = web.get_route_value(environ, 'recipe_name')
     recipe_name = web.handle_extension(environ, recipe_name)
 
     recipe = Recipe(recipe_name)
@@ -175,9 +173,7 @@ def _determine_recipe(environ):
     Interpret URL information to determine the target
     recipe and then get it from the store.
     """
-    recipe_name = environ['wsgiorg.routing_args'][1]['recipe_name']
-    recipe_name = urllib.unquote(recipe_name)
-    recipe_name = unicode(recipe_name, 'utf-8')
+    recipe_name = web.get_route_value(environ, 'recipe_name')
     recipe_name = web.handle_extension(environ, recipe_name)
     recipe = Recipe(recipe_name)
 

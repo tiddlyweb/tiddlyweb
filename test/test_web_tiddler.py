@@ -55,7 +55,7 @@ def test_get_tiddler():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
+    assert response['status'] == '200', content
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
 def test_get_tiddler_revision():
@@ -255,7 +255,7 @@ def test_get_tiddler_via_recipe():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
             method='GET')
 
-    assert response['status'] == '200'
+    assert response['status'] == '200', content
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
@@ -778,6 +778,12 @@ def test_binary_tiddler():
     assert response['status'] == '200'
     assert response['content-type'] == 'application/json; charset=UTF-8'
 
+def test_bad_uri_encoding():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/\x8a\xfa\x91\xd2\x96{\x93y\x98A\xe3\x94\x8c\x80\x92\xf1\x8f\xa1')
+    assert response['status'] == '400', content
+    assert "codec can't" in content
+
 def test_tiddler_put_create():
     http = httplib2.Http()
     tiddler_data = simplejson.dumps(dict(text='hello'))
@@ -812,6 +818,7 @@ def test_tiddler_put_create():
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler2', method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag5/hellotiddler2/2;application/heartattack"'}, body=tiddler_data)
     # Correct ETag we get 204
     assert response['status'] == '204'
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 

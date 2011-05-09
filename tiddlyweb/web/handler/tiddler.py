@@ -123,14 +123,13 @@ def _determine_tiddler(environ, bag_finder):
     This can be complicated because of the mechanics
     of recipes and bags.
     """
-    tiddler_name = environ['wsgiorg.routing_args'][1]['tiddler_name']
-    tiddler_name = urllib.unquote(tiddler_name)
-    tiddler_name = unicode(tiddler_name, 'utf-8')
-    revision = environ['wsgiorg.routing_args'][1].get('revision', None)
-    if revision:
+    tiddler_name = web.get_route_value(environ, 'tiddler_name')
+    try:
+        revision = web.get_route_value(environ, 'revision')
         revision = web.handle_extension(environ, revision)
-    else:
+    except KeyError:
         tiddler_name = web.handle_extension(environ, tiddler_name)
+        revision = None
 
     tiddler = Tiddler(tiddler_name)
     if revision:
@@ -174,10 +173,8 @@ def _determine_tiddler(environ, bag_finder):
             else:
                 tiddler.text = content
 
-    recipe_name = environ['wsgiorg.routing_args'][1].get('recipe_name', None)
-    if recipe_name:
-        recipe_name = urllib.unquote(recipe_name)
-        recipe_name = unicode(recipe_name, 'utf-8')
+    try:
+        recipe_name = web.get_route_value(environ, 'recipe_name')
         recipe = Recipe(recipe_name)
         try:
             store = environ['tiddlyweb.store']
@@ -192,10 +189,8 @@ def _determine_tiddler(environ, bag_finder):
             raise HTTP404('%s not found via bag, %s' % (tiddler.title, exc))
 
         bag_name = bag.name
-    else:
-        bag_name = environ['wsgiorg.routing_args'][1]['bag_name']
-        bag_name = urllib.unquote(bag_name)
-        bag_name = unicode(bag_name, 'utf-8')
+    except KeyError:
+        bag_name = web.get_route_value(environ, 'bag_name')
 
     tiddler.bag = bag_name
     return tiddler

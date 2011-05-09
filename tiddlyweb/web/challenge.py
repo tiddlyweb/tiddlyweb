@@ -6,7 +6,7 @@ the available challengers. If there is only one, redirect to it.
 import urllib
 
 from tiddlyweb.web.http import HTTP302, HTTP404
-from tiddlyweb.web.util import server_base_url
+from tiddlyweb.web.util import server_base_url, get_route_value
 
 
 def base(environ, start_response):
@@ -67,7 +67,7 @@ def _determine_challenger(environ, challenger_name=None):
     Determine which challenger we are using and import it as necessary.
     """
     if challenger_name is None:
-        challenger_name = environ['wsgiorg.routing_args'][1]['challenger']
+        challenger_name = get_route_value(environ, 'challenger')
     # If the challenger is not in config, do a 404, we don't want
     # to import any old code.
     if challenger_name not in environ['tiddlyweb.config']['auth_systems']:
