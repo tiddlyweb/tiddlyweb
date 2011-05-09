@@ -57,7 +57,8 @@ class Serialization(SerializationInterface):
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '/bags/%s/tiddlers' % urllib.quote(bag.encode('utf-8'), safe='')
+            line += '/bags/%s/tiddlers' % urllib.quote(
+                    bag.encode('utf-8'), safe='')
             if filter_string:
                 line += '?%s' % filter_string
             lines.append(line)

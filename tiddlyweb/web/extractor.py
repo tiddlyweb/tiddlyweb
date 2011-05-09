@@ -20,7 +20,8 @@ class UserExtract(object):
         userinfo = {"name": u'GUEST', "roles": []}
 
         extractors = environ['tiddlyweb.config']['extractors']
-        candidate_userinfo = _try_extractors(environ, extractors, start_response)
+        candidate_userinfo = _try_extractors(environ,
+                extractors, start_response)
 
         if candidate_userinfo:
             userinfo = candidate_userinfo

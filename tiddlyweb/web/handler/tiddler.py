@@ -13,12 +13,13 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler, current_timestring
-from tiddlyweb.store import \
-        NoTiddlerError, NoBagError, NoRecipeError, StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, TiddlerFormatError, NoSerializationError
+from tiddlyweb.store import (NoTiddlerError, NoBagError, NoRecipeError,
+        StoreMethodNotImplemented)
+from tiddlyweb.serializer import (Serializer, TiddlerFormatError,
+        NoSerializationError)
 from tiddlyweb.util import sha, pseudo_binary
-from tiddlyweb.web.http import \
-        HTTP404, HTTP415, HTTP412, HTTP409, HTTP400, HTTP304
+from tiddlyweb.web.http import (HTTP404, HTTP415, HTTP412, HTTP409,
+        HTTP400, HTTP304)
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers
@@ -399,7 +400,8 @@ def _validate_tiddler_headers(environ, tiddler):
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         logging.debug('attempting to validate incoming etag(PUT):'
             '%s against %s', incoming_etag, tiddler_etag)
-        if incoming_etag and not _etag_write_match(incoming_etag, tiddler_etag):
+        if incoming_etag and not _etag_write_match(incoming_etag,
+                tiddler_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
     etag = ('Etag', '%s' % tiddler_etag)

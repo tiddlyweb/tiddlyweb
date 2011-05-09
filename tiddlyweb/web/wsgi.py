@@ -62,7 +62,7 @@ class HTMLPresenter(object):
         Determine if we are outputting html to a browser.
         """
         return ('tiddlyweb.title' in environ and 'Mozilla'
-                in environ.get('HTTP_USER_AGENT',''))
+                in environ.get('HTTP_USER_AGENT', ''))
 
     def _header(self, environ):
         """

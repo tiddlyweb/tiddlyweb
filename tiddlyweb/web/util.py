@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 try:
     from email.utils import parsedate
-except ImportError: #  Python < 2.5
+except ImportError:  # Python < 2.5
     from email.Utils import parsedate
 
 from tiddlyweb.web.http import HTTP415, HTTP400

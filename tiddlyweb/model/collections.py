@@ -89,7 +89,7 @@ class Tiddlers(Collection):
     A Collection specifically for tiddlers.
 
     This differs from the base class in two ways:
-    
+
     The calculation of the digest is more detailed in order to create
     stong ETags for the collection.
 

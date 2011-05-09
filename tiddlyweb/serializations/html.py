@@ -172,16 +172,17 @@ class Serialization(SerializationInterface):
         """
         The string that starts the div that contains a tiddler.
         """
-        return u'<div class="tiddler" title="%s" server.page.revision="%s" ' \
-                'modifier="%s" creator="%s" modified="%s" created="%s" tags="%s" %s>' % \
-                    (escape_attribute_value(tiddler.title),
-                        tiddler.revision,
-                        escape_attribute_value(tiddler.modifier),
-                        escape_attribute_value(tiddler.creator),
-                        tiddler.modified,
-                        tiddler.created,
-                        escape_attribute_value(self.tags_as(tiddler.tags)),
-                        self._tiddler_fields(tiddler.fields))
+        return u"""
+<div class="tiddler" title="%s" server.page.revision="%s"
+     modifier="%s" creator="%s" modified="%s" created="%s" tags="%s" %s>
+ """ % (escape_attribute_value(tiddler.title),
+         tiddler.revision,
+         escape_attribute_value(tiddler.modifier),
+         escape_attribute_value(tiddler.creator),
+         tiddler.modified,
+         tiddler.created,
+         escape_attribute_value(self.tags_as(tiddler.tags)),
+         self._tiddler_fields(tiddler.fields))
 
     def _tiddler_fields(self, fields):
         """
@@ -196,7 +197,7 @@ class Serialization(SerializationInterface):
     def _tiddler_in_container_info(self, tiddler):
         """
         Get the info for a non-revision tiddler in a list.
-        """ 
+        """
         if tiddler.recipe:
             base = 'recipes'
             container = tiddler.recipe

@@ -107,8 +107,8 @@ def list_recipes(environ, start_response):
     store = environ['tiddlyweb.store']
     serialize_type, mime_type = web.get_serialize_type(environ)
     serializer = Serializer(serialize_type, environ)
-    return list_entities(environ, start_response, mime_type, store.list_recipes,
-            serializer.list_recipes)
+    return list_entities(environ, start_response, mime_type,
+            store.list_recipes, serializer.list_recipes)
 
 
 def put(environ, start_response):

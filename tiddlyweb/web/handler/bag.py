@@ -12,7 +12,8 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.policy import create_policy_check
 from tiddlyweb.store import NoBagError, StoreMethodNotImplemented
-from tiddlyweb.serializer import Serializer, NoSerializationError, BagFormatError
+from tiddlyweb.serializer import (Serializer, NoSerializationError,
+        BagFormatError)
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers

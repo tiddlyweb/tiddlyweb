@@ -7,4 +7,3 @@ the TiddlyWeb system.
 These are intentionally limited, making no effort to handle their own
 persistence or presentation. That is the job of other systems.
 """
-

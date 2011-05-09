@@ -38,7 +38,8 @@ class Query(object):
             content = environ['wsgi.input'].read(int(length))
             posted_data = parse_qs(content, keep_blank_values=True)
             _update_tiddlyweb_query(environ, posted_data)
-        filters, leftovers = parse_for_filters(environ.get('QUERY_STRING', ''), environ)
+        filters, leftovers = parse_for_filters(
+                environ.get('QUERY_STRING', ''), environ)
         query_data = parse_qs(leftovers, keep_blank_values=True)
         _update_tiddlyweb_query(environ, query_data)
         environ['tiddlyweb.filters'] = filters

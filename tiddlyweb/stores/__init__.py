@@ -27,7 +27,7 @@ class StorageInterface(object):
     package when implementing new StorageInterface classes.
 
     If a method is not implemented by the StorageInterface
-    a StoreMethodNotImplemented exception is raised and the 
+    a StoreMethodNotImplemented exception is raised and the
     calling code is expected to handle that intelligently.
     """
 

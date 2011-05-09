@@ -45,8 +45,8 @@ class Policy(object):
               validation.
     """
 
-    attributes = [u'read', u'write', u'create', u'delete', u'manage', u'accept',
-            u'owner']
+    attributes = [u'read', u'write', u'create', u'delete', u'manage',
+            u'accept', u'owner']
 
     def __init__(self, owner=None,
             read=None, write=None, create=None, delete=None,

@@ -184,11 +184,13 @@ def select_by_attribute(attribute, value, entities, negate=False,
             return select(stored_entity, attribute, value)
 
         if negate:
+
             def _negfilter(entity):
                 """
                 Return True if the entity's attribute does not match value.
                 """
                 return not _posfilter(entity)
+
             _filter = _negfilter
         else:
             _filter = _posfilter
