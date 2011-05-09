@@ -1,3 +1,7 @@
+1.2.28 Mon May  9 14:13:47 UTC 2011
+
+  * Raise 400 instead of 500 when receiving a poorly encoded URI.
+
 1.2.27 Mon May  9 12:47:18 UTC 2011
 
   * Properly trap a FilterError when ther is a bad filter in a recipe.
