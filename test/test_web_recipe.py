@@ -16,6 +16,12 @@ from tiddlyweb.model.user import User
 authorization = b64encode('cdent:cowpig')
 
 def setup_module(module):
+    from tiddlyweb.filters.select import ATTRIBUTE_SELECTOR
+    from tiddlyweb.filters import FilterError
+    def hell_raiser(entity, attribute, value):
+        raise FilterError('no good man')
+    ATTRIBUTE_SELECTOR['error'] = hell_raiser
+
     initialize_app()
     reset_textstore()
     module.store = _teststore()
@@ -367,6 +373,19 @@ def test_recipe_policy():
             headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
             body=recipe_json)
     assert response['status'] == '403'
+
+def test_recipe_bad_filter_400():
+    recipe = Recipe('badfilter')
+    recipe.desc = u'hello'
+    recipe.set_recipe([
+        ('bag8', 'select=error:5')
+        ])
+    store.put(recipe)
+
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/badfilter/tiddlers')
+    assert response['status'] == '400', content
 
 def _put_bag_policy(bag_name, policy_dict):
     """

@@ -6,6 +6,7 @@ produced by a recipe.
 
 import urllib
 
+from tiddlyweb.filters import FilterError
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
@@ -87,6 +88,8 @@ def get_tiddlers(environ, start_response):
     except NoBagError, exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
+    except FilterError, exc:
+        raise HTTP400('malformed filter: %s' % exc)
 
     tiddlers = Tiddlers(title=title, store=store)
 
