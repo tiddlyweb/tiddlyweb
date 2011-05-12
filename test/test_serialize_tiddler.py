@@ -125,6 +125,18 @@ def test_tiddler_json_base64():
     tiddler = serializer.from_string(string)
     assert tiddler.text == bininfo
 
+def test_tiddler_json_render():
+    serializer = Serializer('json', environ={'tiddlyweb.query': {
+        'render': [1]}})
+    tiddler = Tiddler('htmltest')
+    tiddler.text = '!Hi\n//you//'
+
+    serializer.object = tiddler
+
+    output = serializer.to_string()
+    info = simplejson.loads(output)
+    assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
+
 def test_tiddler_no_text():
     serializer = Serializer('text')
     tiddler = Tiddler('hello')

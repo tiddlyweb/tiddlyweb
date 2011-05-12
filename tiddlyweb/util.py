@@ -106,6 +106,20 @@ def read_utf8_file(filename):
     return content
 
 
+def renderable(tiddler, environ=None):
+    """
+    Return true if the provided tiddler's type is one
+    that can be rendered by the wikitext render subsystem.
+    """
+    if not environ:
+        environ = {}
+    return (not tiddler.type
+            or tiddler.type == 'None'
+            or tiddler.type
+                in environ.get('tiddlyweb.config', {}).get(
+                    'wikitext.type_render_map', []))
+
+
 def std_error_message(message):
     """
     Display a message on the stderr console.

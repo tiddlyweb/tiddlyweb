@@ -17,7 +17,7 @@ from tiddlyweb.store import (NoTiddlerError, NoBagError, NoRecipeError,
         StoreMethodNotImplemented)
 from tiddlyweb.serializer import (Serializer, TiddlerFormatError,
         NoSerializationError)
-from tiddlyweb.util import sha, pseudo_binary
+from tiddlyweb.util import sha, pseudo_binary, renderable
 from tiddlyweb.web.http import (HTTP404, HTTP415, HTTP412, HTTP409,
         HTTP400, HTTP304)
 from tiddlyweb import control
@@ -474,7 +474,7 @@ def _get_tiddler_content(environ, tiddler):
     serialize_type, mime_type = web.get_serialize_type(environ)
     extension = environ.get('tiddlyweb.extension')
 
-    if _not_wikitext(tiddler, config):
+    if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or
                 mime_type.startswith(tiddler.type) or
                 extension == 'html'):
@@ -490,19 +490,6 @@ def _get_tiddler_content(environ, tiddler):
     except TiddlerFormatError, exc:
         raise HTTP415(exc)
     return content, mime_type
-
-
-def _not_wikitext(tiddler, config):
-    """
-    Determine if the type of the tiddler indicates
-    whether the content is consider wikitext by the
-    system. In this context wikitext means something
-    that can be rendered.
-    """
-    return (tiddler.type and  # type is set
-            tiddler.type != 'None' and  # type is not None stringified
-            tiddler.type not in  # type is not id'd as wikitext by config
-            config['wikitext.type_render_map'])
 
 
 def _send_tiddler_revisions(environ, start_response, tiddler):

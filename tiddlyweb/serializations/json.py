@@ -11,7 +11,8 @@ from tiddlyweb.serializer import (TiddlerFormatError, BagFormatError,
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
-from tiddlyweb.util import binary_tiddler
+from tiddlyweb.util import binary_tiddler, renderable
+from tiddlyweb.wikitext import render_wikitext
 
 
 class Serialization(SerializationInterface):
@@ -40,7 +41,9 @@ class Serialization(SerializationInterface):
         the form described by self._tiddler_dict.
         """
         fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
-        return simplejson.dumps([self._tiddler_dict(tiddler, fat) for
+        render = self.environ.get('tiddlyweb.query', {}).get('render',
+                [False])[0]
+        return simplejson.dumps([self._tiddler_dict(tiddler, fat, render) for
             tiddler in tiddlers])
 
     def recipe_as(self, recipe):
@@ -106,7 +109,9 @@ class Serialization(SerializationInterface):
         a tiddler, as described by _tiddler_dict
         plus the text of the tiddler.
         """
-        tiddler_dict = self._tiddler_dict(tiddler, fat=True)
+        render = self.environ.get('tiddlyweb.query', {}).get('render',
+                [False])[0]
+        tiddler_dict = self._tiddler_dict(tiddler, fat=True, render=render)
         return simplejson.dumps(tiddler_dict)
 
     def as_tiddler(self, tiddler, input_string):
@@ -129,7 +134,7 @@ class Serialization(SerializationInterface):
 
         return tiddler
 
-    def _tiddler_dict(self, tiddler, fat=False):
+    def _tiddler_dict(self, tiddler, fat=False, render=False):
         """
         Select fields from a tiddler to create
         a dictonary.
@@ -146,7 +151,10 @@ class Serialization(SerializationInterface):
                 wanted_info['text'] = b64encode(tiddler.text)
             else:
                 wanted_info['text'] = tiddler.text
-        return dict(wanted_info)
+                if render and renderable(tiddler, self.environ):
+                    wanted_info['render'] = render_wikitext(tiddler,
+                            self.environ)
+        return wanted_info
 
     def _tiddler_permissions(self, tiddler):
         """
