@@ -1,3 +1,7 @@
+1.2.30 Thu May 12 17:43:32 UTC 2011
+
+  * Accept application/{json,javascript} as pseudo-binaries.
+
 1.2.29 Thu May 12 14:51:55 UTC 2011
 
   * Add a 'render' option of the JSON serialization of tiddlers.
