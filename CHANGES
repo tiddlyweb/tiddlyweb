@@ -1,3 +1,7 @@
+1.2.29 Thu May 12 14:51:55 UTC 2011
+
+  * Add a 'render' option of the JSON serialization of tiddlers.
+
 1.2.28 Mon May  9 14:13:47 UTC 2011
 
   * Raise 400 instead of 500 when receiving a poorly encoded URI.
