@@ -93,7 +93,9 @@ def pseudo_binary(content_type):
     """
     content_type = content_type.lower()
     return (content_type.startswith('text/')
-            or content_type.endswith('+xml'))
+            or content_type.endswith('+xml')
+            or content_type == 'application/javascript'
+            or content_type == 'application/json')
 
 
 def read_utf8_file(filename):

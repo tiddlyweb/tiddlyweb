@@ -778,6 +778,27 @@ def test_binary_tiddler():
     assert response['status'] == '200'
     assert response['content-type'] == 'application/json; charset=UTF-8'
 
+def test_put_json_pseudo_binary():
+    http = httplib2.Http()
+    json_internal = simplejson.dumps(dict(alpha='car', beta='zoom'))
+    json_external = simplejson.dumps(dict(text=json_internal,
+        type='application/json'))
+
+    print json_external
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/intjson',
+            method='PUT',
+            body=json_external,
+            headers={'Content-Type': 'application/json'})
+
+    assert response['status'] == '204', content
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/intjson.json')
+
+    assert response['status'] == '200', content
+    assert content == json_internal
+
 def test_bad_uri_encoding():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/\x8a\xfa\x91\xd2\x96{\x93y\x98A\xe3\x94\x8c\x80\x92\xf1\x8f\xa1')
