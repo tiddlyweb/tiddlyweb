@@ -784,7 +784,6 @@ def test_put_json_pseudo_binary():
     json_external = simplejson.dumps(dict(text=json_internal,
         type='application/json'))
 
-    print json_external
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag5/tiddlers/intjson',
             method='PUT',

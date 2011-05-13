@@ -61,6 +61,7 @@ def get_tiddlers(environ, start_response):
     """
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
+    filters = environ['tiddlyweb.filters']
     recipe = _determine_recipe(environ)
     title = 'Tiddlers From Recipe %s' % recipe.name
     title = environ['tiddlyweb.query'].get('title', [title])[0]
@@ -91,7 +92,10 @@ def get_tiddlers(environ, start_response):
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
 
-    tiddlers = Tiddlers(title=title, store=store)
+    if filters:
+        tiddlers = Tiddlers(title=title)
+    else:
+        tiddlers = Tiddlers(title=title, store=store)
 
     for tiddler in candidate_tiddlers:
         tiddler.recipe = recipe.name
