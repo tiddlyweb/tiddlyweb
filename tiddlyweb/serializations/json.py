@@ -43,7 +43,6 @@ class Serialization(SerializationInterface):
         fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
         render = self.environ.get('tiddlyweb.query', {}).get('render',
                 [False])[0]
-        tiddlers.store = self.environ['tiddlyweb.store']
         return simplejson.dumps([self._tiddler_dict(tiddler, fat, render) for
             tiddler in tiddlers])
 

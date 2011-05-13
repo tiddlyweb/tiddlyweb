@@ -65,13 +65,6 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     if etag:
         response.append(etag)
 
-    # Set store on the Tiddlers collection to None so that a
-    # serializer can skip loading the tiddlers if they don't need
-    # data.
-    # XXX don't do this yet, we want to see what happens.
-    if candidate_tiddlers.store is None:
-        logging.warn('outgoing tiddlers no store set %s', inspect.stack()[1])
-    #candidate_tiddlers.store = None
     try:
         serializer = Serializer(serialize_type, environ)
         output = serializer.list_tiddlers(candidate_tiddlers)

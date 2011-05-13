@@ -55,6 +55,7 @@ class Serialization(SerializationInterface):
         """
         List the tiddlers as html.
         """
+        tiddlers.store = None
         title = tiddlers.title
         server_prefix = self._server_prefix()
         lines = []
