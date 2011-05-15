@@ -11,6 +11,7 @@ except ImportError:
     from cgi import parse_qs
 
 from tiddlyweb.filters import parse_for_filters
+from tiddlyweb.web.http import HTTP400
 
 
 class Query(object):
@@ -37,11 +38,20 @@ class Query(object):
             length = environ['CONTENT_LENGTH']
             content = environ['wsgi.input'].read(int(length))
             posted_data = parse_qs(content, keep_blank_values=True)
-            _update_tiddlyweb_query(environ, posted_data)
+            try:
+                _update_tiddlyweb_query(environ, posted_data)
+            except UnicodeDecodeError, exc:
+                raise HTTP400(
+                        'Invalid encoding in query string, utf-8 required: %s',
+                        exc)
         filters, leftovers = parse_for_filters(
                 environ.get('QUERY_STRING', ''), environ)
         query_data = parse_qs(leftovers, keep_blank_values=True)
-        _update_tiddlyweb_query(environ, query_data)
+        try:
+            _update_tiddlyweb_query(environ, query_data)
+        except UnicodeDecodeError, exc:
+            raise HTTP400(
+                    'Invalid encoding in query string, utf-8 required: %s', exc)
         environ['tiddlyweb.filters'] = filters
 
 
