@@ -36,6 +36,7 @@ class Serialization(SerializationInterface):
         """
         List the tiddlers as text.
         """
+        tiddlers.store = None
         if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
             for tiddler in tiddlers:
                 yield "%s:%s\n" % (tiddler.title, tiddler.revision)

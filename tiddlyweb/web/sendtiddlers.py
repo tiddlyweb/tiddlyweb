@@ -3,6 +3,9 @@ Routines related to sending a list of tiddlers out to the web,
 including filter those tiddlers and validating request cache headers.
 """
 
+import logging
+import inspect
+
 from tiddlyweb.filters import FilterError, recursive_filter
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
@@ -24,6 +27,9 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     filters = environ['tiddlyweb.filters']
     store = environ['tiddlyweb.store']
 
+    if tiddlers.store is None and not filters:
+        logging.warn('Incoming tiddlers no store set %s', inspect.stack()[1])
+
     if filters:
         candidate_tiddlers = Tiddlers(store=store)
         try:
@@ -34,11 +40,6 @@ def send_tiddlers(environ, start_response, tiddlers=None):
             pass
         try:
             for tiddler in recursive_filter(filters, tiddlers):
-                recipe = tiddler.recipe
-                if not tiddler.store:
-                    tiddler = store.get(tiddler)
-                    if recipe:
-                        tiddler.recipe = recipe
                 candidate_tiddlers.add(tiddler)
         except FilterError, exc:
             raise HTTP400('malformed filter: %s' % exc)

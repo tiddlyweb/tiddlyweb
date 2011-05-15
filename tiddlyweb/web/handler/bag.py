@@ -70,6 +70,7 @@ def get_tiddlers(environ, start_response):
     serialization chosen.
     """
     store = environ['tiddlyweb.store']
+    filters = environ['tiddlyweb.filters']
     bag_name = web.get_route_value(environ, 'bag_name')
     bag = _get_bag(environ, bag_name)
     title = 'Tiddlers From Bag %s' % bag.name
@@ -79,7 +80,10 @@ def get_tiddlers(environ, start_response):
     # will raise exception if there are problems
     bag.policy.allows(usersign, 'read')
 
-    tiddlers = Tiddlers(title=title, store=store)
+    if filters:
+        tiddlers = Tiddlers(title=title)
+    else:
+        tiddlers = Tiddlers(title=title, store=store)
     for tiddler in store.list_bag_tiddlers(bag):
         tiddlers.add(tiddler)
 

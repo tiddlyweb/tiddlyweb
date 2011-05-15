@@ -500,7 +500,10 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
 
     title = 'Revisions of Tiddler %s' % tiddler.title
     title = environ['tiddlyweb.query'].get('title', [title])[0]
-    tiddlers = Tiddlers(title=title, store=store)
+    if environ['tiddlyweb.filters']:
+        tiddlers = Tiddlers(title=title)
+    else:
+        tiddlers = Tiddlers(title=title, store=store)
     tiddlers.is_revisions = True
     recipe = tiddler.recipe
     try:

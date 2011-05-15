@@ -48,6 +48,7 @@ def get(environ, start_response):
     chosen store.
     """
     store = environ['tiddlyweb.store']
+    filters = environ['tiddlyweb.filters']
     search_query = get_search_query(environ)
     title = 'Search for %s' % search_query
     title = environ['tiddlyweb.query'].get('title', [title])[0]
@@ -57,7 +58,10 @@ def get(environ, start_response):
 
         usersign = environ['tiddlyweb.usersign']
 
-        candidate_tiddlers = Tiddlers(title=title, store=store)
+        if filters:
+            candidate_tiddlers = Tiddlers(title=title)
+        else:
+            candidate_tiddlers = Tiddlers(title=title, store=store)
         candidate_tiddlers.is_search = True
 
         for tiddler in readable_tiddlers_by_bag(store, tiddlers, usersign):

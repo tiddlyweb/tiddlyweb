@@ -1,3 +1,7 @@
+1.2.31 Fri May 13 13:36:33 UTC 2011
+
+  * Adjust Tiddlers collection store handling to mimize loading tiddlers.
+
 1.2.30 Thu May 12 17:43:32 UTC 2011
 
   * Accept application/{json,javascript} as pseudo-binaries.
