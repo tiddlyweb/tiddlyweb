@@ -1,3 +1,7 @@
+1.2.33 Mon May 16 11:38:02 UTC 2011
+
+  * Ride over data itegrity issues when adding tiddlers to a collection.
+
 1.2.32 Sun May 15 16:30:06 UTC 2011
 
   * Handle improper query encoding.
