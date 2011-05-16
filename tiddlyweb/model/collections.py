@@ -126,10 +126,18 @@ class Tiddlers(Collection):
     def add(self, tiddler):
         """
         Add a reference to the tiddler to the container,
-        updating the digest and modified information.
+        updating the digest and modified information. If
+        the tiddler has recently been deleted, resulting
+        in a StoreError, simply don't add it.
         """
         if not tiddler.store and self.store:
-            tiddler = self.store.get(tiddler)
+            try:
+                tiddler = self.store.get(tiddler)
+            except StoreError, exc:
+                logging.debug(
+                        'tried to add missing tiddler to collection: %s, %s',
+                        tiddler, exc)
+                return
             reference = Tiddler(tiddler.title, tiddler.bag)
             if tiddler.revision:
                 reference.revision = tiddler.revision
