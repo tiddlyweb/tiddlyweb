@@ -202,13 +202,27 @@ def escape_attribute_value(text):
         return text
 
 
-def tiddler_url(environ, tiddler):
+def tiddler_url(environ, tiddler, container='bags', full=True):
     """
-    Construct a URL for a tiddler.
+    Construct a URL for a tiddler. If the tiddler has a _canonical_uri
+    field, use that instead.
     """
-    tiddler_link = 'bags/%s/tiddlers/%s' % (encode_name(tiddler.bag),
+    if '_canonical_uri' in tiddler.fields:
+        return tiddler.fields['_canonical_uri']
+
+    def _container_name(container, tiddler):
+        if container == 'recipes':
+            return tiddler.recipe
+        else:
+            return tiddler.bag
+
+    tiddler_link = '%s/%s/tiddlers/%s' % (container,
+            encode_name(_container_name(container, tiddler)),
             encode_name(tiddler.title))
-    return '%s/%s' % (server_base_url(environ), tiddler_link)
+    if full:
+        return '%s/%s' % (server_base_url(environ), tiddler_link)
+    else:
+        return '%s/%s' % (_server_prefix(environ), tiddler_link)
 
 
 def recipe_url(environ, recipe):

@@ -5,7 +5,7 @@ HTML based serializers.
 import urllib
 
 from tiddlyweb.serializations import SerializationInterface
-from tiddlyweb.web.util import encode_name, escape_attribute_value
+from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
 
 
@@ -201,15 +201,10 @@ class Serialization(SerializationInterface):
         """
         if tiddler.recipe:
             base = 'recipes'
-            container = tiddler.recipe
         else:
             base = 'bags'
-            container = tiddler.bag
-        return '<li><a href="%s/%s/%s/tiddlers/%s">%s</a></li>' % (
-            self._server_prefix(),
-            base,
-            encode_name(container),
-            encode_name(tiddler.title),
+        return '<li><a href="%s">%s</a></li>' % (
+            tiddler_url(self.environ, tiddler, container=base, full=False),
             tiddler.title.replace(' ', '&nbsp;', 1))
 
     def _tiddler_list_header(self, representation_link):
@@ -251,16 +246,10 @@ class Serialization(SerializationInterface):
         """
         if tiddler.recipe:
             base = 'recipes'
-            container = tiddler.recipe
         else:
             base = 'bags'
-            container = tiddler.bag
-        return  ('<li><a href="%s/%s/%s/tiddlers/'
-            '%s/revisions/%s">%s:%s</a></li>' % (
-            self._server_prefix(),
-            base,
-            encode_name(container),
-            encode_name(tiddler.title),
+        return  ('<li><a href="%s/revisions/%s">%s:%s</a></li>' % (
+            tiddler_url(self.environ, tiddler, container=base, full=False),
             tiddler.revision,
             tiddler.title,
             tiddler.revision))
