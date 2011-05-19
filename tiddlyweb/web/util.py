@@ -210,15 +210,10 @@ def tiddler_url(environ, tiddler, container='bags', full=True):
     if '_canonical_uri' in tiddler.fields:
         return tiddler.fields['_canonical_uri']
 
-    def _container_name(container, tiddler):
-        if container == 'recipes':
-            return tiddler.recipe
-        else:
-            return tiddler.bag
-
+    container_name = tiddler.recipe if container == 'recipes' else tiddler.bag
     tiddler_link = '%s/%s/tiddlers/%s' % (container,
-            encode_name(_container_name(container, tiddler)),
-            encode_name(tiddler.title))
+            encode_name(container_name), encode_name(tiddler.title))
+
     if full:
         return '%s/%s' % (server_base_url(environ), tiddler_link)
     else:
