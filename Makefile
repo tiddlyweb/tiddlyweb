@@ -10,6 +10,7 @@ clean:
 	rm -r build || true
 	rm -r tiddlyweb.egg-info || true
 	rm *.bundle || true
+	rm -r *-bundle* || true
 
 cleanagain:
 	find . -name "*.pyc" |xargs rm || true
@@ -17,6 +18,7 @@ cleanagain:
 	rm -r build || true
 	rm -r tiddlyweb.egg-info || true
 	rm *.bundle || true
+	rm -r *-bundle* || true
 
 test: 
 	py.test -x test
