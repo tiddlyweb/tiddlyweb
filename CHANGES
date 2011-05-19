@@ -1,3 +1,7 @@
+1.2.34 Thu May 19 14:19:04 UTC 2011
+
+  * Update tiddler_url to be more flexible and useful.
+
 1.2.33 Mon May 16 11:38:02 UTC 2011
 
   * Ride over data itegrity issues when adding tiddlers to a collection.
