@@ -1,3 +1,7 @@
+1.2.35 Mon May 23 12:14:51 UTC 2011
+
+  * Handle NoSerializationError on tiddler get.
+
 1.2.34 Thu May 19 14:19:04 UTC 2011
 
   * Update tiddler_url to be more flexible and useful.
