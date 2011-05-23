@@ -487,7 +487,7 @@ def _get_tiddler_content(environ, tiddler):
 
     try:
         content = serializer.to_string()
-    except TiddlerFormatError, exc:
+    except (TiddlerFormatError, NoSerializationError), exc:
         raise HTTP415(exc)
     return content, mime_type
 
