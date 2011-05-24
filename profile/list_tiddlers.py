@@ -31,7 +31,7 @@ def clean_store():
         pass
 
 def make_tiddlers_for_bag():
-    store = Store('text', environ=environ)
+    store = Store('text', environ['tiddlyweb.config']['server_store'][1], environ)
 
     print 'store', time()
     bag = Bag('profiler')
@@ -48,24 +48,18 @@ def make_tiddlers_for_bag():
     print 'stored', time()
 
 def profile_listing_tiddlers():
-    store = Store('text', environ=environ)
+    store = Store('text', environ['tiddlyweb.config']['server_store'][1], environ)
     environ['tiddlyweb.store'] = store
 
     bag = Bag('profiler')
-    bag.skinny = True
-    store.get(bag)
 
     print 'filter', time()
-    filter_string = 'select=tag:100'
+    filter_string = 'select=tag:1'
     filters, leftovers = parse_for_filters(filter_string, environ)
-    tiddlers = control.filter_tiddlers_from_bag(bag, filters)
-
-    print 'tmp bag', time()
-    tmp_bag = Bag('tmp_bag', tmpbag=True)
-    tmp_bag.add_tiddlers(tiddlers)
+    tiddlers = control.filter_tiddlers(store.list_bag_tiddlers(bag), filters, environ=environ)
 
     print 'output', time()
-    print [tiddler.title for tiddler in control.get_tiddlers_from_bag(tmp_bag)]
+    print [tiddler.title for tiddler in tiddlers]
 
     #print 'serializer', time()
     #serializer = Serializer('wiki', environ)
