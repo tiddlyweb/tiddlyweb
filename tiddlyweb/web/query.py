@@ -35,8 +35,12 @@ class Query(object):
         environ['tiddlyweb.query'] = {}
         if environ['REQUEST_METHOD'].upper() == 'POST' and \
                 content_type.startswith('application/x-www-form-urlencoded'):
-            length = environ['CONTENT_LENGTH']
-            content = environ['wsgi.input'].read(int(length))
+            try:
+                length = environ['CONTENT_LENGTH']
+                content = environ['wsgi.input'].read(int(length))
+            except KeyError, exc:
+                raise HTTP400( 'Invalid post, unable to read content: %s'
+                        % exc)
             posted_data = parse_qs(content, keep_blank_values=True)
             try:
                 _update_tiddlyweb_query(environ, posted_data)
