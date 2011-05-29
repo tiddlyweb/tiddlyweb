@@ -516,6 +516,9 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
         raise HTTP404('tiddler %s not found, %s' % (tiddler.title, exc))
+    except NoBagError, exc:
+        raise HTTP404('tiddler %s not found, bag %s does not exist, %s'
+                % (tiddler.title, tiddler.bag, exc))
     except StoreMethodNotImplemented:
         raise HTTP400('no revision support')
 
