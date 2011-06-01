@@ -130,8 +130,12 @@ class Serialization(SerializationInterface):
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
         if binary_tiddler(tiddler):
-            tiddler.text = b64decode(tiddler.text)
-
+            try:
+                tiddler.text = b64decode(tiddler.text)
+            except TypeError, exc:
+                raise TiddlerFormatError(
+                        'unable to decode expected base64 input in %s: %s'
+                        % (tiddler.title, exc))
         return tiddler
 
     def _tiddler_dict(self, tiddler, fat=False, render=False):
