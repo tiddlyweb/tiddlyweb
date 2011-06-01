@@ -1,3 +1,9 @@
+1.2.36 Wed Jun  1 13:43:26 UTC 2011
+
+  * 400 on bad base64 input in JSON PUT of tiddler.
+  * Trap NoBagError when listing tiddler revisions.
+  * Handle lack of Content-Length on POST as 400 not 500.
+
 1.2.35 Mon May 23 12:14:51 UTC 2011
 
   * Handle NoSerializationError on tiddler get.
