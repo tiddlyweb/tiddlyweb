@@ -11,6 +11,7 @@ from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
         recursive_filter)
 from tiddlyweb.store import NoBagError, StoreError
+from tiddlyweb.remotebag import get_remote_tiddlers, RemoteBagError, is_remote
 
 
 def get_tiddlers_from_recipe(recipe, environ=None):
@@ -27,7 +28,17 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     uniquifier = {}
     for bag, filter_string in recipe.get_recipe(template):
         if isinstance(bag, basestring):
-            bag = Bag(name=bag)
+            if is_remote(bag):
+                try:
+                    for tiddler in filter_tiddlers(get_remote_tiddlers(
+                        environ, bag), filter_string, environ=environ):
+                        uniquifier[tiddler.title] = tiddler
+                    continue
+                except RemoteBagError, exc:
+                    raise StoreError('unable to retrieve remote tiddlers: %s:%s'
+                            % (bag, exc))
+            else:
+                bag = Bag(name=bag)
         bag.store = store
         for tiddler in _filter_tiddlers_from_bag(bag, filter_string,
                 environ=environ):

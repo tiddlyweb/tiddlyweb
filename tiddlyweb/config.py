@@ -100,6 +100,9 @@ tiddler.text to HTML when tiddler.type is None.
 wikitext.type_render_map -- A dictionary mapping tiddler.type MIME-
 TYPES to modules with a render() function for turning that content-type
 into HTML.
+
+remote_handlers -- A list of tuples containing regular expressions matching
+a remote uri and a function for retrieving tiddlers from it.
 """
 
 try:
@@ -176,6 +179,7 @@ DEFAULT_CONFIG = {
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
         'root_dir': '',
+        'remote_handlers': [],
         }
 
 

@@ -9,6 +9,10 @@ implementations do the actual interaction with the the storage medium.
 
 from copy import deepcopy
 
+from tiddlyweb.remotebag import (get_remote_tiddler, RemoteBagError,
+        get_remote_tiddlers, is_remote)
+from tiddlyweb.model.policy import Policy
+
 
 class StoreError(IOError):
     """
@@ -131,8 +135,27 @@ class Store(object):
 
     def get(self, thing):
         """
-        Get a thing, recipe, bag or tiddler
+        Get a thing: recipe, bag or tiddler
         """
+        lower_class = thing.__class__.__name__.lower()
+        if lower_class == 'tiddler':
+            uri = thing.bag
+            if is_remote(uri):  # XXX: what about bags with / in their name?
+                try:
+                    thing = get_remote_tiddler(self.environ, thing)
+                except RemoteBagError, exc:
+                    raise NoTiddlerError('unable to get remote tiddler: %s:%s:%s'
+                            % (thing.bag, thing.title, exc))
+                thing.store = self
+                self._do_hook('get', thing)
+                return thing
+        elif lower_class == 'bag':
+            if is_remote(thing.name):
+                policy = Policy(read=[], write=['NONE'], create=['NONE'],
+                        delete=['NONE'], manage=['NONE'], accept=['NONE'])
+                thing.policy = policy
+                thing.store = self
+                return thing
         func = self._figure_function('get', thing)
         thing = func(thing)
         thing.store = self
@@ -174,6 +197,12 @@ class Store(object):
         """
         List all the tiddlers in the bag.
         """
+        if is_remote(bag.name):
+            try:
+                return get_remote_tiddlers(self.environ, bag.name)
+            except RemoteBagError, exc:
+                raise NoBagError('unable to get remote bag: %s: %s'
+                        % (bag.name, exc))
         list_func = getattr(self.storage, 'list_bag_tiddlers')
         return list_func(bag)
 

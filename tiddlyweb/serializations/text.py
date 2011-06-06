@@ -7,6 +7,7 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
+from tiddlyweb.remotebag import is_remote
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
@@ -58,8 +59,11 @@ class Serialization(SerializationInterface):
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name
-            line += '/bags/%s/tiddlers' % urllib.quote(
-                    bag.encode('utf-8'), safe='')
+            if not is_remote(bag):
+                line += '/bags/%s/tiddlers' % urllib.quote(
+                        bag.encode('utf-8'), safe='')
+            else:
+                line += bag
             if filter_string:
                 line += '?%s' % filter_string
             lines.append(line)
@@ -177,8 +181,11 @@ class Serialization(SerializationInterface):
                 else:
                     bag = line
                     filter_string = ''
-                bagname = bag.split('/')[2]
-                bagname = urllib.unquote(bagname.encode('utf-8'))
-                bagname = bagname.decode('utf-8')
+                if bag.startswith('/bags/'):
+                    bagname = bag.split('/')[2]
+                    bagname = urllib.unquote(bagname.encode('utf-8'))
+                    bagname = bagname.decode('utf-8')
+                else:
+                    bagname = bag
                 recipe_lines.append((bagname, filter_string))
         return recipe_lines
