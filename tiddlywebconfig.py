@@ -1,3 +1,4 @@
+from tiddlyweb.remotebag import is_remote
 config = {
         'log_level':'DEBUG',
         'extra': { 'stuff': ['one', 'two'], }, # required for test_merge_config
@@ -14,4 +15,5 @@ config = {
         #'server_store': ['ramstore', {}],
         #'server_store': ['mappingsql', {'db_config': 'sqlite:///test.db'}],
         #'mappingsql.table': 'tiddlers',
+        'special_bag_detectors': [is_remote],
         }
