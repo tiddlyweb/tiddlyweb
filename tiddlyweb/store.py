@@ -138,13 +138,13 @@ class Store(object):
         """
         lower_class = thing.__class__.__name__.lower()
         if lower_class == 'tiddler':
-            uri = thing.bag
             retriever = get_bag_retriever(self.environ, thing.bag)
             if retriever:
                 try:
                     thing = retriever[1](thing)
                 except SpecialBagError, exc:
-                    raise NoTiddlerError('unable to get remote tiddler: %s:%s:%s'
+                    raise NoTiddlerError(
+                            'unable to get remote tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
                 thing.store = self
                 self._do_hook('get', thing)

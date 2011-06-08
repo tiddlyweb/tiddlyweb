@@ -4,6 +4,10 @@ Hooks that allow plugins to define special bags, such as remotebags.
 
 
 class SpecialBagError(Exception):
+    """
+    An exception to be raised in the modules which contain
+    special bag detectors and their supporting retrievers.
+    """
     pass
 
 
