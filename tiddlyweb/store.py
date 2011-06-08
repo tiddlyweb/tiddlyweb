@@ -9,8 +9,7 @@ implementations do the actual interaction with the the storage medium.
 
 from copy import deepcopy
 
-from tiddlyweb.specialbag import get_bag_retriever
-from tiddlyweb.remotebag import (RemoteBagError, is_remote)
+from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 from tiddlyweb.model.policy import Policy
 
 
@@ -144,7 +143,7 @@ class Store(object):
             if retriever:
                 try:
                     thing = retriever[1](thing)
-                except RemoteBagError, exc:
+                except SpecialBagError, exc:
                     raise NoTiddlerError('unable to get remote tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
                 thing.store = self
@@ -202,7 +201,7 @@ class Store(object):
         if retriever:
             try:
                 return retriever[0](bag.name)
-            except RemoteBagError, exc:
+            except SpecialBagError, exc:
                 raise NoBagError('unable to get remote bag: %s: %s'
                         % (bag.name, exc))
         list_func = getattr(self.storage, 'list_bag_tiddlers')

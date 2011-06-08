@@ -1,4 +1,4 @@
-from tiddlyweb.remotebag import is_remote
+from remotebag import is_remote
 config = {
         'log_level':'DEBUG',
         'extra': { 'stuff': ['one', 'two'], }, # required for test_merge_config

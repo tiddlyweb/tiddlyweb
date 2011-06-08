@@ -2,7 +2,10 @@
 Hooks that allow plugins to define special bags, such as remotebags.
 """
 
-from tiddlyweb.remotebag import is_remote
+
+class SpecialBagError(Exception):
+    pass
+
 
 def get_bag_retriever(environ, bag):
     """
