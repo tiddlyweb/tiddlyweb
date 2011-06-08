@@ -12,8 +12,12 @@ def get_bag_retriever(environ, bag):
     Inspect config['special_bag_detectors'] to special
     handlers for bags, like remote uris.
     """
-    for bag_tester in environ.get('tiddlyweb.config',
-            {}).get('special_bag_detectors', []):
+    try:
+        config = environ['tiddlyweb.config']
+    except KeyError:
+        from tiddlyweb.config import config
+    testers = config.get('special_bag_detectors', [])
+    for bag_tester in testers:
         retriever = bag_tester(environ, bag)
         if retriever:
             return retriever
