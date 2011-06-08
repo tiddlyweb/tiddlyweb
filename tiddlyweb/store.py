@@ -140,7 +140,7 @@ class Store(object):
         lower_class = thing.__class__.__name__.lower()
         if lower_class == 'tiddler':
             uri = thing.bag
-            if is_remote(uri):  # XXX: what about bags with / in their name?
+            if is_remote(self.environ, uri):  # XXX: what about bags with / in their name?
                 try:
                     thing = get_remote_tiddler(self.environ, thing)
                 except RemoteBagError, exc:
@@ -150,7 +150,7 @@ class Store(object):
                 self._do_hook('get', thing)
                 return thing
         elif lower_class == 'bag':
-            if is_remote(thing.name):
+            if is_remote(self.environ, thing.name):
                 policy = Policy(read=[], write=['NONE'], create=['NONE'],
                         delete=['NONE'], manage=['NONE'], accept=['NONE'])
                 thing.policy = policy
@@ -197,7 +197,7 @@ class Store(object):
         """
         List all the tiddlers in the bag.
         """
-        if is_remote(bag.name):
+        if is_remote(self.environ, bag.name):
             try:
                 return get_remote_tiddlers(self.environ, bag.name)
             except RemoteBagError, exc:

@@ -59,7 +59,7 @@ class Serialization(SerializationInterface):
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name
-            if not is_remote(bag):
+            if not is_remote(self.environ, bag):
                 line += '/bags/%s/tiddlers' % urllib.quote(
                         bag.encode('utf-8'), safe='')
             else:

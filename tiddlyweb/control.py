@@ -27,23 +27,33 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     store = recipe.store
     uniquifier = {}
     for bag, filter_string in recipe.get_recipe(template):
+
         if isinstance(bag, basestring):
-            if is_remote(bag):
-                try:
-                    for tiddler in filter_tiddlers(get_remote_tiddlers(
-                        environ, bag), filter_string, environ=environ):
-                        uniquifier[tiddler.title] = tiddler
-                    continue
-                except RemoteBagError, exc:
-                    raise StoreError('unable to retrieve remote tiddlers: %s:%s'
-                            % (bag, exc))
-            else:
+            retriever = _determine_bag_retriever(environ, bag)
+            if not retriever:
                 bag = Bag(name=bag)
-        bag.store = store
-        for tiddler in _filter_tiddlers_from_bag(bag, filter_string,
+                retriever = store.list_bag_tiddlers
+        else:
+            retriever = store.list_bag_tiddlers
+
+        for tiddler in filter_tiddlers(retriever(bag), filter_string,
                 environ=environ):
             uniquifier[tiddler.title] = tiddler
+
     return uniquifier.values()
+
+
+def _determine_bag_retriever(environ, bag):
+    """
+    Inspect config['special_bag_detectors'] to special
+    handlers for bags, like remote uris.
+    """
+    for bag_tester in environ.get('tiddlyweb.config',
+            {}).get('special_bag_detectors', [is_remote]):
+        retriever = bag_tester(environ, bag)
+        if retriever:
+            return retriever
+    return None
 
 
 def determine_bag_from_recipe(recipe, tiddler, environ=None):

@@ -25,11 +25,22 @@ class RemoteBagError(Exception):
     pass
 
 
-def is_remote(uri):
+def is_remote(environ, uri):
     """
-    Return true if a bag reference looks like it is remote.
+    Return the tool for retrieving remote if this is a remote bag.
+    Otherwise None.
     """
-    return uri.startswith('http:') or uri.startswith('https:')
+    if uri.startswith('http:') or uri.startswith('https:'):
+
+        def r(environ, func):
+            def i(bag):
+                return func(environ, bag)
+            return i
+
+        return r(environ, get_remote_tiddlers)
+
+    return None
+
 
 
 def retrieve_remote(uri, accept=None):
