@@ -11,7 +11,7 @@ from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
         recursive_filter)
 from tiddlyweb.store import NoBagError, StoreError
-from tiddlyweb.remotebag import get_remote_tiddlers, RemoteBagError, is_remote
+from tiddlyweb.specialbag import get_bag_retriever
 
 
 def get_tiddlers_from_recipe(recipe, environ=None):
@@ -29,10 +29,12 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     for bag, filter_string in recipe.get_recipe(template):
 
         if isinstance(bag, basestring):
-            retriever = _determine_bag_retriever(environ, bag)
+            retriever = get_bag_retriever(environ, bag)
             if not retriever:
                 bag = Bag(name=bag)
                 retriever = store.list_bag_tiddlers
+            else:
+                retriever = retriever[0]
         else:
             retriever = store.list_bag_tiddlers
 
@@ -41,19 +43,6 @@ def get_tiddlers_from_recipe(recipe, environ=None):
             uniquifier[tiddler.title] = tiddler
 
     return uniquifier.values()
-
-
-def _determine_bag_retriever(environ, bag):
-    """
-    Inspect config['special_bag_detectors'] to special
-    handlers for bags, like remote uris.
-    """
-    for bag_tester in environ.get('tiddlyweb.config',
-            {}).get('special_bag_detectors', [is_remote]):
-        retriever = bag_tester(environ, bag)
-        if retriever:
-            return retriever
-    return None
 
 
 def determine_bag_from_recipe(recipe, tiddler, environ=None):

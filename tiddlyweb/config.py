@@ -101,8 +101,9 @@ wikitext.type_render_map -- A dictionary mapping tiddler.type MIME-
 TYPES to modules with a render() function for turning that content-type
 into HTML.
 
-remote_handlers -- A list of tuples containing regular expressions matching
-a remote uri and a function for retrieving tiddlers from it.
+special_bag_detectors -- A list of functions that take an environ and bag
+name and return a tuple of two functions: the first returns the tiddlers
+in that bag, the second returns one tiddler from that bag.
 """
 
 try:
@@ -179,7 +180,7 @@ DEFAULT_CONFIG = {
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
         'root_dir': '',
-        'remote_handlers': [],
+        'special_bag_detectors': [],
         }
 
 

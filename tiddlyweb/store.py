@@ -9,8 +9,8 @@ implementations do the actual interaction with the the storage medium.
 
 from copy import deepcopy
 
-from tiddlyweb.remotebag import (get_remote_tiddler, RemoteBagError,
-        get_remote_tiddlers, is_remote)
+from tiddlyweb.specialbag import get_bag_retriever
+from tiddlyweb.remotebag import (RemoteBagError, is_remote)
 from tiddlyweb.model.policy import Policy
 
 
@@ -140,9 +140,10 @@ class Store(object):
         lower_class = thing.__class__.__name__.lower()
         if lower_class == 'tiddler':
             uri = thing.bag
-            if is_remote(self.environ, uri):  # XXX: what about bags with / in their name?
+            retriever = get_bag_retriever(self.environ, thing.bag)
+            if retriever:
                 try:
-                    thing = get_remote_tiddler(self.environ, thing)
+                    thing = retriever[1](thing)
                 except RemoteBagError, exc:
                     raise NoTiddlerError('unable to get remote tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
@@ -150,7 +151,7 @@ class Store(object):
                 self._do_hook('get', thing)
                 return thing
         elif lower_class == 'bag':
-            if is_remote(self.environ, thing.name):
+            if get_bag_retriever(self.environ, thing.name):
                 policy = Policy(read=[], write=['NONE'], create=['NONE'],
                         delete=['NONE'], manage=['NONE'], accept=['NONE'])
                 thing.policy = policy
@@ -197,9 +198,10 @@ class Store(object):
         """
         List all the tiddlers in the bag.
         """
-        if is_remote(self.environ, bag.name):
+        retriever = get_bag_retriever(self.environ, bag.name)
+        if retriever:
             try:
-                return get_remote_tiddlers(self.environ, bag.name)
+                return retriever[0](bag.name)
             except RemoteBagError, exc:
                 raise NoBagError('unable to get remote bag: %s: %s'
                         % (bag.name, exc))

@@ -7,7 +7,8 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
-from tiddlyweb.remotebag import is_remote
+
+from tiddlyweb.specialbag import get_bag_retriever
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
@@ -59,7 +60,9 @@ class Serialization(SerializationInterface):
             line = ''
             if not isinstance(bag, basestring):
                 bag = bag.name
-            if not is_remote(self.environ, bag):
+            if not get_bag_retriever(self.environ, bag):
+                # If there is a retriever for this bag name then
+                # we want to write its name straight.
                 line += '/bags/%s/tiddlers' % urllib.quote(
                         bag.encode('utf-8'), safe='')
             else:

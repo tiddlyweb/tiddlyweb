@@ -32,12 +32,13 @@ def is_remote(environ, uri):
     """
     if uri.startswith('http:') or uri.startswith('https:'):
 
-        def r(environ, func):
-            def i(bag):
+        def curry(environ, func):
+            def actor(bag):
                 return func(environ, bag)
-            return i
+            return actor
 
-        return r(environ, get_remote_tiddlers)
+        return (curry(environ, get_remote_tiddlers),
+                curry(environ, get_remote_tiddler))
 
     return None
 
@@ -131,7 +132,7 @@ def _determine_remote_handler(environ, uri):
     """
     config = environ['tiddlyweb.config']
     if len(PATTERNS) == 1:
-        for rule, target in config['remote_handlers']:
+        for rule, target in config.get('remote_handlers', []):
             PATTERNS.append((re.compile(rule), target))
     for pattern, target in PATTERNS:
         if pattern.search(uri):
