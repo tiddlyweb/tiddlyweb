@@ -11,7 +11,7 @@ from tiddlyweb.model.policy import ForbiddenError, UserRequiredError
 from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
         recursive_filter)
 from tiddlyweb.store import NoBagError, StoreError
-from tiddlyweb.specialbag import get_bag_retriever
+from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 
 
 def get_tiddlers_from_recipe(recipe, environ=None):
@@ -38,9 +38,13 @@ def get_tiddlers_from_recipe(recipe, environ=None):
         else:
             retriever = store.list_bag_tiddlers
 
-        for tiddler in filter_tiddlers(retriever(bag), filter_string,
-                environ=environ):
-            uniquifier[tiddler.title] = tiddler
+        try:
+            for tiddler in filter_tiddlers(retriever(bag), filter_string,
+                    environ=environ):
+                uniquifier[tiddler.title] = tiddler
+        except SpecialBagError, exc:
+            raise NoBagError('unable to retrieve from special bag: %s, %s'
+                    % (bag, exc))
 
     return uniquifier.values()
 
