@@ -155,6 +155,7 @@ class Store(object):
                         delete=['NONE'], manage=['NONE'], accept=['NONE'])
                 thing.policy = policy
                 thing.store = self
+                self._do_hook('get', thing)
                 return thing
         func = self._figure_function('get', thing)
         thing = func(thing)
