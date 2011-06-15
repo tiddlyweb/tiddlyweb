@@ -13,6 +13,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler, renderable
 from tiddlyweb.wikitext import render_wikitext
+from tiddlyweb.store import StoreError
 
 
 class Serialization(SerializationInterface):
@@ -175,10 +176,13 @@ class Serialization(SerializationInterface):
             if 'tiddlyweb.usersign' in environ:
                 store = tiddler.store
                 if store:
-                    bag = Bag(tiddler.bag)
-                    bag = store.get(bag)
-                    perms = bag.policy.user_perms(
-                            environ['tiddlyweb.usersign'])
+                    try:
+                        bag = Bag(tiddler.bag)
+                        bag = store.get(bag)
+                        perms = bag.policy.user_perms(
+                                environ['tiddlyweb.usersign'])
+                    except StoreError:
+                        pass
             return perms
 
         perms = []
