@@ -136,7 +136,7 @@ class Store(object):
         """
         Get a thing: recipe, bag or tiddler
         """
-        lower_class = thing.__class__.__name__.lower()
+        lower_class = _superclass_name(thing)
         if lower_class == 'tiddler':
             uri = thing.bag
             retriever = get_bag_retriever(self.environ, thing.bag)
@@ -180,7 +180,7 @@ class Store(object):
         Determine which function on the StorageInterface
         we should use to store or retrieve storable.
         """
-        lower_class = storable.__class__.__name__.lower()
+        lower_class = _superclass_name(storable)
         try:
             func = getattr(self.storage, '%s_%s' % (lower_class, activity))
         except AttributeError, exc:
@@ -241,10 +241,14 @@ class Store(object):
         """
         Call the hook in HOOKS identified by method on thing.
         """
-        hooked_class = thing.__class__.__name__.lower()
+        hooked_class = _superclass_name(thing)
         hooks = _get_hooks(method, hooked_class)
         for hook in hooks:
             hook(self, thing)
+
+
+def _superclass_name(instance):
+    return instance.__class__.mro()[-2].__name__.lower()
 
 
 def _get_hooks(method, name):

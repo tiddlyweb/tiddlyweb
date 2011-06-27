@@ -25,7 +25,7 @@ def test_set_recipe():
     Confirm setting the recipe to the contents of a list.
     """
     recipe.set_recipe(recipe_list)
-    assert len(recipe) == 3, 'length of recipe should be 3 is %s' % len(recipe)
+    assert len(recipe.get_recipe()) == 3
 
 def test_recipe_has_description():
     """

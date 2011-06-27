@@ -62,7 +62,7 @@ def test_recipe_get():
     stored_recipe = Recipe('testrecipe')
     stored_recipe = store.get(stored_recipe)
 
-    assert stored_recipe == recipe_list_string
+    assert stored_recipe.get_recipe() == recipe_list_string
 
 def test_recipe_delete():
     recipe = Recipe('deleteme')

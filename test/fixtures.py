@@ -79,9 +79,9 @@ recipe_list = [
         ]
 
 recipe_list_string = [
-        (u'bagone', u'select=title:TiddlerOne'),
-        (u'bagtwo', u'select=title:TiddlerTwo'),
-        (u'bagthree', u'select=tag:tagone;select=tag:tagthree')
+        [u'bagone', u'select=title:TiddlerOne'],
+        [u'bagtwo', u'select=title:TiddlerTwo'],
+        [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
          ]
 
 def _teststore():

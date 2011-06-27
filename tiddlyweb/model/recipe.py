@@ -10,7 +10,7 @@ RECIPE_TEMPLATE_RE = re.compile(r'{{ (\w+) }}')
 RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
 
 
-class Recipe(list):
+class Recipe(object):
     """
     A Recipe is an ordered list that represents a program for creating a
     collection of tiddlers.
@@ -28,7 +28,7 @@ class Recipe(list):
     """
 
     def __init__(self, name, desc=u''):
-        list.__init__(self)
+        self._recipe = []
         self.name = unicode(name)
         self.desc = unicode(desc)
         self.store = None
@@ -38,13 +38,13 @@ class Recipe(list):
         """
         Set the contents of the list.
         """
-        list.__init__(self, recipe_list)
+        self._recipe = recipe_list
 
     def get_recipe(self, template=None):
         """
         Return the recipe list, as a list.
         """
-        our_list = self
+        our_list = self._recipe
         real_list = []
 
         # If no template is provided the below

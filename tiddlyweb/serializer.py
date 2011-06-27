@@ -87,7 +87,7 @@ class Serializer(object):
         Turn the provided input_string into a TiddlyWeb entity object of the
         type of self.object. That is: populate self.object based on input_string.
         """
-        lower_class = self.object.__class__.__name__.lower()
+        lower_class = self.object.__class__.mro()[-2].__name__.lower()
         try:
             object_func = getattr(self.serialization, 'as_%s' % lower_class)
         except AttributeError, exc:

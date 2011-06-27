@@ -58,7 +58,7 @@ def test_simple_recipe():
     serializer.object = new_recipe
     serializer.from_string(string)
 
-    assert recipe == new_recipe, 'recipe and new_recipe have equality'
+    assert recipe.get_recipe() == new_recipe.get_recipe()
 
     recipe = Recipe('other')
     recipe.set_recipe([('bagboom', '')])
