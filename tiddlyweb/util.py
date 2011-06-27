@@ -136,6 +136,18 @@ def std_error_message(message):
             print >> sys.stderr, 'cannot display message due to mismatching terminal character encoding'
 
 
+def superclass_name(instance):
+    """
+    Given an instance return the lowerclass name of the penultimate
+    class in the hierarchy (the last is object). This is used to do
+    dynamic method lookups in adaptor classes via serializer.py and
+    store.py while still allowing model entities to be subclassed.
+    Those subclasses must insure that their __mro__ results in
+    Bag, User, Recipe or Tiddler in the penultimate slot.
+    """
+    return instance.__class__.mro()[-2].__name__.lower()
+
+
 def write_utf8_file(filename, content):
     """
     Write a string to utf-8 encoded file.

@@ -8,6 +8,8 @@ serialization for a given MIME type. Plugins may override what MIME
 types are handled and by what modules.
 """
 
+from tiddlyweb.util import superclass_name
+
 
 class TiddlerFormatError(Exception):
     """
@@ -69,7 +71,7 @@ class Serializer(object):
         self.serialization = imported_module.Serialization(self.environ)
 
     def __str__(self):
-        lower_class = self.object.__class__.__name__.lower()
+        lower_class = superclass_name(self.object)
         try:
             string_func = getattr(self.serialization, '%s_as' % lower_class)
         except AttributeError, exc:
@@ -87,7 +89,7 @@ class Serializer(object):
         Turn the provided input_string into a TiddlyWeb entity object of the
         type of self.object. That is: populate self.object based on input_string.
         """
-        lower_class = self.object.__class__.mro()[-2].__name__.lower()
+        lower_class = superclass_name(self.object)
         try:
             object_func = getattr(self.serialization, 'as_%s' % lower_class)
         except AttributeError, exc:
