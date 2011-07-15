@@ -29,6 +29,7 @@ class Collection(object):
         self._digest = sha()
         self.modified = '0'
         self.title = title
+        self.link = ''
         self._container = []
 
     def __contains__(self, item):

@@ -121,7 +121,8 @@ class Store(object):
             try:
                 imported_module = __import__(self.engine, {}, {}, ['Store'])
             except ImportError, err:
-                raise ImportError("couldn't load store for %s: %s, %s" % (self.engine, err, err1))
+                raise ImportError("couldn't load store for %s: %s, %s"
+                        % (self.engine, err, err1))
         self.storage = imported_module.Store(self.config, self.environ)
 
     def delete(self, thing):
@@ -145,7 +146,8 @@ class Store(object):
                 try:
                     thing = retriever[1](thing)
                 except SpecialBagError, exc:
-                    raise NoTiddlerError('unable to get remote tiddler: %s:%s:%s'
+                    raise NoTiddlerError(
+                            'unable to get remote tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
                 thing.store = self
                 self._do_hook('get', thing)
@@ -185,7 +187,8 @@ class Store(object):
         try:
             func = getattr(self.storage, '%s_%s' % (lower_class, activity))
         except AttributeError, exc:
-            raise AttributeError('unable to figure function for %s: %s' % (lower_class, exc))
+            raise AttributeError('unable to figure function for %s: %s'
+                    % (lower_class, exc))
         return func
 
     def list_bags(self):

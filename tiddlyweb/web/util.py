@@ -220,17 +220,25 @@ def tiddler_url(environ, tiddler, container='bags', full=True):
         return '%s/%s' % (_server_prefix(environ), tiddler_link)
 
 
-def recipe_url(environ, recipe):
+def recipe_url(environ, recipe, full=True):
     """
     Construct a URL for a recipe.
     """
-    return '%s/recipes/%s' % (server_base_url(environ),
-            encode_name(recipe.name))
+    recipe_link = 'recipes/%s' % encode_name(recipe.name)
+
+    if full:
+        return '%s/%s' % (server_base_url(environ), recipe_link)
+    else:
+        return '%s/%s' % (_server_prefix(environ), recipe_link)
 
 
-def bag_url(environ, bag):
+def bag_url(environ, bag, full=True):
     """
     Construct a URL for a bag.
     """
-    return '%s/bags/%s' % (server_base_url(environ),
-            encode_name(bag.name))
+    bag_link = 'bags/%s' % encode_name(bag.name)
+
+    if full:
+        return '%s/%s' % (server_base_url(environ), bag_link)
+    else:
+        return '%s/%s' % (_server_prefix(environ), bag_link)

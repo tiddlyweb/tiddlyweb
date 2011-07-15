@@ -82,7 +82,8 @@ def handle(args):
 
     if candidate_command and candidate_command in COMMANDS:
         try:
-            logging.debug('running command %s with %s', candidate_command, args)
+            logging.debug('running command %s with %s',
+                    candidate_command, args)
             COMMANDS[candidate_command](args)
         except IndexError, exc:
             usage('Incorect number of arguments')
@@ -90,8 +91,8 @@ def handle(args):
             if config.get('twanager.tracebacks', False):
                 raise
             import traceback
-            logging.error('twanager error with command "%s %s"\n%s', candidate_command,
-                    args, traceback.format_exc())
+            logging.error('twanager error with command "%s %s"\n%s',
+                    candidate_command, args, traceback.format_exc())
             usage('%s: %s' % (exc.__class__.__name__, exc.args))
     else:
         usage('No matching command found')

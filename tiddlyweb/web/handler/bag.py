@@ -87,6 +87,8 @@ def get_tiddlers(environ, start_response):
     for tiddler in store.list_bag_tiddlers(bag):
         tiddlers.add(tiddler)
 
+    tiddlers.link = '%s/tiddlers' % web.bag_url(environ, bag, full=False)
+
     return send_tiddlers(environ, start_response, tiddlers=tiddlers)
 
 

@@ -59,7 +59,7 @@ class Serialization(SerializationInterface):
         title = tiddlers.title
         server_prefix = self._server_prefix()
         lines = []
-        representation_link = ''
+        representation_link = tiddlers.link
         bag_link = ''
         for tiddler in tiddlers:
             if not representation_link:
@@ -70,11 +70,6 @@ class Serialization(SerializationInterface):
                 line = self._tiddler_in_container_info(tiddler)
             lines.append(line)
 
-        # If we were able to load the tiddler revisions there is at
-        # least one revision, so tiddler.title is defined here.
-        if tiddlers.is_revisions:
-            representation_link += '/%s/revisions' % encode_name(
-                    tiddler.title)
         if tiddlers.is_search:
             representation_link = '%s/search' % server_prefix
 

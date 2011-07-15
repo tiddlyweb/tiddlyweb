@@ -60,14 +60,16 @@ class Serializer(object):
         if self.engine is None:
             raise NoSerializationError
         try:
-            imported_module = __import__('tiddlyweb.serializations.%s' % self.engine,
-                    {}, {}, ['Serialization'])
+            imported_module = __import__('tiddlyweb.serializations.%s'
+                    % self.engine, {}, {}, ['Serialization'])
         except ImportError, err:
             err1 = err
             try:
-                imported_module = __import__(self.engine, {}, {}, ['Serialization'])
+                imported_module = __import__(self.engine, {}, {},
+                        ['Serialization'])
             except ImportError, err:
-                raise ImportError("couldn't load module for %s: %s, %s" % (self.engine, err, err1))
+                raise ImportError("couldn't load module for %s: %s, %s"
+                        % (self.engine, err, err1))
         self.serialization = imported_module.Serialization(self.environ)
 
     def __str__(self):
@@ -75,7 +77,9 @@ class Serializer(object):
         try:
             string_func = getattr(self.serialization, '%s_as' % lower_class)
         except AttributeError, exc:
-            raise AttributeError('unable to find to string function for %s: %s' % (lower_class, exc))
+            raise AttributeError(
+                    'unable to find to string function for %s: %s'
+                    % (lower_class, exc))
         return string_func(self.object)
 
     def to_string(self):
@@ -87,13 +91,16 @@ class Serializer(object):
     def from_string(self, input_string):
         """
         Turn the provided input_string into a TiddlyWeb entity object of the
-        type of self.object. That is: populate self.object based on input_string.
+        type of self.object. That is: populate self.object based on
+        input_string.
         """
         lower_class = superclass_name(self.object)
         try:
             object_func = getattr(self.serialization, 'as_%s' % lower_class)
         except AttributeError, exc:
-            raise AttributeError('unable to find from string function for %s: %s' % (lower_class, exc))
+            raise AttributeError(
+                    'unable to find from string function for %s: %s'
+                    % (lower_class, exc))
         return object_func(self.object, input_string)
 
     def list_recipes(self, recipes):

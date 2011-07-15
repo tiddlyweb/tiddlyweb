@@ -211,7 +211,8 @@ def init(config):
             owner = listed_recipe.policy.owner or ''
             print listed_recipe.name.encode('utf-8'), owner.encode('utf-8')
             for recipe_bag, recipe_filter in listed_recipe.get_recipe():
-                print '\t', recipe_bag.encode('utf-8'), recipe_filter.encode('utf-8')
+                print ('\t', recipe_bag.encode('utf-8'),
+                        recipe_filter.encode('utf-8'))
 
     @make_command()
     def ltiddlers(args):

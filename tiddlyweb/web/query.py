@@ -39,7 +39,7 @@ class Query(object):
                 length = environ['CONTENT_LENGTH']
                 content = environ['wsgi.input'].read(int(length))
             except KeyError, exc:
-                raise HTTP400( 'Invalid post, unable to read content: %s'
+                raise HTTP400('Invalid post, unable to read content: %s'
                         % exc)
             posted_data = parse_qs(content, keep_blank_values=True)
             try:
@@ -55,7 +55,8 @@ class Query(object):
             _update_tiddlyweb_query(environ, query_data)
         except UnicodeDecodeError, exc:
             raise HTTP400(
-                    'Invalid encoding in query string, utf-8 required: %s', exc)
+                    'Invalid encoding in query string, utf-8 required: %s',
+                    exc)
         environ['tiddlyweb.filters'] = filters
 
 

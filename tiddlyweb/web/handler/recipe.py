@@ -101,6 +101,9 @@ def get_tiddlers(environ, start_response):
         tiddler.recipe = recipe.name
         tiddlers.add(tiddler)
 
+    tiddlers.link = '%s/tiddlers' % web.recipe_url(environ, recipe,
+            full=False)
+
     return send_tiddlers(environ, start_response, tiddlers=tiddlers)
 
 
