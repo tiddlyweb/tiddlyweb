@@ -1,3 +1,7 @@
+1.2.40 Sun Jul 17 12:09:10 UTC 2011
+
+  * Enable a 'link' attribute on collections for use in serializations.
+
 1.2.39 Mon Jun 27 16:23:25 UTC 2011
 
   * Allow subclassing of Bag, Recipe, Tiddler and User entities.
