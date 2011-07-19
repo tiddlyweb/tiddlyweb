@@ -149,30 +149,30 @@ def _determine_tiddler(environ, bag_finder):
         content = environ['wsgi.input'].read(int(length))
 
         try:
-            # XXX HACK! We don't want to decode content unless
-            # the serializer has a as_tiddler. We should be able
-            # to just rely on NoSerializationError, but we need
-            # to call the method to do that, and to call the method we
-            # need to decode the string...
-            serialize_type = web.get_serialize_type(environ)[0]
-            serializer = Serializer(serialize_type, environ)
-            serializer.object = tiddler
-            if hasattr(serializer.serialization, 'as_tiddler'):
-                try:
-                    serializer.from_string(content.decode('utf-8'))
-                except TiddlerFormatError, exc:
-                    raise HTTP400('unable to put tiddler: %s' % exc)
-            else:
-                raise NoSerializationError
-        except NoSerializationError:
-            tiddler.type = content_type
-            if pseudo_binary(tiddler.type):
-                try:
+            try:
+                # XXX HACK! We don't want to decode content unless
+                # the serializer has a as_tiddler. We should be able
+                # to just rely on NoSerializationError, but we need
+                # to call the method to do that, and to call the method we
+                # need to decode the string...
+                serialize_type = web.get_serialize_type(environ)[0]
+                serializer = Serializer(serialize_type, environ)
+                serializer.object = tiddler
+                if hasattr(serializer.serialization, 'as_tiddler'):
+                    try:
+                        serializer.from_string(content.decode('utf-8'))
+                    except TiddlerFormatError, exc:
+                        raise HTTP400('unable to put tiddler: %s' % exc)
+                else:
+                    raise NoSerializationError
+            except NoSerializationError:
+                tiddler.type = content_type
+                if pseudo_binary(tiddler.type):
                     tiddler.text = content.decode('utf-8')
-                except UnicodeDecodeError, exc:
-                    raise HTTP400('unable decode tiddler: %s', exc)
-            else:
-                tiddler.text = content
+                else:
+                    tiddler.text = content
+        except UnicodeDecodeError, exc:
+            raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
 
     try:
         recipe_name = web.get_route_value(environ, 'recipe_name')

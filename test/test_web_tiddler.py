@@ -91,11 +91,17 @@ def test_get_tiddler_missing_revision():
 def test_put_tiddler_txt():
     http = httplib2.Http()
     encoded_body = text_put_body.encode('utf-8')
+    funkity_encoding = text_put_body.encode('latin1')
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
-
-    assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
     tiddler_url = response['location']
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+            method='PUT', headers={'Content-Type': 'text/plain'}, body=funkity_encoding)
+
+    assert response['status'] == '400', content
+    assert 'unable to decode tiddler' in content
+
     assert tiddler_url == 'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne', \
             'response location should be http://our_test_domain:8001/bags/bag0/tiddlers/TestOne is %s' \
             % tiddler_url
