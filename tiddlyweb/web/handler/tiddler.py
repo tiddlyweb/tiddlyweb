@@ -158,13 +158,10 @@ def _determine_tiddler(environ, bag_finder):
                 serialize_type = web.get_serialize_type(environ)[0]
                 serializer = Serializer(serialize_type, environ)
                 serializer.object = tiddler
-                if hasattr(serializer.serialization, 'as_tiddler'):
-                    try:
-                        serializer.from_string(content.decode('utf-8'))
-                    except TiddlerFormatError, exc:
-                        raise HTTP400('unable to put tiddler: %s' % exc)
-                else:
-                    raise NoSerializationError
+                try:
+                    serializer.from_string(content.decode('utf-8'))
+                except TiddlerFormatError, exc:
+                    raise HTTP400('unable to put tiddler: %s' % exc)
             except NoSerializationError:
                 tiddler.type = content_type
                 if pseudo_binary(tiddler.type):
