@@ -1,3 +1,7 @@
+1.2.41 Tue Jul 19 20:22:18 UTC 2011
+
+  * Fix a decoding issue when putting a tiddler.
+
 1.2.40 Sun Jul 17 12:09:10 UTC 2011
 
   * Enable a 'link' attribute on collections for use in serializations.
