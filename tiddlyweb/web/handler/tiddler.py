@@ -4,7 +4,6 @@ a Tiddler, GET a list of revisions of a Tiddler.
 """
 
 import logging
-import urllib
 
 import simplejson
 
@@ -17,7 +16,7 @@ from tiddlyweb.store import (NoTiddlerError, NoBagError, NoRecipeError,
         StoreMethodNotImplemented)
 from tiddlyweb.serializer import (Serializer, TiddlerFormatError,
         NoSerializationError)
-from tiddlyweb.util import sha, pseudo_binary, renderable
+from tiddlyweb.util import pseudo_binary, renderable
 from tiddlyweb.web.http import (HTTP404, HTTP415, HTTP412, HTTP409,
         HTTP400, HTTP304)
 from tiddlyweb import control
@@ -325,7 +324,7 @@ def _put_tiddler(environ, start_response, tiddler):
     except NoTiddlerError, exc:
         raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
 
-    etag = ('Etag', _tiddler_etag(environ, tiddler))
+    etag = ('Etag', web.tiddler_etag(environ, tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]
     if etag:
         response.append(etag)
@@ -369,7 +368,7 @@ def _validate_tiddler_headers(environ, tiddler):
     b) we have edit contention when trying to write.
     """
     request_method = environ['REQUEST_METHOD']
-    tiddler_etag = _tiddler_etag(environ, tiddler)
+    tiddler_etag = web.tiddler_etag(environ, tiddler)
 
     logging.debug('attempting to validate %s with revision %s',
             tiddler.title, tiddler.revision)
@@ -536,19 +535,3 @@ def _new_tiddler_etag(tiddler):
     """
     return str('"%s/%s/%s"' % (web.encode_name(tiddler.bag),
         web.encode_name(tiddler.title), '0'))
-
-
-def _tiddler_etag(environ, tiddler):
-    """
-    Calculate the ETAG of a tiddler, based on
-    bag name, tiddler title and revision.
-    """
-    try:
-        mime_type = web.get_serialize_type(environ)[1]
-        mime_type = mime_type.split(';', 1)[0].strip()
-    except (TypeError, AttributeError):
-        mime_type = tiddler.type or ''
-    username = environ.get('tiddlyweb.usersign', {}).get('name', '')
-    digest = sha('%s:%s' % (username, mime_type)).hexdigest()
-    return str('"%s/%s/%s;%s"' % (web.encode_name(tiddler.bag),
-        web.encode_name(tiddler.title), tiddler.revision, digest))

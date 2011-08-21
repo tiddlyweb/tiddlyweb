@@ -53,8 +53,7 @@ def test_put_tiddler_txt_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
-    etag_hash = sha('GUEST:text/plain').hexdigest()
-    assert response['etag'] == '"bag1/TestOne/3;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/TestOne/3;')
 
 def test_put_tiddler_txt_4():
     http = httplib2.Http()
@@ -62,8 +61,7 @@ def test_put_tiddler_txt_4():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
     assert response['status'] == '204'
-    etag_hash = sha('GUEST:text/plain').hexdigest()
-    assert response['etag'] == '"bag1/TestOne/4;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/TestOne/4;')
 
 def test_get_tiddler_revision_list():
     http = httplib2.Http()
@@ -91,8 +89,7 @@ def test_get_tiddler_revision_3():
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
             method='GET')
     assert response['status'] == '200'
-    etag_hash = sha('GUEST:text/html').hexdigest()
-    assert response['etag'] == '"bag1/TestOne/3;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/TestOne/3;')
 
 def test_get_tiddler_revision_5_fail():
     http = httplib2.Http()
@@ -177,22 +174,21 @@ def test_tiddler_revision_list_json_fat():
 
 
 def test_etag_generation():
-    from tiddlyweb.web.handler.tiddler import _tiddler_etag
+    from tiddlyweb.web.util import tiddler_etag
     from tiddlyweb.model.bag import Bag
     from tiddlyweb.model.tiddler import Tiddler
     from tiddlyweb.config import config
 
     tiddler = Tiddler('monkey', 'bar')
-    etag = _tiddler_etag({'tiddlyweb.config': config}, tiddler)
+    etag = tiddler_etag({'tiddlyweb.config': config}, tiddler)
 
-    etag_hash = sha(':').hexdigest()
-    assert etag == '"bar/monkey/0;%s"' % etag_hash
+    assert etag.startswith('"bar/monkey/0;')
 
     bag = Bag('bar')
     store.put(bag)
     store.put(tiddler)
-    etag = _tiddler_etag({'tiddlyweb.config': config}, tiddler)
-    assert etag == '"bar/monkey/1;%s"' % etag_hash
+    etag = tiddler_etag({'tiddlyweb.config': config}, tiddler)
+    assert etag.startswith('"bar/monkey/1;')
 
 
 def test_post_revision_etag_handling():

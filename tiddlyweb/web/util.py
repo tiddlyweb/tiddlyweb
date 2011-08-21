@@ -11,6 +11,7 @@ try:
 except ImportError:  # Python < 2.5
     from email.Utils import parsedate
 
+from tiddlyweb.serializer import Serializer
 from tiddlyweb.web.http import HTTP415, HTTP400
 from tiddlyweb.util import sha
 
@@ -202,6 +203,52 @@ def escape_attribute_value(text):
         return text
 
 
+def entity_etag(environ, entity):
+    """
+    Construct an etag from the JSON rep of an entity.
+
+    Because we Vary on Accept headers, we don't need to attend to mime_type.
+    """
+    serializer = Serializer('json', environ)
+    serializer.object = entity
+    content = serializer.to_string()
+    return '"%s"' % sha(content).hexdigest()
+
+
+def bag_etag(environ, bag):
+    """
+    Construct an etag for a bag.
+    """
+    return entity_etag(environ, bag)
+
+
+def bag_url(environ, bag, full=True):
+    """
+    Construct a URL for a bag.
+    """
+    bag_link = 'bags/%s' % encode_name(bag.name)
+
+    if full:
+        return '%s/%s' % (server_base_url(environ), bag_link)
+    else:
+        return '%s/%s' % (_server_prefix(environ), bag_link)
+
+
+def tiddler_etag(environ, tiddler):
+    """
+    Construct an etag for a tiddler from the tiddler's attributes,
+    but not its text.
+    """
+    text = tiddler.text
+    tiddler.text = ''
+    tiddler_id = '"%s/%s/%s;' % (encode_name(tiddler.bag),
+            encode_name(tiddler.title), tiddler.revision)
+    etag = entity_etag(environ, tiddler)
+    tiddler.text = text
+    etag = etag.replace('"', tiddler_id, 1)
+    return etag
+
+
 def tiddler_url(environ, tiddler, container='bags', full=True):
     """
     Construct a URL for a tiddler. If the tiddler has a _canonical_uri
@@ -220,6 +267,13 @@ def tiddler_url(environ, tiddler, container='bags', full=True):
         return '%s/%s' % (_server_prefix(environ), tiddler_link)
 
 
+def recipe_etag(environ, recipe):
+    """
+    Construct an etag for a recipe.
+    """
+    return entity_etag(environ, recipe)
+
+
 def recipe_url(environ, recipe, full=True):
     """
     Construct a URL for a recipe.
@@ -230,15 +284,3 @@ def recipe_url(environ, recipe, full=True):
         return '%s/%s' % (server_base_url(environ), recipe_link)
     else:
         return '%s/%s' % (_server_prefix(environ), recipe_link)
-
-
-def bag_url(environ, bag, full=True):
-    """
-    Construct a URL for a bag.
-    """
-    bag_link = 'bags/%s' % encode_name(bag.name)
-
-    if full:
-        return '%s/%s' % (server_base_url(environ), bag_link)
-    else:
-        return '%s/%s' % (_server_prefix(environ), bag_link)

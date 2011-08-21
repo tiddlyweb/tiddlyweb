@@ -5,8 +5,7 @@ from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
-from tiddlyweb.web.http import HTTP415, HTTP400
-from tiddlyweb.util import sha
+from tiddlyweb.web.http import HTTP304, HTTP400, HTTP415
 
 
 def list_entities(environ, start_response, mime_type, store_list,
@@ -15,14 +14,17 @@ def list_entities(environ, start_response, mime_type, store_list,
     Get a list of all the bags or recipes the current user can read.
     """
     filters = environ['tiddlyweb.filters']
-    username = environ['tiddlyweb.usersign']['name']
     try:
         kept_entities = _filter_readable(environ, store_list(), filters)
     except FilterError, exc:
         raise HTTP400(exc)
 
-    etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
-            sha('%s:%s' % (username, mime_type)).hexdigest())
+    etag_string = '"%s"' % kept_entities.hexdigest()
+    incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
+    if incoming_etag:
+        if incoming_etag == etag_string:
+            raise HTTP304(incoming_etag)
+
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept'),
                 ('Etag', etag_string)])

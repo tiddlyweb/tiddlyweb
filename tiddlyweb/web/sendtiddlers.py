@@ -95,8 +95,7 @@ def _validate_tiddler_list(environ, tiddlers):
     and ETag for the caller to use in constructing
     its HTTP response.
     """
-    last_modified_number = tiddlers.modified
-    last_modified_string = http_date_from_timestamp(last_modified_number)
+    last_modified_string = http_date_from_timestamp(tiddlers.modified)
     last_modified = ('Last-Modified', last_modified_string)
 
     username = environ.get('tiddlyweb.usersign', {}).get('name', '')
@@ -106,9 +105,8 @@ def _validate_tiddler_list(environ, tiddlers):
         mime_type = mime_type.split(';', 1)[0].strip()
     except TypeError:
         mime_type = ''
-    etag_string = '"%s:%s;%s"' % (tiddlers.hexdigest(),
-            str(last_modified_number), sha('%s:%s' %
-                (username, mime_type)).hexdigest())
+    etag_string = '"%s:%s"' % (tiddlers.hexdigest(),
+            sha('%s' % username).hexdigest())
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
