@@ -21,8 +21,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     except FilterError, exc:
         raise HTTP400(exc)
 
-    etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
-            sha('%s:%s' % (username, mime_type)).hexdigest())
+    etag_string = '"%s"' % kept_entities.hexdigest()
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept'),
                 ('Etag', etag_string)])
