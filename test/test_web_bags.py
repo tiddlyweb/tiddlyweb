@@ -25,6 +25,18 @@ def test_get_bags_txt():
     for i in xrange(5):
         assert 'bag%s\n' % i in content
     assert 'etag' in response
+    etag = response['etag']
+
+    response, content = http.request('http://our_test_domain:8001/bags',
+            headers={'Accept': 'text/plain', 'if-none-match': etag},
+            method='GET')
+    assert response['status'] == '304', content
+
+    response, content = http.request('http://our_test_domain:8001/bags',
+            headers={'Accept': 'text/plain', 'if-none-match': etag + 'foo'},
+            method='GET')
+    assert response['status'] == '200', content
+
 
 def test_get_bags_filters():
     http = httplib2.Http()
