@@ -6,7 +6,6 @@ from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP415, HTTP400
-from tiddlyweb.util import sha
 
 
 def list_entities(environ, start_response, mime_type, store_list,
@@ -15,7 +14,6 @@ def list_entities(environ, start_response, mime_type, store_list,
     Get a list of all the bags or recipes the current user can read.
     """
     filters = environ['tiddlyweb.filters']
-    username = environ['tiddlyweb.usersign']['name']
     try:
         kept_entities = _filter_readable(environ, store_list(), filters)
     except FilterError, exc:
