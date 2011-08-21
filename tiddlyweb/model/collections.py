@@ -157,10 +157,9 @@ class Tiddlers(Collection):
         """
         Update the digest with information from this tiddler.
         """
-        if tiddler.bag:
-            container = tiddler.bag
-        else:
-            container = ''
-        self._digest.update(container.encode('utf-8'))
+        try:
+            self._digest.update(tiddler.bag.encode('utf-8'))
+        except AttributeError:
+            pass
         self._digest.update(tiddler.title.encode('utf-8'))
         self._digest.update(str(tiddler.revision))

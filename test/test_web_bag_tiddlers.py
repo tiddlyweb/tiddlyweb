@@ -21,11 +21,20 @@ def test_get_sorted_tiddlers():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
             method='GET')
-    etag_hash = sha('GUEST:application/json').hexdigest()
+    etag = response['etag']
     assert response['status'] == '200'
-    assert etag_hash in response['etag']
     tiddlers = simplejson.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
+            method='GET')
+    etag2 = response['etag']
+    assert etag == etag2
+
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
+            method='GET',
+            headers={'if-none-match': etag})
+    assert response['status'] == '304'
 
 def test_get_selected_sorted_limited_tiddlers():
     http = httplib2.Http()
