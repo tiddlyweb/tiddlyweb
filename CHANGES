@@ -1,3 +1,8 @@
+1.2.42 Mon Aug 22 13:33:28 UTC 2011
+
+  * ETag handling on /bags and /recipes and individual bags and recipes.
+  * Adjust ETags on single tiddlers so they are not user dependent.
+
 1.2.41 Tue Jul 19 20:22:18 UTC 2011
 
   * Fix a decoding issue when putting a tiddler.
