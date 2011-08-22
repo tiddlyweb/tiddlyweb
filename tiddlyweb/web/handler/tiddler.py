@@ -410,8 +410,8 @@ def _etag_write_match(incoming_etag, server_etag):
     for a PUT or DELETE. This means comparing without the
     content type that _may_ be on the end.
     """
-    incoming_etag = incoming_etag.split(';', 1)[0].strip('"')
-    server_etag = server_etag.split(';', 1)[0].strip('"')
+    incoming_etag = incoming_etag.split(':', 1)[0].strip('"')
+    server_etag = server_etag.split(':', 1)[0].strip('"')
     return (incoming_etag == server_etag)
 
 
