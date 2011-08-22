@@ -27,6 +27,7 @@ def list_entities(environ, start_response, mime_type, store_list,
 
     start_response("200 OK", [('Content-Type', mime_type),
                 ('Vary', 'Accept'),
+                ('Cache-Control', 'no-cache'),
                 ('Etag', etag_string)])
 
     try:

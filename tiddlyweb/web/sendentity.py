@@ -30,6 +30,7 @@ def send_entity(environ, start_response, entity):
 
     start_response("200 OK",
             [('Content-Type', mime_type),
+                ('Cache-Control', 'no-cache'),
                 ('ETag', etag_string),
                 ('Vary', 'Accept')])
 
