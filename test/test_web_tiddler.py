@@ -640,7 +640,7 @@ def test_binary_text_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
             method='PUT', headers={'Content-Type': 'text/javascript'},
             body=text)
-    assert response['status'] == '204'
+    assert response['status'] == '204', content
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',

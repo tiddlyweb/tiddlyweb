@@ -209,10 +209,15 @@ def entity_etag(environ, entity):
 
     Because we Vary on Accept headers, we don't need to attend to mime_type.
     """
+    try:
+        _, mime_type = get_serialize_type(environ)
+        mime_type = mime_type.split(';', 1)[0].strip()
+    except (AttributeError, TypeError):
+        mime_type = ''
     serializer = Serializer('json', environ)
     serializer.object = entity
     content = serializer.to_string()
-    return '"%s"' % sha(content).hexdigest()
+    return '"%s"' % sha(content + mime_type).hexdigest()
 
 
 def bag_etag(environ, bag):
