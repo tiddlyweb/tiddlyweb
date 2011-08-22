@@ -1,3 +1,7 @@
+1.2.43 Mon Aug 22 14:25:24 UTC 2011
+
+  * Cache refinements.
+
 1.2.42 Mon Aug 22 13:33:28 UTC 2011
 
   * ETag handling on /bags and /recipes and individual bags and recipes.
