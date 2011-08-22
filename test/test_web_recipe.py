@@ -41,6 +41,16 @@ def test_get_recipe_txt():
 
     assert response['status'] == '200'
     assert '/bags/bag8/tiddlers?select=title:tiddler8' in content
+    assert 'etag' in response
+    etag = response['etag']
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
+            method='GET', headers={'if-none-match': etag})
+    assert response['status'] == '304'
+
+    response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
+            method='GET', headers={'if-none-match': etag + 'foo'})
+    assert response['status'] == '200'
 
 def test_get_recipe_not():
     """

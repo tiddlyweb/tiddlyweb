@@ -270,9 +270,8 @@ def test_get_tiddler_etag_recipe():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
             method='GET')
 
-    etag_hash = sha('GUEST:application/json').hexdigest()
     assert response['status'] == '200'
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1;')
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
@@ -281,9 +280,8 @@ def test_get_tiddler_etag_bag():
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
             method='GET')
 
-    etag_hash = sha('GUEST:application/json').hexdigest()
     assert response['status'] == '200'
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
@@ -295,22 +293,19 @@ def test_get_tiddler_cached():
             method='GET')
     assert not response.fromcache
     assert response['status'] == '200'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response.fromcache
     assert response['status'] == '304'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
     
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
             headers={'Accept': 'text/html'},
             method='GET')
-    etag_hash = sha('GUEST:text/html').hexdigest()
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
     assert not response.fromcache
     assert response['status'] == '200'
 
@@ -319,16 +314,14 @@ def test_get_tiddler_cached():
             method='GET')
     assert not response.fromcache
     assert response['status'] == '200'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response.fromcache
     assert response['status'] == '304'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag28/tiddler8/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag28/tiddler8/1')
 
 def test_put_tiddler_recipe_with_filter():
     recipe = Recipe('recipe1')
@@ -385,20 +378,17 @@ def test_put_tiddler_cache_fakey():
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag1/CashForCache/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/CashForCache/1')
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='GET', headers={'Accept': 'application/json'})
     assert response['status'] == '200'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag1/CashForCache/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/CashForCache/1')
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
     assert response['status'] == '204'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag1/CashForCache/2;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/CashForCache/2;')
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
@@ -412,15 +402,13 @@ def test_put_tiddler_via_recipe():
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
 
     assert response['status'] == '204'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag1/FantasticVoyage/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/FantasticVoyage/1;')
     url = response['location']
 
     reponse, content = http.request(url, method='GET', headers={'Accept': 'application/json'})
     tiddler_dict = simplejson.loads(content)
     assert tiddler_dict['bag'] == 'bag1'
-    etag_hash = sha('GUEST:application/json').hexdigest()
-    assert response['etag'] == '"bag1/FantasticVoyage/1;%s"' % etag_hash
+    assert response['etag'].startswith('"bag1/FantasticVoyage/1;')
 
 def test_slash_in_etag():
     http = httplib2.Http()

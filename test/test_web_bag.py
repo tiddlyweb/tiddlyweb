@@ -212,8 +212,17 @@ def test_put_bag():
 
     assert response['status'] == '200'
     assert 'etag' in response
+    etag = response['etag']
     info = simplejson.loads(content)
     assert info['policy']['delete'] == policy_dict['delete']
+
+    response, content = http.request('http://our_test_domain:8001/bags/bagpuss.json',
+            method='GET', headers={'if-none-match': etag})
+    assert response['status'] == '304', content
+
+    response, content = http.request('http://our_test_domain:8001/bags/bagpuss.json',
+            method='GET', headers={'if-none-match': etag + 'foo'})
+    assert response['status'] == '200', content
 
 def test_put_bag_bad_json():
     """
