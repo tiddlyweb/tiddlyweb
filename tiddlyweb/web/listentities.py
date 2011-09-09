@@ -6,6 +6,7 @@ from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import NoSerializationError
 from tiddlyweb.web.http import HTTP304, HTTP400, HTTP415
+from tiddlyweb.util import sha
 
 
 def list_entities(environ, start_response, mime_type, store_list,
@@ -19,7 +20,8 @@ def list_entities(environ, start_response, mime_type, store_list,
     except FilterError, exc:
         raise HTTP400(exc)
 
-    etag_string = '"%s"' % kept_entities.hexdigest()
+    etag_string = '"%s:%s"' % (kept_entities.hexdigest(), 
+            sha(mime_type).hexdigest())
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
     if incoming_etag:
         if incoming_etag == etag_string:
