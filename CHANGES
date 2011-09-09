@@ -1,3 +1,8 @@
+1.2.46 Fri Sep  9 15:36:09 UTC 2011
+
+  * Add absolute uri of a tiddler to the JSON representation.
+  * Correct etag on recipe and bag collections.
+
 1.2.45 Mon Aug 22 16:56:02 UTC 2011
 
   * ETag fixes for Chrome.
