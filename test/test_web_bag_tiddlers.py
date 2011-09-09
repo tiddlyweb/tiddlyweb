@@ -25,6 +25,7 @@ def test_get_sorted_tiddlers():
     assert response['status'] == '200'
     tiddlers = simplejson.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
+    assert tiddlers[0]['uri'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
             method='GET')

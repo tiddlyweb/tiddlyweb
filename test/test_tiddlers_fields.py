@@ -73,7 +73,7 @@ def test_tiddler_fields_as_text():
 def test_tiddler_fields_as_json():
     tiddler = Tiddler('feebles', bag='bag0')
     tiddler = store.get(tiddler)
-    serializer = Serializer('json')
+    serializer = Serializer('json', environ={'tiddlyweb.config': config})
     serializer.object = tiddler
     json_string = serializer.to_string()
     tiddler_info = simplejson.loads(json_string)

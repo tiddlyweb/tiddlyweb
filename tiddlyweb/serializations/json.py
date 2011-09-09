@@ -14,6 +14,7 @@ from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler, renderable
 from tiddlyweb.wikitext import render_wikitext
 from tiddlyweb.store import StoreError
+from tiddlyweb.web.util import tiddler_url
 
 
 class Serialization(SerializationInterface):
@@ -151,6 +152,7 @@ class Serialization(SerializationInterface):
         for attribute in wanted_keys:
             wanted_info[attribute] = getattr(tiddler, attribute, None)
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
+        wanted_info['uri'] = tiddler_url(self.environ, tiddler)
         if fat:
             if binary_tiddler(tiddler):
                 wanted_info['text'] = b64encode(tiddler.text)

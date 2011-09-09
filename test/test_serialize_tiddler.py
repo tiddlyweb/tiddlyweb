@@ -1,10 +1,5 @@
 """
 Test turning a tiddler into other forms.
-
-Currently this test and the code in general does not
-pay attention to modified and created fields in the
-tiddler. This will be added later. For now it is
-just in the way.
 """
 
 import simplejson
@@ -14,6 +9,7 @@ from base64 import b64encode
 
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
+from tiddlyweb.config import config
 
 expected_string = """modifier: test@example.com
 created: 
@@ -37,6 +33,7 @@ Hello, I'm the content.
 expected_json_string = '{"created": "", "text": "Hello, I\'m the content.", "modifier": "test@example.com", "modified": "200803030303", "tags": ["foobar", "foo bar"]}'
 
 tiddler = Tiddler('test tiddler')
+tiddler.bag = 'snoop'
 tiddler.modifier = 'test@example.com'
 tiddler.tags = ['foobar', 'foo bar']
 tiddler.text = "Hello, I'm the content."
@@ -65,7 +62,7 @@ def test_bad_string_raises():
     py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
 
 def test_generated_json_string():
-    serializer = Serializer('json')
+    serializer = Serializer('json', environ={'tiddlyweb.config': config})
     serializer.object = tiddler
     string = serializer.to_string()
 
@@ -73,6 +70,10 @@ def test_generated_json_string():
 
     assert info['title'] == 'test tiddler'
     assert info['text'] == "Hello, I'm the content."
+    assert info['uri'] == '%s://%s:%s/bags/snoop/tiddlers/test%%20tiddler' % (
+            config['server_host']['scheme'],
+            config['server_host']['host'],
+            config['server_host']['port'])
 
 def test_tiddler_from_json():
     serializer = Serializer('json')
@@ -110,7 +111,7 @@ def test_html_attribute_escape():
     assert r'''custom="lorem 'ipsum' dolor &quot;sit&quot; amet"''' in string
 
 def test_tiddler_json_base64():
-    serializer = Serializer('json')
+    serializer = Serializer('json', environ={'tiddlyweb.config': config})
     tiddler = Tiddler('binarytiddler')
     tiddler.bag = u'foo'
     tiddler.text = file('test/peermore.png', 'rb').read()
@@ -127,9 +128,10 @@ def test_tiddler_json_base64():
 
 def test_tiddler_json_render():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
-        'render': [1]}})
+        'render': [1]}, 'tiddlyweb.config': config})
     tiddler = Tiddler('htmltest')
     tiddler.text = '!Hi\n//you//'
+    tiddler.bag = 'snoop'
 
     serializer.object = tiddler
 

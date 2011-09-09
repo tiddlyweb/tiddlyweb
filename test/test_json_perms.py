@@ -16,7 +16,7 @@ def test_json_perms():
     bag = Bag('permstest')
     store.put(bag)
     serializer = Serializer('json', environ={'tiddlyweb.usersign': {
-        'name':'bang', 'roles': []}})
+        'name':'bang', 'roles': []}, 'tiddlyweb.config': config})
     tiddler = Tiddler('permstest', 'permstest')
     tiddler.text = 'permstest'
     store.put(tiddler)
@@ -29,5 +29,3 @@ def test_json_perms():
     assert info['title'] == 'permstest'
     assert info['text'] == 'permstest'
     assert info['permissions'] == ['read', 'write', 'create', 'delete']
-
-

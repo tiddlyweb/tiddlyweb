@@ -172,6 +172,7 @@ def test_put_tiddler_json():
     assert response['last-modified'].split(':', 1)[0] == now_time.split(':', 1)[0]
     assert info['title'] == 'TestTwo'
     assert info['text'] == 'i fight for the users'
+    assert info['uri'] == tiddler_url
 
 def test_put_tiddler_json_with_slash():
     http = httplib2.Http()
