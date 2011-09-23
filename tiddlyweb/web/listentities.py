@@ -20,7 +20,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     except FilterError, exc:
         raise HTTP400(exc)
 
-    etag_string = '"%s:%s"' % (kept_entities.hexdigest(), 
+    etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
             sha(mime_type).hexdigest())
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
     if incoming_etag:
