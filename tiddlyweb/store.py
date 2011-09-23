@@ -140,7 +140,6 @@ class Store(object):
         """
         lower_class = superclass_name(thing)
         if lower_class == 'tiddler':
-            uri = thing.bag
             retriever = get_bag_retriever(self.environ, thing.bag)
             if retriever:
                 try:

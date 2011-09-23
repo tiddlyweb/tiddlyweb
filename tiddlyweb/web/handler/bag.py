@@ -6,8 +6,6 @@ PUT a Bag as a JSON object.
 These need some refactoring.
 """
 
-import urllib
-
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.policy import create_policy_check

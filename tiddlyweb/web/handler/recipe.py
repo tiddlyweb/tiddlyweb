@@ -4,8 +4,6 @@ GET a recipe, PUT a recipe, GET the tiddlers
 produced by a recipe.
 """
 
-import urllib
-
 from tiddlyweb.filters import FilterError
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
