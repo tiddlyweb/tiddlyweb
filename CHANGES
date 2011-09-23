@@ -1,3 +1,7 @@
+1.2.47 Fri Sep 23 17:35:00 UTC 2011
+
+  * Use mimeparse for processing Accept header on GET.
+
 1.2.46 Fri Sep  9 15:36:09 UTC 2011
 
   * Add absolute uri of a tiddler to the JSON representation.
