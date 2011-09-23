@@ -8,11 +8,10 @@ what kind of store and serializer to use.
 """
 
 
-from tiddlyweb.web.negotiate import Negotiate
+from tiddlyweb.web.negotiate import figure_type
 from tiddlyweb.config import config
 
 def setup_module(module):
-    module.neg = Negotiate(lambda x: x)
     module.environ = {'tiddlyweb.config': config}
     environ['REQUEST_METHOD'] = 'GET'
 
@@ -23,7 +22,7 @@ def test_accept_header():
     """
     environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html; q=0.9, text/x-dvi; q=0.8, text/x-c'
 
-    neg.figure_type(environ)
+    figure_type(environ)
 
     assert environ['tiddlyweb.type'][0] == 'text/plain'
 
@@ -34,7 +33,7 @@ def test_accept_ill_formed_header():
     """
     environ['HTTP_ACCEPT'] = '; q=1.0, text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
 
-    neg.figure_type(environ)
+    figure_type(environ)
 
     assert environ['tiddlyweb.type'][0] == 'text/html'
 
@@ -44,7 +43,7 @@ def test_accept_bad_q():
     """
     environ['HTTP_ACCEPT'] = 'text/plain; q=hot, text/html, text/postscript; q=0.5'
 
-    neg.figure_type(environ)
+    figure_type(environ)
 
     assert environ['tiddlyweb.type'][0] == 'text/html'
 
@@ -53,7 +52,7 @@ def test_accept_extension():
     Ignore non q= style parameters.
     """
     environ['HTTP_ACCEPT'] = 'text/plain; cookies=chip'
-    neg.figure_type(environ)
+    figure_type(environ)
     assert environ['tiddlyweb.type'][0] == 'text/plain'
 
 def test_file_extension():
@@ -63,7 +62,7 @@ def test_file_extension():
     """
     environ['PATH_INFO'] = '/bags/bag0/tiddlers/bigbox.html'
     
-    neg.figure_type(environ)
+    figure_type(environ)
 
     assert environ['tiddlyweb.type'][0] == 'text/html', \
             'tiddlyweb.type should be text/html, found %s' % environ['tiddlyweb.type'][0]
@@ -76,7 +75,7 @@ def test_file_wins_over_header():
     environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
     environ['PATH_INFO'] = '/bags/bag0/tiddlers/bigbox.html'
 
-    neg.figure_type(environ)
+    figure_type(environ)
 
     assert environ['tiddlyweb.type'][0] == 'text/html', \
             'tiddlyweb.type should be text/html, found %s' % environ['tiddlyweb.type'][0]
