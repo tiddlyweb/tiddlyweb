@@ -21,23 +21,32 @@ def test_accept_header():
     Given an accept header in the environ,
     determine the type we want.
     """
-    environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
+    environ['HTTP_ACCEPT'] = 'text/plain; q=1.0, text/html; q=0.9, text/x-dvi; q=0.8, text/x-c'
 
     neg.figure_type(environ)
 
-    assert environ['tiddlyweb.type'][0] == 'text/plain', \
-            'tiddlyweb.type should be text/plain, found %s' % environ['tiddlyweb.type'][0]
+    assert environ['tiddlyweb.type'][0] == 'text/plain'
 
 def test_accept_ill_formed_header():
     """
     Given an accept header in the environ,
-    that is poorly formed, properly skip over a bad entry.
+    that is poorly formed, use default.
     """
     environ['HTTP_ACCEPT'] = '; q=1.0, text/plain; q=1.0, text/html, text/x-dvi; q=0.8, text/x-c'
 
     neg.figure_type(environ)
 
-    assert environ['tiddlyweb.type'][0] == 'text/plain'
+    assert environ['tiddlyweb.type'][0] == 'text/html'
+
+def test_accept_bad_q():
+    """
+    Given a non-float q, ignore.
+    """
+    environ['HTTP_ACCEPT'] = 'text/plain; q=hot, text/html, text/postscript; q=0.5'
+
+    neg.figure_type(environ)
+
+    assert environ['tiddlyweb.type'][0] == 'text/html'
 
 def test_accept_extension():
     """

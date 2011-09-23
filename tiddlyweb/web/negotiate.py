@@ -1,12 +1,11 @@
 """
 WSGI Middleware to do pseudo-content negotiation and put the type in
-tiddlyweb.type.
-
-This is called psuedo-content negotiation because there is no effort
-to select the best match when multiple options are presented in the
-Accept header.
+tiddlyweb.type. If extensions are provided on a GET URI that match
+extension_types, they win over the Accept header.
 """
+
 import logging
+import mimeparse
 
 
 class Negotiate(object):
@@ -21,19 +20,20 @@ class Negotiate(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        self.figure_type(environ)
+        figure_type(environ)
         return self.application(environ, start_response)
 
-    def figure_type(self, environ):
-        """
-        Determine either the content-type (for POST, PUT, DELETE)
-        or accept header (for GET) and put that information
-        in tiddlyweb.type in the environment.
-        """
-        if environ['REQUEST_METHOD'].upper() == 'GET':
-            _figure_type_for_get(environ)
-        else:
-            _figure_type_for_other(environ)
+
+def figure_type(environ):
+    """
+    Determine either the content-type (for POST, PUT, DELETE)
+    or accept header (for GET) and put that information
+    in tiddlyweb.type in the environment.
+    """
+    if environ['REQUEST_METHOD'].upper() == 'GET':
+        _figure_type_for_get(environ)
+    else:
+        _figure_type_for_other(environ)
 
 
 def _figure_type_for_other(environ):
@@ -76,59 +76,17 @@ def _figure_type_for_get(environ):
                 pass
 
     if accept_header:
-        our_types.extend(_parse_accept_header(accept_header))
+        default_type = environ['tiddlyweb.config']['default_serializer']
+        matchable_types = ([default_type]
+                + environ['tiddlyweb.config']['serializers'].keys())
+        try:
+            our_types.append(mimeparse.best_match(
+                matchable_types, accept_header))
+        except ValueError:
+            our_types.append(default_type)
 
     logging.debug('negotiating for accept and extensions %s', our_types)
 
     environ['tiddlyweb.type'] = our_types
 
     return
-
-
-def _parse_accept_header(header):
-    """
-    Parse the accept header to get the highest
-    priority type. Copied from Perl's REST::Application
-    Thanks Matthew O'Connor.
-    """
-    default_weight = 1
-    prefs = []
-
-    accept_types = header.strip().rstrip().split(',')
-    order = 0
-    for accept_type in accept_types:
-        splits = accept_type.strip().rstrip().split(';')
-
-        if splits[0]:
-            name = splits[0]
-        else:
-            continue
-
-        try:
-            weight = splits[1]
-            weight = weight.rstrip().strip()
-            if 'q=' in weight:
-                weight = weight.strip('q=')
-                weight = float(weight)
-            else:
-                weight = None
-        except IndexError:
-            weight = None
-
-        prefs.append({'name': name, 'order': order})
-        order += 1
-        if weight:
-            prefs[-1]['score'] = weight
-        else:
-            prefs[-1]['score'] = default_weight
-            default_weight -= 0.001
-
-    def sorter(cmp_a, cmp_b):
-        return cmp(cmp_b['score'], cmp_a['score']) \
-                or \
-                cmp(cmp_a['order'], cmp_b['order'])
-
-    prefs.sort(cmp=sorter)
-    prefs = [pref['name'] for pref in prefs]
-    prefs.append('*/*')
-    return prefs
