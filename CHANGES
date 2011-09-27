@@ -1,3 +1,7 @@
+1.2.48 Tue Sep 27 11:22:42 UTC 2011
+
+  * mimeparse type preferences are ordered correction
+
 1.2.47 Fri Sep 23 17:35:00 UTC 2011
 
   * Use mimeparse for processing Accept header on GET.
