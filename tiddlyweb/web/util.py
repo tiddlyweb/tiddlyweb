@@ -206,8 +206,6 @@ def escape_attribute_value(text):
 def entity_etag(environ, entity):
     """
     Construct an etag from the JSON rep of an entity.
-
-    Because we Vary on Accept headers, we don't need to attend to mime_type.
     """
     try:
         _, mime_type = get_serialize_type(environ)
