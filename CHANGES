@@ -1,3 +1,7 @@
+1.2.49 Wed Sep 28 16:11:42 UTC 2011
+
+  * Release mimeparse fixes. Last release didn't have changes merged.
+
 1.2.48 Tue Sep 27 11:22:42 UTC 2011
 
   * mimeparse type preferences are ordered correction
