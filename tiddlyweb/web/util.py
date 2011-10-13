@@ -244,7 +244,7 @@ def tiddler_etag(environ, tiddler):
     """
     text = tiddler.text
     tiddler.text = ''
-    bag_name = tiddler.bag if tiddler.bag else ''
+    bag_name = tiddler.bag or ''
     tiddler_id = '"%s/%s/%s:' % (encode_name(bag_name),
             encode_name(tiddler.title), tiddler.revision)
     etag = entity_etag(environ, tiddler)
