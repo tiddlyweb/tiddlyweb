@@ -1,3 +1,8 @@
+1.2.50 Thu Oct 13 11:00:06 UTC 2011
+
+  * Remove a Python >2.4-ism.
+  * Update README to be more correct.
+
 1.2.49 Wed Sep 28 16:11:42 UTC 2011
 
   * Release mimeparse fixes. Last release didn't have changes merged.
