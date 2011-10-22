@@ -286,6 +286,45 @@ def test_get_tiddler_etag_bag():
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
+def test_get_tiddler_manual_cache():
+    [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
+    http = httplib2.Http('.test_cache')
+    tiddler = Tiddler('cached', 'bag28')
+    tiddler.text = 'hi!'
+    tiddler.fields['_cache-max-age'] = 3000
+    store.put(tiddler)
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
+    assert not response.fromcache
+    assert response['status'] == '200'
+    assert response['cache-control'] == 'max-age=3000'
+    assert 'text/html' in response['content-type']
+    htmletag = response['etag']
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/cached',
+            headers={'Accept': 'text/plain'})
+    assert not response.fromcache
+    assert response['status'] == '200'
+    assert response['cache-control'] == 'max-age=3000'
+    assert 'text/plain' in response['content-type']
+    
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
+    # this one does not cache because we Vary on Accept
+    assert not response.fromcache
+    assert response['status'] == '200'
+    assert response['etag'] == htmletag
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
+    assert response.fromcache
+    assert response['status'] == '304'
+    assert 'text/html' in response['content-type']
+    assert response['etag'] == htmletag
+
+
 def test_get_tiddler_cached():
     [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
     http = httplib2.Http('.test_cache')

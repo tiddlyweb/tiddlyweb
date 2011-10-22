@@ -25,6 +25,9 @@ from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
 
+CACHE_CONTROL_FIELD = '_cache-max-age'
+
+
 def get(environ, start_response):
     """
     Get a representation of a single tiddler,
@@ -444,7 +447,11 @@ def _send_tiddler(environ, start_response, tiddler):
     content, mime_type = _get_tiddler_content(environ, tiddler)
 
     vary_header = ('Vary', 'Accept')
-    cache_header = ('Cache-Control', 'no-cache')
+    if CACHE_CONTROL_FIELD in tiddler.fields:
+        cache_header = ('Cache-Control', 'max-age=%s'
+                % tiddler.fields[CACHE_CONTROL_FIELD])
+    else:
+        cache_header = ('Cache-Control', 'no-cache')
     content_header = ('Content-Type', str(mime_type))
     response = [cache_header, content_header, vary_header]
     if last_modified:
