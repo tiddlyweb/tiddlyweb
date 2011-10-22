@@ -324,6 +324,18 @@ def test_get_tiddler_manual_cache():
     assert 'text/html' in response['content-type']
     assert response['etag'] == htmletag
 
+    tiddler = Tiddler('notcached', 'bag28')
+    tiddler.text = 'hi!'
+    tiddler.fields['_cache-max-age'] = 'salami'
+    store.put(tiddler)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/notcached')
+    assert not response.fromcache
+    assert response['status'] == '200'
+    assert response['cache-control'] == 'no-cache'
+    assert 'max-age' not in response['cache-control']
+    assert 'text/html' in response['content-type']
+
 
 def test_get_tiddler_cached():
     [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]

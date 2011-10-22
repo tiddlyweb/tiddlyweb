@@ -447,11 +447,13 @@ def _send_tiddler(environ, start_response, tiddler):
     content, mime_type = _get_tiddler_content(environ, tiddler)
 
     vary_header = ('Vary', 'Accept')
+    cache_header = ('Cache-Control', 'no-cache')
     if CACHE_CONTROL_FIELD in tiddler.fields:
-        cache_header = ('Cache-Control', 'max-age=%s'
-                % tiddler.fields[CACHE_CONTROL_FIELD])
-    else:
-        cache_header = ('Cache-Control', 'no-cache')
+        try:
+            cache_header = ('Cache-Control', 'max-age=%s'
+                    % int(tiddler.fields[CACHE_CONTROL_FIELD]))
+        except ValueError:
+            pass  # if the value is not an int use default header
     content_header = ('Content-Type', str(mime_type))
     response = [cache_header, content_header, vary_header]
     if last_modified:
