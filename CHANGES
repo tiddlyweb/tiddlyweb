@@ -1,3 +1,8 @@
+1.2.51 Mon Oct 24 12:47:54 UTC 2011
+
+  * Allow tiddlers to set their own Cache-Control max-age with
+    _cache-max-age field
+
 1.2.50 Thu Oct 13 11:00:06 UTC 2011
 
   * Remove a Python >2.4-ism.
