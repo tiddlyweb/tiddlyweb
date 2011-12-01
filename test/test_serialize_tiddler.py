@@ -126,6 +126,10 @@ def test_tiddler_json_base64():
     tiddler = serializer.from_string(string)
     assert tiddler.text == bininfo
 
+    info['text'] = '..badbinary..'
+    string = simplejson.dumps(info)
+    py.test.raises(TiddlerFormatError, 'serializer.from_string(string)')
+
 def test_tiddler_json_render():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
         'render': [1]}, 'tiddlyweb.config': config})
