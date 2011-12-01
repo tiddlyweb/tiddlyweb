@@ -21,6 +21,7 @@ def setup_module(module):
             environ=module.environ)
     module.environ['tiddlyweb.store'] = module.store
 
+
 def teardown_module(module):
     del config['indexer']
 
@@ -86,6 +87,10 @@ def test_index_query_in_recipe():
     tiddler = Tiddler('dwell')
     bag = determine_bag_from_recipe(recipe, tiddler, environ)
     assert bag.name == 'noop'
+
+    tiddler = Tiddler('carnaby') # nowhere
+    py.test.raises(NoBagError,
+            'determine_bag_from_recipe(recipe, tiddler, environ)')
 
 
 def test_readable_tiddlers_by_bag():
