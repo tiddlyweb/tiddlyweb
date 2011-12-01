@@ -6,10 +6,10 @@ that take two arguments: a WSGI environ and a string and return either
 * two functions
 * None
 
-The first function yields tiddlers, list store.list_bag_tiddlers. It's
+The first function yields tiddlers, like store.list_bag_tiddlers. It's
 arguments are a WSGI environ and a string.
 
-The second function returns a single tiddler. It's arguments are a a WSGI
+The second function returns a single tiddler. It's arguments are a WSGI
 environ and a tiddler object (with at least title and bag set).
 
 See tiddlywebplugins.remotebag for an implementation.
