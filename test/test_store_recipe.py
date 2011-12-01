@@ -114,3 +114,8 @@ def test_recipe_weird_bag():
     new_recipe = store.get(new_recipe)
     bags = [bag for bag,filter in new_recipe.get_recipe()]
     assert bags == ['foo/bar', 'zam/boom']
+
+def test_recipe_bad_name():
+    recipe = Recipe('../badname')
+    py.test.raises(NoRecipeError, 'store.put(recipe)')
+    py.test.raises(NoRecipeError, 'store.get(recipe)')
