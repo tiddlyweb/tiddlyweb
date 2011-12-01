@@ -73,3 +73,10 @@ def test_recipe_with_special():
     assert 'alpha' in [tiddler.title for tiddler in tiddlers]
     assert 'beta' in [tiddler.title for tiddler in tiddlers]
     assert 'gamma' in [tiddler.title for tiddler in tiddlers]
+
+    # roundtrip the recipes with a special
+    store.put(recipe)
+    recipe2 = store.get(Recipe('special'))
+
+    assert recipe.get_recipe() == recipe2.get_recipe()
+
