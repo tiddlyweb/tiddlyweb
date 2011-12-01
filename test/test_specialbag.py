@@ -3,8 +3,10 @@ Get coverage on specialbag handling.
 """
 
 from tiddlyweb.config import config
+from tiddlyweb.control import get_tiddlers_from_recipe
 from tiddlyweb.store import Store
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
 
@@ -57,3 +59,17 @@ def test_two_bags():
     tiddler = store.get(tiddler)
     assert tiddler.text == 'alpha'
 
+def test_recipe_with_special():
+    recipe = Recipe('special')
+    recipe.set_recipe([
+        ('normal', ''),
+        ('Xnine', '')])
+    recipe.store = store
+
+    tiddlers = list(get_tiddlers_from_recipe(recipe, environ))
+
+    assert len(tiddlers) == 4
+    assert 'thing' in [tiddler.title for tiddler in tiddlers]
+    assert 'alpha' in [tiddler.title for tiddler in tiddlers]
+    assert 'beta' in [tiddler.title for tiddler in tiddlers]
+    assert 'gamma' in [tiddler.title for tiddler in tiddlers]
