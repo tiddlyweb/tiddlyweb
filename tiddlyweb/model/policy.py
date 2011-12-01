@@ -162,11 +162,17 @@ def create_policy_check(environ, entity, usersign):
 
 
 def _single_value_set(target_list, value):
+    """
+    Return true if this constraint has only one value and it is
+    this one.
+    """
     return len(target_list) == 1 and target_list[0] == value
 
 
 def _no_constraint(info_list):
-    # no constraints then all pass
+    """
+    If there is no constraint set, then anything passes.
+    """
     try:
         if len(info_list) == 0:
             return True

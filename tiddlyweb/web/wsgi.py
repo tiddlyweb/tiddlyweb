@@ -113,8 +113,6 @@ class HTMLPresenter(object):
         """
         Override this in plugins to add to the header.
         """
-        # XXX: to make these stackable this shouldn't just
-        # be a method, we need some kind of registry.
         return ''
 
     def footer_extra(self, environ):

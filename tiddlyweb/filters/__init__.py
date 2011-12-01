@@ -131,11 +131,11 @@ def recursive_filter(filters, entities, indexable=False):
 
     Misnamed, early versions were more truly recursive.
     """
-    for filter in filters:
+    for filter_command in filters:
         try:
-            active_filter, _, environ = filter
+            active_filter, _, environ = filter_command
         except ValueError:
-            active_filter = filter
+            active_filter = filter_command
             environ = {}
         try:
             entities = active_filter(entities, indexable, environ)
