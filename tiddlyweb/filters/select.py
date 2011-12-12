@@ -233,7 +233,7 @@ def select_relative_attribute(attribute, value, entities,
         stored_entity = _get_entity(entity, store)
         if hasattr(stored_entity, 'fields'):
             return comparator(func(getattr(stored_entity, attribute,
-                stored_entity.fields.get(attribute, None))), func(value))
+                stored_entity.fields.get(attribute, ''))), func(value))
         else:
             return comparator(func(getattr(stored_entity, attribute, None)),
                     func(value))
