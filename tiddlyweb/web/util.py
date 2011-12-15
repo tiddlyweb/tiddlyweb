@@ -212,7 +212,11 @@ def entity_etag(environ, entity):
         mime_type = mime_type.split(';', 1)[0].strip()
     except (AttributeError, TypeError):
         mime_type = ''
-    serializer = Serializer('json', environ)
+    if 'tiddlyweb.etag_serializer' in environ:
+        serializer = environ['tiddlyweb.etag_serializer']
+    else:
+        serializer = Serializer('json', environ)
+        environ['tiddlyweb.etag_serializer'] = serializer
     serializer.object = entity
     content = serializer.to_string()
     return '"%s"' % sha(content + mime_type).hexdigest()
