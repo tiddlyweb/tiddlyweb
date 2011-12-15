@@ -1,3 +1,8 @@
+1.2.52 Thu Dec 15 20:16:34 UTC 2011
+
+  * Improve performance when generating multiple etags in one request.
+  * Improved test coverage.
+
 1.2.51 Mon Oct 24 12:47:54 UTC 2011
 
   * Allow tiddlers to set their own Cache-Control max-age with
