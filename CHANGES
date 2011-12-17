@@ -1,3 +1,7 @@
+1.2.53 Sat Dec 17 14:49:07 UTC 2011
+
+  * Release with the real 1.2.52 changes included.
+
 1.2.52 Thu Dec 15 20:16:34 UTC 2011
 
   * Improve performance when generating multiple etags in one request.
