@@ -149,3 +149,12 @@ def test_tiddler_no_text():
     serializer.object = tiddler
     header, body = serializer.to_string().split('\n\n')
     assert 'None' not in body
+
+def test_tiddler_bad_form():
+    serializer = Serializer('json', environ={'tiddlyweb.config': config})
+    tiddler = Tiddler('hello')
+    serializer.object = tiddler
+    py.test.raises(TiddlerFormatError,
+            """serializer.from_string('{"tags": "oh hai"}')""")
+    py.test.raises(TiddlerFormatError,
+            """serializer.from_string('{"fields": "manky"}')""")
