@@ -130,12 +130,6 @@ class Serialization(SerializationInterface):
                 'text', 'type']
         for key, value in dict_from_input.iteritems():
             if value is not None and key in accepted_keys:
-                if ((key == 'tags' and not hasattr(value, '__iter__'))
-                        or key == 'fields' and not hasattr(value, 'keys')):
-                    raise TiddlerFormatError(
-                            'unable to make json into tiddler: '
-                            + 'tags must be list and fields must be dict: %s'
-                            % tiddler.title)
                 setattr(tiddler, key, value)
         if binary_tiddler(tiddler):
             try:
