@@ -28,7 +28,6 @@ def make_command():
         """
         Add the function to the commands dictionary.
         """
-        func.description = func.__doc__
         COMMANDS[func.__name__] = func
         return func
     return decorate
@@ -40,7 +39,7 @@ def usage(args):
     if args:
         std_error_message('ERROR: ' + args + '\n')
     for key in sorted(COMMANDS):
-        std_error_message('%10s: %s' % (key, COMMANDS[key].description))
+        std_error_message('%10s: %s' % (key, COMMANDS[key].__doc__))
     sys.exit(1)
 
 
