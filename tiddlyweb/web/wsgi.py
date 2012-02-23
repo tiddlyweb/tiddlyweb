@@ -216,6 +216,24 @@ class StoreSet(object):
         return self.application(environ, start_response)
 
 
+class TransformProtect(object):
+    """
+    WSGI Middleware to add a Cache-Control no-transform so that mobile
+    companies that transcode content over their 3G (etc) networks don't,
+    as it will break various JavaScript things, including TiddlyWiki.
+    """
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+
+        def replacement_start_response(status, headers, exc_info=None):
+            headers.append(('Cache-Control', 'no-transform'))
+            return start_response(status, headers, exc_info)
+
+        return self.application(environ, replacement_start_response)
+
 class EncodeUTF8(object):
     """
     WSGI Middleware to ensure that the content we send out the pipe is encoded

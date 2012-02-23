@@ -298,7 +298,7 @@ def test_get_tiddler_manual_cache():
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
     assert not response.fromcache
     assert response['status'] == '200'
-    assert response['cache-control'] == 'max-age=3000'
+    assert response['cache-control'] == 'max-age=3000, no-transform'
     assert 'text/html' in response['content-type']
     htmletag = response['etag']
 
@@ -307,7 +307,7 @@ def test_get_tiddler_manual_cache():
             headers={'Accept': 'text/plain'})
     assert not response.fromcache
     assert response['status'] == '200'
-    assert response['cache-control'] == 'max-age=3000'
+    assert response['cache-control'] == 'max-age=3000, no-transform'
     assert 'text/plain' in response['content-type']
     
     response, content = http.request(
@@ -332,7 +332,7 @@ def test_get_tiddler_manual_cache():
             'http://our_test_domain:8001/bags/bag28/tiddlers/notcached')
     assert not response.fromcache
     assert response['status'] == '200'
-    assert response['cache-control'] == 'no-cache'
+    assert response['cache-control'] == 'no-cache, no-transform'
     assert 'max-age' not in response['cache-control']
     assert 'text/html' in response['content-type']
 

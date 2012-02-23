@@ -127,7 +127,7 @@ from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, \
-        Header, HTMLPresenter, PermissionsExceptor
+        Header, HTMLPresenter, PermissionsExceptor, TransformProtect
 
 # A dict containing the configuration of TiddlyWeb, both
 # as a server and as a library. This dictionary can contain
@@ -149,6 +149,7 @@ DEFAULT_CONFIG = {
             PermissionsExceptor,
             HTTPExceptor,
             EncodeUTF8,
+            TransformProtect,
             SimpleLog],
         'server_host': {
             'scheme': 'http',
