@@ -3,7 +3,7 @@ Test turning a tiddler into other forms.
 """
 
 import simplejson
-import py.test
+import pytest
 
 from base64 import b64encode
 
@@ -59,7 +59,7 @@ def test_bad_string_raises():
     foobar = Tiddler('foobar')
     serializer.object = foobar
 
-    py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
+    pytest.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
 
 def test_generated_json_string():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
@@ -128,7 +128,7 @@ def test_tiddler_json_base64():
 
     info['text'] = '..badbinary..'
     string = simplejson.dumps(info)
-    py.test.raises(TiddlerFormatError, 'serializer.from_string(string)')
+    pytest.raises(TiddlerFormatError, 'serializer.from_string(string)')
 
 def test_tiddler_json_render():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
@@ -142,6 +142,21 @@ def test_tiddler_json_render():
     output = serializer.to_string()
     info = simplejson.loads(output)
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
+    assert info['text'] == '!Hi\n//you//'
+
+def test_tiddler_json_render_skinny():
+    serializer = Serializer('json', environ={'tiddlyweb.query': {
+        'render': [1], 'fat': [0]}, 'tiddlyweb.config': config})
+    tiddler = Tiddler('htmltest')
+    tiddler.bag = 'snoop'
+    tiddler.text = '!Hi\n//you//'
+
+    serializer.object = tiddler
+
+    output = serializer.to_string()
+    info = simplejson.loads(output)
+    assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
+    pytest.raises(KeyError, "info['text']")
 
 def test_tiddler_no_text():
     serializer = Serializer('text')
