@@ -146,7 +146,7 @@ def test_tiddler_json_render():
 
 def test_tiddler_json_render_skinny():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
-        'render': [1], 'fat': [0]}, 'tiddlyweb.config': config})
+        'render': ['1'], 'fat': ['0']}, 'tiddlyweb.config': config})
     tiddler = Tiddler('htmltest')
     tiddler.bag = 'snoop'
     tiddler.text = '!Hi\n//you//'

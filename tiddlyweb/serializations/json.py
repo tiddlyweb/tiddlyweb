@@ -43,9 +43,13 @@ class Serialization(SerializationInterface):
         the form described by self._tiddler_dict.
         """
         query = self.environ.get('tiddlyweb.query', {})
-
-        fat = query.get('fat', [False])[0]
-        render = query.get('render', [False])[0]
+        fat = 0
+        render = 0
+        try:
+            fat = int(query.get('fat', [fat])[0])
+            render = int(query.get('render', [render])[0])
+        except ValueError:
+            pass
 
         return simplejson.dumps([self._tiddler_dict(tiddler, fat, render) for
             tiddler in tiddlers])
@@ -114,9 +118,13 @@ class Serialization(SerializationInterface):
         plus the text of the tiddler.
         """
         query = self.environ.get('tiddlyweb.query', {})
-
-        fat = query.get('fat', [True])[0]
-        render = query.get('render', [False])[0]
+        fat = 1
+        render = 0
+        try:
+            fat = int(query.get('fat', [fat])[0])
+            render = int(query.get('render', [render])[0])
+        except ValueError:
+            pass
 
         tiddler_dict = self._tiddler_dict(tiddler, fat=fat, render=render)
         return simplejson.dumps(tiddler_dict)
