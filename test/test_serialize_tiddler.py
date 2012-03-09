@@ -3,7 +3,7 @@ Test turning a tiddler into other forms.
 """
 
 import simplejson
-import py.test
+import pytest
 
 from base64 import b64encode
 
@@ -59,7 +59,8 @@ def test_bad_string_raises():
     foobar = Tiddler('foobar')
     serializer.object = foobar
 
-    py.test.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
+    with pytest.raises(TiddlerFormatError):
+        serializer.from_string(bad_string)
 
 def test_generated_json_string():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
@@ -128,7 +129,8 @@ def test_tiddler_json_base64():
 
     info['text'] = '..badbinary..'
     string = simplejson.dumps(info)
-    py.test.raises(TiddlerFormatError, 'serializer.from_string(string)')
+    with pytest.raises(TiddlerFormatError):
+        serializer.from_string(string)
 
 def test_tiddler_json_render():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
