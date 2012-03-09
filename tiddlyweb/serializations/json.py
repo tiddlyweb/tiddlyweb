@@ -113,9 +113,12 @@ class Serialization(SerializationInterface):
         a tiddler, as described by _tiddler_dict
         plus the text of the tiddler.
         """
-        render = self.environ.get('tiddlyweb.query', {}).get('render',
-                [False])[0]
-        tiddler_dict = self._tiddler_dict(tiddler, fat=True, render=render)
+        query = self.environ.get('tiddlyweb.query', {})
+
+        fat = query.get('fat', [True])[0]
+        render = query.get('render', [False])[0]
+
+        tiddler_dict = self._tiddler_dict(tiddler, fat=fat, render=render)
         return simplejson.dumps(tiddler_dict)
 
     def as_tiddler(self, tiddler, input_string):
@@ -160,9 +163,8 @@ class Serialization(SerializationInterface):
                 wanted_info['text'] = b64encode(tiddler.text)
             else:
                 wanted_info['text'] = tiddler.text
-                if render and renderable(tiddler, self.environ):
-                    wanted_info['render'] = render_wikitext(tiddler,
-                            self.environ)
+        if render and renderable(tiddler, self.environ):
+            wanted_info['render'] = render_wikitext(tiddler, self.environ)
         return wanted_info
 
     def _tiddler_permissions(self, tiddler):

@@ -144,6 +144,22 @@ def test_tiddler_json_render():
     output = serializer.to_string()
     info = simplejson.loads(output)
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
+    assert info['text'] == '!Hi\n//you//'
+
+def test_tiddler_json_render_skinny():
+    serializer = Serializer('json', environ={'tiddlyweb.query': {
+        'render': [1], 'fat': [0]}, 'tiddlyweb.config': config})
+    tiddler = Tiddler('htmltest')
+    tiddler.bag = 'snoop'
+    tiddler.text = '!Hi\n//you//'
+
+    serializer.object = tiddler
+
+    output = serializer.to_string()
+    info = simplejson.loads(output)
+    assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
+    with pytest.raises(KeyError):
+        info['text']
 
 def test_tiddler_no_text():
     serializer = Serializer('text')
