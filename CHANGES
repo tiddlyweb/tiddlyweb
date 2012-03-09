@@ -1,3 +1,8 @@
+1.2.56 Fri Mar  9 16:06:33 UTC 2012
+
+  * Add a fat=0 option on JSON representation of tiddler and tiddlers.
+    This makes it possible to get a render member, without text.
+
 1.2.55 Thu Feb 23 18:54:35 UTC 2012
 
   * Add Cache-Control: no-transform on all responses.
