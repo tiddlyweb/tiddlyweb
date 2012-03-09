@@ -42,9 +42,11 @@ class Serialization(SerializationInterface):
         The format is a list of dicts in
         the form described by self._tiddler_dict.
         """
-        fat = self.environ.get('tiddlyweb.query', {}).get('fat', [False])[0]
-        render = self.environ.get('tiddlyweb.query', {}).get('render',
-                [False])[0]
+        query = self.environ.get('tiddlyweb.query', {})
+
+        fat = query.get('fat', [False])[0]
+        render = query.get('render', [False])[0]
+
         return simplejson.dumps([self._tiddler_dict(tiddler, fat, render) for
             tiddler in tiddlers])
 
