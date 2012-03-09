@@ -1,3 +1,7 @@
+1.2.57 Fri Mar  9 16:37:31 UTC 2012
+
+  * Previous release didn't actually provide the described feature.
+
 1.2.56 Fri Mar  9 16:06:33 UTC 2012
 
   * Add a fat=0 option on JSON representation of tiddler and tiddlers.
