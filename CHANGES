@@ -1,3 +1,7 @@
+1.2.58 Tue Mar 27 11:23:11 BST 2012
+
+  * Handle TypeError when tiddler PUT.
+
 1.2.57 Fri Mar  9 16:37:31 UTC 2012
 
   * Previous release didn't actually provide the described feature.
