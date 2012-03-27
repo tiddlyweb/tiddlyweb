@@ -326,6 +326,9 @@ def _put_tiddler(environ, start_response, tiddler):
                 (tiddler.title, tiddler.bag, exc))
     except NoTiddlerError, exc:
         raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
+    except TypeError, exc:
+        raise HTTP409('Unable to put badly formed tiddler, %s:%s. %s'
+                % (tiddler.bag, tiddler.title, exc))
 
     etag = ('Etag', web.tiddler_etag(environ, tiddler))
     response = [('Location', web.tiddler_url(environ, tiddler))]

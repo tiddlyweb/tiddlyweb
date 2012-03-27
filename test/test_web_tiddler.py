@@ -885,6 +885,16 @@ def test_tiddler_put_create():
     # Correct ETag we get 204
     assert response['status'] == '204'
 
+def test_bad_tags_json_put():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler3',
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body='{"tags":[["foo","bar","baz"]]}')
+    assert response['status'] == '409'
+    assert 'Unable to put badly formed tiddler' in content
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 
