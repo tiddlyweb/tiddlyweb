@@ -55,8 +55,8 @@ def init(config):
                     'port': port,
                     }
 
-        from tiddlyweb.web import serve
-        serve.start_cherrypy(config)
+        from tiddlyweb.web.serve import start_cherrypy
+        start_cherrypy(config)
 
     @make_command()
     def userpass(args):
