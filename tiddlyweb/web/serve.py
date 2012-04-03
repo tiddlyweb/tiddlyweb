@@ -56,7 +56,7 @@ def load_app(app_prefix=None, dirname=None):
 
 def start_cherrypy(config):
     """
-    Start a CheryPy webserver to run our app.
+    Start a CherryPy webserver to run our app.
     """
     from cherrypy.wsgiserver import CherryPyWSGIServer
     hostname = config['server_host']['host']
@@ -65,7 +65,7 @@ def start_cherrypy(config):
     app = load_app()
     server = CherryPyWSGIServer((hostname, port), app)
     try:
-        logging.debug('starting CheryPy at %s://%s:%s',
+        logging.debug('starting CherryPy at %s://%s:%s',
                 scheme, hostname, port)
         std_error_message("Starting CherryPy at %s://%s:%s"
                 % (scheme, hostname, port))
