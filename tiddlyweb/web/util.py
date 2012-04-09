@@ -16,6 +16,20 @@ from tiddlyweb.web.http import HTTP415, HTTP400
 from tiddlyweb.util import sha
 
 
+def content_length_and_type(environ):
+    """
+    To PUT or POST we must have content-length and content-type
+    headers. Raise 400 if we cannot get these things.
+    """
+    try:
+        length = environ['CONTENT_LENGTH']
+        content_type = environ['tiddlyweb.type']
+    except KeyError:
+        raise HTTP400(
+                'Content-Length and content-type required to PUT or POST')
+    return length, content_type
+
+
 def get_route_value(environ, name):
     """
     Retrieve and decode from UTF-8 data provided in WSGI route.

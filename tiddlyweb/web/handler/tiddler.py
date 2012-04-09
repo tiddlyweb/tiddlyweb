@@ -147,7 +147,7 @@ def _determine_tiddler(environ, bag_finder):
     # PUTs to recipes are aware of values like tags when
     # doing filter checks.
     if environ['REQUEST_METHOD'] == 'PUT':
-        length, content_type = _length_and_type(environ)
+        length, content_type = web.content_length_and_type(environ)
         content = environ['wsgi.input'].read(int(length))
 
         try:
@@ -200,7 +200,7 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     """
     We have a list of revisions, put them in a new place.
     """
-    content_type = environ['tiddlyweb.type']
+    length, content_type = web.content_length_and_type(environ)
 
     if content_type != 'application/json':
         raise HTTP415('application/json required')
@@ -215,7 +215,6 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     _check_bag_constraint(environ, bag, 'create')
     _check_bag_constraint(environ, bag, 'write')
 
-    length = environ['CONTENT_LENGTH']
     content = environ['wsgi.input'].read(int(length))
 
     _store_tiddler_revisions(environ, content, tiddler)
@@ -246,20 +245,6 @@ def _store_tiddler_revisions(environ, content, tiddler):
             store.put(tiddler)
     except NoTiddlerError, exc:
         raise HTTP400('Unable to store tiddler revisions: %s', exc)
-
-
-def _length_and_type(environ):
-    """
-    To PUT we must have content-length and content-type
-    headers. Raise 400 if we cannot get these things.
-    """
-    try:
-        length = environ['CONTENT_LENGTH']
-        content_type = environ['tiddlyweb.type']
-    except KeyError:
-        raise HTTP400(
-                'Content-Length and content-type required to put tiddler')
-    return length, content_type
 
 
 def _check_and_validate_tiddler(environ, bag, tiddler):

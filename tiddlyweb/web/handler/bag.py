@@ -111,7 +111,7 @@ def put(environ, start_response):
 
     bag = Bag(bag_name)
     store = environ['tiddlyweb.store']
-    length = environ['CONTENT_LENGTH']
+    length, _ = web.content_length_and_type(environ)
 
     usersign = environ['tiddlyweb.usersign']
 
