@@ -1,3 +1,7 @@
+1.2.60 Fri Apr 20 17:46:45 UTC 2012
+
+  * Better handing and reporting for some 400 errors.
+
 1.2.59 Thu Apr  5 13:50:34 UTC 2012
 
   * Improved imports when using CherryPy.
