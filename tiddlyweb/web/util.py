@@ -36,14 +36,14 @@ def get_route_value(environ, name):
 
     If name is not present in the route, allow KeyError to raise.
 
-    If the provided data is not URI escaped UTF-8, raise and HTTP400
+    If the provided data is not URI escaped UTF-8, raise an HTTP400
     """
     try:
         value = environ['wsgiorg.routing_args'][1][name]
         value = urllib.unquote(value).decode('utf-8')
     except UnicodeDecodeError, exc:
-        raise HTTP400('incorrect encoding for %s, UTF-8 required: %s',
-                exc)
+        raise HTTP400('incorrect encoding for %s, UTF-8 required: %s'
+                % (name, exc))
     return value
 
 
