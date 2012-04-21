@@ -3,7 +3,8 @@ Functions and Classes for running a TiddlyWeb server, including
 optionally a built in web server.
 """
 import logging
-import selector
+
+from selector import Selector
 
 from tiddlyweb.util import std_error_message, initialize_logging
 
@@ -26,7 +27,7 @@ def load_app(app_prefix=None, dirname=None):
         prefix = app_prefix
     else:
         prefix = config['server_prefix']
-    app = selector.Selector(mapfile=mapfile, prefix=prefix)
+    app = Selector(mapfile=mapfile, prefix=prefix)
     config['selector'] = app
 
     try:
