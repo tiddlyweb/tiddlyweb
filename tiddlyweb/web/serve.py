@@ -41,7 +41,7 @@ def load_app(app_prefix=None, dirname=None):
 
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
-    wrappers.append(Environator)  # required as the first app
+    wrappers.append(RequestLogger)  # required as the first app
     wrappers.append(Configurator)  # required as the second app
     wrappers.extend(config['server_response_filters'])
     if wrappers:
@@ -74,33 +74,28 @@ def start_cherrypy(config):
         server.stop()
 
 
-class Environator(object):
+class RequestLogger(object):
     """
-    WSGI Middleware that doctors the environment to make it satisfactory
-    to Selector no matter what server has mounted us. This is likely to
-    be riddled with bugs given that different servers behave differently
-    with regard to SCRIPT_NAME, PATH_INFO and REQUEST_URI.
+    WSGI middleware that logs basic request information
     """
 
     def __init__(self, application):
         self.application = application
 
     def __call__(self, environ, start_response):
-        request_method = environ.get('REQUEST_METHOD', None)
-        request_uri = environ.get('REQUEST_URI', None)
-        script_name = environ.get('SCRIPT_NAME', None)
-        path_info = environ.get('PATH_INFO', None)
-        query_string = environ.get('QUERY_STRING', None)
-        logging.debug('starting "%s" request with uri "%s", script_name "%s"'
-                ', path_info "%s" and query "%s"', request_method,
-                request_uri, script_name, path_info, query_string)
-        # do no cleaning for now
+        logging.debug('starting %s request with URI "%s", script_name "%s"'
+                ', path_info "%s" and query "%s"',
+                environ.get('REQUEST_METHOD', None),
+                environ.get('REQUEST_URI', None),
+                environ.get('SCRIPT_NAME', None),
+                environ.get('PATH_INFO', None),
+                environ.get('QUERY_STRING', None))
         return self.application(environ, start_response)
 
 
 class Configurator(object):
     """
-    WSGI Middleware to handle setting a config dict
+    WSGI middleware to handle setting a config dict
     for every request.
     """
 
