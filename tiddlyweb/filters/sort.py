@@ -9,7 +9,7 @@ ATTRIBUTE_SORT_KEY that has as its value a function used to generate a
 key to pass to the sort. ATTRIBUTE_SORT_KEY can be extended by plugins.
 """
 
-from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.store import get_entity
 
 
 def date_to_canonical(datestring):
@@ -77,13 +77,7 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
         Reify the attribute needed for sorting. If the entity
         has not already been loaded from the store, do so.
         """
-        if store and not entity.store:
-            stored_entity = Tiddler(entity.title, entity.bag)
-            if entity.revision:
-                stored_entity.revision = entity.revision
-            stored_entity = store.get(stored_entity)
-        else:
-            stored_entity = entity
+        stored_entity = get_entity(entity, store)
         try:
             return func(getattr(stored_entity, attribute))
         except AttributeError, attribute_exc:
