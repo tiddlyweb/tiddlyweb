@@ -1,3 +1,8 @@
+1.2.61 Wed May  2 20:02:25 UTC 2012
+
+  * Refactoring to make code tidier.
+  * Rare race condition in sort filters fixed.
+
 1.2.60 Fri Apr 20 17:46:45 UTC 2012
 
   * Better handing and reporting for some 400 errors.
