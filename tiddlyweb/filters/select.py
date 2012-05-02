@@ -34,9 +34,8 @@ value. See tiddlyweb.filters.sort.
 from itertools import ifilter
 from operator import gt, lt
 
-from tiddlyweb.model.tiddler import Tiddler
-from tiddlyweb.store import NoTiddlerError
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
+from tiddlyweb.store import get_entity
 
 
 def select_parse(command):
@@ -180,7 +179,7 @@ def select_by_attribute(attribute, value, entities, negate=False,
             """
             Return True if the entity's attribute matches value.
             """
-            stored_entity = _get_entity(entity, store)
+            stored_entity = get_entity(entity, store)
             return select(stored_entity, attribute, value)
 
         if negate:
@@ -230,7 +229,7 @@ def select_relative_attribute(attribute, value, entities,
         Return true if entity's attribute is < or > (depending on
         comparator) the value in the filter.
         """
-        stored_entity = _get_entity(entity, store)
+        stored_entity = get_entity(entity, store)
         if hasattr(stored_entity, 'fields'):
             return comparator(func(getattr(stored_entity, attribute,
                 stored_entity.fields.get(attribute, ''))), func(value))
@@ -239,22 +238,3 @@ def select_relative_attribute(attribute, value, entities,
                     func(value))
 
     return ifilter(_select, entities)
-
-
-def _get_entity(entity, store):
-    """
-    Load the provided entity from the store if it has not already
-    been loaded. In this context only tiddlers will not have been
-    loaded already.
-    """
-    if store and not entity.store:
-        try:
-            stored_entity = Tiddler(entity.title, entity.bag)
-            if entity.revision:
-                stored_entity.revision = entity.revision
-            stored_entity = store.get(stored_entity)
-        except (AttributeError, NoTiddlerError):
-            stored_entity = entity
-    else:
-        stored_entity = entity
-    return stored_entity

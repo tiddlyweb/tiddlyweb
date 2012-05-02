@@ -11,6 +11,7 @@ from copy import deepcopy
 
 from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 from tiddlyweb.model.policy import Policy
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.util import superclass_name
 
 
@@ -248,6 +249,30 @@ class Store(object):
         hooks = _get_hooks(method, hooked_class)
         for hook in hooks:
             hook(self, thing)
+
+
+def get_entity(entity, store):
+    """
+    Load the provided entity from the store if it has not already
+    been loaded. If it can't be found, still return the same entity,
+    just keep it empty.
+
+    This works for tiddlers, bags and recipes. Not users!
+    """
+    if store and not entity.store:
+        try:
+            try:
+                stored_entity = entity.__class__(entity.title, entity.bag)
+                if entity.revision:
+                    stored_entity.revision = entity.revision
+            except AttributeError:
+                stored_entity = entity.__class__(entity.name)
+            stored_entity = store.get(stored_entity)
+        except (AttributeError, StoreError):
+            stored_entity = entity
+    else:
+        stored_entity = entity
+    return stored_entity
 
 
 def _get_hooks(method, name):
