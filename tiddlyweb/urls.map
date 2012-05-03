@@ -43,7 +43,7 @@
 #               application/json: list of recipe_name
 
 
-/recipes/{recipe_name:segment}[/]
+/recipes/{recipe_name:segment}
     GET tiddlyweb.web.handler.recipe:get
     PUT tiddlyweb.web.handler.recipe:put
     DELETE tiddlyweb.web.handler.recipe:delete
@@ -101,7 +101,7 @@
 #               application/json: a list of bag names
 
 
-/bags/{bag_name:segment}[/]
+/bags/{bag_name:segment}
     GET tiddlyweb.web.handler.bag:get
     PUT tiddlyweb.web.handler.bag:put
     DELETE tiddlyweb.web.handler.bag:delete
