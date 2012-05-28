@@ -1,3 +1,8 @@
+1.2.62 Mon May 28 15:42:00 UTC 2012
+
+  * Optional trailing slash on bags and recipes no longer allowed.
+  * Extract reading wsgi.input to a util function.
+
 1.2.61 Wed May  2 20:02:25 UTC 2012
 
   * Refactoring to make code tidier.
