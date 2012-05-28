@@ -148,7 +148,7 @@ def _determine_tiddler(environ, bag_finder):
     # doing filter checks.
     if environ['REQUEST_METHOD'] == 'PUT':
         length, content_type = web.content_length_and_type(environ)
-        content = environ['wsgi.input'].read(int(length))
+        content = web.read_request_body(environ, length)
 
         try:
             try:

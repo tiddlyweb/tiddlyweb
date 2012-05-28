@@ -143,7 +143,7 @@ def put(environ, start_response):
     try:
         serializer = Serializer(serialize_type, environ)
         serializer.object = recipe
-        content = environ['wsgi.input'].read(int(length))
+        content = web.read_request_body(environ, length)
         serializer.from_string(content.decode('utf-8'))
 
         recipe.policy.owner = usersign['name']

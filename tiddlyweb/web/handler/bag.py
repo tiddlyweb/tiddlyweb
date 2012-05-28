@@ -125,7 +125,7 @@ def put(environ, start_response):
         serialize_type = web.get_serialize_type(environ)[0]
         serializer = Serializer(serialize_type, environ)
         serializer.object = bag
-        content = environ['wsgi.input'].read(int(length))
+        content = web.read_request_body(environ, length)
         serializer.from_string(content.decode('utf-8'))
 
         bag.policy.owner = usersign['name']

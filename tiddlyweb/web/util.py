@@ -158,6 +158,21 @@ def make_cookie(name, value, mac_key=None, path=None,
     return output
 
 
+def read_request_body(environ, length):
+    """
+    Read the wsgi.input representing the request body.
+    Length is required because it is tested for existence
+    earlier in the process so we don't want to bother
+    recalculating.
+    """
+    try:
+        length = int(length)
+        input_handle = environ['wsgi.input']
+        return input_handle.read(length)
+    except (KeyError, ValueError, IOError), exc:
+        raise HTTP400('Error reading request body: %s', exc)
+
+
 def server_base_url(environ):
     """
     Using information in tiddlyweb.config, construct

@@ -12,6 +12,7 @@ except ImportError:
 
 from tiddlyweb.filters import parse_for_filters
 from tiddlyweb.web.http import HTTP400
+from tiddlyweb.web.util import read_request_body
 
 
 class Query(object):
@@ -37,7 +38,7 @@ class Query(object):
                 content_type.startswith('application/x-www-form-urlencoded'):
             try:
                 length = environ['CONTENT_LENGTH']
-                content = environ['wsgi.input'].read(int(length))
+                content = read_request_body(environ, length)
             except KeyError, exc:
                 raise HTTP400('Invalid post, unable to read content: %s'
                         % exc)
