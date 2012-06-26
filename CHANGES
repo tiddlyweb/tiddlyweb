@@ -1,3 +1,7 @@
+1.2.63 Tue Jun 26 17:54:00 UTC 2012
+
+  * More strict unicode handling when initializing a new Tiddler.
+
 1.2.62 Mon May 28 15:42:00 UTC 2012
 
   * Optional trailing slash on bags and recipes no longer allowed.
