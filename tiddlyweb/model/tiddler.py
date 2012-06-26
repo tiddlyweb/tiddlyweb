@@ -96,13 +96,13 @@ class Tiddler(object):
         self.title = title
         self.bag = bag
 
-        self._creator = ''
+        self._creator = u''
         self.modifier = None
-        self.created = ''
+        self.created = u''
         self.modified = current_timestring()
         self.tags = []
         self.fields = {}
-        self.text = ''
+        self.text = u''
         self.type = None
         self.revision = 0
         self.recipe = None

@@ -16,7 +16,7 @@ def test_simple_search():
 
     assert len(tiddlers) > 0
     assert type(tiddlers[0]) == Tiddler
-    assert tiddlers[0].text is ''
+    assert tiddlers[0].text is u''
 
 def test_unicode_search():
 
