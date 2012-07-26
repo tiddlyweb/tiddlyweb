@@ -51,8 +51,8 @@ def init(config):
         if hostname and port:
             config['server_host'] = {
                     'scheme': 'http',
-                    'host': hostname,
-                    'port': port,
+                    'host': str(hostname),
+                    'port': str(port),
                     }
 
         from tiddlyweb.web.serve import start_cherrypy
