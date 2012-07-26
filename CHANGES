@@ -1,3 +1,7 @@
+1.2.64 Thu Jul 26 13:55:18 UTC 2012
+
+  * Ensure server and host from command line are str. Thanks @pads
+
 1.2.63 Tue Jun 26 17:54:00 UTC 2012
 
   * More strict unicode handling when initializing a new Tiddler.
