@@ -4,9 +4,9 @@ Test search via the web.
 
 
 import httplib2
-import simplejson
+import json
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 def setup_module(module):
     initialize_app()
@@ -43,7 +43,7 @@ def test_json_search():
 
     assert response['status'] == '200'
     assert 'json' in response['content-type']
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert len(info) == 30
 
 def test_json_search_filtered():
@@ -53,7 +53,7 @@ def test_json_search_filtered():
 
     assert response['status'] == '200'
     assert 'json' in response['content-type']
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert len(info) == 30
 
 def test_funky_encoding():

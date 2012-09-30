@@ -32,12 +32,7 @@ class HTTPException(Exception):
         """
         if not hasattr(self, 'args'):
             self.args = ('%s' % self, )
-        output = []
-        for arg in self.args:
-            if isinstance(arg, unicode):
-                arg = arg.encode('utf-8')
-            output.append('%s' % arg)
-        return ['%s: %s' % (self.status, ' '.join(output))]
+        return ['%s: %s' % (self.status, self.args)]
 
 
 class HTTP302(HTTPException):
@@ -152,15 +147,15 @@ class HTTPExceptor(object):
     def __call__(self, environ, start_response, exc_info=None):
         try:
             return self.application(environ, start_response)
-        except HTTPException, exc:
+        except HTTPException as exc:
             start_response(exc.status, exc.headers(), exc_info)
             return exc.output()
         except:
             etype, value, traceb = sys.exc_info()
             exception_text = ''.join(traceback.format_exception(
                 etype, value, traceb, None))
-            print >> environ['wsgi.errors'], exception_text
-            logging.warn(exception_text)
+            print(exception_text, file=environ['wsgi.errors'])
+            logging.warning(exception_text)
             start_response('500 server error',
                     [('Content-Type', 'text/plain')], sys.exc_info())
             return [exception_text]

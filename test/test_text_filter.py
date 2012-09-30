@@ -7,7 +7,7 @@ from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from fixtures import muchdata, reset_textstore, _teststore
+from .fixtures import muchdata, reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()

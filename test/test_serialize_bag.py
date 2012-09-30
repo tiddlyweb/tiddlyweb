@@ -3,13 +3,13 @@
 Test turning a bag into other forms.
 """
 
-import simplejson
+import json
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.config import config
 
-from fixtures import bagfour, tiddler_collection, reset_textstore
+from .fixtures import bagfour, tiddler_collection, reset_textstore
 
 
 def setup_module(module):
@@ -23,9 +23,9 @@ def test_generate_json():
     serializer.object = bagfour
     string = serializer.to_string()
 
-    json = simplejson.loads(string)
-    assert json['policy']['manage'] == ['NONE']
-    assert json['desc'] == 'a tasty little bag'
+    info = json.loads(string)
+    assert info['policy']['manage'] == ['NONE']
+    assert info['desc'] == 'a tasty little bag'
 
 
 def test_generated_string():
@@ -75,7 +75,7 @@ def test_generated_html_with_revbag():
 def test_json_to_bag():
     serializer = Serializer('json')
 
-    json_string = simplejson.dumps(dict(policy=dict(read=['user1'], manage=['NONE']), desc='simply the best'))
+    json_string = json.dumps(dict(policy=dict(read=['user1'], manage=['NONE']), desc='simply the best'))
     newbag = Bag('bagho')
     serializer.object = newbag
     serializer.from_string(json_string)
@@ -87,7 +87,7 @@ def test_json_to_bag():
 
 def test_text_list():
     serializer = Serializer('text')
-    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    bags = [Bag('bag' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_bags(bags))
 
     assert 'bag0' in string
@@ -95,7 +95,7 @@ def test_text_list():
 
 def test_html_list():
     serializer = Serializer('html')
-    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    bags = [Bag('bag' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_bags(bags))
 
     assert 'href="bags/bag0' in string

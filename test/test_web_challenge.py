@@ -4,11 +4,11 @@ Test the way in which the /challenge URI produces stuff.
 
 
 import httplib2
-import simplejson
+import json
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.user import User
 from tiddlyweb.config import config
 
@@ -78,7 +78,7 @@ def test_simple_cookie_redirect():
                 headers={'content-type': 'application/x-www-form-urlencoded'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -117,7 +117,7 @@ def test_charset_in_content_type():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -130,7 +130,7 @@ def test_charset_in_content_type():
     assert 'i am tiddler 8' in content
 
 def _put_policy(bag_name, policy_dict):
-    json = simplejson.dumps(policy_dict)
+    json = json.dumps(policy_dict)
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
@@ -148,7 +148,7 @@ def test_single_challenge_redirect():
     raised = 0
     try:
         response, content = http.request('http://our_test_domain:8001/challenge', method='GET', redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -174,7 +174,7 @@ def test_cookie_path_prefix_max_age():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised

@@ -29,8 +29,8 @@ class Recipe(object):
 
     def __init__(self, name, desc=u''):
         self._recipe = []
-        self.name = unicode(name)
-        self.desc = unicode(desc)
+        self.name = name
+        self.desc = desc
         self.store = None
         self.policy = Policy()
 

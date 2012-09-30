@@ -2,7 +2,8 @@
 JSON based serializer.
 """
 
-import simplejson
+import json
+import binascii
 
 from base64 import b64encode, b64decode
 
@@ -27,14 +28,14 @@ class Serialization(SerializationInterface):
         Create a JSON list of recipe names from
         the provided recipes.
         """
-        return simplejson.dumps([recipe.name for recipe in recipes])
+        return json.dumps([recipe.name for recipe in recipes])
 
     def list_bags(self, bags):
         """
         Create a JSON list of bag names from the
         provided bags.
         """
-        return simplejson.dumps([bag.name for bag in bags])
+        return json.dumps([bag.name for bag in bags])
 
     def list_tiddlers(self, tiddlers):
         """
@@ -51,7 +52,7 @@ class Serialization(SerializationInterface):
         except ValueError:
             pass
 
-        return simplejson.dumps([self._tiddler_dict(tiddler, fat, render) for
+        return json.dumps([self._tiddler_dict(tiddler, fat, render) for
             tiddler in tiddlers])
 
     def recipe_as(self, recipe):
@@ -60,7 +61,7 @@ class Serialization(SerializationInterface):
         """
         policy_dict = dict([(key, getattr(recipe.policy, key)) for
                 key in Policy.attributes])
-        return simplejson.dumps(dict(desc=recipe.desc, policy=policy_dict,
+        return json.dumps(dict(desc=recipe.desc, policy=policy_dict,
             recipe=recipe.get_recipe()))
 
     def as_recipe(self, recipe, input_string):
@@ -70,8 +71,8 @@ class Serialization(SerializationInterface):
         the policy.
         """
         try:
-            info = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+            info = json.loads(input_string)
+        except json.JSONDecodeError as exc:
             raise RecipeFormatError(
                     'unable to make json into recipe: %s, %s'
                     % (recipe.name, exc))
@@ -91,15 +92,15 @@ class Serialization(SerializationInterface):
         policy_dict = dict([(key, getattr(bag.policy, key)) for
                 key in Policy.attributes])
         info = dict(policy=policy_dict, desc=bag.desc)
-        return simplejson.dumps(info)
+        return json.dumps(info)
 
     def as_bag(self, bag, input_string):
         """
         Turn a JSON string into a bag.
         """
         try:
-            info = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+            info = json.loads(input_string)
+        except json.JSONDecodeError as exc:
             raise BagFormatError(
                     'unable to make json into bag: %s, %s'
                     % (bag.name, exc))
@@ -127,27 +128,27 @@ class Serialization(SerializationInterface):
             pass
 
         tiddler_dict = self._tiddler_dict(tiddler, fat=fat, render=render)
-        return simplejson.dumps(tiddler_dict)
+        return json.dumps(tiddler_dict)
 
     def as_tiddler(self, tiddler, input_string):
         """
         Turn a JSON dictionary into a Tiddler.
         """
         try:
-            dict_from_input = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+            dict_from_input = json.loads(input_string)
+        except json.JSONDecodeError as exc:
             raise TiddlerFormatError(
                     'unable to make json into tiddler: %s, %s'
                     % (tiddler.title, exc))
         accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
                 'text', 'type']
-        for key, value in dict_from_input.iteritems():
+        for key, value in dict_from_input.items():
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
         if binary_tiddler(tiddler):
             try:
                 tiddler.text = b64decode(tiddler.text)
-            except TypeError, exc:
+            except (TypeError, binascii.Error) as exc:
                 raise TiddlerFormatError(
                         'unable to decode expected base64 input in %s: %s'
                         % (tiddler.title, exc))
@@ -168,7 +169,7 @@ class Serialization(SerializationInterface):
         wanted_info['uri'] = tiddler_url(self.environ, tiddler)
         if fat:
             if binary_tiddler(tiddler):
-                wanted_info['text'] = b64encode(tiddler.text)
+                wanted_info['text'] = b64encode(tiddler.text).decode('utf-8')
             else:
                 wanted_info['text'] = tiddler.text
         if render and renderable(tiddler, self.environ):

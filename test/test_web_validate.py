@@ -5,16 +5,16 @@ Test that GETting a tiddler in some form.
 import os
 
 import httplib2
-import simplejson
+import json
 
 from base64 import b64encode
 
-from fixtures import reset_textstore, _teststore, initialize_app
+from .fixtures import reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.user import User
 from tiddlyweb.model.bag import Bag
 
-authorization = b64encode('cdent:cowpig')
+authorization = b64encode(b'cdent:cowpig')
 
 from tiddlyweb.web.validator import InvalidTiddlerError
 import tiddlyweb.web.validator
@@ -96,7 +96,7 @@ def test_validate_one_tiddler_modify():
     assert 'FOOBAR' in content
 
 def test_validate_one_bag():
-    bag_json = simplejson.dumps(dict(desc='<script>alert("hot!");</script>', policy={}))
+    bag_json = json.dumps(dict(desc='<script>alert("hot!");</script>', policy={}))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag1',
@@ -113,7 +113,7 @@ def test_validate_one_bag():
     assert '&lt;script' in content
 
 def test_validate_one_recipe():
-    recipe_json = simplejson.dumps(dict(desc='<script>alert("hot!");</script>', policy={}, recipe=[]))
+    recipe_json = json.dumps(dict(desc='<script>alert("hot!");</script>', policy={}, recipe=[]))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/recipe1',

@@ -62,12 +62,12 @@ class Serializer(object):
         try:
             imported_module = __import__('tiddlyweb.serializations.%s'
                     % self.engine, {}, {}, ['Serialization'])
-        except ImportError, err:
+        except ImportError as err:
             err1 = err
             try:
                 imported_module = __import__(self.engine, {}, {},
                         ['Serialization'])
-            except ImportError, err:
+            except ImportError as err:
                 raise ImportError("couldn't load module for %s: %s, %s"
                         % (self.engine, err, err1))
         self.serialization = imported_module.Serialization(self.environ)
@@ -76,7 +76,7 @@ class Serializer(object):
         lower_class = superclass_name(self.object)
         try:
             string_func = getattr(self.serialization, '%s_as' % lower_class)
-        except AttributeError, exc:
+        except AttributeError as exc:
             raise AttributeError(
                     'unable to find to string function for %s: %s'
                     % (lower_class, exc))
@@ -97,7 +97,7 @@ class Serializer(object):
         lower_class = superclass_name(self.object)
         try:
             object_func = getattr(self.serialization, 'as_%s' % lower_class)
-        except AttributeError, exc:
+        except AttributeError as exc:
             raise AttributeError(
                     'unable to find from string function for %s: %s'
                     % (lower_class, exc))

@@ -7,14 +7,14 @@ to do what TiddlyWiki does: have a fields field.
 """
 
 
-import simplejson
+import json
 
 from tiddlyweb.config import config
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from fixtures import reset_textstore, _teststore
+from .fixtures import reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()
@@ -76,7 +76,7 @@ def test_tiddler_fields_as_json():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
     serializer.object = tiddler
     json_string = serializer.to_string()
-    tiddler_info = simplejson.loads(json_string)
+    tiddler_info = json.loads(json_string)
     assert tiddler_info['fields']['field1'] == 'value1'
     assert tiddler_info['fields']['field2'] == 'value2'
     assert tiddler_info['bag'] == 'bag0'

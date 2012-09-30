@@ -10,18 +10,12 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import reset_textstore, recipe_list_string, _teststore
+from .fixtures import reset_textstore, recipe_list_string, _teststore
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.store import NoRecipeError
 
 expected_stored_filename = os.path.join('store', 'recipes', 'testrecipe')
 
-expected_stored_content = """desc: I enjoy being stored
-policy: {"read": [], "create": [], "manage": [], "accept": [], "write": [], "owner": null, "delete": []}
-
-/bags/bagone/tiddlers?select=title:TiddlerOne
-/bags/bagtwo/tiddlers?select=title:TiddlerTwo
-/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree"""
 
 def setup_module(module):
     """
@@ -47,12 +41,13 @@ def test_recipe_put():
             'path %s should be created' \
             % expected_stored_filename
 
-    f = file(expected_stored_filename)
-    content = f.read()
+    with open(expected_stored_filename) as f:
+        content = f.read()
 
-    assert content == expected_stored_content, \
-            'stored content should be %s, got %s' \
-            % (expected_stored_content, content)
+    assert 'desc: I enjoy being stored' in content
+    assert """/bags/bagone/tiddlers?select=title:TiddlerOne
+/bags/bagtwo/tiddlers?select=title:TiddlerTwo
+/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree""" in content
 
 def test_recipe_get():
     """

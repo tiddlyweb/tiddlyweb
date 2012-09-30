@@ -4,9 +4,9 @@ Test GETting a tiddler revision list.
 
 
 import httplib2
-import simplejson
+import json
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 
 from tiddlyweb.util import sha
@@ -130,13 +130,13 @@ def test_get_tiddler_revision_list_json():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json',
             method='GET')
 
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert response['status'] == '200'
     assert len(info) == 4
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?sort=revision',
             method='GET')
-    info2 = simplejson.loads(content)
+    info2 = json.loads(content)
     assert len(info) == 4
     assert info[0]['revision'] == info2[-1]['revision']
 
@@ -145,7 +145,7 @@ def test_tiddler_revision_list_json_fat():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
             method='GET')
 
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert response['status'] == '200'
     assert len(info) == 4
     assert info[0]['revision'] == 4
@@ -169,7 +169,7 @@ def test_tiddler_revision_list_json_fat():
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='GET')
 
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert response['status'] == '200'
 
 

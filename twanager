@@ -10,5 +10,4 @@ from tiddlyweb.manage import handle
 
 
 if __name__ == '__main__':
-    args = [unicode(arg, 'UTF-8') for arg in sys.argv]
-    handle(args)
+    handle(sys.argv)

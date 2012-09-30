@@ -2,8 +2,8 @@
 Text based serializers.
 """
 
-import urllib
-import simplejson
+from urllib.parse import quote, unquote
+import json
 
 from base64 import b64encode, b64decode
 
@@ -54,16 +54,16 @@ class Serialization(SerializationInterface):
         policy_dict = dict([(key, getattr(recipe.policy, key)) for
                 key in Policy.attributes])
         lines = ['desc: %s' % recipe.desc, 'policy: %s' %
-                simplejson.dumps(policy_dict), '']
+                json.dumps(policy_dict), '']
 
         for bag, filter_string in recipe.get_recipe():
             line = ''
-            if not isinstance(bag, basestring):
+            if not isinstance(bag, str):
                 bag = bag.name
             if not get_bag_retriever(self.environ, bag):
                 # If there is a retriever for this bag name then
                 # we want to write its name straight.
-                line += '/bags/%s/tiddlers' % urllib.quote(
+                line += '/bags/%s/tiddlers' % quote(
                         bag.encode('utf-8'), safe='')
             else:
                 line += bag
@@ -86,7 +86,7 @@ class Serialization(SerializationInterface):
             for field, value in [x.split(': ', 1) for x in headers]:
                 if field == 'policy':
                     recipe.policy = Policy()
-                    info = simplejson.loads(value)
+                    info = json.loads(value)
                     for key, value in info.items():
                         recipe.policy.__setattr__(key, value)
                 else:
@@ -129,7 +129,7 @@ class Serialization(SerializationInterface):
         info = '\n'
         for key in tiddler.fields:
             if not key.startswith('server.'):
-                value = unicode(tiddler.fields[key])
+                value = str(tiddler.fields[key])
                 info += '%s: %s\n' % (key, value.replace('\n', '\\n'))
         return info
 
@@ -150,14 +150,14 @@ class Serialization(SerializationInterface):
                     setattr(tiddler, field, value)
                 else:
                     tiddler.fields[field] = value.replace('\\n', '\n')
-        except ValueError, exc:
+        except ValueError as exc:
             raise TiddlerFormatError('bad headers in tiddler: %s, %s' %
                     (tiddler.title, exc))
 
         # In some strange situations tiddler.tags will not
         # be a string here, so will still have its default
         # value of [], which we want to keep.
-        if isinstance(tiddler.tags, basestring):
+        if isinstance(tiddler.tags, str):
             tag_string = tiddler.tags
             if tag_string:
                 tiddler.tags = self.as_tags(tag_string)
@@ -186,8 +186,7 @@ class Serialization(SerializationInterface):
                     filter_string = ''
                 if bag.startswith('/bags/'):
                     bagname = bag.split('/')[2]
-                    bagname = urllib.unquote(bagname.encode('utf-8'))
-                    bagname = bagname.decode('utf-8')
+                    bagname = unquote(bagname)
                 else:
                     bagname = bag
                 recipe_lines.append((bagname, filter_string))

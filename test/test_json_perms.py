@@ -1,5 +1,5 @@
 
-import simplejson 
+import json 
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
@@ -24,7 +24,7 @@ def test_json_perms():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    info = simplejson.loads(string)
+    info = json.loads(string)
 
     assert info['title'] == 'permstest'
     assert info['text'] == 'permstest'

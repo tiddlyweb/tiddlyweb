@@ -3,7 +3,7 @@ WSGI App for running the base challenge system, which lists and links
 the available challengers. If there is only one, redirect to it.
 """
 
-import urllib
+from urllib.parse import quote
 
 from tiddlyweb.web.http import HTTP302, HTTP404
 from tiddlyweb.web.util import server_base_url, get_route_value
@@ -58,7 +58,7 @@ def _challenger_url(environ, system):
     default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
     redirect = (environ['tiddlyweb.query'].get('tiddlyweb_redirect',
             [default_redirect])[0])
-    redirect = '?tiddlyweb_redirect=%s' % urllib.quote(
+    redirect = '?tiddlyweb_redirect=%s' % quote(
             redirect.encode('utf-8'), safe='')
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 
@@ -75,7 +75,7 @@ def _determine_challenger(environ, challenger_name=None):
         raise HTTP404('Challenger Not Found')
     try:
         return _get_challenger_module(challenger_name)
-    except ImportError, exc:
+    except ImportError as exc:
         raise HTTP404('Unable to import challenger %s: %s' %
                 (challenger_name, exc))
 

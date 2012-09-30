@@ -6,7 +6,7 @@ from tiddlyweb.config import config
 
 from tiddlywebplugins.utils import get_store
 
-from fixtures import reset_textstore, _teststore
+from .fixtures import reset_textstore, _teststore
 
 import shutil
 

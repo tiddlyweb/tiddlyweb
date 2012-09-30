@@ -50,10 +50,7 @@ the index cannot satisfy the query) it may raise FilterIndexRefused and
 the normal filtering process will be performed.
 """
 
-try:
-    from urlparse import parse_qs
-except ImportError:
-    from cgi import parse_qs
+from urllib.parse import parse_qs
 
 from tiddlyweb.filters.select import select_by_attribute, \
         select_relative_attribute, select_parse
@@ -105,12 +102,9 @@ def parse_for_filters(query_string, environ=None):
     for string in strings:
         query = parse_qs(string)
         try:
-            key, value = query.items()[0]
+            key, value = list(query.items())[0]
 
-            try:
-                argument = unicode(value[0], 'UTF-8')
-            except TypeError:
-                argument = value[0]
+            argument = value[0]
 
             func = FILTER_PARSERS[key](argument)
             filters.append((func, (key, argument), environ))
@@ -139,9 +133,9 @@ def recursive_filter(filters, entities, indexable=False):
             environ = {}
         try:
             entities = active_filter(entities, indexable, environ)
-        except FilterIndexRefused, exc:
+        except FilterIndexRefused as exc:
             entities = active_filter(entities, False, environ)
-        except (ValueError, AttributeError), exc:
+        except (ValueError, AttributeError) as exc:
             raise FilterError('malformed filter: %s' % exc)
         indexable = False
     return entities

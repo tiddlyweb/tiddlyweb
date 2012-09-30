@@ -74,7 +74,7 @@ def get_tiddlers(environ, start_response):
             bag = Bag(bag_name)
             bag = store.get(bag)
             bag.policy.allows(usersign, 'read')
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
 
@@ -84,10 +84,10 @@ def get_tiddlers(environ, start_response):
     # get the tiddlers from the recipe and uniquify them
     try:
         candidate_tiddlers = control.get_tiddlers_from_recipe(recipe, environ)
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('recipe %s lists an unknown bag: %s' %
                 (recipe.name, exc))
-    except FilterError, exc:
+    except FilterError as exc:
         raise HTTP400('malformed filter: %s' % exc)
 
     if filters:
@@ -150,9 +150,9 @@ def put(environ, start_response):
 
         _validate_recipe(environ, recipe)
         store.put(recipe)
-    except RecipeFormatError, exc:
+    except RecipeFormatError as exc:
         raise HTTP400('unable to put recipe: %s' % exc)
-    except TypeError, exc:
+    except TypeError as exc:
         raise HTTP400('malformed input: %s' % exc)
     except NoSerializationError:
         raise HTTP415('Content type %s not supported' % serialize_type)
@@ -169,7 +169,7 @@ def _validate_recipe(environ, recipe):
     """
     try:
         validate_recipe(recipe, environ)
-    except InvalidBagError, exc:
+    except InvalidBagError as exc:
         raise HTTP409('Recipe content is invalid: %s' % exc)
 
 
@@ -186,7 +186,7 @@ def _determine_recipe(environ):
 
     try:
         recipe = store.get(recipe)
-    except NoRecipeError, exc:
+    except NoRecipeError as exc:
         raise HTTP404('%s not found, %s' % (recipe.name, exc))
 
     return recipe

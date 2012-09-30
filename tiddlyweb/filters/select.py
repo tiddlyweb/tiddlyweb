@@ -31,7 +31,6 @@ When doing sorting ATTRIBUTE_SORT_KEY is consulted to canonicalize the
 value. See tiddlyweb.filters.sort.
 """
 
-from itertools import ifilter
 from operator import gt, lt
 
 from tiddlyweb.filters.sort import ATTRIBUTE_SORT_KEY
@@ -169,8 +168,7 @@ def select_by_attribute(attribute, value, entities, negate=False,
     if indexable and indexer:
         # If there is an exception, just let it raise.
         imported_module = __import__(indexer, {}, {}, ['index_query'])
-        # dict keys may not be unicode
-        kwords = {str(attribute): value, 'bag': indexable.name}
+        kwords = {attribute: value, 'bag': indexable.name}
         return imported_module.index_query(environ, **kwords)
     else:
         select = ATTRIBUTE_SELECTOR.get(attribute, default_func)
@@ -194,7 +192,7 @@ def select_by_attribute(attribute, value, entities, negate=False,
         else:
             _filter = _posfilter
 
-        return ifilter(_filter, entities)
+        return filter(_filter, entities)
 
 
 def select_relative_attribute(attribute, value, entities,
@@ -237,4 +235,4 @@ def select_relative_attribute(attribute, value, entities,
             return comparator(func(getattr(stored_entity, attribute, None)),
                     func(value))
 
-    return ifilter(_select, entities)
+    return filter(_select, entities)

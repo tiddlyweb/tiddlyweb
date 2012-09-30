@@ -1,6 +1,7 @@
 config = {
         'log_level':'DEBUG',
         'extra': { 'stuff': ['one', 'two'], }, # required for test_merge_config
+        'twanager.tracebacks': True
         #'server_prefix': '/wiki',
         #'system_plugins': ['tiddlywebplugins.whoosher'],
         #'twanager_plugins': ['tiddlywebplugins.whoosher'],

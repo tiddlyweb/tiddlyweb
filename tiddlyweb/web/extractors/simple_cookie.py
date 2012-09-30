@@ -3,7 +3,7 @@ An extractor for looking at a cookie
 named 'tiddlyweb_user'.
 """
 
-import Cookie
+from http.cookies import SimpleCookie, CookieError
 import logging
 
 from tiddlyweb.web.extractors import ExtractorInterface
@@ -27,7 +27,7 @@ class Extractor(ExtractorInterface):
             user_cookie = environ['HTTP_COOKIE']
             logging.debug('simple_cookie looking at cookie string: %s',
                     user_cookie)
-            cookie = Cookie.SimpleCookie()
+            cookie = SimpleCookie()
             cookie.load(user_cookie)
             cookie_value = cookie['tiddlyweb_user'].value
             secret = environ['tiddlyweb.config']['secret']
@@ -38,7 +38,7 @@ class Extractor(ExtractorInterface):
                 usersign = usersign.decode('utf-8')
                 user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
-        except Cookie.CookieError, exc:
+        except CookieError as exc:
             raise HTTP400('malformed cookie: %s' % exc)
         except (KeyError, ValueError):
             pass

@@ -77,7 +77,7 @@ def _figure_type_for_get(environ):
 
     if accept_header:
         default_type = environ['tiddlyweb.config']['default_serializer']
-        matchable_types = environ['tiddlyweb.config']['serializers'].keys()
+        matchable_types = list(environ['tiddlyweb.config']['serializers'].keys())
         matchable_types.append(default_type)
         try:
             our_types.append(mimeparse.best_match(

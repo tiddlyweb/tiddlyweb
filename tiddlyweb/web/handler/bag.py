@@ -126,13 +126,13 @@ def put(environ, start_response):
         serializer = Serializer(serialize_type, environ)
         serializer.object = bag
         content = web.read_request_body(environ, length)
-        serializer.from_string(content.decode('utf-8'))
+        serializer.from_string(content)
 
         bag.policy.owner = usersign['name']
 
         _validate_bag(environ, bag)
         store.put(bag)
-    except BagFormatError, exc:
+    except BagFormatError as exc:
         raise HTTP400('unable to put bag: %s' % exc)
     except TypeError:
         raise HTTP400('Content-type header required')
@@ -151,7 +151,7 @@ def _validate_bag(environ, bag):
     """
     try:
         validate_bag(bag, environ)
-    except InvalidBagError, exc:
+    except InvalidBagError as exc:
         raise HTTP409('Bag content is invalid: %s' % exc)
 
 
@@ -163,6 +163,6 @@ def _get_bag(environ, bag_name):
     bag = Bag(bag_name)
     try:
         bag = store.get(bag)
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('%s not found, %s' % (bag.name, exc))
     return bag

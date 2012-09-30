@@ -12,10 +12,10 @@ class User(object):
     """
 
     def __init__(self, usersign, note=None):
-        self.usersign = unicode(usersign)
+        self.usersign = usersign
         self.note = note
         if self.note:
-            self.note = unicode(self.note)
+            self.note = self.note
         self._password = None
         self.roles = set()
 
@@ -23,7 +23,7 @@ class User(object):
         """
         Add the named role (a string) to this user.
         """
-        self.roles.add(unicode(role))
+        self.roles.add(role)
 
     def del_role(self, role):
         """
@@ -47,7 +47,7 @@ class User(object):
         # The null password or empty password string never auths
         if not password:
             return
-        self._password = sha(password.strip().encode('utf-8')).hexdigest()
+        self._password = sha(password.strip()).hexdigest()
 
     def check_password(self, candidate_password):
         """
@@ -55,8 +55,7 @@ class User(object):
         """
         if not self._password:
             return False
-        crypted_thing = sha(candidate_password.strip().encode(
-            'utf-8')).hexdigest()
+        crypted_thing = sha(candidate_password.strip()).hexdigest()
         return crypted_thing == self._password
 
     def __repr__(self):

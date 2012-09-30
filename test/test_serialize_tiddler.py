@@ -2,7 +2,7 @@
 Test turning a tiddler into other forms.
 """
 
-import simplejson
+import json
 import pytest
 
 from base64 import b64encode
@@ -66,7 +66,7 @@ def test_generated_json_string():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    info = simplejson.loads(string)
+    info = json.loads(string)
 
     assert info['title'] == 'test tiddler'
     assert info['text'] == "Hello, I'm the content."
@@ -114,20 +114,21 @@ def test_tiddler_json_base64():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
     tiddler = Tiddler('binarytiddler')
     tiddler.bag = u'foo'
-    tiddler.text = file('test/peermore.png', 'rb').read()
+    with open('test/peermore.png', 'rb') as png:
+        tiddler.text = png.read()
     bininfo = tiddler.text
-    b64expected = b64encode(tiddler.text)
+    b64expected = b64encode(tiddler.text).decode('utf-8')
     tiddler.type = 'image/png'
     serializer.object = tiddler
     string = serializer.to_string()
-    info = simplejson.loads(string)
+    info = json.loads(string)
     assert info['text'] == b64expected
 
     tiddler = serializer.from_string(string)
     assert tiddler.text == bininfo
 
     info['text'] = '..badbinary..'
-    string = simplejson.dumps(info)
+    string = json.dumps(info)
     pytest.raises(TiddlerFormatError, 'serializer.from_string(string)')
 
 def test_tiddler_json_render():
@@ -140,7 +141,7 @@ def test_tiddler_json_render():
     serializer.object = tiddler
 
     output = serializer.to_string()
-    info = simplejson.loads(output)
+    info = json.loads(output)
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
     assert info['text'] == '!Hi\n//you//'
 
@@ -154,7 +155,7 @@ def test_tiddler_json_render_skinny():
     serializer.object = tiddler
 
     output = serializer.to_string()
-    info = simplejson.loads(output)
+    info = json.loads(output)
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
     pytest.raises(KeyError, "info['text']")
 

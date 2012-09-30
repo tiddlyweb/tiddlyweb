@@ -12,7 +12,7 @@ def current_timestring():
     Translate (now) into a TiddlyWiki conformat timestring.
     """
     time_object = datetime.utcnow()
-    return unicode(time_object.strftime('%Y%m%d%H%M%S'))
+    return time_object.strftime('%Y%m%d%H%M%S')
 
 
 def string_to_tags_list(string):
@@ -89,10 +89,6 @@ class Tiddler(object):
 
         A title is required to ceate a tiddler.
         """
-        if title:
-            title = unicode(title)
-        if bag:
-            bag = unicode(bag)
         self.title = title
         self.bag = bag
 

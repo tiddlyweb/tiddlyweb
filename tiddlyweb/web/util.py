@@ -2,8 +2,8 @@
 General utility routines shared by various web related modules.
 """
 
-import Cookie
-import urllib
+from http.cookies import SimpleCookie
+from urllib.parse import quote, unquote
 import time
 from datetime import datetime
 try:
@@ -40,8 +40,8 @@ def get_route_value(environ, name):
     """
     try:
         value = environ['wsgiorg.routing_args'][1][name]
-        value = urllib.unquote(value).decode('utf-8')
-    except UnicodeDecodeError, exc:
+        value = unquote(value)
+    except UnicodeDecodeError as exc:
         raise HTTP400('incorrect encoding for %s, UTF-8 required: %s'
                 % (name, exc))
     return value
@@ -133,9 +133,7 @@ def make_cookie(name, value, mac_key=None, path=None,
     Create a cookie string, optionally with a MAC, path and
     expires value. Expires is in seconds.
     """
-    cookie = Cookie.SimpleCookie()
-
-    value = value.encode('utf-8')
+    cookie = SimpleCookie()
 
     if mac_key:
         secret_string = sha('%s%s' % (value, mac_key)).hexdigest()
@@ -155,7 +153,7 @@ def make_cookie(name, value, mac_key=None, path=None,
     output = cookie.output(header='').lstrip().rstrip()
     if httponly:
         output += '; httponly'
-    return output
+    return output.encode('UTF-8')
 
 
 def read_request_body(environ, length):
@@ -169,7 +167,7 @@ def read_request_body(environ, length):
         length = int(length)
         input_handle = environ['wsgi.input']
         return input_handle.read(length)
-    except (KeyError, ValueError, IOError), exc:
+    except (KeyError, ValueError, IOError) as exc:
         raise HTTP400('Error reading request body: %s', exc)
 
 
@@ -207,7 +205,7 @@ def encode_name(name):
     Encode a unicode as utf-8 and then url encode that
     string. Use for entity titles in URLs.
     """
-    return urllib.quote(name.encode('utf-8'), safe='')
+    return quote(name.encode('utf-8'), safe='')
 
 
 def html_encode(text):

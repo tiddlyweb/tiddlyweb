@@ -5,7 +5,7 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import reset_textstore, _teststore
+from .fixtures import reset_textstore, _teststore
 from tiddlyweb.store import NoUserError
 from tiddlyweb.model.user import User
 
@@ -33,7 +33,7 @@ def test_simple_get():
 
     assert user.note == 'foo'
     assert user.check_password('cowpig')
-    assert user.list_roles() == ['ADMIN', 'BOSS']
+    assert sorted(user.list_roles()) == sorted(['ADMIN', 'BOSS'])
     assert not user.check_password('pigcow')
 
 def test_failed_get():

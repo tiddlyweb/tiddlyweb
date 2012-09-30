@@ -14,7 +14,7 @@ from tiddlyweb.web import serve
 
 from test.simpleplugin import PluginHere
 
-from fixtures import initialize_app
+from .fixtures import initialize_app
 
 expected_content="""<ul id="root" class="listing">
 <li><a href="/recipes">recipes</a></li>

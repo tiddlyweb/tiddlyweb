@@ -6,14 +6,7 @@ Test turning a recipe into other forms.
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.serializer import Serializer
 
-from fixtures import recipe_list
-
-expected_string = """desc: 
-policy: {"read": [], "create": [], "manage": [], "accept": [], "write": [], "owner": null, "delete": []}
-
-/bags/bagone/tiddlers?select=title:TiddlerOne
-/bags/bagtwo/tiddlers?select=title:TiddlerTwo
-/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree"""
+from .fixtures import recipe_list
 
 no_desc = """/bags/bagone/tiddlers?select=title:TiddlerOne
 /bags/bagtwo/tiddlers?select=title:TiddlerTwo
@@ -30,17 +23,19 @@ def setup_module(module):
     module.recipe = Recipe(name='testrecipe')
     module.recipe.set_recipe(recipe_list)
 
+
 def test_generated_text():
     serializer = Serializer('text')
     serializer.object = recipe
     string = serializer.to_string()
 
-    assert string == expected_string, \
-            'serialized recipe looks like we expect. should be %s, got %s' \
-            % (expected_string, string)
+    assert 'desc: \n' in string
+    assert """/bags/bagone/tiddlers?select=title:TiddlerOne
+/bags/bagtwo/tiddlers?select=title:TiddlerTwo
+/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree""" in string
 
-    assert '%s' % serializer == expected_string, \
-            'serializer goes to string as expected_string'
+    assert 'desc: \n' in str(serializer)
+
 
 def test_simple_recipe():
     recipe = Recipe('other')
@@ -100,7 +95,12 @@ def test_old_text():
 
     output = serializer.to_string()
 
-    assert output == expected_string
+    assert 'desc: \n' in output
+    assert """/bags/bagone/tiddlers?select=title:TiddlerOne
+/bags/bagtwo/tiddlers?select=title:TiddlerTwo
+/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree""" in output
+
+    assert 'desc: \n' in str(serializer)
 
 def test_generated_html():
     serializer = Serializer('html')
@@ -113,14 +113,14 @@ def test_generated_html():
 
 def test_text_list():
     serializer = Serializer('text')
-    recipes = [Recipe('recipe' + str(name)) for name in xrange(2)]
+    recipes = [Recipe('recipe' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_recipes(recipes))
 
     assert string == 'recipe0\nrecipe1\n'
 
 def test_html_list():
     serializer = Serializer('html')
-    recipes = [Recipe('recipe' + str(name)) for name in xrange(2)]
+    recipes = [Recipe('recipe' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_recipes(recipes))
 
     assert 'href="recipes/recipe0' in string

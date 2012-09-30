@@ -6,11 +6,11 @@ XXX This test file appears to have never been completed.
 
 
 import httplib2
-import simplejson
+import json
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.config import config
 from tiddlyweb.model.user import User
@@ -55,7 +55,7 @@ def test_guest_extract():
 def test_user_extract():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode('cow:pig')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pig')})
     assert response['status'] == '200'
     assert 'cow' in content
 
@@ -63,7 +63,7 @@ def test_user_extract_bad_pass():
     """User gets their password wrong, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode('cow:pog')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pog')})
     assert response['status'] == '200'
     assert 'GUEST' in content
 
@@ -71,7 +71,7 @@ def test_user_extract_no_user():
     """User doesn't exist, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode('ciw:pig')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'ciw:pig')})
     assert response['status'] == '200'
     assert 'GUEST' in content
 
@@ -79,7 +79,7 @@ def test_user_extract_bogus_data():
     """User doesn't exist, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode(':')})
+            headers={'Authorization': 'Basic %s' % b64encode(b':')})
     assert response['status'] == '200'
     assert 'GUEST' in content
 

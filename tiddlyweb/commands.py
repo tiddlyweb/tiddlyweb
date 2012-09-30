@@ -26,14 +26,14 @@ def init(config):
     @make_command()
     def info(args):
         """Display info about TiddlyWeb."""
-        print """This is TiddlyWeb version %s.
-    The current store is: %s.""" % (VERSION, config['server_store'][0])
+        print("""This is TiddlyWeb version %s.
+    The current store is: %s.""" % (VERSION, config['server_store'][0]))
         if config['system_plugins']:
-            print 'System Plugins:'
+            print('System Plugins:')
             for plugin in config['system_plugins']:
                 module = __import__(plugin)
-                print '\t%s (%s)' % (plugin,
-                        getattr(module, '__version__', 'unknown'))
+                print('\t%s (%s)' % (plugin,
+                        getattr(module, '__version__', 'unknown')))
 
     @make_command()
     def server(args):
@@ -41,7 +41,7 @@ def init(config):
         hostname = port = ''
         try:
             hostname, port = args[0:2]
-        except(IndexError, ValueError), exc:
+        except(IndexError, ValueError) as exc:
             if 0 < len(args) < 2:
                 usage('you must include both a hostname or ip '
                     'number and a port if using arguments: %s' % exc)
@@ -63,7 +63,7 @@ def init(config):
         """Change the password of an existing user. <username> <password>"""
         try:
             username, password = args[0:2]
-        except (IndexError, ValueError), exc:
+        except (IndexError, ValueError) as exc:
             usage('you must provide both a user and a password')
 
         try:
@@ -72,7 +72,7 @@ def init(config):
             user = store.get(user)
             user.set_password(password)
             store.put(user)
-        except Exception, exc:
+        except Exception as exc:
             usage('unable to set password for user: %s' % exc)
 
         return True
@@ -83,7 +83,7 @@ def init(config):
         try:
             username = args.pop(0)
             roles = args[0:]
-        except (IndexError, ValueError), exc:
+        except (IndexError, ValueError) as exc:
             usage('you must provide a user and at least one '
                 'role: %s' % exc)
 
@@ -94,7 +94,7 @@ def init(config):
             for role in roles:
                 user.add_role(role)
             store.put(user)
-        except Exception, exc:
+        except Exception as exc:
             usage('unable to add role to user: %s' % exc)
 
         return True
@@ -135,7 +135,7 @@ def init(config):
         new_recipe = Recipe(recipe_name)
 
         content = sys.stdin.read()
-        _put(new_recipe, unicode(content, 'UTF-8'), 'text')
+        _put(new_recipe, content, 'text')
 
     @make_command()
     def bag(args):
@@ -152,7 +152,7 @@ def init(config):
         content = sys.stdin.read()
         if not len(content):
             content = '{"policy":{}}'
-        _put(new_bag, unicode(content, 'UTF-8'), 'json')
+        _put(new_bag, content, 'json')
 
     @make_command()
     def tiddler(args):
@@ -168,7 +168,7 @@ def init(config):
         new_tiddler.bag = bag_name
 
         content = sys.stdin.read()
-        _put(new_tiddler, unicode(content, 'UTF-8'), 'text')
+        _put(new_tiddler, content, 'text')
 
     @make_command()
     def lusers(args):
@@ -179,8 +179,7 @@ def init(config):
             users = store.list_users()
         for user in users:
             user = store.get(user)
-            print user.usersign.encode('utf-8'), ', '.join(role.encode('utf-8')
-                    for role in user.list_roles())
+            print(user.usersign, ', '.join(role for role in user.list_roles()))
 
     @make_command()
     def lbags(args):
@@ -194,9 +193,9 @@ def init(config):
         for listed_bag in bags:
             listed_bag = store.get(listed_bag)
             serializer.object = listed_bag
-            print 'Name: %s' % listed_bag.name.encode('utf-8')
-            print serializer.to_string().encode('utf-8')
-            print
+            print('Name: %s' % listed_bag.name)
+            print(serializer.to_string())
+            print()
 
     @make_command()
     def lrecipes(args):
@@ -209,9 +208,9 @@ def init(config):
         for listed_recipe in recipes:
             listed_recipe = store.get(listed_recipe)
             owner = listed_recipe.policy.owner or ''
-            print listed_recipe.name.encode('utf-8'), owner.encode('utf-8')
+            print(listed_recipe.name, owner)
             for recipe_bag, recipe_filter in listed_recipe.get_recipe():
-                print ('\t', recipe_bag.encode('utf-8'),
+                print('\t', recipe_bag,
                         recipe_filter.encode('utf-8'))
 
     @make_command()
@@ -226,11 +225,11 @@ def init(config):
             for listed_bag in bags:
                 listed_bag = store.get(listed_bag)
                 owner = listed_bag.policy.owner or ''
-                print listed_bag.name.encode('utf-8'), owner.encode('utf-8')
+                print(listed_bag.name, owner)
                 tiddlers = store.list_bag_tiddlers(listed_bag)
                 for listed_tiddler in tiddlers:
-                    print '\t%s' % listed_tiddler.title.encode('utf-8')
-        except NoBagError, exc:
+                    print('\t%s' % listed_tiddler.title)
+        except NoBagError as exc:
             usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 
     def _put(entity, content, serialization):

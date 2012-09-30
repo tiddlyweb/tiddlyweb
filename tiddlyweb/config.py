@@ -115,9 +115,6 @@ except NotImplementedError:
 except ImportError:
     URLS_MAP = 'tiddlyweb/urls.map'
 
-# override urllib.quote's broken-ness compared with browsers
-import urllib
-urllib.always_safe += (".!~*'()")
 
 from tiddlyweb.util import read_config
 

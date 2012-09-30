@@ -5,10 +5,7 @@ puts them in tiddlyweb.query in the same structure that cgi.py users
 parse that stuff too.
 """
 
-try:
-    from urlparse import parse_qs
-except ImportError:
-    from cgi import parse_qs
+from urllib.parse import parse_qs
 
 from tiddlyweb.filters import parse_for_filters
 from tiddlyweb.web.http import HTTP400
@@ -39,13 +36,13 @@ class Query(object):
             try:
                 length = environ['CONTENT_LENGTH']
                 content = read_request_body(environ, length)
-            except KeyError, exc:
+            except KeyError as exc:
                 raise HTTP400('Invalid post, unable to read content: %s'
                         % exc)
             posted_data = parse_qs(content, keep_blank_values=True)
             try:
                 _update_tiddlyweb_query(environ, posted_data)
-            except UnicodeDecodeError, exc:
+            except UnicodeDecodeError as exc:
                 raise HTTP400(
                         'Invalid encoding in query string, utf-8 required: %s',
                         exc)
@@ -54,7 +51,7 @@ class Query(object):
         query_data = parse_qs(leftovers, keep_blank_values=True)
         try:
             _update_tiddlyweb_query(environ, query_data)
-        except UnicodeDecodeError, exc:
+        except UnicodeDecodeError as exc:
             raise HTTP400(
                     'Invalid encoding in query string, utf-8 required: %s',
                     exc)
@@ -63,5 +60,5 @@ class Query(object):
 
 def _update_tiddlyweb_query(environ, data):
     environ['tiddlyweb.query'].update(dict(
-        [(unicode(key, 'UTF-8'), [unicode(value, 'UTF-8') for value in values])
+        [(key, [value for value in values])
             for key, values in data.items()]))

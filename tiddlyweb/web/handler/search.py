@@ -5,7 +5,7 @@ tiddlers and list them in the interface.
 
 import logging
 
-import urllib
+from urllib.parse import unquote
 
 from tiddlyweb.control import readable_tiddlers_by_bag
 from tiddlyweb.model.collections import Tiddlers
@@ -21,7 +21,7 @@ def get_search_query(environ):
     """
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
-        search_query = urllib.unquote(search_query)
+        search_query = unquote(search_query)
     except (KeyError, IndexError):
         raise HTTP400('query string required')
     return search_query
@@ -69,7 +69,7 @@ def get(environ, start_response):
 
     except StoreMethodNotImplemented:
         raise HTTP400('Search system not implemented')
-    except StoreError, exc:
+    except StoreError as exc:
         raise HTTP400('Error while processing search: %s' % exc)
 
     return send_tiddlers(environ, start_response, tiddlers=candidate_tiddlers)

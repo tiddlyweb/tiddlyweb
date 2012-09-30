@@ -17,7 +17,7 @@ def list_entities(environ, start_response, mime_type, store_list,
     filters = environ['tiddlyweb.filters']
     try:
         kept_entities = _filter_readable(environ, store_list(), filters)
-    except FilterError, exc:
+    except FilterError as exc:
         raise HTTP400(exc)
 
     etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
@@ -71,6 +71,6 @@ def _filter_readable(environ, entities, filters):
                 kept_entities.add(entity)
             except(UserRequiredError, ForbiddenError):
                 pass
-    except AttributeError, exc:
+    except AttributeError as exc:
         raise FilterError('malformed filter: %s' % exc)
     return kept_entities

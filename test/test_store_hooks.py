@@ -1,6 +1,5 @@
 
 import sys
-from StringIO import StringIO
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.config import config
 from tiddlywebplugins.utils import get_store

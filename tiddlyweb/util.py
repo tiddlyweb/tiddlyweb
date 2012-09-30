@@ -61,7 +61,7 @@ def read_config(global_config):
     try:
         from tiddlywebconfig import config as custom_config
         merge_config(global_config, custom_config, reconfig=False)
-    except ImportError, exc:
+    except ImportError as exc:
         if not exc.args[0].endswith('tiddlywebconfig'):
             raise  # error within tiddlywebconfig.py
 
@@ -71,7 +71,7 @@ def sha(data=''):
     Centralize creation of sha digests, to
     manage deprecation of the sha module.
     """
-    return sha1(data)
+    return sha1(data.encode('UTF-8'))
 
 
 def binary_tiddler(tiddler):
@@ -102,9 +102,8 @@ def read_utf8_file(filename):
     """
     Read a utf-8 encoded file.
     """
-    source_file = codecs.open(filename, encoding='utf-8')
-    content = source_file.read()
-    source_file.close()
+    with codecs.open(filename, encoding='utf-8') as source_file:
+        content = source_file.read()
     return content
 
 
@@ -126,14 +125,7 @@ def std_error_message(message):
     """
     Display a message on the stderr console.
     """
-    try:
-        print >> sys.stderr, message.encode('utf-8', 'replace')
-    # there's a mismatch between our encoding and the output terminal
-    except UnicodeDecodeError:
-        try:
-            print >> sys.stderr, message
-        except UnicodeDecodeError:
-            print >> sys.stderr, 'cannot display message due to mismatching terminal character encoding'
+    print(message, file=sys.stderr)
 
 
 def superclass_name(instance):
@@ -152,9 +144,8 @@ def write_utf8_file(filename, content):
     """
     Write a string to utf-8 encoded file.
     """
-    dest_file = codecs.open(filename, 'w', encoding='utf-8')
-    dest_file.write(content)
-    dest_file.close()
+    with codecs.open(filename, 'w', encoding='utf-8') as dest_file:
+        dest_file.write(content)
 
 
 def write_lock(filename):
@@ -168,10 +159,9 @@ def write_lock(filename):
         pid = _read_lock_file(lock_filename)
         raise LockError('write lock for %s taken by %s' % (filename, pid))
 
-    lock = open(lock_filename, 'w')
-    pid = os.getpid()
-    lock.write(str(pid))
-    lock.close()
+    with open(lock_filename, 'w') as lock:
+        pid = os.getpid()
+        lock.write(str(pid))
 
 
 def write_unlock(filename):
@@ -221,7 +211,6 @@ def _read_lock_file(lockfile):
     """
     Read the pid from a the lock file.
     """
-    lock = open(lockfile, 'r')
-    pid = lock.read()
-    lock.close()
+    with open(lockfile, 'r') as lock:
+        pid = lock.read()
     return pid

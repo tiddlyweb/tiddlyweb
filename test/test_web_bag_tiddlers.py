@@ -4,12 +4,12 @@ Test posting a wiki to a bag.
 
 
 import httplib2
-import simplejson
+import json
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.util import sha
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 def setup_module(module):
     initialize_app()
@@ -23,7 +23,7 @@ def test_get_sorted_tiddlers():
             method='GET')
     etag = response['etag']
     assert response['status'] == '200'
-    tiddlers = simplejson.loads(content)
+    tiddlers = json.loads(content)
     assert tiddlers[0]['title'] == 'tiddler0'
     assert tiddlers[0]['uri'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0'
 
@@ -42,7 +42,7 @@ def test_get_selected_sorted_limited_tiddlers():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?select=title:!tiddler1;select=title:!tiddler0;sort=title;limit=1',
             method='GET')
     assert response['status'] == '200'
-    tiddlers = simplejson.loads(content)
+    tiddlers = json.loads(content)
     assert len(tiddlers) == 1
     assert tiddlers[0]['title'] == 'tiddler2'
 

@@ -10,7 +10,7 @@ Prequisites:
 
 import os
 
-from fixtures import bagfour, tiddlers, reset_textstore, _teststore
+from .fixtures import bagfour, tiddlers, reset_textstore, _teststore
 from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError, NoBagError
 from tiddlyweb.model.bag import Bag
@@ -56,8 +56,8 @@ def test_simple_put():
     
     assert os.path.exists(expected_stored_filename)
 
-    f = file(expected_stored_filename)
-    text = f.read()
+    with open(expected_stored_filename) as f:
+        text = f.read()
 
     assert text == expected_stored_text
 
@@ -138,9 +138,9 @@ def test_failed_delete_perms():
     
     path = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne')
     assert os.path.exists(path)
-    os.chmod(path, 0555)
+    os.chmod(path, 0o555)
     py.test.raises(IOError, 'store.delete(tiddler)')
-    os.chmod(path, 0755)
+    os.chmod(path, 0o755)
 
 def test_store_lock():
     """

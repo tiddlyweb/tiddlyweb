@@ -5,7 +5,7 @@ a Tiddler, GET a list of revisions of a Tiddler.
 
 import logging
 
-import simplejson
+import json
 
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
@@ -89,7 +89,7 @@ def _check_bag_constraint(environ, bag, constraint):
         usersign = environ['tiddlyweb.usersign']
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
-    except (PermissionsError), exc:
+    except (PermissionsError) as exc:
         # XXX this throws away traceback info
         msg = 'for bag %s: %s' % (bag.name, exc)
         raise exc.__class__(msg)
@@ -113,7 +113,7 @@ def _delete_tiddler(environ, start_response, tiddler):
 
     try:
         store.delete(tiddler)
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
     start_response("204 No Content", [])
@@ -139,7 +139,7 @@ def _determine_tiddler(environ, bag_finder):
         try:
             revision = int(revision)
             tiddler.revision = revision
-        except ValueError, exc:
+        except ValueError as exc:
             raise HTTP404('%s not a revision of %s: %s' %
                     (revision, tiddler_name, exc))
 
@@ -162,7 +162,7 @@ def _determine_tiddler(environ, bag_finder):
                 serializer.object = tiddler
                 try:
                     serializer.from_string(content.decode('utf-8'))
-                except TiddlerFormatError, exc:
+                except TiddlerFormatError as exc:
                     raise HTTP400('unable to put tiddler: %s' % exc)
             except NoSerializationError:
                 tiddler.type = content_type
@@ -170,7 +170,7 @@ def _determine_tiddler(environ, bag_finder):
                     tiddler.text = content.decode('utf-8')
                 else:
                     tiddler.text = content
-        except UnicodeDecodeError, exc:
+        except UnicodeDecodeError as exc:
             raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
 
     try:
@@ -180,12 +180,12 @@ def _determine_tiddler(environ, bag_finder):
             store = environ['tiddlyweb.store']
             recipe = store.get(recipe)
             tiddler.recipe = recipe_name
-        except NoRecipeError, exc:
+        except NoRecipeError as exc:
             raise HTTP404('%s not found via recipe, %s' % (tiddler.title, exc))
 
         try:
             bag = bag_finder(recipe, tiddler, environ)
-        except NoBagError, exc:
+        except NoBagError as exc:
             raise HTTP404('%s not found via bag, %s' % (tiddler.title, exc))
 
         bag_name = bag.name
@@ -231,8 +231,8 @@ def _store_tiddler_revisions(environ, content, tiddler):
     as a revision history to tiddler.
     """
     try:
-        json_tiddlers = simplejson.loads(content)
-    except ValueError, exc:
+        json_tiddlers = json.loads(content)
+    except ValueError as exc:
         raise HTTP409('unable to handle json: %s' % exc)
 
     store = environ['tiddlyweb.store']
@@ -240,10 +240,10 @@ def _store_tiddler_revisions(environ, content, tiddler):
     serializer.object = tiddler
     try:
         for json_tiddler in reversed(json_tiddlers):
-            json_string = simplejson.dumps(json_tiddler)
+            json_string = json.dumps(json_tiddler)
             serializer.from_string(json_string.decode('utf-8'))
             store.put(tiddler)
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         raise HTTP400('Unable to store tiddler revisions: %s', exc)
 
 
@@ -301,17 +301,17 @@ def _put_tiddler(environ, start_response, tiddler):
 
         try:
             _check_bag_constraint(environ, bag, 'accept')
-        except (PermissionsError), exc:
+        except (PermissionsError) as exc:
             _validate_tiddler_content(environ, tiddler)
 
         store.put(tiddler)
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
                 "%s (%s). Create the bag." %
                 (tiddler.title, tiddler.bag, exc))
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         raise HTTP404('Unable to put tiddler, %s. %s' % (tiddler.title, exc))
-    except TypeError, exc:
+    except TypeError as exc:
         raise HTTP409('Unable to put badly formed tiddler, %s:%s. %s'
                 % (tiddler.bag, tiddler.title, exc))
 
@@ -332,7 +332,7 @@ def _validate_tiddler_content(environ, tiddler):
     """
     try:
         validate_tiddler(tiddler, environ)
-    except InvalidTiddlerError, exc:
+    except InvalidTiddlerError as exc:
         raise HTTP409('Tiddler content is invalid: %s' % exc)
 
 
@@ -417,13 +417,13 @@ def _send_tiddler(environ, start_response, tiddler):
     # this will raise 403 if constraint does not pass
     try:
         _check_bag_constraint(environ, bag, 'read')
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('%s not found, no bag %s, %s' %
                 (tiddler.title, tiddler.bag, exc))
 
     try:
         tiddler = store.get(tiddler)
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
 
     # this will raise 304
@@ -480,7 +480,7 @@ def _get_tiddler_content(environ, tiddler):
 
     try:
         content = serializer.to_string()
-    except (TiddlerFormatError, NoSerializationError), exc:
+    except (TiddlerFormatError, NoSerializationError) as exc:
         raise HTTP415(exc)
     return content, mime_type
 
@@ -512,10 +512,10 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
             if recipe:
                 tmp_tiddler.recipe = recipe
             tiddlers.add(tmp_tiddler)
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         # If a tiddler is not present in the store.
         raise HTTP404('tiddler %s not found, %s' % (tiddler.title, exc))
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('tiddler %s not found, bag %s does not exist, %s'
                 % (tiddler.title, tiddler.bag, exc))
     except StoreMethodNotImplemented:

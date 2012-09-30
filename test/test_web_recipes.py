@@ -1,10 +1,8 @@
 
-from base64 import b64encode
-import urllib
 import httplib2
-import simplejson
+import json
 
-from fixtures import reset_textstore, _teststore, initialize_app
+from .fixtures import reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 
 def setup_module(module):
@@ -12,7 +10,7 @@ def setup_module(module):
     reset_textstore()
     module.store = _teststore()
 
-    for i in xrange(5):
+    for i in range(5):
         recipe = Recipe('recipe%s' % i)
         recipe.set_recipe([('monkey', '')])
         module.store.put(recipe)
@@ -24,7 +22,7 @@ def test_get_recipes_txt():
             method='GET')
 
     assert response['status'] == '200'
-    for i in xrange(5):
+    for i in range(5):
         assert 'recipe%s\n' % i in content
 
     assert 'etag' in response

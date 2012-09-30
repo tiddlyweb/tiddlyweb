@@ -2,9 +2,9 @@
 
 import selector
 import string
-import simplejson
+import json
 
-from http_runner import *
+from .http_runner import *
 
 def fixup(pattern):
     for replaceme in ['^', '\\', '(', ')', '?', '$', '[/]+', '[/.]+', '>']:
@@ -40,7 +40,7 @@ def data_from_pattern(pattern):
             data['text'] = 'oh hai'
         else:
             data['description'] = "hey buddy"
-    return simplejson.dumps(data)
+    return json.dumps(data)
 
 
 def figure_tests(app):

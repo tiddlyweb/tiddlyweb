@@ -2,7 +2,7 @@
 HTML based serializers.
 """
 
-import urllib
+from urllib.parse import quote, unquote
 
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
@@ -80,8 +80,7 @@ class Serialization(SerializationInterface):
 
         if 'bag_name' in routing_args and not 'tiddler_name' in routing_args:
             bag_name = routing_args['bag_name']
-            bag_name = urllib.unquote(bag_name)
-            bag_name = unicode(bag_name, 'utf-8')
+            bag_name = unquote(bag_name)
             bag_link = ('<div class="baglink"><a href="%s/bags/%s">'
                     'Bag %s</a></div>' % (server_prefix,
                         encode_name(bag_name), bag_name))
@@ -105,12 +104,12 @@ class Serialization(SerializationInterface):
         lines = []
         for bag, filter_string in recipe.get_recipe():
             line = '<li><a href="'
-            if not isinstance(bag, basestring):
+            if not isinstance(bag, str):
                 bag = bag.name
             line += '%s/bags/%s/tiddlers' % (
                     self._server_prefix(), encode_name(bag))
             if filter_string:
-                line += '?%s' % urllib.quote(
+                line += '?%s' % quote(
                         filter_string.encode('utf-8'), safe=':=;')
             line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)

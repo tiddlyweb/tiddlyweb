@@ -35,11 +35,11 @@ def render_wikitext(tiddler=None, environ=None):
     try:
         imported_module = __import__('tiddlyweb.wikitext.%s' % renderer_name,
                 {}, {}, ['render'])
-    except ImportError, err:
+    except ImportError as err:
         err1 = err
         try:
             imported_module = __import__(renderer_name, {}, {}, ['render'])
-        except ImportError, err:
+        except ImportError as err:
             raise ImportError("couldn't load module for %s: %s, %s" %
                     (renderer_name, err, err1))
     return imported_module.render(tiddler, environ)

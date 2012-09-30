@@ -28,7 +28,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
     uniquifier = {}
     for bag, filter_string in recipe.get_recipe(template):
 
-        if isinstance(bag, basestring):
+        if isinstance(bag, str):
             retriever = get_bag_retriever(environ, bag)
             if not retriever:
                 bag = Bag(name=bag)
@@ -42,7 +42,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
             for tiddler in filter_tiddlers(retriever(bag), filter_string,
                     environ=environ):
                 uniquifier[tiddler.title] = tiddler
-        except SpecialBagError, exc:
+        except SpecialBagError as exc:
             raise NoBagError('unable to retrieve from special bag: %s, %s'
                     % (bag, exc))
 
@@ -88,7 +88,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
     """
     Look up the indicated tiddler in a bag, filtered by filter_string.
     """
-    if isinstance(bag, basestring):
+    if isinstance(bag, str):
         bag = Bag(name=bag)
     if store:
         bag = store.get(bag)
@@ -105,7 +105,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
                         'satisfied recipe bag query via filter index: %s:%s',
                         bag.name, tiddler.title)
                 return bag
-        except StoreError, exc:
+        except StoreError as exc:
             raise FilterIndexRefused('unable to index_query: %s' % exc)
         return None
 
@@ -175,7 +175,7 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
         for candidate_tiddler in filter_tiddlers([tiddler],
                 filter_string, environ=environ):
             if tiddler.title == candidate_tiddler.title:
-                if isinstance(bag, basestring):
+                if isinstance(bag, str):
                     bag = Bag(name=bag)
                 return bag
 
@@ -197,7 +197,7 @@ def filter_tiddlers(tiddlers, filters, environ=None):
 
     If filters is a string, it will be parsed for filters.
     """
-    if isinstance(filters, basestring):
+    if isinstance(filters, str):
         filters, _ = parse_for_filters(filters, environ)
     return recursive_filter(filters, tiddlers)
 
@@ -209,7 +209,7 @@ def _filter_tiddlers_from_bag(bag, filters, environ=None):
     """
     indexable = bag
 
-    if isinstance(filters, basestring):
+    if isinstance(filters, str):
         filters, _ = parse_for_filters(filters, environ)
     return recursive_filter(filters, bag.store.list_bag_tiddlers(bag),
             indexable=indexable)

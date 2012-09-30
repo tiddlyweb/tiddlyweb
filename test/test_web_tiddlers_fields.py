@@ -4,12 +4,12 @@ Test extended fields on tiddlers via the HTTP API.
 
 
 import httplib2
-import simplejson
-import simplejson
+import json
+import json
 
 from tiddlyweb.serializer import Serializer
 
-from fixtures import reset_textstore, _teststore, muchdata, initialize_app
+from .fixtures import reset_textstore, _teststore, muchdata, initialize_app
 
 def setup_module(module):
     initialize_app()
@@ -27,7 +27,7 @@ def test_put_tiddler_with_fields():
                 'field2': 'value2',
                 },
             }
-    tiddler_json = simplejson.dumps(tiddler_dict)
+    tiddler_json = json.dumps(tiddler_dict)
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/feebles',
@@ -41,7 +41,7 @@ def test_get_tiddler_with_fields():
             method='GET')
 
     assert response['status'] == '200'
-    tiddler_dict = simplejson.loads(content)
+    tiddler_dict = json.loads(content)
     assert tiddler_dict['text'] == 'hello'
     assert tiddler_dict['uri'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/feebles'
     assert tiddler_dict['fields']['field1'] == 'value1'

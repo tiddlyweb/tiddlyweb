@@ -16,7 +16,7 @@ from tiddlyweb.model.bag import Bag
 
 from tiddlywebplugins.utils import get_store
 
-from fixtures import reset_textstore
+from .fixtures import reset_textstore
 
 
 def setup_module(module):

@@ -10,7 +10,7 @@ import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import tiddlers, bagone, reset_textstore, _teststore
+from .fixtures import tiddlers, bagone, reset_textstore, _teststore
 from tiddlyweb.store import NoBagError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
@@ -48,7 +48,7 @@ def test_simple_get():
     bag = Bag(name='bagone')
     bag = store.get(bag)
 
-    the_tiddler = store.list_bag_tiddlers(bag).next()
+    the_tiddler = next(store.list_bag_tiddlers(bag))
     assert bag.policy.read == bagone.policy.read
     assert bag.policy.write == bagone.policy.write
     assert bag.policy.create == bagone.policy.create

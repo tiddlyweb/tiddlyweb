@@ -6,12 +6,11 @@ test server.
 import os
 
 import httplib2
-import simplejson
+import json
 
-from base64 import b64encode
 from re import match
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.user import User
 
@@ -82,11 +81,11 @@ def _run_test(test):
         response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
     else:
         response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
-                body=test['data'].encode('UTF-8'))
+                body=test['data'])
     assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 def assert_response(response, content, status, headers=None, expected=None):
-    if response['status'] == '500': print content
+    if response['status'] == '500': print(content)
     assert response['status'] == '%s' % status, (response, content)
 
     if headers:
@@ -95,4 +94,4 @@ def assert_response(response, content, status, headers=None, expected=None):
 
     if expected:
         for expect in expected:
-            assert expect.encode('UTF-8') in content
+            assert expect in content

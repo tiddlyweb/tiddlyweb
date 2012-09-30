@@ -5,7 +5,7 @@ Test using / in names and titles.
 
 import os
 
-from fixtures import reset_textstore, _teststore
+from .fixtures import reset_textstore, _teststore
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler

@@ -5,9 +5,9 @@ Test that GETting a bag can list the tiddlers.
 
 import httplib2
 import urllib
-import simplejson
+import json
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.stores import StorageInterface
@@ -152,7 +152,7 @@ def test_get_bags_json():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'application/json; charset=UTF-8', \
             'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert type(info) == list
     assert len(info) == 30
 
@@ -187,7 +187,7 @@ def test_get_bag_tiddler_list_empty():
 
     assert response['status'] == '200'
 
-    results = simplejson.loads(content)
+    results = json.loads(content)
     assert len(results) == 0
 
     response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.html',
@@ -197,7 +197,7 @@ def test_put_bag():
     """
     PUT a new bag to the server.
     """
-    json_string = simplejson.dumps(dict(policy=policy_dict))
+    json_string = json.dumps(dict(policy=policy_dict))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
@@ -213,7 +213,7 @@ def test_put_bag():
     assert response['status'] == '200'
     assert 'etag' in response
     etag = response['etag']
-    info = simplejson.loads(content)
+    info = json.loads(content)
     assert info['policy']['delete'] == policy_dict['delete']
 
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss.json',
@@ -228,7 +228,7 @@ def test_put_bag_bad_json():
     """
     PUT a new bag to the server.
     """
-    json_string = simplejson.dumps(dict(policy=policy_dict))
+    json_string = json.dumps(dict(policy=policy_dict))
     json_string = json_string[0:-1]
 
     http = httplib2.Http()
@@ -243,7 +243,7 @@ def test_delete_bag():
     """
     PUT a new bag to the server and then DELETE it.
     """
-    json_string = simplejson.dumps(dict(policy={}))
+    json_string = json.dumps(dict(policy={}))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/deleteme',
@@ -263,7 +263,7 @@ def test_put_bag_wrong_type():
     """
     PUT a new bag to the server.
     """
-    json_string = simplejson.dumps(dict(policy=policy_dict))
+    json_string = json.dumps(dict(policy=policy_dict))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
@@ -288,7 +288,7 @@ def test_roundtrip_unicode_bag():
     encoded_bag_name = '%E3%81%86%E3%81%8F%E3%81%99'
     bag_name = urllib.unquote(encoded_bag_name).decode('utf-8')
     bag_content = {'policy':{'read':['a','b','c','GUEST']}}
-    body = simplejson.dumps(bag_content)
+    body = json.dumps(bag_content)
     response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,
             method='PUT', body=body, headers={'Content-Type': 'application/json'})
     assert response['status'] == '204'
@@ -299,7 +299,7 @@ def test_roundtrip_unicode_bag():
 
     response, content = http.request('http://our_test_domain:8001/bags/%s.json' % encoded_bag_name,
             method='GET')
-    bag_data = simplejson.loads(content)
+    bag_data = json.loads(content)
     assert response['status'] == '200'
     assert bag_data['policy']['read'] == ['a','b','c','GUEST']
 
@@ -316,7 +316,7 @@ def _put_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!
     """
-    json = simplejson.dumps(policy_dict)
+    json = json.dumps(policy_dict)
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,

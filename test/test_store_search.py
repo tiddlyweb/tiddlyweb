@@ -1,6 +1,6 @@
 
 
-from fixtures import reset_textstore, muchdata, _teststore
+from .fixtures import reset_textstore, muchdata, _teststore
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 

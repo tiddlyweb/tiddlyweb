@@ -1,9 +1,9 @@
 
 import urllib
 import httplib2
-import simplejson
+import json
 
-from fixtures import reset_textstore, _teststore, initialize_app
+from .fixtures import reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.bag import Bag
 
 def setup_module(module):
@@ -11,7 +11,7 @@ def setup_module(module):
     reset_textstore()
     module.store = _teststore()
 
-    for i in xrange(5):
+    for i in range(5):
         bag = Bag('bag%s' % i)
         module.store.put(bag)
 
@@ -22,7 +22,7 @@ def test_get_bags_txt():
             method='GET')
 
     assert response['status'] == '200'
-    for i in xrange(5):
+    for i in range(5):
         assert 'bag%s\n' % i in content
     assert 'etag' in response
     etag = response['etag']
