@@ -5,6 +5,7 @@ Test that GETting a bag can list the tiddlers.
 
 import httplib2
 import py.test
+from datetime import datetime
 
 import tiddlyweb.web
 import tiddlyweb.web.util
@@ -31,7 +32,7 @@ def test_get_root():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert expected_content in content
+    assert expected_content in content.decode()
 
 def test_head_root():
     http = httplib2.Http()
@@ -40,7 +41,7 @@ def test_head_root():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content == ''
+    assert content == b''
 
 def test_with_header_and_css():
     from tiddlyweb.config import config
@@ -49,7 +50,7 @@ def test_with_header_and_css():
     response, content = http.request('http://our_test_domain:8001/', method='GET',
             headers={'User-Agent': 'Mozilla/5'})
     assert response['status'] == '200'
-    assert 'link rel="stylesheet" href="http://example.com/example.css"' in content
+    assert 'link rel="stylesheet" href="http://example.com/example.css"' in content.decode()
 
 def test_missing_system_plugin():
     from tiddlyweb.config import config
@@ -86,9 +87,9 @@ def test_http_date_from_timestamp_invalid():
     badtwo = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
     assert badone[:14] == badtwo[:14]
 
-    timestamp = '108502281010'
-    py.test.raises(ValueError,
-        'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
+    timestamp = '108502291010'
+    assert (tiddlyweb.web.util.http_date_from_timestamp(timestamp) 
+            == datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT'))
 
 def test_datetime_from_http_date():
     timestamp = '200805231010'

@@ -4,7 +4,7 @@ Test that GETting a bag can list the tiddlers.
 
 
 import httplib2
-import urllib
+import urllib.parse
 import json
 
 from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
@@ -34,7 +34,7 @@ def test_get_bag_tiddler_list_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert content.count('<li>') == 10
+    assert content.decode().count('<li>') == 10
 
 def test_get_bag_tiddler_list_404():
     """
@@ -45,7 +45,7 @@ def test_get_bag_tiddler_list_404():
             method='GET')
 
     assert response['status'] == '404'
-    assert '(' not in content
+    assert '(' not in content.decode()
 
 def test_get_bag_tiddler_list_text():
     http = httplib2.Http()
@@ -54,7 +54,7 @@ def test_get_bag_tiddler_list_text():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
+    assert len(content.decode().rstrip().split('\n')) == 10
 
 def test_get_bag_tiddler_list_html():
     http = httplib2.Http()
@@ -63,7 +63,7 @@ def test_get_bag_tiddler_list_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert content.count('<li>') == 10
+    assert content.decode().count('<li>') == 10
 
 def test_get_bag_tiddler_list_415():
     http = httplib2.Http()
@@ -79,7 +79,7 @@ def test_get_bag_tiddler_list_html_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
-    assert content.count('<li>') == 10
+    assert content.decode().count('<li>') == 10
 
 def test_get_bag_tiddler_list_filtered():
     http = httplib2.Http()
@@ -88,7 +88,7 @@ def test_get_bag_tiddler_list_filtered():
 
     assert response['status'] == '200'
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
-    assert len(content.rstrip().split('\n')) == 1, 'len tiddlers should be 1 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.decode().rstrip().split('\n')) == 1
 
 def test_get_bag_tiddler_list_bogus_filter():
     http = httplib2.Http()
@@ -96,7 +96,7 @@ def test_get_bag_tiddler_list_bogus_filter():
             method='GET')
 
     assert response['status'] == '400'
-    assert 'malformed filter' in content
+    assert 'malformed filter' in content.decode()
 
 def test_get_bags_default():
     http = httplib2.Http()
@@ -105,6 +105,7 @@ def test_get_bags_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+    content = content.decode()
     assert content.count('<li>') == 30
     assert content.count('bags/') == 30
 
@@ -115,7 +116,7 @@ def test_get_bags_txt():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
-    assert len(content.rstrip().split('\n')) == 30, 'len bags should be 32 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.decode().rstrip().split('\n')) == 30
 
 def test_get_bags_html():
     http = httplib2.Http()
@@ -124,6 +125,7 @@ def test_get_bags_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+    content = content.decode()
     assert content.count('<li>') == 30
     assert content.count('bags/') == 30
 
@@ -152,7 +154,7 @@ def test_get_bags_json():
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'application/json; charset=UTF-8', \
             'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert type(info) == list
     assert len(info) == 30
 
@@ -187,7 +189,7 @@ def test_get_bag_tiddler_list_empty():
 
     assert response['status'] == '200'
 
-    results = json.loads(content)
+    results = json.loads(content.decode())
     assert len(results) == 0
 
     response, content = http.request('http://our_test_domain:8001/bags/bagempty/tiddlers.html',
@@ -213,7 +215,7 @@ def test_put_bag():
     assert response['status'] == '200'
     assert 'etag' in response
     etag = response['etag']
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert info['policy']['delete'] == policy_dict['delete']
 
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss.json',
@@ -235,7 +237,8 @@ def test_put_bag_bad_json():
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json_string)
 
-    assert response['status'] == '400'
+    content = content.decode()
+    assert response['status'] == '400', content
     assert 'unable to put bag' in content
     assert 'unable to make json into' in content
 
@@ -278,15 +281,16 @@ def test_get_bag_tiddlers_constraints():
     assert response['status'] == '200'
 
     _put_policy('bag0', dict(policy=dict(read=['NONE'])))
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read' in content
+    assert 'may not read' in content.decode()
 
 def test_roundtrip_unicode_bag():
     http = httplib2.Http()
     encoded_bag_name = '%E3%81%86%E3%81%8F%E3%81%99'
-    bag_name = urllib.unquote(encoded_bag_name).decode('utf-8')
+    bag_name = urllib.parse.unquote(encoded_bag_name)
     bag_content = {'policy':{'read':['a','b','c','GUEST']}}
     body = json.dumps(bag_content)
     response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,
@@ -299,7 +303,7 @@ def test_roundtrip_unicode_bag():
 
     response, content = http.request('http://our_test_domain:8001/bags/%s.json' % encoded_bag_name,
             method='GET')
-    bag_data = json.loads(content)
+    bag_data = json.loads(content.decode())
     assert response['status'] == '200'
     assert bag_data['policy']['read'] == ['a','b','c','GUEST']
 
@@ -316,9 +320,11 @@ def _put_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!
     """
-    json = json.dumps(policy_dict)
+    json_data = json.dumps(policy_dict)
 
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/%s' % bag_name,
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'

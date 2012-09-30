@@ -129,4 +129,4 @@ def sanitize_html_fragment(fragment):
 
     parser = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
     output = parser.parseFragment(fragment)
-    return output.toxml()
+    return str(output.toxml())

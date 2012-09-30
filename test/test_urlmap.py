@@ -39,7 +39,7 @@ def data_from_pattern(pattern):
         if '$tiddler_name' in pattern:
             data['text'] = 'oh hai'
         else:
-            data['description'] = "hey buddy"
+            data['desc'] = "hey buddy"
     return json.dumps(data)
 
 

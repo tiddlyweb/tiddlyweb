@@ -77,7 +77,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
     start_response("200 OK", response)
 
-    if isinstance(output, basestring):
+    if isinstance(output, str) or isinstance(output, bytes):
         return [output]
     else:
         return output

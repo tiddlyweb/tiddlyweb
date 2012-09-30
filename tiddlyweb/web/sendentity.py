@@ -34,7 +34,7 @@ def send_entity(environ, start_response, entity):
                 ('ETag', etag_string),
                 ('Vary', 'Accept')])
 
-    if isinstance(content, basestring):
+    if isinstance(content, str) or isinstance(content, bytes):
         return [content]
     else:
         return content

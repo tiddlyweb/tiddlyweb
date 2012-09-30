@@ -72,7 +72,7 @@ class Serialization(SerializationInterface):
         """
         try:
             info = json.loads(input_string)
-        except json.JSONDecodeError as exc:
+        except TypeError as exc:
             raise RecipeFormatError(
                     'unable to make json into recipe: %s, %s'
                     % (recipe.name, exc))
@@ -100,7 +100,7 @@ class Serialization(SerializationInterface):
         """
         try:
             info = json.loads(input_string)
-        except json.JSONDecodeError as exc:
+        except (TypeError, ValueError) as exc:
             raise BagFormatError(
                     'unable to make json into bag: %s, %s'
                     % (bag.name, exc))
@@ -136,7 +136,7 @@ class Serialization(SerializationInterface):
         """
         try:
             dict_from_input = json.loads(input_string)
-        except json.JSONDecodeError as exc:
+        except TypeError as exc:
             raise TiddlerFormatError(
                     'unable to make json into tiddler: %s, %s'
                     % (tiddler.title, exc))

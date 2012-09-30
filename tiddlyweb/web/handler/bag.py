@@ -126,7 +126,7 @@ def put(environ, start_response):
         serializer = Serializer(serialize_type, environ)
         serializer.object = bag
         content = web.read_request_body(environ, length)
-        serializer.from_string(content)
+        serializer.from_string(content.decode('utf-8'))
 
         bag.policy.owner = usersign['name']
 
@@ -134,8 +134,8 @@ def put(environ, start_response):
         store.put(bag)
     except BagFormatError as exc:
         raise HTTP400('unable to put bag: %s' % exc)
-    except TypeError:
-        raise HTTP400('Content-type header required')
+    except TypeError as exc:
+        raise HTTP400('Content-type header required: %s' % exc)
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % serialize_type)
 
