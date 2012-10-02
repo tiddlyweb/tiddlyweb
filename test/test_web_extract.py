@@ -55,7 +55,7 @@ def test_guest_extract():
 def test_user_extract():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pig')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pig').decode('utf-8')})
     assert response['status'] == '200', content
     assert 'cow' in content.decode()
 
@@ -63,7 +63,7 @@ def test_user_extract_bad_pass():
     """User gets their password wrong, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pog')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'cow:pog').decode('utf-8')})
     assert response['status'] == '200'
     assert 'GUEST' in content.decode()
 
@@ -71,7 +71,7 @@ def test_user_extract_no_user():
     """User doesn't exist, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode(b'ciw:pig')})
+            headers={'Authorization': 'Basic %s' % b64encode(b'ciw:pig').decode('utf-8')})
     assert response['status'] == '200'
     assert 'GUEST' in content.decode()
 
@@ -79,7 +79,7 @@ def test_user_extract_bogus_data():
     """User doesn't exist, user is GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
-            headers={'Authorization': 'Basic %s' % b64encode(b':')})
+            headers={'Authorization': 'Basic %s' % b64encode(b':').decode('utf-8')})
     assert response['status'] == '200'
     assert 'GUEST' in content.decode()
 
@@ -96,6 +96,6 @@ def test_malformed_tiddlyweb_cookie():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Cookie': 'tiddlyweb_user="cdent.tumblr.com"'})
-    content = condent.decode()
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'GUEST' in content

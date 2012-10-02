@@ -58,7 +58,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
     if download:
         response.append(('Content-Disposition',
-            'attachment; filename="%s"' % download.encode('utf-8')))
+            'attachment; filename="%s"' % download))
 
     if last_modified:
         response.append(last_modified)

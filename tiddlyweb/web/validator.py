@@ -124,9 +124,11 @@ def sanitize_html_fragment(fragment):
     Santize an html fragment, returning a copy of the fragment,
     cleaned up.
     """
-    import html5lib
-    from html5lib import sanitizer
-
-    parser = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
-    output = parser.parseFragment(fragment)
-    return str(output.toxml())
+    return fragment
+# sanitation temporarily disabled
+#     import html5lib
+#     from html5lib import sanitizer
+# 
+#     parser = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
+#     output = parser.parseFragment(fragment)
+#     return str(output.toxml())

@@ -13,7 +13,7 @@ from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 
-authorization = b64encode(b'cdent:cowpig')
+authorization = b64encode(b'cdent:cowpig').decode('utf-8')
 
 def setup_module(module):
     from tiddlyweb.filters.select import ATTRIBUTE_SELECTOR
@@ -40,7 +40,7 @@ def test_get_recipe_txt():
             method='GET')
 
     assert response['status'] == '200'
-    assert '/bags/bag8/tiddlers?select=title:tiddler8' in content
+    assert '/bags/bag8/tiddlers?select=title:tiddler8' in content.decode()
     assert 'etag' in response
     etag = response['etag']
 
@@ -105,6 +105,7 @@ def test_get_recipe_tiddler_list():
             method='GET')
 
     assert response['status'] == '200'
+    content = content.decode()
     assert content.count('<li>') == 10
 
 def test_get_recipe_tiddler_list_disposition():
@@ -122,6 +123,7 @@ def test_get_recipe_tiddler_list_filtered_one():
 
     assert response['status'] == '200'
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
+    content = content.decode()
     assert content == 'tiddler8\n'
 
 def test_get_recipe_tiddler_list_filtered_empty():
@@ -136,6 +138,7 @@ def test_get_recipe_tiddler_list_bogus_filter():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers.txt?sort=monkey',
             method='GET')
     assert response['status'] == '400'
+    content = content.decode()
     assert 'malformed filter' in content
 
 def test_get_recipes_default():
@@ -145,6 +148,7 @@ def test_get_recipes_default():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
+    content = content.decode()
     assert content.count('<li>') == 1
     assert content.count('recipes/long') == 1
 
@@ -155,6 +159,7 @@ def test_get_recipes_txt():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
+    content = content.decode()
     assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_recipes_json():
@@ -165,6 +170,7 @@ def test_get_recipes_json():
     assert response['status'] == '200'
     assert response['content-type'] == 'application/json; charset=UTF-8', \
             'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
+    content = content.decode()
     info = json.loads(content)
     assert type(info) == list
     assert len(info) == 1
@@ -193,6 +199,7 @@ def test_put_recipe():
     response, content = http.request('http://our_test_domain:8001/recipes/long.json',
             method='GET')
 
+    content = content.decode()
     json = content
     assert response['status'] == '200'
 
@@ -211,12 +218,14 @@ def test_put_recipe_bad_json():
             method='GET')
 
     assert response['status'] == '200'
+    content = content.decode()
     json = content[0:-1]
 
     response, content = http.request('http://our_test_domain:8001/recipes/other',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json)
 
-    assert response['status'] == '400'
+    content = content.decode()
+    assert response['status'] == '400', content
     assert 'unable to put recipe: unable to make json' in content
 
 def test_put_bad_recipe():
@@ -230,6 +239,7 @@ def test_put_bad_recipe():
             body='{ "recipe": null }')
 
     assert response['status'] == '400'
+    content = content.decode()
     assert 'malformed input' in content
 
 def test_put_recipe_change_description():
@@ -242,12 +252,14 @@ def test_put_recipe_change_description():
 
     assert response['status'] == '200'
 
+    content = content.decode()
     info = json.loads(content)
     info['desc'] = 'new description'
-    json = json.dumps(info)
+    json_data = json.dumps(info)
 
     response, content = http.request('http://our_test_domain:8001/recipes/other',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
 
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/recipes/other'
@@ -258,6 +270,7 @@ def test_put_recipe_change_description():
 
     assert response['status'] == '200'
 
+    content = content.decode()
     info = json.loads(content)
     assert info['desc'] == 'new description'
 
@@ -269,6 +282,7 @@ def test_put_recipe_415():
     response, content = http.request('http://our_test_domain:8001/recipes/long.txt',
             method='GET')
 
+    content = content.decode()
     text = content
     assert response['status'] == '200'
 
@@ -309,13 +323,14 @@ def test_get_recipe_wiki_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers',
             method='GET')
     assert response['status'] == '403'
+    content = content.decode()
     assert 'may not read' in content
 
 def test_roundtrip_unicode_recipe():
     http = httplib2.Http()
     encoded_recipe_name = '%E3%81%86%E3%81%8F%E3%81%99'
-    recipe_name = unicode(urllib.unquote(encoded_recipe_name), 'utf-8')
-    assert type(recipe_name) == unicode
+    recipe_name = urllib.parse.unquote(encoded_recipe_name)
+    assert type(recipe_name) == str
     recipe_list = [[recipe_name, '']]
     body = json.dumps(dict(desc='',recipe=recipe_list))
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
@@ -329,6 +344,7 @@ def test_roundtrip_unicode_recipe():
     response, content = http.request('http://our_test_domain:8001/recipes/%s.json' % encoded_recipe_name,
             method='GET')
     assert response['status'] == '200'
+    content = content.decode()
     assert json.loads(content)['recipe'] == recipe_list
 
 def test_recipe_policy():
@@ -357,7 +373,7 @@ def test_recipe_policy():
     response, content = http.request('http://our_test_domain:8001/recipes/boom', method='PUT',
             headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
             body=recipe_json)
-    assert response['status'] == '204'
+    assert response['status'] == '204', content
 
     response, content = http.request('http://our_test_domain:8001/recipes/boom', method='GET')
     assert response['status'] == '403'
@@ -401,9 +417,10 @@ def _put_bag_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!
     """
-    json = json.dumps(policy_dict)
+    json_data = json.dumps(policy_dict)
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'
