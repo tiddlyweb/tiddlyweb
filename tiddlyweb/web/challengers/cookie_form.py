@@ -44,7 +44,7 @@ class Challenger(ChallengerInterface):
             password = query['password'][0]
             return self._validate_and_redirect(environ, start_response,
                     user, password, redirect)
-        except KeyError:
+        except KeyError as exc:
             return self._send_cookie_form(environ, start_response,
                     redirect, message='missing input')
 

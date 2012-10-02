@@ -192,7 +192,10 @@ class SimpleLog(object):
                 }
         for key, value in log_format.items():
             try:
-                log_format[key] = value.encode('utf-8', 'replace')
+                try: 
+                    log_format[key] = value.decode('utf-8', 'replace')
+                except AttributeError:
+                    log_format[key] = value
             except UnicodeDecodeError:
                 log_format[key] = value
         message = self.format % log_format

@@ -5,7 +5,7 @@ unicode handling.
 
 from tiddlyweb.web.query import Query
 
-from io import StringIO
+from io import BytesIO
 
 def app(environ, start_response):
     pass
@@ -34,8 +34,8 @@ def test_operation_encoded_get():
 
 def test_operation_simple_post():
     q = Query(app)
-    post = StringIO()
-    post.write('text=m%C3%B6ass')
+    post = BytesIO()
+    post.write(b'text=m%C3%B6ass')
     post.seek(0)
     environ = {}
     environ['CONTENT_LENGTH'] = 15
@@ -45,4 +45,3 @@ def test_operation_simple_post():
     q.extract_query(environ)
     assert 'text' in environ['tiddlyweb.query']
     assert environ['tiddlyweb.query']['text'][0] == u'm\xf6ass'
-

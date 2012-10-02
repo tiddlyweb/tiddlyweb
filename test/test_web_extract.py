@@ -42,22 +42,22 @@ def test_extractor_not_there_in_config():
     response, content = http.request('http://our_test_domain:8001/', method='GET')
 
     assert response['status'] == '500'
-    assert 'ImportError' in content
+    assert 'ImportError' in content.decode()
     config['extractors'].remove('saliva')
 
 def test_guest_extract():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET')
 
-    assert response['status'] == '200'
-    assert 'GUEST' in content
+    assert response['status'] == '200', content
+    assert 'GUEST' in content.decode()
 
 def test_user_extract():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Authorization': 'Basic %s' % b64encode(b'cow:pig')})
-    assert response['status'] == '200'
-    assert 'cow' in content
+    assert response['status'] == '200', content
+    assert 'cow' in content.decode()
 
 def test_user_extract_bad_pass():
     """User gets their password wrong, user is GUEST"""
@@ -65,7 +65,7 @@ def test_user_extract_bad_pass():
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Authorization': 'Basic %s' % b64encode(b'cow:pog')})
     assert response['status'] == '200'
-    assert 'GUEST' in content
+    assert 'GUEST' in content.decode()
 
 def test_user_extract_no_user():
     """User doesn't exist, user is GUEST"""
@@ -73,7 +73,7 @@ def test_user_extract_no_user():
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Authorization': 'Basic %s' % b64encode(b'ciw:pig')})
     assert response['status'] == '200'
-    assert 'GUEST' in content
+    assert 'GUEST' in content.decode()
 
 def test_user_extract_bogus_data():
     """User doesn't exist, user is GUEST"""
@@ -81,7 +81,7 @@ def test_user_extract_bogus_data():
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Authorization': 'Basic %s' % b64encode(b':')})
     assert response['status'] == '200'
-    assert 'GUEST' in content
+    assert 'GUEST' in content.decode()
 
 def test_bad_cookie():
     """confirm a bad cookie results in an error"""
@@ -89,12 +89,13 @@ def test_bad_cookie():
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Cookie': 'foo(bar)bar="monkey"'})
     assert response['status'] == '400'
-    assert 'Illegal key value' in content
+    assert 'Illegal key value' in content.decode()
 
 def test_malformed_tiddlyweb_cookie():
     """confirm a malformed user cookie results in GUEST"""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/current_user', method='GET',
             headers={'Cookie': 'tiddlyweb_user="cdent.tumblr.com"'})
+    content = condent.decode()
     assert response['status'] == '200', content
     assert 'GUEST' in content

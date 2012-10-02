@@ -32,7 +32,7 @@ def test_get_bag_tiddler_list_default():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    assert response['status'] == '200', content
     assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
     assert content.decode().count('<li>') == 10
 

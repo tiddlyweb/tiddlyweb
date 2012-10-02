@@ -27,6 +27,7 @@ def test_challenge_base():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge', method='GET')
 
+    content = content.decode()
     assert response['status'] == '401'
     assert 'cookie_form' in content
     assert '>TiddlyWeb username and password</a>' in content
@@ -35,6 +36,7 @@ def test_challenge_cookie_form():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge/cookie_form', method='GET')
 
+    content = content.decode()
     assert response['status'] == '401'
     assert '<form' in content
 
@@ -48,6 +50,7 @@ def test_challenge_unable_to_import():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge/not.really.there', method='GET')
 
+    content = content.decode()
     assert response['status'] == '404'
     assert 'Unable to import' in content
 
@@ -57,6 +60,7 @@ def test_redirect_to_challenge():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8?select=tag:foo',
             method='GET')
+    content = content.decode()
     assert response['status'] == '401'
     assert 'cookie_form' in content
     assert 'tiddlyweb_redirect=%2Frecipes%2Flong%2Ftiddlers%2Ftiddler8%3Fselect%3Dtag%3Afoo' in content
@@ -65,6 +69,7 @@ def test_redirect_default_in_list():
     """When we go to the challenge page directly, we should not get a tiddlyweb_redirect."""
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/challenge', method='GET')
+    content = content.decode()
     assert response['status'] == '401'
     assert 'tiddlyweb_redirect=%2F' in content
 
@@ -79,14 +84,17 @@ def test_simple_cookie_redirect():
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
     except httplib2.RedirectLimit as e:
+        exception = e
         raised = 1
 
     assert raised
-    assert e.response['status'] == '303'
+    assert exception.response['status'] == '303'
     headers = {}
-    headers['cookie'] = e.response['set-cookie']
-    response, content = http.request(e.response['location'], method='GET', headers=headers)
-    assert response['status'] == '200'
+    headers['cookie'] = exception.response['set-cookie']
+    response, content = http.request(exception.response['location'],
+            method='GET', headers=headers)
+    assert response['status'] == '200', content
+    content = content.decode()
     assert 'i am tiddler 8' in content
 
 def test_malformed_post():
@@ -102,6 +110,7 @@ def test_malformed_post():
             headers={'Content-Type': 'application/x-www-form-urlencoded'},
             redirections=0)
     assert response['status'] == '401'
+    content = content.decode()
     assert '<form' in content
 
 def test_charset_in_content_type():
@@ -109,6 +118,7 @@ def test_charset_in_content_type():
     Make sure we are okay with charset being set in the content type.
     """
     raised = 0
+    e = {}
     try:
         http = httplib2.Http()
         response, content = http.request(
@@ -117,7 +127,8 @@ def test_charset_in_content_type():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit as e:
+    except httplib2.RedirectLimit as exception:
+        e = exception
         raised = 1
 
     assert raised
@@ -127,14 +138,18 @@ def test_charset_in_content_type():
     assert 'Max-Age' not in e.response['set-cookie']
     response, content = http.request(e.response['location'], method='GET', headers=headers)
     assert response['status'] == '200'
+    content = content.decode()
     assert 'i am tiddler 8' in content
 
 def _put_policy(bag_name, policy_dict):
-    json = json.dumps(policy_dict)
+    json_policy = json.dumps(policy_dict)
 
     http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/%s' % bag_name,
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body=json_policy)
     assert response['status'] == '204'
 
 def test_single_challenge_redirect():
@@ -149,10 +164,11 @@ def test_single_challenge_redirect():
     try:
         response, content = http.request('http://our_test_domain:8001/challenge', method='GET', redirections=0)
     except httplib2.RedirectLimit as e:
+        exception = e
         raised = 1
 
     assert raised
-    assert e.response['status'] == '302'
+    assert exception.response['status'] == '302'
 
 def test_cookie_path_prefix_max_age():
     """
@@ -174,7 +190,8 @@ def test_cookie_path_prefix_max_age():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit as e:
+    except httplib2.RedirectLimit as exc:
+        e = exc
         raised = 1
 
     assert raised

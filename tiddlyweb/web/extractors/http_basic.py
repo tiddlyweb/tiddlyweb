@@ -1,7 +1,5 @@
-"""
-A very simple extractor that looks at the HTTP Authorization
-header and looks for Basic auth information therein.
-"""
+""" A very simple extractor that looks at the HTTP Authorization header
+and looks for Basic auth information therein. """
 
 from base64 import b64decode
 
@@ -25,6 +23,7 @@ class Extractor(ExtractorInterface):
             return False
         if user_info.startswith('Basic'):
             user_info = user_info.strip().split(' ')[1]
+            print('ui', user_info)
             candidate_username, password = b64decode(
                     user_info).decode('utf-8').split(':')
             user = self.load_user(environ, candidate_username)

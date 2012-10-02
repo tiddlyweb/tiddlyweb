@@ -23,7 +23,7 @@ def test_get_sorted_tiddlers():
             method='GET')
     etag = response['etag']
     assert response['status'] == '200'
-    tiddlers = json.loads(content)
+    tiddlers = json.loads(content.decode())
     assert tiddlers[0]['title'] == 'tiddler0'
     assert tiddlers[0]['uri'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler0'
 
@@ -42,7 +42,7 @@ def test_get_selected_sorted_limited_tiddlers():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?select=title:!tiddler1;select=title:!tiddler0;sort=title;limit=1',
             method='GET')
     assert response['status'] == '200'
-    tiddlers = json.loads(content)
+    tiddlers = json.loads(content.decode())
     assert len(tiddlers) == 1
     assert tiddlers[0]['title'] == 'tiddler2'
 
@@ -53,4 +53,3 @@ def test_not_post_to_bag_tiddlers():
             method='POST', headers={'Content-Type': 'text/x-tiddlywiki'}, body=content)
 
     assert response['status'] == '405'
-

@@ -40,7 +40,7 @@ def get_route_value(environ, name):
     """
     try:
         value = environ['wsgiorg.routing_args'][1][name]
-        value = unquote(value)
+        value = unquote(value.decode('utf-8'))
     except UnicodeDecodeError as exc:
         raise HTTP400('incorrect encoding for %s, UTF-8 required: %s'
                 % (name, exc))

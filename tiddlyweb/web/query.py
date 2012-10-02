@@ -36,6 +36,7 @@ class Query(object):
             try:
                 length = environ['CONTENT_LENGTH']
                 content = read_request_body(environ, length)
+                content = content.decode()
             except KeyError as exc:
                 raise HTTP400('Invalid post, unable to read content: %s'
                         % exc)

@@ -23,7 +23,7 @@ def test_get_bags_txt():
 
     assert response['status'] == '200'
     for i in range(5):
-        assert 'bag%s\n' % i in content
+        assert 'bag%s\n' % i in content.decode()
     assert 'etag' in response
     etag = response['etag']
 
@@ -44,6 +44,7 @@ def test_get_bags_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'bag1\n' in content
     assert 'bag2\n' not in content
@@ -54,6 +55,7 @@ def test_get_bags_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '400', content
     assert 'malformed filter' in content
 
@@ -63,6 +65,7 @@ def test_get_bags_selected_sorted_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'bag1\n' not in content
     assert 'bag2\n' not in content
@@ -74,6 +77,7 @@ def test_get_bags_sorted_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'bag4\nbag3\nbag2\nbag1\nbag0' in content
 
@@ -83,6 +87,7 @@ def test_get_bags_sorted_limitedfilters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert content == 'bag3\n'
 
@@ -93,5 +98,6 @@ def test_get_bags_bad_filter():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '400', content
     assert 'malformed filter' in content
