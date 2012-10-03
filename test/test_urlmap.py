@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import selector
+from tiddlyweb.web.selector import Selector
 import string
 import json
 
@@ -100,10 +100,9 @@ def setup_module(module):
 
 
 def do_run():
-    app = selector.Selector(mapfile='tiddlyweb/urls.map')
+    app = Selector(mapfile='tiddlyweb/urls.map')
     return figure_tests(app)
 
 
 if __name__ == '__main__':
     do_run()
-

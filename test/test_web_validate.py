@@ -126,5 +126,6 @@ def test_validate_one_recipe():
 
     assert response['status'] == '200'
 
+    content = content.decode()
     assert '<script>' not in content
     assert '&lt;script' in content

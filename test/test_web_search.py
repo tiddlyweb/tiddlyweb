@@ -43,7 +43,7 @@ def test_json_search():
 
     assert response['status'] == '200'
     assert 'json' in response['content-type']
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert len(info) == 30
 
 def test_json_search_filtered():
@@ -53,11 +53,5 @@ def test_json_search_filtered():
 
     assert response['status'] == '200'
     assert 'json' in response['content-type']
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert len(info) == 30
-
-def test_funky_encoding():
-    http = httplib2.Http()
-    response, content = http.request(
-            'http://our_test_domain:8001/search?q=title:\"\xd3ptica%20electromagn\xe9tica\"')
-    assert response['status'] == '400', content

@@ -56,6 +56,7 @@ def test_get_tiddler():
             method='GET')
 
     assert response['status'] == '200', content
+    content = content.decode()
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
 def test_get_tiddler_revision():
@@ -63,6 +64,7 @@ def test_get_tiddler_revision():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1',
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', 'response status should be 200'
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
     assert 'revision="1"' in content
@@ -99,6 +101,7 @@ def test_put_tiddler_txt():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT', headers={'Content-Type': 'text/plain'}, body=funkity_encoding)
 
+    content = content.decode()
     assert response['status'] == '400', content
     assert 'unable to decode tiddler' in content
 
@@ -107,7 +110,7 @@ def test_put_tiddler_txt():
             % tiddler_url
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
-    content = content.decode('utf-8')
+    content = content.decode()
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == texts[-1] # text
@@ -129,13 +132,13 @@ def test_put_tiddler_txt_no_modified():
             % tiddler_url
 
     response, content = http.request(tiddler_url, headers={'Accept': 'text/plain'})
-    content = content.decode('utf-8')
+    content = content.decode()
     assert 'modified: 2' in content
 
 def test_put_tiddler_json():
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users',
+    json_data = json.dumps(dict(text='i fight for the users',
         tags=['tagone','tagtwo'], modifier=''))
 
     response, content = http.request(
@@ -145,6 +148,7 @@ def test_put_tiddler_json():
                 'Content-Length': '0'},
             body='')
     assert response['status'] == '400'
+    content = content.decode()
     assert 'unable to make json into' in content
 
     response, content = http.request(
@@ -153,12 +157,13 @@ def test_put_tiddler_json():
             headers={'Content-Type': 'application/json'},
             body='{"text": "}')
     assert response['status'] == '400'
+    content = content.decode()
     assert 'unable to make json into' in content
 
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
             method='PUT', headers={'Content-Type': 'application/json'},
-            body=json)
+            body=json_data)
 
     assert response['status'] == '204'
     tiddler_url = response['location']
@@ -167,7 +172,7 @@ def test_put_tiddler_json():
 
     response, content = http.request(tiddler_url,
             headers={'Accept': 'application/json'})
-    info = json.loads(content)
+    info = json.loads(content.decode())
     now_time = http_date_from_timestamp('')
     assert response['last-modified'].split(':', 1)[0] == now_time.split(':', 1)[0]
     assert info['title'] == 'TestTwo'
@@ -177,10 +182,11 @@ def test_put_tiddler_json():
 def test_put_tiddler_json_with_slash():
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FSlash',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
 
     assert response['status'] == '204', 'response status should be 204 is %s' % response['status']
     assert response['location'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FSlash'
@@ -189,13 +195,13 @@ def test_put_tiddler_json_with_slash():
 def test_put_tiddler_html_in_json():
     http = httplib2.Http()
 
-    json = json.dumps(dict(
+    json_data = json.dumps(dict(
         text='<html><head><title>HI</title><body><h1>HI</h1></body></html>'))
 
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestHTML',
             method='PUT', headers={'Content-Type': 'application/json'},
-            body=json)
+            body=json_data)
 
     assert response['status'] == '204'
     location = response['location']
@@ -205,11 +211,12 @@ def test_put_tiddler_html_in_json():
     assert response['status'] == '200'
     assert 'text/html' in response['content-type']
     # Title should not be there
+    content = content.decode()
     assert '<title>HI</title>' not in content
     assert '<title>TiddlyWeb - TestHTML</title>' in content
     assert '&lt;h1&gt;HI&lt;/h1&gt;' in content
 
-    json = json.dumps(dict(
+    json_data = json.dumps(dict(
         text='<html><head><title>HI</title><body><h1>HI</h1></body></html>',
         type='text/html'))
 
@@ -217,7 +224,7 @@ def test_put_tiddler_html_in_json():
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestHTML',
             method='PUT', headers={'Content-Type': 'application/json',
                 'User-Agent': 'Mozilla'},
-            body=json)
+            body=json_data)
 
     assert response['status'] == '204'
     location = response['location']
@@ -226,6 +233,7 @@ def test_put_tiddler_html_in_json():
     assert response['status'] == '200'
     assert 'text/html' in response['content-type']
     # Title should not be wrapping in tiddly info
+    content = content.decode()
     assert '<title>HI</title>' in content
     assert '<h1>HI</h1>' in content
 
@@ -239,23 +247,25 @@ def test_put_tiddler_json_bad_path():
     if type(store.storage) != tiddlyweb.stores.text.Store:
         py.test.skip('skipping this test for non-text store')
 
-    json = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/..%2F..%2F..%2F..%2FTestThree',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
 
     assert response['status'] == '404', 'response status should be 404 is %s' % response['status']
 
 def test_put_tiddler_json_no_bag():
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/nobagheremaam/tiddlers/SomeKindOTiddler',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
 
     assert response['status'] == '409'
-    assert 'There is no bag named: nobagheremaam' in content
+    assert 'There is no bag named: nobagheremaam' in content.decode()
 
 def test_get_tiddler_via_recipe():
     http = httplib2.Http()
@@ -263,7 +273,7 @@ def test_get_tiddler_via_recipe():
             method='GET')
 
     assert response['status'] == '200', content
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info['bag'] == 'bag28'
 
 def test_get_tiddler_etag_recipe():
@@ -273,7 +283,7 @@ def test_get_tiddler_etag_recipe():
 
     assert response['status'] == '200'
     assert response['etag'].startswith('"bag28/tiddler8/1:')
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info['bag'] == 'bag28'
 
 def test_get_tiddler_etag_bag():
@@ -283,7 +293,7 @@ def test_get_tiddler_etag_bag():
 
     assert response['status'] == '200'
     assert response['etag'].startswith('"bag28/tiddler8/1:')
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info['bag'] == 'bag28'
 
 def test_get_tiddler_manual_cache():
@@ -298,6 +308,7 @@ def test_get_tiddler_manual_cache():
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
     assert not response.fromcache
     assert response['status'] == '200'
+    print('response', response)
     assert response['cache-control'] == 'max-age=3000, no-transform'
     assert 'text/html' in response['content-type']
     htmletag = response['etag']

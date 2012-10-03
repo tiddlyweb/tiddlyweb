@@ -4,7 +4,7 @@ optionally a built in web server.
 """
 import logging
 
-from selector import Selector
+from tiddlyweb.web.selector import Selector
 
 from tiddlyweb.util import std_error_message, initialize_logging
 

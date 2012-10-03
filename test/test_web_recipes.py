@@ -23,7 +23,7 @@ def test_get_recipes_txt():
 
     assert response['status'] == '200'
     for i in range(5):
-        assert 'recipe%s\n' % i in content
+        assert 'recipe%s\n' % i in content.decode()
 
     assert 'etag' in response
     etag = response['etag']
@@ -44,6 +44,7 @@ def test_get_recipes_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'recipe1\n' in content
     assert 'recipe2\n' not in content
@@ -54,6 +55,7 @@ def test_get_recipes_filters_bad_select():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '400', content
     assert 'malformed filter' in content
     assert "object has no attribute 'text'" in content
@@ -64,6 +66,7 @@ def test_get_recipes_filters_rbag():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'recipe0' in content
 
@@ -73,6 +76,7 @@ def test_get_recipes_selected_sorted_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'recipe1\n' not in content
     assert 'recipe2\n' not in content
@@ -84,6 +88,7 @@ def test_get_recipes_sorted_filters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert 'recipe4\nrecipe3\nrecipe2\nrecipe1\nrecipe0' in content
 
@@ -93,5 +98,6 @@ def test_get_recipes_sorted_limitedfilters():
             headers={'Accept': 'text/plain'},
             method='GET')
 
+    content = content.decode()
     assert response['status'] == '200', content
     assert content == 'recipe3\n'
