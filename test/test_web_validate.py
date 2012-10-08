@@ -57,7 +57,7 @@ def test_validate_one_tiddler():
             method='GET')
 
     assert response['status'] == '200'
-    assert 'foobar' in content
+    assert 'foobar' in content.decode()
 
 
 def test_validate_one_tiddler_reject():
@@ -70,10 +70,11 @@ def test_validate_one_tiddler_reject():
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/barney',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=tiddler_json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=tiddler_json.encode())
 
     assert response['status'] == '409'
-    assert 'Tiddler content is invalid' in content
+    assert 'Tiddler content is invalid' in content.decode()
 
 def test_validate_one_tiddler_modify():
     """No policy"""
@@ -85,7 +86,8 @@ def test_validate_one_tiddler_modify():
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/barney',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=tiddler_json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=tiddler_json.encode())
 
     assert response['status'] == '204'
 
@@ -93,14 +95,15 @@ def test_validate_one_tiddler_modify():
     response, content = http.request(location, method='GET')
 
     assert response['status'] == '200'
-    assert 'FOOBAR' in content
+    assert 'FOOBAR' in content.decode()
 
 def test_validate_one_bag():
     bag_json = json.dumps(dict(desc='<script>alert("hot!");</script>', policy={}))
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag1',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=bag_json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=bag_json.encode())
 
     assert response['status'] == '204'
 
@@ -109,6 +112,7 @@ def test_validate_one_bag():
 
     assert response['status'] == '200'
 
+    content = content.decode()
     assert '<script>' not in content
     assert '&lt;script' in content
 
@@ -117,7 +121,8 @@ def test_validate_one_recipe():
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/recipe1',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=recipe_json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=recipe_json.encode())
 
     assert response['status'] == '204'
 

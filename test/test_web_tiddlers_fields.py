@@ -41,7 +41,7 @@ def test_get_tiddler_with_fields():
             method='GET')
 
     assert response['status'] == '200'
-    tiddler_dict = json.loads(content)
+    tiddler_dict = json.loads(content.decode())
     assert tiddler_dict['text'] == 'hello'
     assert tiddler_dict['uri'] == 'http://our_test_domain:8001/bags/bag0/tiddlers/feebles'
     assert tiddler_dict['fields']['field1'] == 'value1'

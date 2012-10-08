@@ -19,7 +19,6 @@ def setup_module(module):
     initialize_app()
     reset_textstore()
     module.store = _teststore()
-    #muchdata(module.store)
 
 def test_put_unicode_bag():
     http = httplib2.Http()
@@ -36,7 +35,7 @@ def test_put_unicode_bag():
     bag = store.get(bag)
     assert bag.policy.delete == bag_policy['delete']
     assert bag.name == bag_name
-    assert type(bag.name) == unicode
+    assert type(bag.name) == str
 
 def test_put_unicode_tiddler():
     http = httplib2.Http()
@@ -49,7 +48,9 @@ def test_put_unicode_tiddler():
     tiddler_json = json.dumps(dict(modifier=name,text=tiddler_text,tags=[name]))
     response, content = http.request('http://our_test_domain:8001/bags/%s/tiddlers/%s' \
             % (encoded_bag_name, encoded_tiddler_name),
-            method='PUT', body=tiddler_json, headers={'Content-Type':'application/json'})
+            method='PUT',
+            body=tiddler_json.encode(),
+            headers={'Content-Type':'application/json'})
 
     assert response['status'] == '204'
 
@@ -69,7 +70,9 @@ def test_put_unicode_recipe():
     recipe_list = [[bag_name, '[tag[%s]]' % name]]
     json_recipe_list = json.dumps(dict(recipe=recipe_list))
     response, content = http.request('http://our_test_domain:8001/recipes/%s' % encoded_recipe_name,
-            method='PUT', body=json_recipe_list, headers={'Content-Type':'application/json'})
+            method='PUT',
+            body=json_recipe_list.encode(),
+            headers={'Content-Type':'application/json'})
     assert response['status'] == '204'
 
     recipe = Recipe(recipe_name)
@@ -90,7 +93,7 @@ def test_filter_tiddlers():
             % (encoded_name, encoded_name),
             method='GET')
     assert response['status'] == '200'
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert info[0]['tags'] == [name]
     assert info[0]['title'] == name
     assert info[0]['bag'] == name
@@ -102,7 +105,7 @@ def get_tiddlers_from_thing(container):
     response, content = http.request('http://our_test_domain:8001/%s/%s/tiddlers.json' % (container, encoded_name),
             method='GET')
     assert response['status'] == '200'
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info[0]['title'] == name
     assert tiddler_info[0]['tags'] == [name]
 
@@ -110,7 +113,7 @@ def get_tiddlers_from_thing(container):
             % (container, encoded_name, encoded_name),
             method='GET')
     assert response['status'] == '200'
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info['title'] == name
     assert tiddler_info['tags'] == [name]
     assert tiddler_info['text'] == 'hello %s' % name
