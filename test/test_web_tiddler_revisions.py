@@ -69,6 +69,7 @@ def test_get_tiddler_revision_list():
             method='GET')
 
     assert response['status'] == '200'
+    content = content.decode()
     assert '3' in content
     assert 'revisions' in content
 
@@ -122,6 +123,7 @@ def test_get_tiddler_not_revision_list():
             method='GET')
 
     assert response['status'] == '200'
+    content = content.decode()
     assert '3' in content
     assert 'revisions' not in content
 
@@ -130,13 +132,13 @@ def test_get_tiddler_revision_list_json():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json',
             method='GET')
 
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert response['status'] == '200'
     assert len(info) == 4
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?sort=revision',
             method='GET')
-    info2 = json.loads(content)
+    info2 = json.loads(content.decode())
     assert len(info) == 4
     assert info[0]['revision'] == info2[-1]['revision']
 
@@ -145,7 +147,7 @@ def test_tiddler_revision_list_json_fat():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
             method='GET')
 
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert response['status'] == '200'
     assert len(info) == 4
     assert info[0]['revision'] == 4
@@ -158,18 +160,18 @@ def test_tiddler_revision_list_json_fat():
     response, resp_content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'text/plain'}, body=content)
     assert response['status'] == '415'
-    assert 'application/json required' in resp_content
+    assert 'application/json required' in resp_content.decode()
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
-            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'application/json'}, body=content)
+            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'application/json'}, body=content.decode())
 
-    assert response['status'] == '204'
+    assert response['status'] == '204', content
     assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='GET')
 
-    info = json.loads(content)
+    info = json.loads(content.decode())
     assert response['status'] == '200'
 
 

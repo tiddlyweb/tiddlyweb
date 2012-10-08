@@ -23,9 +23,9 @@ from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import http_date_from_timestamp
 
-authorization = b64encode(b'cdent:cowpig')
-bad_authorization = b64encode(b'cdent:cdent')
-no_user_authorization = b64encode(b'foop:foop')
+authorization = b64encode(b'cdent:cowpig').decode()
+bad_authorization = b64encode(b'cdent:cdent').decode()
+no_user_authorization = b64encode(b'foop:foop').decode()
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -308,7 +308,6 @@ def test_get_tiddler_manual_cache():
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
     assert not response.fromcache
     assert response['status'] == '200'
-    print('response', response)
     assert response['cache-control'] == 'max-age=3000, no-transform'
     assert 'text/html' in response['content-type']
     htmletag = response['etag']
@@ -559,7 +558,7 @@ def test_tiddler_bag_constraints():
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
             body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not create' in content
+    assert 'may not create' in content.decode()
 
     # create and succeed
     _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['NONE'],write=['NONE'],create=['cdent'])))
@@ -594,7 +593,7 @@ def test_tiddler_bag_constraints():
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
             body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not write' in content
+    assert 'may not write' in content.decode()
 
     # write and succeed
     _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['NONE'],write=['cdent'],create=['NONE'])))
@@ -607,14 +606,14 @@ def test_tiddler_bag_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '403'
-    assert 'may not read' in content
+    assert 'may not read' in content.decode()
 
     # update the policy so we can read and GET the thing
     _put_policy('unreadable', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['NONE'],delete=['NONE'])))
     response, content = http.request('http://our_test_domain:8001/bags/unreadable/tiddlers/WroteOne',
             method='GET', headers={'Accept': 'text/plain', 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '200'
-    assert 'John Smith' in content
+    assert 'John Smith' in content.decode()
 
 def test_get_tiddler_via_recipe_with_perms():
 
@@ -623,7 +622,7 @@ def test_get_tiddler_via_recipe_with_perms():
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read' in content
+    assert 'may not read' in content.decode()
 
     _put_policy('bag28', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['NONE'])))
     http = httplib2.Http()
@@ -639,7 +638,7 @@ def test_get_tiddler_via_recipe_with_perms():
             method='PUT', headers={'Content-Type': 'text/plain', 'Authorization': 'Basic %s' % authorization},
             body=encoded_body)
     assert response['status'] == '403'
-    assert 'may not write' in content
+    assert 'may not write' in content.decode()
 
     _put_policy('bag28', dict(policy=dict(manage=['cdent'],read=['cdent'],write=['nancy'])))
     encoded_body = text_put_body.encode('utf-8')
@@ -725,6 +724,7 @@ def test_binary_text_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js',
             method='GET')
     assert response['status'] == '200'
+    content = content.decode()
     assert content == text
 
     response, content = http.request(
@@ -732,25 +732,26 @@ def test_binary_text_tiddler():
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
+    content = content.decode()
     assert '"text"' in content
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/jquery.min.js.json',
             method='GET')
     assert response['status'] == '200'
+    content = content.decode()
     assert '"text"' in content
 
 def test_binary_tiddler():
-    image = file('test/peermore.png', 'rb')
-    image_content = image.read()
-    image.close()
+    with open('test/peermore.png', 'rb') as image:
+        image_content = image.read()
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
             method='PUT', headers={'Content-Type': 'image/png'},
             body=image_content)
 
-    assert response['status'] == '204'
+    assert response['status'] == '204', content
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
@@ -782,12 +783,12 @@ def test_binary_tiddler():
     # filter to blow up
     response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers?select=text:hello',
             method='GET')
-    assert response['status'] == '200'
+    assert response['status'] == '200', content
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng.json',
             method='GET')
-    assert response['status'] == '200'
+    assert response['status'] == '200', content
     assert response['content-type'] == 'application/json; charset=UTF-8'
 
     response, content = http.request(
@@ -869,11 +870,15 @@ def test_put_json_pseudo_binary():
             'http://our_test_domain:8001/bags/bag5/tiddlers/intjson.json')
 
     assert response['status'] == '200', content
+    content = content.decode()
     assert content == json_internal
 
+# doesn't reach tiddlyweb code
+@py.test.mark.xfail("sys.version_info >= (3,0)")
 def test_bad_uri_encoding():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag5/tiddlers/\x8a\xfa\x91\xd2\x96{\x93y\x98A\xe3\x94\x8c\x80\x92\xf1\x8f\xa1')
+    content = content.decode()
     assert response['status'] == '400', content
     assert "codec can't" in content
 
@@ -920,13 +925,15 @@ def test_bad_tags_json_put():
             headers={'Content-Type': 'application/json'},
             body='{"tags":[["foo","bar","baz"]]}')
     assert response['status'] == '409'
+    content = content.decode()
     assert 'Unable to put badly formed tiddler' in content
 
 def _put_policy(bag_name, policy_dict):
-    json = json.dumps(policy_dict)
+    json_data = json.dumps(policy_dict)
 
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/%s' % bag_name,
-            method='PUT', headers={'Content-Type': 'application/json', 'Authorization': 'Basic %s' % authorization},
-            body=json)
-    assert response['status'] == '204'
+            method='PUT', headers={'Content-Type': 'application/json',
+                'Authorization': 'Basic %s' % authorization},
+            body=json_data)
+    assert response['status'] == '204', content

@@ -169,7 +169,12 @@ class Serialization(SerializationInterface):
         wanted_info['uri'] = tiddler_url(self.environ, tiddler)
         if fat:
             if binary_tiddler(tiddler):
-                wanted_info['text'] = b64encode(tiddler.text).decode('utf-8')
+                try:
+                    wanted_info['text'] = b64encode(
+                            tiddler.text.encode('utf-8')).decode('utf-8')
+                except AttributeError:
+                    wanted_info['text'] = b64encode(
+                            tiddler.text).decode('utf-8')
             else:
                 wanted_info['text'] = tiddler.text
         if render and renderable(tiddler, self.environ):

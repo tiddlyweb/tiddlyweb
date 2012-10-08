@@ -231,7 +231,7 @@ def _store_tiddler_revisions(environ, content, tiddler):
     as a revision history to tiddler.
     """
     try:
-        json_tiddlers = json.loads(content)
+        json_tiddlers = json.loads(content.decode())
     except ValueError as exc:
         raise HTTP409('unable to handle json: %s' % exc)
 
@@ -241,7 +241,7 @@ def _store_tiddler_revisions(environ, content, tiddler):
     try:
         for json_tiddler in reversed(json_tiddlers):
             json_string = json.dumps(json_tiddler)
-            serializer.from_string(json_string.decode('utf-8'))
+            serializer.from_string(json_string)
             store.put(tiddler)
     except NoTiddlerError as exc:
         raise HTTP400('Unable to store tiddler revisions: %s', exc)
