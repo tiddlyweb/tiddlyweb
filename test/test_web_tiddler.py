@@ -436,10 +436,11 @@ def test_put_tiddler_cache_fakey():
     http_caching = httplib2.Http('.test_cache')
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/CashForCache/1:')
 
@@ -449,70 +450,85 @@ def test_put_tiddler_cache_fakey():
     assert response['etag'].startswith('"bag1/CashForCache/1:')
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/CashForCache/2:')
 
     response, content = http_caching.request('http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '412'
 
 def test_put_tiddler_via_recipe():
     http = httplib2.Http()
-    json = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users 2', tags=['tagone','tagtwo'], modifier='', modified='200803030303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/FantasticVoyage',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
 
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/FantasticVoyage/1:')
     url = response['location']
 
     reponse, content = http.request(url, method='GET', headers={'Accept': 'application/json'})
-    tiddler_dict = json.loads(content)
+    tiddler_dict = json.loads(content.decode())
     assert tiddler_dict['bag'] == 'bag1'
     assert response['etag'].startswith('"bag1/FantasticVoyage/1:')
 
 def test_slash_in_etag():
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users',
+        tags=['tagone','tagtwo'], modifier='',
+        modified='200805230303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%2FTwo/1"'}, body=json)
+            method='PUT',
+            headers={'Content-Type': 'application/json',
+                'If-Match': '"bag0/Test%2FTwo/1"'},
+            body=json_data)
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test/Two/2"'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test/Two/2"'},
+            body=json_data)
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test%2FTwo',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%2FTwo/2"'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%2FTwo/2"'},
+            body=json_data)
     assert response['status'] == '204'
 
 def test_paren_in_etag():
     http = httplib2.Http()
 
-    json = json.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
+    json_data = json.dumps(dict(text='i fight for the users', tags=['tagone','tagtwo'], modifier='', modified='200805230303', created='200803030303'))
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json'},
+            body=json_data)
     assert response['status'] == '204'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/1"'}, body=json)
-    assert response['status'] == '204'
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/1"'},
+            body=json_data)
+    assert response['status'] == '204', content
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%28Two%29/2"'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test%28Two%29/2"'},
+            body=json_data)
     assert response['status'] == '412'
 
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/Test(Two)',
-            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/2"'}, body=json)
+            method='PUT', headers={'Content-Type': 'application/json', 'If-Match': '"bag0/Test(Two)/2"'},
+            body=json_data)
     assert response['status'] == '204'
 
 def test_get_tiddler_text_created():
@@ -615,7 +631,7 @@ def test_get_tiddler_via_recipe_with_perms():
             headers=dict(Authorization='Basic %s' % authorization), method='GET')
     assert response['status'] == '200'
 
-    tiddler_info = json.loads(content)
+    tiddler_info = json.loads(content.decode())
     assert tiddler_info['bag'] == 'bag28'
 
     encoded_body = text_put_body.encode('utf-8')
