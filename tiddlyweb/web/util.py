@@ -3,7 +3,7 @@ General utility routines shared by various web related modules.
 """
 
 from http.cookies import SimpleCookie
-from urllib.parse import quote, unquote
+from urllib.parse import quote as urllib_quote, unquote
 import time
 from datetime import datetime
 try:
@@ -206,6 +206,16 @@ def encode_name(name):
     string. Use for entity titles in URLs.
     """
     return quote(name.encode('utf-8'), safe='')
+
+
+def quote(value, safe='', always_safe=".!~*'()"):
+    """
+    Ensure that we are URL quoting in a sensible way by
+    setting an always_safe that is actually reasonable
+    when compared to the spec.
+    """
+    safe = safe + always_safe
+    return urllib_quote(value, safe)
 
 
 def html_encode(text):
