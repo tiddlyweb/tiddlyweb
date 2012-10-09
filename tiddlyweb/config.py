@@ -179,7 +179,7 @@ DEFAULT_CONFIG = {
         'wikitext.type_render_map': {},
         'root_dir': '',
         'special_bag_detectors': [],
-        }
+}
 
 
 config = DEFAULT_CONFIG

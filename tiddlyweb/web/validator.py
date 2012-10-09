@@ -44,15 +44,11 @@ def sanitize_desc(entity, environ):
     entity.desc = sanitize_html_fragment(desc)
 
 
-BAG_VALIDATORS = [
-        sanitize_desc,
-        ]
+BAG_VALIDATORS = [sanitize_desc]
 
 TIDDLER_VALIDATORS = []
 
-RECIPE_VALIDATORS = [
-        sanitize_desc,
-        ]
+RECIPE_VALIDATORS = [sanitize_desc]
 
 
 def validate_tiddler(tiddler, environ=None):

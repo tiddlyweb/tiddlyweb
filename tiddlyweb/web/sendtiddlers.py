@@ -116,7 +116,7 @@ def _validate_tiddler_list(environ, tiddlers):
     else:
         incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
         if incoming_modified and \
-                (datetime_from_http_date(incoming_modified) >= \
+                (datetime_from_http_date(incoming_modified) >=
                 datetime_from_http_date(last_modified_string)):
             raise HTTP304('')
 

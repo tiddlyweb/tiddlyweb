@@ -53,7 +53,7 @@ def init(config):
                     'scheme': 'http',
                     'host': str(hostname),
                     'port': str(port),
-                    }
+            }
 
         from tiddlyweb.web.serve import start_cherrypy
         start_cherrypy(config)

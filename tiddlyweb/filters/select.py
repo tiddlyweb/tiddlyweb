@@ -85,7 +85,7 @@ def select_parse(command):
             """
             Perform a match select: match when attribute is equal the value.
             """
-            if environ == None:
+            if environ is None:
                 environ = {}
             return select_by_attribute(attribute, args, entities,
                     indexable=indexable, environ=environ)
@@ -134,7 +134,7 @@ ATTRIBUTE_SELECTOR = {
         'text': text_in_text,
         'field': field_in_fields,
         'rbag': bag_in_recipe,
-        }
+}
 
 
 def default_func(entity, attribute, value):
@@ -160,7 +160,7 @@ def select_by_attribute(attribute, value, entities, negate=False,
 
     If negate is true, get those that don't match.
     """
-    if environ == None:
+    if environ is None:
         environ = {}
 
     store = environ.get('tiddlyweb.store', None)
@@ -201,7 +201,7 @@ def select_relative_attribute(attribute, value, entities,
     Select entities that sort greater or less than the provided value
     for the provided attribute.
     """
-    if environ == None:
+    if environ is None:
         environ = {}
 
     store = environ.get('tiddlyweb.store', None)

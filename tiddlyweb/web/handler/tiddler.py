@@ -306,7 +306,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
         store.put(tiddler)
     except NoBagError as exc:
-        raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
+        raise HTTP409("Unable to put tiddler, %s. There is no bag named: "
                 "%s (%s). Create the bag." %
                 (tiddler.title, tiddler.bag, exc))
     except NoTiddlerError as exc:

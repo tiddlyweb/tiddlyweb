@@ -85,13 +85,13 @@ EMPTY_HOOKS = {
         'put': [],
         'delete': [],
         'get': [],
-        }
+}
 HOOKS = {
         'recipe': deepcopy(EMPTY_HOOKS),
         'bag': deepcopy(EMPTY_HOOKS),
         'tiddler': deepcopy(EMPTY_HOOKS),
         'user': deepcopy(EMPTY_HOOKS),
-        }
+}
 
 
 class Store(object):
@@ -102,7 +102,7 @@ class Store(object):
     """
 
     def __init__(self, engine, config=None, environ=None):
-        if config == None:
+        if config is None:
             config = {}
         self.engine = engine
         self.environ = environ
