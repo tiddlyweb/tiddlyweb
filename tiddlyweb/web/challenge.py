@@ -3,10 +3,8 @@ WSGI App for running the base challenge system, which lists and links
 the available challengers. If there is only one, redirect to it.
 """
 
-from urllib.parse import quote
-
 from tiddlyweb.web.http import HTTP302, HTTP404
-from tiddlyweb.web.util import server_base_url, get_route_value
+from tiddlyweb.web.util import server_base_url, get_route_value, quote
 
 
 def base(environ, start_response):

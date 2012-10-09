@@ -5,12 +5,11 @@ their own modules.
 
 import logging
 import time
-from urllib.parse import quote
 
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
 from tiddlyweb.web.http import HTTP403, HTTP302
-from tiddlyweb.web.util import server_base_url
+from tiddlyweb.web.util import server_base_url, quote
 
 from tiddlyweb import __version__ as VERSION
 

@@ -9,7 +9,7 @@ import os
 import json
 import shutil
 import time
-from urllib.parse import quote, unquote
+from urllib.parse import unquote
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -22,6 +22,7 @@ from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
 from tiddlyweb.stores import StorageInterface
 from tiddlyweb.util import LockError, write_lock, write_unlock, \
         read_utf8_file, write_utf8_file
+from tiddlyweb.web.util import quote
 
 
 class Store(StorageInterface):

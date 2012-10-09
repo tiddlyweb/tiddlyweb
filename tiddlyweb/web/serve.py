@@ -59,7 +59,8 @@ def start_cherrypy(config):
     """
     Start a CherryPy webserver to run our app.
     """
-    from cherrypy.wsgiserver import CherryPyWSGIServer
+    #from cherrypy.wsgiserver import CherryPyWSGIServer
+    from cherrypy.wsgiserver.wsgiserver3 import CherryPyWSGIServer
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
     scheme = config['server_host']['scheme']

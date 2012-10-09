@@ -2,7 +2,7 @@
 Text based serializers.
 """
 
-from urllib.parse import quote, unquote
+from urllib.parse import unquote
 import json
 
 from base64 import b64encode, b64decode
@@ -13,6 +13,7 @@ from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler
+from tiddlyweb.web.util import quote
 
 
 class Serialization(SerializationInterface):
