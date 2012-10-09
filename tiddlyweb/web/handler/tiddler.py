@@ -530,5 +530,5 @@ def _new_tiddler_etag(tiddler):
     yet exist. This is a bastardization of ETag handling
     but is useful for doing edit contention handling.
     """
-    return str('"%s/%s/%s"' % (web.encode_name(tiddler.bag),
+    return ('"%s/%s/%s"' % (web.encode_name(tiddler.bag),
         web.encode_name(tiddler.title), '0'))
