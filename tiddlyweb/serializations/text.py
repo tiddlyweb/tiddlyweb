@@ -114,7 +114,7 @@ class Serialization(SerializationInterface):
         if not tiddler.text:
             tiddler.text = ''
         if binary_tiddler(tiddler):
-            tiddler.text = b64encode(tiddler.text)
+            tiddler.text = b64encode(tiddler.text).decode()
         return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
                 '%s\ntags: %s%s\n%s\n' %
                 (tiddler.modifier, tiddler.created, tiddler.modified,
