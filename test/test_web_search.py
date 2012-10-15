@@ -42,7 +42,7 @@ def test_json_search():
             method='GET')
 
     assert response['status'] == '200'
-    assert 'json' in response['content-type']
+    assert 'application/json; charset=UTF-8' in response['content-type']
     info = simplejson.loads(content)
     assert len(info) == 30
 
@@ -52,7 +52,7 @@ def test_json_search_filtered():
             method='GET')
 
     assert response['status'] == '200'
-    assert 'json' in response['content-type']
+    assert 'application/json; charset=UTF-8' in response['content-type']
     info = simplejson.loads(content)
     assert len(info) == 30
 

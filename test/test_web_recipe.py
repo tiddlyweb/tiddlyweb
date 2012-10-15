@@ -144,7 +144,7 @@ def test_get_recipes_default():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html; charset=UTF-8 is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8'
     assert content.count('<li>') == 1
     assert content.count('recipes/long') == 1
 
@@ -154,7 +154,7 @@ def test_get_recipes_txt():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['content-type'] == 'text/plain; charset=UTF-8', 'response content-type should be text/plain; charset=UTF-8 is %s' % response['content-type']
+    assert response['content-type'] == 'text/plain; charset=UTF-8'
     assert len(content.rstrip().split('\n')) == 1, 'len recipe should be 1 is %s' % len(content.rstrip().split('\n'))
 
 def test_get_recipes_json():
@@ -163,8 +163,7 @@ def test_get_recipes_json():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8', \
-            'response content-type should be application/json; charset=UTF-8 is %s' % response['content-type']
+    assert response['content-type'] == 'application/json; charset=UTF-8'
     info = simplejson.loads(content)
     assert type(info) == list
     assert len(info) == 1
@@ -183,7 +182,7 @@ def test_get_recipes_unsupported_neg_format_with_accept():
             method='GET', headers={'Accept': 'text/html'})
 
     assert response['status'] == '200'
-    assert response['content-type'] == 'text/html; charset=UTF-8', 'response content-type should be text/html;charset=UTF-8 is %s' % response['content-type']
+    assert response['content-type'] == 'text/html; charset=UTF-8'
 
 def test_put_recipe():
     """

@@ -432,7 +432,7 @@ def _send_tiddler(environ, start_response, tiddler):
     last_modified, etag = _validate_tiddler_headers(environ, tiddler)
 
     # make choices between binary or serialization
-    content, mime_type = _get_tiddler_content(environ, tiddler)
+    content, mime_type, serialized = _get_tiddler_content(environ, tiddler)
 
     vary_header = ('Vary', 'Accept')
     cache_header = ('Cache-Control', 'no-cache')
@@ -442,7 +442,12 @@ def _send_tiddler(environ, start_response, tiddler):
                     % int(tiddler.fields[CACHE_CONTROL_FIELD]))
         except ValueError:
             pass  # if the value is not an int use default header
+
+    # Add charset to pseudo_binary tiddler
+    if not serialized and pseudo_binary(tiddler.type):
+            mime_type = '%s; charset=UTF-8' % mime_type
     content_header = ('Content-Type', str(mime_type))
+
     response = [cache_header, content_header, vary_header]
     if last_modified:
         response.append(last_modified)
@@ -466,6 +471,7 @@ def _get_tiddler_content(environ, tiddler):
     default_serialize_type = config['serializers'][default_serializer][0]
     serialize_type, mime_type = web.get_serialize_type(environ)
     extension = environ.get('tiddlyweb.extension')
+    serialized = False
 
     if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or
@@ -473,16 +479,17 @@ def _get_tiddler_content(environ, tiddler):
                 extension == 'html'):
             mime_type = tiddler.type
             content = tiddler.text
-            return content, mime_type
+            return content, mime_type, serialized
 
     serializer = Serializer(serialize_type, environ)
     serializer.object = tiddler
 
     try:
         content = serializer.to_string()
+        serialized = True
     except (TiddlerFormatError, NoSerializationError), exc:
         raise HTTP415(exc)
-    return content, mime_type
+    return content, mime_type, serialized
 
 
 def _send_tiddler_revisions(environ, start_response, tiddler):

@@ -203,7 +203,7 @@ def test_put_tiddler_html_in_json():
     response, content = http.request(location,
             headers={'User-Agent': 'Mozilla'})
     assert response['status'] == '200'
-    assert 'text/html' in response['content-type']
+    assert 'text/html; charset=UTF-8' in response['content-type']
     # Title should not be there
     assert '<title>HI</title>' not in content
     assert '<title>TiddlyWeb - TestHTML</title>' in content
@@ -224,7 +224,7 @@ def test_put_tiddler_html_in_json():
 
     response, content = http.request(location)
     assert response['status'] == '200'
-    assert 'text/html' in response['content-type']
+    assert 'text/html; charset=UTF-8' in response['content-type']
     # Title should not be wrapping in tiddly info
     assert '<title>HI</title>' in content
     assert '<h1>HI</h1>' in content
@@ -299,7 +299,7 @@ def test_get_tiddler_manual_cache():
     assert not response.fromcache
     assert response['status'] == '200'
     assert response['cache-control'] == 'max-age=3000, no-transform'
-    assert 'text/html' in response['content-type']
+    assert 'text/html; charset=UTF-8' in response['content-type']
     htmletag = response['etag']
 
     response, content = http.request(
@@ -308,7 +308,7 @@ def test_get_tiddler_manual_cache():
     assert not response.fromcache
     assert response['status'] == '200'
     assert response['cache-control'] == 'max-age=3000, no-transform'
-    assert 'text/plain' in response['content-type']
+    assert 'text/plain; charset=UTF-8' in response['content-type']
     
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
@@ -321,7 +321,7 @@ def test_get_tiddler_manual_cache():
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
     assert response.fromcache
     assert response['status'] == '304'
-    assert 'text/html' in response['content-type']
+    assert 'text/html; charset=UTF-8' in response['content-type']
     assert response['etag'] == htmletag
 
     tiddler = Tiddler('notcached', 'bag28')
@@ -334,7 +334,7 @@ def test_get_tiddler_manual_cache():
     assert response['status'] == '200'
     assert response['cache-control'] == 'no-cache, no-transform'
     assert 'max-age' not in response['cache-control']
-    assert 'text/html' in response['content-type']
+    assert 'text/html; charset=UTF-8' in response['content-type']
 
 
 def test_get_tiddler_cached():
