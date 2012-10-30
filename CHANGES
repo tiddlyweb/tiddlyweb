@@ -1,3 +1,7 @@
+1.2.66 Tue Oct 30 14:19:06 UTC 2012
+
+  * Handle unicode username error when creating ETags.
+
 1.2.65 Mon Oct 15 17:29:16 UTC 2012
 
   * Ensure utf-8 charset on textual tiddlers.
