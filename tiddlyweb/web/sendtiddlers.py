@@ -106,7 +106,7 @@ def _validate_tiddler_list(environ, tiddlers):
     except TypeError:
         mime_type = ''
     etag_string = '"%s:%s"' % (tiddlers.hexdigest(),
-            sha('%s:%s' % (username, mime_type)).hexdigest())
+            sha('%s:%s' % (username.encode('utf-8'), mime_type)).hexdigest())
     etag = ('Etag', etag_string)
 
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
