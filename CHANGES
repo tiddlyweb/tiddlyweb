@@ -1,3 +1,7 @@
+1.2.67 Fri Nov  2 16:17:14 UTC 2012
+
+  * Deal with bad If-Modified-Since headers. Thanks @fnd.
+
 1.2.66 Tue Oct 30 14:19:06 UTC 2012
 
   * Handle unicode username error when creating ETags.
