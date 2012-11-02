@@ -378,8 +378,12 @@ def _validate_tiddler_headers(environ, tiddler):
                     tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
             incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
+            try:
+                incoming_modified = web.datetime_from_http_date(incoming_modified)
+            except TypeError:
+                incoming_modified = None
             if incoming_modified and \
-                    (web.datetime_from_http_date(incoming_modified) >=
+                    (incoming_modified >=
                             web.datetime_from_http_date(last_modified_string)):
                 raise HTTP304('')
 

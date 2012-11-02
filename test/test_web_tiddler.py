@@ -58,6 +58,17 @@ def test_get_tiddler():
     assert response['status'] == '200', content
     assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
 
+def test_bad_http_caching_timestamp():
+    """
+    Thunderbird's feed module sends `If-Modified-Since: 0`, which is invalid -
+    Postel demands that we don't freak out over that
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8',
+            method='GET', headers={'If-Modified-Since': '0'})
+
+    assert response['status'] == '200', content
+
 def test_get_tiddler_revision():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1',
