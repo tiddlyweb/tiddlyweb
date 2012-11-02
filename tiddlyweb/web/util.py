@@ -119,12 +119,15 @@ def http_date_from_timestamp(timestamp):
 
 def datetime_from_http_date(http_datestring):
     """
-    Turn an HTTP formatted date into a datetime
-    object.
+    Turn an HTTP formatted date into a datetime object.
+    Returns `None` if date string is invalid.
     """
     if ';' in http_datestring:
         http_datestring = http_datestring.split(';', 1)[0].rstrip().lstrip()
-    return datetime(*parsedate(http_datestring)[:6])
+    try:
+        return datetime(*parsedate(http_datestring)[:6])
+    except TypeError:
+        return None
 
 
 def make_cookie(name, value, mac_key=None, path=None,
