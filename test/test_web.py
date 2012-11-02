@@ -75,6 +75,17 @@ def test_bag_url():
 
     assert tiddlyweb.web.util.bag_url(environ, bag) == 'http://example.com/bags/hello'
 
+def test_invalid_http_caching_timestamp():
+    """
+    Thunderbird's feed module sends `If-Modified-Since: 0`, which is invalid -
+    Postel demands that we don't freak out over that
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/',
+            method='GET', headers={'If-Modified-Since': '0'})
+
+    assert response['status'] == '200'
+
 def test_http_date_from_timestamp():
     timestamp = '200805231010'
     assert tiddlyweb.web.util.http_date_from_timestamp(timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
