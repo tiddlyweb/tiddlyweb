@@ -1,8 +1,8 @@
 """
-def utilities in tiddlyweb.web.util
+Test utilities in tiddlyweb.web.util
 """
 
-from tiddlyweb.web.util import tiddler_url
+from tiddlyweb.web.util import tiddler_url, datetime_from_http_date
 from tiddlyweb.model.tiddler import Tiddler
 
 from tiddlyweb.config import config
@@ -47,3 +47,6 @@ def test_tiddler_url():
     url = tiddler_url(environ, tiddler)
 
     assert url == 'http://example.com'
+
+def test_bad_http_timestamp():
+    assert datetime_from_http_date('0') == None

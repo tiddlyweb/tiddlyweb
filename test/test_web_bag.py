@@ -36,6 +36,17 @@ def test_get_bag_tiddler_list_default():
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert content.count('<li>') == 10
 
+def test_bad_http_caching_timestamp():
+    """
+    Thunderbird's feed module sends `If-Modified-Since: 0`, which is invalid -
+    Postel demands that we don't freak out over that
+    """
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
+            method='GET', headers={'If-Modified-Since': '0'})
+
+    assert response['status'] == '200', content
+
 def test_get_bag_tiddler_list_404():
     """
     A request for the tiddlers in a non existent bag gives a 404.
