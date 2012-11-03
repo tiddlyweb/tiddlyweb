@@ -10,8 +10,8 @@ from tiddlyweb.filters import FilterError, recursive_filter
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
-from tiddlyweb.web.util import \
-        get_serialize_type, http_date_from_timestamp, datetime_from_http_date
+from tiddlyweb.web.util import get_serialize_type, http_date_from_timestamp, \
+        datetime_from_http_date, check_last_modified
 from tiddlyweb.web.http import HTTP400, HTTP304, HTTP415
 
 
@@ -114,11 +114,6 @@ def _validate_tiddler_list(environ, tiddlers):
         if incoming_etag == etag_string:
             raise HTTP304(incoming_etag)
     else:
-        incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
-        if incoming_modified:
-            incoming_modified = datetime_from_http_date(incoming_modified)
-            if incoming_modified and (incoming_modified >=
-                    datetime_from_http_date(last_modified_string)):
-                raise HTTP304('')
+        check_last_modified(environ, last_modified_string)
 
     return last_modified, etag

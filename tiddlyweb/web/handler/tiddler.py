@@ -377,12 +377,7 @@ def _validate_tiddler_headers(environ, tiddler):
             last_modified_string = web.http_date_from_timestamp(
                     tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
-            incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
-            if incoming_modified:
-                incoming_modified = web.datetime_from_http_date(incoming_modified)
-                if incoming_modified and (incoming_modified >=
-                        web.datetime_from_http_date(last_modified_string)):
-                    raise HTTP304('')
+            web.check_last_modified(environ, last_modified_string)
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)

@@ -16,6 +16,18 @@ from tiddlyweb.web.http import HTTP415, HTTP400
 from tiddlyweb.util import sha
 
 
+def check_last_modified(environ, last_modified_string):
+    """
+    Raise `HTTP304` if If-Modified-Since header matches `last_modified_string`
+    """
+    incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
+    if incoming_modified:
+        incoming_modified = datetime_from_http_date(incoming_modified)
+        if incoming_modified and (incoming_modified >=
+                datetime_from_http_date(last_modified_string)):
+            raise HTTP304('')
+
+
 def content_length_and_type(environ):
     """
     To PUT or POST we must have content-length and content-type
