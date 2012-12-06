@@ -1,8 +1,6 @@
-
-# Simple Makefile for some common tasks. This will get 
-# fleshed out with time to make things easier on developer
-# and tester types.
-.PHONY: test dist upload
+# simple Makefile for some common tasks
+.PHONY: clean cleanagain test makebundle uploadbundle bundle dist upload pypi \
+		py2app peermore
 
 clean:
 	find . -name "*.pyc" |xargs rm || true
@@ -20,7 +18,7 @@ cleanagain:
 	rm *.bundle || true
 	rm -r *-bundle* || true
 
-test: 
+test:
 	py.test -x test
 
 makebundle: clean dist
