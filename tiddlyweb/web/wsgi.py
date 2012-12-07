@@ -7,9 +7,10 @@ import logging
 import time
 import urllib
 
+from httpexceptor import HTTP403, HTTP302
+
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
-from tiddlyweb.web.http import HTTP403, HTTP302
 from tiddlyweb.web.util import server_base_url
 
 from tiddlyweb import __version__ as VERSION

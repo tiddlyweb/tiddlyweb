@@ -7,6 +7,9 @@ import logging
 
 import simplejson
 
+from httpexceptor import (HTTP404, HTTP415, HTTP412, HTTP409,
+        HTTP400, HTTP304)
+
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import PermissionsError
@@ -17,8 +20,6 @@ from tiddlyweb.store import (NoTiddlerError, NoBagError, NoRecipeError,
 from tiddlyweb.serializer import (Serializer, TiddlerFormatError,
         NoSerializationError)
 from tiddlyweb.util import pseudo_binary, renderable
-from tiddlyweb.web.http import (HTTP404, HTTP415, HTTP412, HTTP409,
-        HTTP400, HTTP304)
 from tiddlyweb import control
 from tiddlyweb.web import util as web
 from tiddlyweb.web.sendtiddlers import send_tiddlers

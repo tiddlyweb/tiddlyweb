@@ -122,10 +122,10 @@ urllib.always_safe += (".!~*'()")
 from tiddlyweb.util import read_config
 
 # The server filters (the WSGI MiddleWare)
+from httpexceptor import HTTPExceptor
 from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
-from tiddlyweb.web.http import HTTPExceptor
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, \
         Header, HTMLPresenter, PermissionsExceptor, TransformProtect
 

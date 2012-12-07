@@ -6,13 +6,14 @@ including filter those tiddlers and validating request cache headers.
 import logging
 import inspect
 
+from httpexceptor import HTTP400, HTTP304, HTTP415
+
 from tiddlyweb.filters import FilterError, recursive_filter
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
         check_last_modified)
-from tiddlyweb.web.http import HTTP400, HTTP304, HTTP415
 
 
 def send_tiddlers(environ, start_response, tiddlers=None):

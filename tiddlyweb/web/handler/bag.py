@@ -6,6 +6,8 @@ PUT a Bag as a JSON object.
 These need some refactoring.
 """
 
+from httpexceptor import HTTP400, HTTP404, HTTP409, HTTP415
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.policy import create_policy_check
@@ -16,7 +18,6 @@ from tiddlyweb.web import util as web
 from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.listentities import list_entities
-from tiddlyweb.web.http import HTTP400, HTTP404, HTTP409, HTTP415
 from tiddlyweb.web.validator import validate_bag, InvalidBagError
 
 

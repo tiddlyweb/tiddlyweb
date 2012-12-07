@@ -6,8 +6,9 @@ named 'tiddlyweb_user'.
 import Cookie
 import logging
 
+from httpexceptor import HTTP400
+
 from tiddlyweb.web.extractors import ExtractorInterface
-from tiddlyweb.web.http import HTTP400
 from tiddlyweb.util import sha
 
 

@@ -5,7 +5,8 @@ the available challengers. If there is only one, redirect to it.
 
 import urllib
 
-from tiddlyweb.web.http import HTTP302, HTTP404
+from httpexceptor import HTTP302, HTTP404
+
 from tiddlyweb.web.util import server_base_url, get_route_value
 
 

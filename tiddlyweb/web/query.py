@@ -10,8 +10,9 @@ try:
 except ImportError:
     from cgi import parse_qs
 
+from httpexceptor import HTTP400
+
 from tiddlyweb.filters import parse_for_filters
-from tiddlyweb.web.http import HTTP400
 from tiddlyweb.web.util import read_request_body
 
 

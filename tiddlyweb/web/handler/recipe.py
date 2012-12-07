@@ -4,6 +4,8 @@ GET a recipe, PUT a recipe, GET the tiddlers
 produced by a recipe.
 """
 
+from httpexceptor import HTTP400, HTTP409, HTTP415, HTTP404
+
 from tiddlyweb.filters import FilterError
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
@@ -13,7 +15,6 @@ from tiddlyweb.store import (NoRecipeError, NoBagError,
         StoreMethodNotImplemented)
 from tiddlyweb.serializer import (Serializer, NoSerializationError,
         RecipeFormatError)
-from tiddlyweb.web.http import HTTP400, HTTP409, HTTP415, HTTP404
 from tiddlyweb.web.sendentity import send_entity
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.listentities import list_entities
