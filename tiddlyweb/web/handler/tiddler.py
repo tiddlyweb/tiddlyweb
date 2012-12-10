@@ -452,7 +452,7 @@ def _send_tiddler(environ, start_response, tiddler):
 
     # Add charset to pseudo_binary tiddler
     if not serialized and pseudo_binary(tiddler.type):
-            mime_type = '%s; charset=UTF-8' % mime_type
+        mime_type = '%s; charset=UTF-8' % mime_type
     content_header = ('Content-Type', str(mime_type))
 
     response = [cache_header, content_header, vary_header]
