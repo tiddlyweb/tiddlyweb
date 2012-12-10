@@ -14,7 +14,7 @@ from tiddlyweb.config import config
 expected_string = """modifier: test@example.com
 created: 
 modified: 200803030303
-type: None
+type: 
 tags: foobar [[foo bar]]
 
 Hello, I'm the content.
@@ -24,7 +24,7 @@ Hello, I'm the content.
 bad_string = """modifiXr: test@example.com
 created: 
 modiFied: 200803030303
-type: None
+type: 
 tags:foobar [[foo bar]]
 
 Hello, I'm the content.

@@ -112,6 +112,10 @@ class Serialization(SerializationInterface):
         """
         if not tiddler.text:
             tiddler.text = ''
+        if not tiddler.type:
+            tiddler.type = ''
+        if not tiddler.modifier:
+            tiddler.modifier = ''
         if binary_tiddler(tiddler):
             tiddler.text = b64encode(tiddler.text)
         return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '

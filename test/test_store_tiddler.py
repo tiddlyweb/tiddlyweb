@@ -25,7 +25,7 @@ expected_stored_filename = os.path.join('store', 'bags', 'bagone', 'tiddlers', '
 expected_stored_text = """modifier: AuthorOne
 created: 
 modified: 200803030303
-type: None
+type: 
 tags: tagone tagtwo [[tag five]]
 
 c tiddler one content
