@@ -83,6 +83,14 @@ def test_get_bag_tiddler_list_415():
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
 
+def test_get_bag_tiddler_list_415_accept():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.gif',
+            headers={'Accept': 'text/html'},
+            method='GET')
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
 def test_get_bag_tiddler_list_html_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
@@ -152,6 +160,14 @@ def test_get_bags_unsupported_format():
 
     assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
 
+def test_get_bags_unsupported_format_browser():
+    http = httplib2.Http()
+    response, content = http.request('http://our_test_domain:8001/bags.jpeg',
+            method='GET',
+            headers={'Accept': 'text/html'})
+
+    assert response['status'] == '415', 'response status should be 415 is %s' % response['status']
+
 def test_get_bags_json():
     """
     Uses extension.
@@ -180,8 +196,7 @@ def test_get_bags_unsupported_neg_format_with_accept():
     response, content = http.request('http://our_test_domain:8001/bags.gif',
             method='GET', headers={'Accept': 'text/html'})
 
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'text/html; charset=UTF-8'
+    assert response['status'] == '415'
 
 def test_get_bag_tiddler_list_empty():
     """

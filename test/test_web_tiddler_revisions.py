@@ -190,6 +190,22 @@ def test_etag_generation():
     etag = tiddler_etag({'tiddlyweb.config': config}, tiddler)
     assert etag.startswith('"bar/monkey/1:')
 
+def test_tiddler_revision_list_bad_ext():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.monkeys',
+            method='GET')
+
+    assert response['status'] == '415'
+
+def test_tiddler_revision_list_bad_ext_accept():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.monkeys',
+            method='GET',
+            headers={'Accept': 'text/html'})
+
+    assert response['status'] == '415'
 
 def test_post_revision_etag_handling():
     # GET a list of revisions

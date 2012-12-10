@@ -60,16 +60,23 @@ def get_route_value(environ, name):
     return value
 
 
-def get_serialize_type(environ):
+def get_serialize_type(environ, collection=False):
     """
     Look in the environ to determine which serializer
     we should use for this request.
+
+    If collection is True, then the presence of an extension which
+    does not match any serializer should lead to a 415.
     """
     config = environ['tiddlyweb.config']
     accept = environ.get('tiddlyweb.type')[:]
     ext = environ.get('tiddlyweb.extension')
+    extension_types = config['extension_types']
     serializers = config['serializers']
     serialize_type, mime_type = None, None
+
+    if collection and ext and ext not in extension_types:
+        accept = [None]
 
     if type(accept) == str:
         accept = [accept]

@@ -181,8 +181,7 @@ def test_get_recipes_unsupported_neg_format_with_accept():
     response, content = http.request('http://our_test_domain:8001/recipes.gif',
             method='GET', headers={'Accept': 'text/html'})
 
-    assert response['status'] == '200'
-    assert response['content-type'] == 'text/html; charset=UTF-8'
+    assert response['status'] == '415'
 
 def test_put_recipe():
     """

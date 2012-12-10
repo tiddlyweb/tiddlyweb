@@ -111,7 +111,7 @@ def list_recipes(environ, start_response):
     Get a list of all recipes the current user can read.
     """
     store = environ['tiddlyweb.store']
-    serialize_type, mime_type = web.get_serialize_type(environ)
+    serialize_type, mime_type = web.get_serialize_type(environ, collection=True)
     serializer = Serializer(serialize_type, environ)
     return list_entities(environ, start_response, mime_type,
             store.list_recipes, serializer.list_recipes)

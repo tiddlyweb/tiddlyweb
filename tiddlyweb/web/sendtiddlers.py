@@ -50,7 +50,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
     last_modified, etag = _validate_tiddler_list(environ, candidate_tiddlers)
 
-    serialize_type, mime_type = get_serialize_type(environ)
+    serialize_type, mime_type = get_serialize_type(environ, collection=True)
 
     content_header = ('Content-Type', mime_type)
     cache_header = ('Cache-Control', 'no-cache')

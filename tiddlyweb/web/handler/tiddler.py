@@ -45,7 +45,8 @@ def get_revisions(environ, start_response):
     Get the list of revisions for this tiddler.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_bag_from_recipe)
+            control.determine_bag_from_recipe,
+            revisions=True)
     return _send_tiddler_revisions(environ, start_response, tiddler)
 
 
@@ -66,7 +67,8 @@ def post_revisions(environ, start_response):
     That collection is known as a TiddlerChronicle.
     """
     tiddler = _determine_tiddler(environ,
-            control.determine_bag_from_recipe)
+            control.determine_bag_from_recipe,
+            revisions=True)
     return _post_tiddler_revisions(environ, start_response, tiddler)
 
 
@@ -121,18 +123,21 @@ def _delete_tiddler(environ, start_response, tiddler):
     return []
 
 
-def _determine_tiddler(environ, bag_finder):
+def _determine_tiddler(environ, bag_finder, revisions=False):
     """
     Determine, using URL info, the target tiddler.
     This can be complicated because of the mechanics
     of recipes and bags.
     """
     tiddler_name = web.get_route_value(environ, 'tiddler_name')
-    try:
-        revision = web.get_route_value(environ, 'revision')
-        revision = web.handle_extension(environ, revision)
-    except KeyError:
-        tiddler_name = web.handle_extension(environ, tiddler_name)
+    if not revisions:
+        try:
+            revision = web.get_route_value(environ, 'revision')
+            revision = web.handle_extension(environ, revision)
+        except KeyError:
+            tiddler_name = web.handle_extension(environ, tiddler_name)
+            revision = None
+    else:
         revision = None
 
     tiddler = Tiddler(tiddler_name)
