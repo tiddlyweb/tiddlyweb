@@ -81,6 +81,36 @@ def put(environ, start_response):
     return _put_tiddler(environ, start_response, tiddler)
 
 
+def _base_tiddler_object(environ, tiddler_name, revisions):
+    """
+    Create a tiddler object, without bag or recipe, based on
+    URI values.
+
+    ``revisions`` is true when the request is for a revisions
+    collection. When true, extension handling is not done on
+    the tiddler_name.
+    """
+    if not revisions:
+        try:
+            revision = web.get_route_value(environ, 'revision')
+            revision = web.handle_extension(environ, revision)
+        except KeyError:
+            tiddler_name = web.handle_extension(environ, tiddler_name)
+            revision = None
+    else:
+        revision = None
+
+    tiddler = Tiddler(tiddler_name)
+    if revision:
+        try:
+            revision = int(revision)
+            tiddler.revision = revision
+        except ValueError, exc:
+            raise HTTP404('%s not a revision of %s: %s' %
+                    (revision, tiddler_name, exc))
+    return tiddler
+
+
 def _check_bag_constraint(environ, bag, constraint):
     """
     Check to see if the bag allows the current user
@@ -131,58 +161,17 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
 
     Set revisions to True when the current request ends in
     `/revisions` or `/revisions.*`. Doing so ensures that
-    processing of extensions does not impact the name of 
+    processing of extensions does not impact the name of
     the tiddler.
     """
     tiddler_name = web.get_route_value(environ, 'tiddler_name')
-    if not revisions:
-        try:
-            revision = web.get_route_value(environ, 'revision')
-            revision = web.handle_extension(environ, revision)
-        except KeyError:
-            tiddler_name = web.handle_extension(environ, tiddler_name)
-            revision = None
-    else:
-        revision = None
-
-    tiddler = Tiddler(tiddler_name)
-    if revision:
-        try:
-            revision = int(revision)
-            tiddler.revision = revision
-        except ValueError, exc:
-            raise HTTP404('%s not a revision of %s: %s' %
-                    (revision, tiddler_name, exc))
+    tiddler = _base_tiddler_object(environ, tiddler_name, revisions)
 
     # We have to deserialize the tiddler here so that
     # PUTs to recipes are aware of values like tags when
     # doing filter checks.
     if environ['REQUEST_METHOD'] == 'PUT':
-        length, content_type = web.content_length_and_type(environ)
-        content = web.read_request_body(environ, length)
-
-        try:
-            try:
-                # XXX HACK! We don't want to decode content unless
-                # the serializer has a as_tiddler. We should be able
-                # to just rely on NoSerializationError, but we need
-                # to call the method to do that, and to call the method we
-                # need to decode the string...
-                serialize_type = web.get_serialize_type(environ)[0]
-                serializer = Serializer(serialize_type, environ)
-                serializer.object = tiddler
-                try:
-                    serializer.from_string(content.decode('utf-8'))
-                except TiddlerFormatError, exc:
-                    raise HTTP400('unable to put tiddler: %s' % exc)
-            except NoSerializationError:
-                tiddler.type = content_type
-                if pseudo_binary(tiddler.type):
-                    tiddler.text = content.decode('utf-8')
-                else:
-                    tiddler.text = content
-        except UnicodeDecodeError, exc:
-            raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
+        _process_request_body(environ, tiddler)
 
     try:
         recipe_name = web.get_route_value(environ, 'recipe_name')
@@ -234,6 +223,37 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     start_response("204 No Content", response)
 
     return []
+
+
+def _process_request_body(environ, tiddler):
+    """
+    Read request body to set tiddler.text.
+    """
+    length, content_type = web.content_length_and_type(environ)
+    content = web.read_request_body(environ, length)
+
+    try:
+        try:
+            # XXX HACK! We don't want to decode content unless
+            # the serializer has a as_tiddler. We should be able
+            # to just rely on NoSerializationError, but we need
+            # to call the method to do that, and to call the method we
+            # need to decode the string...
+            serialize_type = web.get_serialize_type(environ)[0]
+            serializer = Serializer(serialize_type, environ)
+            serializer.object = tiddler
+            try:
+                serializer.from_string(content.decode('utf-8'))
+            except TiddlerFormatError, exc:
+                raise HTTP400('unable to put tiddler: %s' % exc)
+        except NoSerializationError:
+            tiddler.type = content_type
+            if pseudo_binary(tiddler.type):
+                tiddler.text = content.decode('utf-8')
+            else:
+                tiddler.text = content
+    except UnicodeDecodeError, exc:
+        raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
 
 
 def _store_tiddler_revisions(environ, content, tiddler):
@@ -317,7 +337,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
         store.put(tiddler)
     except NoBagError, exc:
-        raise HTTP409("Unable to put tiddler, %s. There is no bag named: " \
+        raise HTTP409("Unable to put tiddler, %s. There is no bag named: "
                 "%s (%s). Create the bag." %
                 (tiddler.title, tiddler.bag, exc))
     except NoTiddlerError, exc:
