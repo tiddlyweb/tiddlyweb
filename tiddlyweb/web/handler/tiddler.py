@@ -128,6 +128,11 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
     Determine, using URL info, the target tiddler.
     This can be complicated because of the mechanics
     of recipes and bags.
+
+    Set revisions to True when the current request ends in
+    `/revisions` or `/revisions.*`. Doing so ensures that
+    processing of extensions does not impact the name of 
+    the tiddler.
     """
     tiddler_name = web.get_route_value(environ, 'tiddler_name')
     if not revisions:
