@@ -233,6 +233,55 @@ def init(config):
         except NoBagError, exc:
             usage('unable to inspect bag %s: %s' % (listed_bag.name, exc))
 
+    @make_command()
+    def interact(args):
+        """Enter a python interactive shell."""
+        import code
+
+        # Put some useful stuff into locals() so they are at hand
+        # in the REPL.
+        from tiddlyweb.model.recipe import Recipe
+        from tiddlyweb.model.bag import Bag
+        from tiddlyweb.model.policy import Policy
+        from tiddlyweb.model.tiddler import Tiddler
+        from tiddlyweb.model.user import User
+        from tiddlyweb.serializer import Serializer
+        store = _store()
+        environ = {
+                'tiddlyweb.config': config,
+                'tiddlyweb.store': store}
+
+        # See
+        # http://stackoverflow.com/questions/4031135/why-does-my-python-interactive-console-not-work-properly
+        # and
+        # http://stackoverflow.com/questions/7116038/python-tab-completion-mac-osx-10-7-lion
+        # for the details on tab completion
+        class TiddlyWebREPL(code.InteractiveConsole):
+            def __init__(self, locals=None, filename="<console>", histfile=None):
+                code.InteractiveConsole.__init__(self, locals, filename)
+                try:
+                    import readline
+                except ImportError:
+                    pass
+                else: 
+                    try:
+                        import rlcompleter
+                        readline.set_completer(
+                                rlcompleter.Completer(locals).complete)
+                    except ImportError:
+                        pass
+
+                    if 'libedit' in readline.__doc__:
+                        readline.parse_and_bind("bind -e")
+                        readline.parse_and_bind("bind '\t' rl_complete")
+                    else:
+                        readline.parse_and_bind("tab: complete")
+
+        _locals = locals()
+        _locals['config'] = config
+        TiddlyWebREPL(locals=_locals).interact()
+        sys.exit(0)
+
     def _put(entity, content, serialization):
         """
         Put entity to store, by serializing content
