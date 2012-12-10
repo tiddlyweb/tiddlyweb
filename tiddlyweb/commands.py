@@ -251,23 +251,30 @@ def init(config):
                 'tiddlyweb.config': config,
                 'tiddlyweb.store': store}
 
+
         # See
         # http://stackoverflow.com/questions/4031135/why-does-my-python-interactive-console-not-work-properly
         # and
         # http://stackoverflow.com/questions/7116038/python-tab-completion-mac-osx-10-7-lion
         # for the details on tab completion
         class TiddlyWebREPL(code.InteractiveConsole):
-            def __init__(self, locals=None, filename="<console>", histfile=None):
+            def __init__(self, locals=None, filename="<console>"):
                 code.InteractiveConsole.__init__(self, locals, filename)
                 try:
                     import readline
                 except ImportError:
                     pass
-                else: 
+                else:
                     try:
                         import rlcompleter
-                        readline.set_completer(
-                                rlcompleter.Completer(locals).complete)
+                        class TabCompleter(rlcompleter.Completer):
+                            def complete(self, text, state):
+                                if not text:
+                                    return ('    ', None)[state]
+                                else:
+                                    return rlcompleter.Completer.complete(
+                                            self, text, state)
+                        readline.set_completer(TabCompleter(locals).complete)
                     except ImportError:
                         pass
 
