@@ -46,6 +46,23 @@ def test_json_search():
     info = simplejson.loads(content)
     assert len(info) == 30
 
+def test_search_bad_ext():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/search.monkey?q=tiddler%200',
+            method='GET')
+
+    assert response['status'] == '415'
+
+def test_search_bad_ext_accept():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/search.monkey?q=tiddler%200',
+            method='GET',
+            headers={'Accept': 'text/html'})
+
+    assert response['status'] == '415'
+
 def test_json_search_filtered():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;select=tag:tagtwo',
