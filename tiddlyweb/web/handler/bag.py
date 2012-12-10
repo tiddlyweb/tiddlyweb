@@ -95,11 +95,7 @@ def list_bags(environ, start_response):
     """
     List all the bags that the current user can read.
     """
-    store = environ['tiddlyweb.store']
-    serialize_type, mime_type = web.get_serialize_type(environ, collection=True)
-    serializer = Serializer(serialize_type, environ)
-    return list_entities(environ, start_response, mime_type, store.list_bags,
-            serializer.list_bags)
+    return list_entities(environ, start_response, 'list_bags')
 
 
 def put(environ, start_response):

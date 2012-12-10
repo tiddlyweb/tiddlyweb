@@ -7,16 +7,22 @@ from httpexceptor import HTTP304, HTTP400, HTTP415
 from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
-from tiddlyweb.serializer import NoSerializationError
+from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
+from tiddlyweb.web.util import get_serialize_type
 
 
-def list_entities(environ, start_response, mime_type, store_list,
-        serializer_list):
+def list_entities(environ, start_response, method_name):
     """
     Get a list of all the bags or recipes the current user can read.
     """
+    store = environ['tiddlyweb.store']
+    serialize_type, mime_type = get_serialize_type(environ, collection=True)
+    serializer = Serializer(serialize_type, environ)
     filters = environ['tiddlyweb.filters']
+    store_list = getattr(store, method_name)
+    serializer_list = getattr(serializer, method_name)
+
     try:
         kept_entities = _filter_readable(environ, store_list(), filters)
     except FilterError, exc:
