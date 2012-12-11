@@ -246,11 +246,13 @@ def init(config):
         from tiddlyweb.model.tiddler import Tiddler
         from tiddlyweb.model.user import User
         from tiddlyweb.serializer import Serializer
+        from tiddlyweb import control
+        from tiddlyweb import util
+        from tiddlyweb.web import util as web
         store = _store()
         environ = {
                 'tiddlyweb.config': config,
                 'tiddlyweb.store': store}
-
 
         # See
         # http://stackoverflow.com/questions/4031135/why-does-my-python-interactive-console-not-work-properly
