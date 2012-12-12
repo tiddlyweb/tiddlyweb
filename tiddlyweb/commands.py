@@ -286,6 +286,16 @@ def init(config):
                     else:
                         readline.parse_and_bind("tab: complete")
 
+                    # history file support
+                    histfile = '.twihistory'
+                    try:
+                        readline.read_history_file(histfile)
+                    except IOError:
+                        pass
+                    import atexit
+                    atexit.register(readline.write_history_file, histfile)
+                    del histfile
+
         _locals = locals()
         _locals['config'] = config
         TiddlyWebREPL(locals=_locals).interact()
