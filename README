@@ -34,7 +34,7 @@ it can also be used as a generic data store and platform. The platform
 builds on concepts learned from TiddlyWiki, primarily the concept of
 the tiddler: a small chunk of data used to build up a greater whole.
 
-TiddlyWeb includes a command line tool called twanager. Run twanager
+TiddlyWeb includes a command line tool called ``twanager``. Run ``twanager``
 without arguments for a list of available commands.
 
 Installation
