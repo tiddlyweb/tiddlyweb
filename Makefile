@@ -1,6 +1,6 @@
 # simple Makefile for some common tasks
 .PHONY: clean cleanagain test makebundle uploadbundle bundle dist upload pypi \
-		py2app peermore
+		py2app peermore tagv
 
 clean:
 	find . -name "*.pyc" |xargs rm || true
@@ -9,6 +9,12 @@ clean:
 	rm -r tiddlyweb.egg-info || true
 	rm *.bundle || true
 	rm -r *-bundle* || true
+
+tagv:
+	git tag -a \
+	    -m v`python -c 'import tiddlyweb; print tiddlyweb.__version__'` \
+	    v`python -c 'import tiddlyweb; print tiddlyweb.__version__'`
+	git push origin master --tags
 
 cleanagain:
 	find . -name "*.pyc" |xargs rm || true
@@ -35,7 +41,7 @@ bundle: clean dist makebundle uploadbundle
 dist: test
 	python setup.py sdist
 
-upload: clean test cleanagain pypi peermore
+upload: clean test cleanagain tagv pypi peermore
 
 pypi:
 	python setup.py sdist upload
