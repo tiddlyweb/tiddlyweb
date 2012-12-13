@@ -12,7 +12,8 @@ from tiddlyweb.util import sha
 from tiddlyweb.web.util import get_serialize_type
 
 
-def list_entities(environ, start_response, method_name):
+def list_entities(environ, start_response, method_name,
+        store_list=None, serializer_list=None):
     """
     Get a list of all the bags or recipes the current user can read.
     """
@@ -20,8 +21,11 @@ def list_entities(environ, start_response, method_name):
     serialize_type, mime_type = get_serialize_type(environ, collection=True)
     serializer = Serializer(serialize_type, environ)
     filters = environ['tiddlyweb.filters']
-    store_list = getattr(store, method_name)
-    serializer_list = getattr(serializer, method_name)
+    if method_name:
+        if not store_list:
+            store_list = getattr(store, method_name)
+        if not serializer_list:
+            serializer_list = getattr(serializer, method_name)
 
     try:
         kept_entities = _filter_readable(environ, store_list(), filters)
