@@ -11,7 +11,7 @@ try:
 except ImportError:  # Python < 2.5
     from email.Utils import parsedate
 
-from httpexceptor import HTTP415, HTTP400
+from httpexceptor import HTTP415, HTTP400, HTTP304
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
