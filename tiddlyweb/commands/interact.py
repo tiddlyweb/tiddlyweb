@@ -28,7 +28,6 @@ def launch_shell(config, store, args):
     _locals['config'] = config
 
     TiddlyWebREPL(locals=_locals).interact()
-    sys.exit(0)
 
 
 # See

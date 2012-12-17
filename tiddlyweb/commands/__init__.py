@@ -238,6 +238,7 @@ def init(config):
         """Enter a Python interactive shell."""
         from tiddlyweb.commands.interact import launch_shell
         launch_shell(config, _store(), args)
+        sys.exit(0)  # XXX: should be handled by `make_command`
 
     def _put(entity, content, serialization):
         """
