@@ -8,7 +8,7 @@ import code
 import rlcompleter
 
 
-def main(config, store, args):
+def launch_shell(config, store, args):
     # make basic API elements available within the REPL context
     from tiddlyweb.model.recipe import Recipe
     from tiddlyweb.model.bag import Bag

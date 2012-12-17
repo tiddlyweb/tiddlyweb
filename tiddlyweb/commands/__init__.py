@@ -236,8 +236,8 @@ def init(config):
     @make_command()
     def interact(args):
         """Enter a Python interactive shell."""
-        from tiddlyweb.commands.interact import main
-        main(config, _store(), args)
+        from tiddlyweb.commands.interact import launch_shell
+        launch_shell(config, _store(), args)
 
     def _put(entity, content, serialization):
         """
