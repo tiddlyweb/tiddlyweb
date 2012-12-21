@@ -120,8 +120,7 @@ class Store(StorageInterface):
 
     def bag_get(self, bag):
         """
-        Read a bag from the store and get a list
-        of its tiddlers.
+        Read a bag from the store.
         """
         bag_path = self._bag_path(bag.name)
 
@@ -397,7 +396,7 @@ class Store(StorageInterface):
 
     def _numeric_files_in_dir(self, path):
         """
-        List the filename in a dir that are not made up of
+        List the filenames in a dir that are made up of
         digits.
         """
         return (x for x in self._files_in_dir(path) if x.isdigit())
