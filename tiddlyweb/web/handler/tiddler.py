@@ -8,7 +8,7 @@ import logging
 import simplejson
 
 from httpexceptor import (HTTP404, HTTP415, HTTP412, HTTP409,
-        HTTP400, HTTP304)
+        HTTP400, HTTP304, HTTP302)
 
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
@@ -499,6 +499,11 @@ def _get_tiddler_content(environ, tiddler):
     serialize_type, mime_type = web.get_serialize_type(environ)
     extension = environ.get('tiddlyweb.extension')
     serialized = False
+
+    # If this is a tiddler with a _canonical_uri redirect there
+    # unless we are requesting json
+    if '_canonical_uri' in tiddler.fields and not serialize_type == 'json':
+        raise HTTP302(tiddler.fields['_canonical_uri'].encode('utf-8'))
 
     if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or

@@ -906,6 +906,38 @@ def test_bad_tags_json_put():
     assert response['status'] == '409'
     assert 'Unable to put badly formed tiddler' in content
 
+def test_put_canonical():
+    http = httplib2.Http()
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body='{"fields": {"_canonical_uri": "http://peermore.com/images/peermore.png"}}')
+
+    assert response['status'] == '204'
+    assert response['location'] == 'http://peermore.com/images/peermore.png'
+
+    raised = 0
+    try:
+        response, content = http.request(
+                'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
+                redirections=0)
+        print response, content
+    except httplib2.RedirectLimit, exc: 
+        raised = 1
+
+    assert raised
+    assert exc.response['status'] == '302'
+    assert exc.response['location'] == 'http://peermore.com/images/peermore.png'
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
+            headers={'Accept': 'application/json'})
+    assert response['status'] == '200'
+    info = simplejson.loads(content)
+    assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
+
+
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)
 

@@ -315,7 +315,7 @@ def tiddler_url(environ, tiddler, container='bags', full=True):
     field, use that instead.
     """
     if '_canonical_uri' in tiddler.fields:
-        return tiddler.fields['_canonical_uri']
+        return tiddler.fields['_canonical_uri'].encode('utf-8')
 
     container_name = tiddler.recipe if container == 'recipes' else tiddler.bag
     tiddler_link = '%s/%s/tiddlers/%s' % (container,
