@@ -7,7 +7,7 @@ while preserving history.
 
 import simplejson 
 
-from httpexceptor import HTTP412, HTTP415
+from httpexceptor import HTTP400, HTTP409, HTTP412, HTTP415
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
