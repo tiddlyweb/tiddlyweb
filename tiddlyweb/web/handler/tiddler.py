@@ -5,8 +5,6 @@ a Tiddler, GET a list of revisions of a Tiddler.
 
 import logging
 
-import simplejson
-
 from httpexceptor import (HTTP404, HTTP415, HTTP412, HTTP409,
         HTTP400, HTTP304, HTTP302)
 
@@ -179,18 +177,18 @@ def _process_request_body(environ, tiddler):
 
     try:
         try:
-            # XXX HACK! We don't want to decode content unless
-            # the serializer has a as_tiddler. We should be able
-            # to just rely on NoSerializationError, but we need
-            # to call the method to do that, and to call the method we
-            # need to decode the string...
             serialize_type = get_serialize_type(environ)[0]
             serializer = Serializer(serialize_type, environ)
-            serializer.object = tiddler
-            try:
-                serializer.from_string(content.decode('utf-8'))
-            except TiddlerFormatError, exc:
-                raise HTTP400('unable to put tiddler: %s' % exc)
+            # Short circuit de-serialization attempt to avoid
+            # decoding content multiple times.
+            if hasattr(serializer.serialization, 'as_tiddler'):
+                serializer.object = tiddler
+                try:
+                    serializer.from_string(content.decode('utf-8'))
+                except TiddlerFormatError, exc:
+                    raise HTTP400('unable to put tiddler: %s' % exc)
+            else:
+                raise NoSerializationError()
         except NoSerializationError:
             tiddler.type = content_type
             if pseudo_binary(tiddler.type):
