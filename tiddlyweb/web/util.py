@@ -13,8 +13,29 @@ except ImportError:  # Python < 2.5
 
 from httpexceptor import HTTP415, HTTP400, HTTP304
 
+from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
+
+
+def check_bag_constraint(environ, bag, constraint):
+    """
+    Check to see if the bag allows the current user
+    to perform the requested action. Lets NoBagError
+    raise.
+
+    This is a web util because user and store come from
+    environ.
+    """
+    try:
+        store = environ['tiddlyweb.store']
+        usersign = environ['tiddlyweb.usersign']
+        bag = store.get(bag)
+        bag.policy.allows(usersign, constraint)
+    except (PermissionsError), exc:
+        # XXX this throws away traceback info
+        msg = 'for bag %s: %s' % (bag.name, exc)
+        raise exc.__class__(msg)
 
 
 def check_last_modified(environ, last_modified_string):

@@ -144,7 +144,7 @@
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
     GET tiddlyweb.web.handler.tiddler:get_revisions
-    POST tiddlyweb.web.handler.tiddler:post_revisions
+    POST tiddlyweb.web.handler.chronicle:post_revisions
 # The collection of revisions of a single Tiddler in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers

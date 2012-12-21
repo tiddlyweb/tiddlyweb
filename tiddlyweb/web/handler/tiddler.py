@@ -21,7 +21,10 @@ from tiddlyweb.serializer import (Serializer, TiddlerFormatError,
         NoSerializationError)
 from tiddlyweb.util import pseudo_binary, renderable
 from tiddlyweb import control
-from tiddlyweb.web import util as web
+from tiddlyweb.web.util import (check_bag_constraint, get_route_value,
+        handle_extension, content_length_and_type, read_request_body,
+        get_serialize_type, tiddler_etag, tiddler_url, encode_name,
+        http_date_from_timestamp, check_last_modified)
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
@@ -60,18 +63,6 @@ def delete(environ, start_response):
     return _delete_tiddler(environ, start_response, tiddler)
 
 
-def post_revisions(environ, start_response):
-    """
-    Take a collection of JSON tiddlers, each with a
-    text key and value, and process them into the store.
-    That collection is known as a TiddlerChronicle.
-    """
-    tiddler = _determine_tiddler(environ,
-            control.determine_bag_from_recipe,
-            revisions=True)
-    return _post_tiddler_revisions(environ, start_response, tiddler)
-
-
 def put(environ, start_response):
     """
     Put a tiddler into the store.
@@ -92,10 +83,10 @@ def _base_tiddler_object(environ, tiddler_name, revisions):
     """
     if not revisions:
         try:
-            revision = web.get_route_value(environ, 'revision')
-            revision = web.handle_extension(environ, revision)
+            revision = get_route_value(environ, 'revision')
+            revision = handle_extension(environ, revision)
         except KeyError:
-            tiddler_name = web.handle_extension(environ, tiddler_name)
+            tiddler_name = handle_extension(environ, tiddler_name)
             revision = None
     else:
         revision = None
@@ -111,23 +102,6 @@ def _base_tiddler_object(environ, tiddler_name, revisions):
     return tiddler
 
 
-def _check_bag_constraint(environ, bag, constraint):
-    """
-    Check to see if the bag allows the current user
-    to perform the requested action. Lets NoBagError
-    raise.
-    """
-    try:
-        store = environ['tiddlyweb.store']
-        usersign = environ['tiddlyweb.usersign']
-        bag = store.get(bag)
-        bag.policy.allows(usersign, constraint)
-    except (PermissionsError), exc:
-        # XXX this throws away traceback info
-        msg = 'for bag %s: %s' % (bag.name, exc)
-        raise exc.__class__(msg)
-
-
 def _delete_tiddler(environ, start_response, tiddler):
     """
     The guts of deleting a tiddler from the store.
@@ -138,11 +112,11 @@ def _delete_tiddler(environ, start_response, tiddler):
         tiddler = store.get(tiddler)
     except NoTiddlerError:
         tiddler.revision = 1
-    _validate_tiddler_headers(environ, tiddler)
+    validate_tiddler_headers(environ, tiddler)
 
     bag = Bag(tiddler.bag)
     # this will raise 403 if constraint does not pass
-    _check_bag_constraint(environ, bag, 'delete')
+    check_bag_constraint(environ, bag, 'delete')
 
     try:
         store.delete(tiddler)
@@ -164,7 +138,7 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
     processing of extensions does not impact the name of
     the tiddler.
     """
-    tiddler_name = web.get_route_value(environ, 'tiddler_name')
+    tiddler_name = get_route_value(environ, 'tiddler_name')
     tiddler = _base_tiddler_object(environ, tiddler_name, revisions)
 
     # We have to deserialize the tiddler here so that
@@ -174,7 +148,7 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
         _process_request_body(environ, tiddler)
 
     try:
-        recipe_name = web.get_route_value(environ, 'recipe_name')
+        recipe_name = get_route_value(environ, 'recipe_name')
         recipe = Recipe(recipe_name)
         try:
             store = environ['tiddlyweb.store']
@@ -190,47 +164,18 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
 
         bag_name = bag.name
     except KeyError:
-        bag_name = web.get_route_value(environ, 'bag_name')
+        bag_name = get_route_value(environ, 'bag_name')
 
     tiddler.bag = bag_name
     return tiddler
-
-
-def _post_tiddler_revisions(environ, start_response, tiddler):
-    """
-    We have a list of revisions, put them in a new place.
-    """
-    length, content_type = web.content_length_and_type(environ)
-
-    if content_type != 'application/json':
-        raise HTTP415('application/json required')
-
-    # we need a matching etag in order to be able to do
-    # this operation. This will raise exception if there
-    # isn't a valid etag.
-    _require_valid_etag_for_write(environ, tiddler)
-
-    bag = Bag(tiddler.bag)
-    #  both create and write required for this action
-    _check_bag_constraint(environ, bag, 'create')
-    _check_bag_constraint(environ, bag, 'write')
-
-    content = environ['wsgi.input'].read(int(length))
-
-    _store_tiddler_revisions(environ, content, tiddler)
-
-    response = [('Location', web.tiddler_url(environ, tiddler))]
-    start_response("204 No Content", response)
-
-    return []
 
 
 def _process_request_body(environ, tiddler):
     """
     Read request body to set tiddler.text.
     """
-    length, content_type = web.content_length_and_type(environ)
-    content = web.read_request_body(environ, length)
+    length, content_type = content_length_and_type(environ)
+    content = read_request_body(environ, length)
 
     try:
         try:
@@ -239,7 +184,7 @@ def _process_request_body(environ, tiddler):
             # to just rely on NoSerializationError, but we need
             # to call the method to do that, and to call the method we
             # need to decode the string...
-            serialize_type = web.get_serialize_type(environ)[0]
+            serialize_type = get_serialize_type(environ)[0]
             serializer = Serializer(serialize_type, environ)
             serializer.object = tiddler
             try:
@@ -254,28 +199,6 @@ def _process_request_body(environ, tiddler):
                 tiddler.text = content
     except UnicodeDecodeError, exc:
         raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
-
-
-def _store_tiddler_revisions(environ, content, tiddler):
-    """
-    Given json revisions in content, store them
-    as a revision history to tiddler.
-    """
-    try:
-        json_tiddlers = simplejson.loads(content)
-    except ValueError, exc:
-        raise HTTP409('unable to handle json: %s' % exc)
-
-    store = environ['tiddlyweb.store']
-    serializer = Serializer('json', environ)
-    serializer.object = tiddler
-    try:
-        for json_tiddler in reversed(json_tiddlers):
-            json_string = simplejson.dumps(json_tiddler)
-            serializer.from_string(json_string.decode('utf-8'))
-            store.put(tiddler)
-    except NoTiddlerError, exc:
-        raise HTTP400('Unable to store tiddler revisions: %s', exc)
 
 
 def _check_and_validate_tiddler(environ, bag, tiddler):
@@ -299,10 +222,10 @@ def _check_and_validate_tiddler(environ, bag, tiddler):
         tiddler.revision = revision
         # These both next will raise exceptions if
         # the contraints don't match.
-        _check_bag_constraint(environ, bag, 'write')
-        _validate_tiddler_headers(environ, tiddler)
+        check_bag_constraint(environ, bag, 'write')
+        validate_tiddler_headers(environ, tiddler)
     except NoTiddlerError:
-        _check_bag_constraint(environ, bag, 'create')
+        check_bag_constraint(environ, bag, 'create')
         tiddler.revision = 0
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         if incoming_etag and not (
@@ -331,7 +254,7 @@ def _put_tiddler(environ, start_response, tiddler):
         tiddler.modified = current_timestring()
 
         try:
-            _check_bag_constraint(environ, bag, 'accept')
+            check_bag_constraint(environ, bag, 'accept')
         except (PermissionsError), exc:
             _validate_tiddler_content(environ, tiddler)
 
@@ -346,8 +269,8 @@ def _put_tiddler(environ, start_response, tiddler):
         raise HTTP409('Unable to put badly formed tiddler, %s:%s. %s'
                 % (tiddler.bag, tiddler.title, exc))
 
-    etag = ('Etag', web.tiddler_etag(environ, tiddler))
-    response = [('Location', web.tiddler_url(environ, tiddler))]
+    etag = ('Etag', tiddler_etag(environ, tiddler))
+    response = [('Location', tiddler_url(environ, tiddler))]
     if etag:
         response.append(etag)
     start_response("204 No Content", response)
@@ -367,30 +290,14 @@ def _validate_tiddler_content(environ, tiddler):
         raise HTTP409('Tiddler content is invalid: %s' % exc)
 
 
-def _require_valid_etag_for_write(environ, tiddler):
-    """
-    Unless there is an etag and it is valid
-    we send a 412.
-    """
-    incoming_etag = environ.get('HTTP_IF_MATCH', None)
-    if not incoming_etag:
-        raise HTTP412('If Match header required to update tiddlers.')
-    tiddler_copy = Tiddler(tiddler.title, tiddler.bag)
-    try:
-        tiddler_copy = environ['tiddlyweb.store'].get(tiddler_copy)
-    except NoTiddlerError:
-        tiddler_copy.revision = 0
-    return _validate_tiddler_headers(environ, tiddler_copy)
-
-
-def _validate_tiddler_headers(environ, tiddler):
+def validate_tiddler_headers(environ, tiddler):
     """
     Check ETAG and last modified information to
     see if a) the client can use its cached tiddler
     b) we have edit contention when trying to write.
     """
     request_method = environ['REQUEST_METHOD']
-    tiddler_etag = web.tiddler_etag(environ, tiddler)
+    tiddlers_etag = tiddler_etag(environ, tiddler)
 
     logging.debug('attempting to validate %s with revision %s',
             tiddler.title, tiddler.revision)
@@ -401,24 +308,24 @@ def _validate_tiddler_headers(environ, tiddler):
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
         if incoming_etag:
             logging.debug('attempting to validate incoming etag(GET):'
-                '%s against %s', incoming_etag, tiddler_etag)
-            if incoming_etag == tiddler_etag:
+                '%s against %s', incoming_etag, tiddlers_etag)
+            if incoming_etag == tiddlers_etag:
                 raise HTTP304(incoming_etag)
         else:
-            last_modified_string = web.http_date_from_timestamp(
+            last_modified_string = http_date_from_timestamp(
                     tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
-            web.check_last_modified(environ, last_modified_string)
+            check_last_modified(environ, last_modified_string)
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         logging.debug('attempting to validate incoming etag(PUT):'
-            '%s against %s', incoming_etag, tiddler_etag)
+            '%s against %s', incoming_etag, tiddlers_etag)
         if incoming_etag and not _etag_write_match(incoming_etag,
-                tiddler_etag):
+                tiddlers_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
-    etag = ('Etag', '%s' % tiddler_etag)
+    etag = ('Etag', '%s' % tiddlers_etag)
     return last_modified, etag
 
 
@@ -443,7 +350,7 @@ def _send_tiddler(environ, start_response, tiddler):
     bag = Bag(tiddler.bag)
     # this will raise 403 if constraint does not pass
     try:
-        _check_bag_constraint(environ, bag, 'read')
+        check_bag_constraint(environ, bag, 'read')
     except NoBagError, exc:
         raise HTTP404('%s not found, no bag %s, %s' %
                 (tiddler.title, tiddler.bag, exc))
@@ -456,7 +363,7 @@ def _send_tiddler(environ, start_response, tiddler):
     # this will raise 304
     # have to do this check after we read from the store because
     # we need the revision, which is sad
-    last_modified, etag = _validate_tiddler_headers(environ, tiddler)
+    last_modified, etag = validate_tiddler_headers(environ, tiddler)
 
     # make choices between binary or serialization
     content, mime_type, serialized = _get_tiddler_content(environ, tiddler)
@@ -496,7 +403,7 @@ def _get_tiddler_content(environ, tiddler):
     config = environ['tiddlyweb.config']
     default_serializer = config['default_serializer']
     default_serialize_type = config['serializers'][default_serializer][0]
-    serialize_type, mime_type = web.get_serialize_type(environ)
+    serialize_type, mime_type = get_serialize_type(environ)
     extension = environ.get('tiddlyweb.extension')
     serialized = False
 
@@ -540,7 +447,7 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
         tiddlers = Tiddlers(title=title, store=store)
 
     tiddlers.is_revisions = True
-    tiddlers.link = '%s/revisions' % web.tiddler_url(environ, tiddler,
+    tiddlers.link = '%s/revisions' % tiddler_url(environ, tiddler,
             container=container, full=False)
 
     recipe = tiddler.recipe
@@ -569,5 +476,5 @@ def _new_tiddler_etag(tiddler):
     yet exist. This is a bastardization of ETag handling
     but is useful for doing edit contention handling.
     """
-    return str('"%s/%s/%s"' % (web.encode_name(tiddler.bag),
-        web.encode_name(tiddler.title), '0'))
+    return str('"%s/%s/%s"' % (encode_name(tiddler.bag),
+        encode_name(tiddler.title), '0'))
