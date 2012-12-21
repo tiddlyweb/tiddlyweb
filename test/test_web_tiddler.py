@@ -937,6 +937,19 @@ def test_put_canonical():
     info = simplejson.loads(content)
     assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
 
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler.json')
+    assert response['status'] == '200'
+    info = simplejson.loads(content)
+    assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
+
+    # immitate browser being defaulty
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler.json',
+            headers={'Accept': 'text/html'})
+    assert response['status'] == '200'
+    info = simplejson.loads(content)
+    assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
 
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)

@@ -29,6 +29,7 @@ from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
 CACHE_CONTROL_FIELD = '_cache-max-age'
 CANONICAL_URI_FIELD = '_canonical_uri'
+CANONICAL_URI_PASS_TYPE = 'application/json'
 
 
 def get(environ, start_response):
@@ -408,8 +409,9 @@ def _get_tiddler_content(environ, tiddler):
     serialized = False
 
     # If this is a tiddler with a CANONICAL_URI_FIELD redirect
-    # there unless we are requesting json
-    if CANONICAL_URI_FIELD in tiddler.fields and not serialize_type == 'json':
+    # there unless we are requesting a json form
+    if (CANONICAL_URI_FIELD in tiddler.fields
+            and not CANONICAL_URI_PASS_TYPE in mime_type):
         raise HTTP302(tiddler.fields[CANONICAL_URI_FIELD].encode('utf-8'))
 
     if not renderable(tiddler, environ):
