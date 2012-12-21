@@ -28,6 +28,7 @@ from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
 
 CACHE_CONTROL_FIELD = '_cache-max-age'
+CANONICAL_URI_FIELD = '_canonical_uri'
 
 
 def get(environ, start_response):
@@ -202,8 +203,10 @@ def _process_request_body(environ, tiddler):
 def _check_and_validate_tiddler(environ, bag, tiddler):
     """
     If the tiddler does not exist, check we have create
-    in the bag, if the tiddler does exist, check we
-    have edit. Properly the revision of the tiddler.
+    in the bag. If the tiddler does exist, check we
+    have edit. In either case, check ETag to be sure
+    that if it is set, that it maches what is currently
+    in the store.
     """
     store = environ['tiddlyweb.store']
     try:
@@ -229,7 +232,6 @@ def _check_and_validate_tiddler(environ, bag, tiddler):
         if incoming_etag and not (
                 incoming_etag == _new_tiddler_etag(tiddler)):
             raise HTTP412('Etag incorrect for new tiddler')
-    return tiddler.revision
 
 
 def _put_tiddler(environ, start_response, tiddler):
@@ -244,7 +246,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
     try:
         bag = Bag(tiddler.bag)
-        tiddler.revision = _check_and_validate_tiddler(environ, bag, tiddler)
+        _check_and_validate_tiddler(environ, bag, tiddler)
 
         user = environ['tiddlyweb.usersign']['name']
         if not user == 'GUEST':
@@ -405,10 +407,10 @@ def _get_tiddler_content(environ, tiddler):
     extension = environ.get('tiddlyweb.extension')
     serialized = False
 
-    # If this is a tiddler with a _canonical_uri redirect there
-    # unless we are requesting json
-    if '_canonical_uri' in tiddler.fields and not serialize_type == 'json':
-        raise HTTP302(tiddler.fields['_canonical_uri'].encode('utf-8'))
+    # If this is a tiddler with a CANONICAL_URI_FIELD redirect
+    # there unless we are requesting json
+    if CANONICAL_URI_FIELD in tiddler.fields and not serialize_type == 'json':
+        raise HTTP302(tiddler.fields[CANONICAL_URI_FIELD].encode('utf-8'))
 
     if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or
