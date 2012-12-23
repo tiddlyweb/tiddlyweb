@@ -63,11 +63,11 @@ class Challenger(ChallengerInterface):
 <form action="" method="POST">
     <label>
         User:
-        <input name="user" size="40" />
+        <input name="user" />
     </label>
     <label>
         Password:
-        <input type="password" name="password" size="40" />
+        <input type="password" name="password" />
     </label>
     <input type="hidden" name="tiddlyweb_redirect" value="%s" />
     <input type="submit" value="submit" />
