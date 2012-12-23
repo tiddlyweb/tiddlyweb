@@ -4,7 +4,7 @@ body, h1, h2, h3, h4, div, ul {
 }
 
 body {
-        font-family: "Lucida Grande", Helvetica, sans-serif;
+	font-family: "Lucida Grande", Helvetica, sans-serif;
 	font-size:14px;
 	line-height:1.5em;
 	background-color:#fff;
@@ -26,7 +26,7 @@ a:focus {
 
 div#header {
 	background-color: #000;
-        border-bottom: 2px solid #666;
+	border-bottom: 2px solid #666;
 	padding:2em 1em;
 
 }
@@ -78,4 +78,3 @@ div#footer {
 	div#usergreet {
 		float:left;
 	}
-
