@@ -58,8 +58,8 @@ class Challenger(ChallengerInterface):
         environ['tiddlyweb.title'] = 'Cookie Based Login'
         return [
 """
-<pre>
-%s
+<p>%s</p>
+
 <form action="" method="POST">
     <label>
         User:
@@ -72,7 +72,6 @@ class Challenger(ChallengerInterface):
     <input type="hidden" name="tiddlyweb_redirect" value="%s" />
     <input type="submit" value="submit" />
 </form>
-</pre>
 """ % (message, redirect)]
 
     def _validate_and_redirect(self, environ, start_response, username,
