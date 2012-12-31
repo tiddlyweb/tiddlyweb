@@ -22,8 +22,6 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     Tiddlers collection in a Negotiated representation.
     Often, but not always, a wiki.
     """
-    last_modified = None
-    etag = None
     download = environ['tiddlyweb.query'].get('download', [None])[0]
     filters = environ['tiddlyweb.filters']
     store = environ['tiddlyweb.store']
@@ -32,19 +30,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
         logging.warn('Incoming tiddlers no store set %s', inspect.stack()[1])
 
     if filters:
-        candidate_tiddlers = Tiddlers(store=store)
-        try:
-            candidate_tiddlers.title = tiddlers.title
-            candidate_tiddlers.link = tiddlers.link
-            candidate_tiddlers.is_search = tiddlers.is_search
-            candidate_tiddlers.is_revisions = tiddlers.is_revisions
-        except AttributeError:
-            pass
-        try:
-            for tiddler in recursive_filter(filters, tiddlers):
-                candidate_tiddlers.add(tiddler)
-        except FilterError, exc:
-            raise HTTP400('malformed filter: %s' % exc)
+        candidate_tiddlers = _filter_tiddlers(filters, store, tiddlers)
     else:
         candidate_tiddlers = tiddlers
 
@@ -52,10 +38,9 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
     serialize_type, mime_type = get_serialize_type(environ, collection=True)
 
-    content_header = ('Content-Type', mime_type)
-    cache_header = ('Cache-Control', 'no-cache')
-    vary_header = ('Vary', 'Accept')
-    response = [content_header, cache_header, vary_header]
+    response = [('Content-Type', mime_type),
+            ('Cache-Control', 'no-cache'),
+            ('Vary', 'Accept')]
 
     if download:
         response.append(('Content-Disposition',
@@ -82,6 +67,26 @@ def send_tiddlers(environ, start_response, tiddlers=None):
         return [output]
     else:
         return output
+
+
+def _filter_tiddlers(filters, store, tiddlers):
+    """
+    Filter the tiddlers by filters provided by the enviornment.
+    """
+    candidate_tiddlers = Tiddlers(store=store)
+    try:
+        candidate_tiddlers.title = tiddlers.title
+        candidate_tiddlers.link = tiddlers.link
+        candidate_tiddlers.is_search = tiddlers.is_search
+        candidate_tiddlers.is_revisions = tiddlers.is_revisions
+    except AttributeError:
+        pass
+    try:
+        for tiddler in recursive_filter(filters, tiddlers):
+            candidate_tiddlers.add(tiddler)
+    except FilterError, exc:
+        raise HTTP400('malformed filter: %s' % exc)
+    return candidate_tiddlers
 
 
 def _validate_tiddler_list(environ, tiddlers):
