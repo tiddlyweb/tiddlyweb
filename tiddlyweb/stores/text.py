@@ -367,8 +367,8 @@ class Store(StorageInterface):
                             yield tiddler
                             break
                 except (OSError, NoTiddlerError), exc:
-                    logging.warn('malformed tiddler during search: %s:%s',
-                            bagname, tiddler_name)
+                    logging.warn('malformed tiddler during search: %s:%s, %s',
+                            bagname, tiddler_name, exc)
         return
 
     def _bag_filenames(self):
@@ -415,7 +415,6 @@ class Store(StorageInterface):
         """
         Read a specific revision of a tiddler from disk.
         """
-        tiddler_base_filename = self._tiddler_base_filename(tiddler)
         tiddler_revision = self._tiddler_revision_filename(tiddler,
                 index=index)
         tiddler_filename = self._tiddler_full_filename(tiddler,

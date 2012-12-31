@@ -115,7 +115,6 @@ class Serialization(SerializationInterface):
             line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)
         output = "\n".join(lines)
-        title = 'Bags in Recipe %s' % recipe.name
         tiddler_link = '%s/tiddlers' % encode_name(recipe.name)
         return """
 <div class="tiddlerslink"><a href="%s">Tiddlers in Recipe</a></div>

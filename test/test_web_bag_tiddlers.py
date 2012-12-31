@@ -44,6 +44,18 @@ def test_get_sorted_tiddlers():
             headers={'if-none-match': etag})
     assert response['status'] == '304'
 
+    # confirm head
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
+            method='HEAD',
+            headers={'if-none-match': etag})
+    assert response['status'] == '304'
+
+    # confirm head
+    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers.json?sort=title',
+            method='HEAD')
+    assert response['status'] == '200'
+    assert content == ''
+
 def test_get_tiddlers_with_unicode_user():
     """
     Cover a bug in sendtiddlers related to unicode users.

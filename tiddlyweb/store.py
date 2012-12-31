@@ -11,7 +11,6 @@ from copy import deepcopy
 
 from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 from tiddlyweb.model.policy import Policy
-from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.util import superclass_name
 
 

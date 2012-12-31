@@ -28,7 +28,7 @@ class Header(object):
     def __call__(self, environ, start_response):
         if environ['REQUEST_METHOD'] == 'HEAD':
             environ['REQUEST_METHOD'] = 'GET'
-            _ = self.application(environ, start_response)
+            self.application(environ, start_response)
             return []
         else:
             return self.application(environ, start_response)

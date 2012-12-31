@@ -33,7 +33,6 @@ class Extractor(ExtractorInterface):
             cookie_value = cookie['tiddlyweb_user'].value
             secret = environ['tiddlyweb.config']['secret']
             usersign, cookie_secret = cookie_value.rsplit(':', 1)
-            store = environ['tiddlyweb.store']
 
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
                 usersign = usersign.decode('utf-8')

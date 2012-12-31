@@ -55,10 +55,9 @@ try:
 except ImportError:
     from cgi import parse_qs
 
-from tiddlyweb.filters.select import select_by_attribute, \
-        select_relative_attribute, select_parse
-from tiddlyweb.filters.sort import sort_by_attribute, sort_parse
-from tiddlyweb.filters.limit import limit, limit_parse
+from tiddlyweb.filters.select import select_parse
+from tiddlyweb.filters.sort import sort_parse
+from tiddlyweb.filters.limit import limit_parse
 
 
 class FilterError(Exception):
