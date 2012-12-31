@@ -46,13 +46,13 @@ def sanitize_desc(entity, environ):
 
 BAG_VALIDATORS = [
         sanitize_desc,
-        ]
+]
 
 TIDDLER_VALIDATORS = []
 
 RECIPE_VALIDATORS = [
         sanitize_desc,
-        ]
+]
 
 
 def validate_tiddler(tiddler, environ=None):

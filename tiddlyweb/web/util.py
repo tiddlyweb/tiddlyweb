@@ -102,7 +102,7 @@ def get_serialize_type(environ, collection=False):
     if type(accept) == str:
         accept = [accept]
 
-    while len(accept) and serialize_type == None:
+    while len(accept) and serialize_type is None:
         candidate_type = accept.pop(0)
         try:
             serialize_type, mime_type = serializers[candidate_type]

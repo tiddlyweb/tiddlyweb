@@ -190,7 +190,7 @@ class SimpleLog(object):
                 'bytes': size,
                 'HTTP_REFERER': environ.get('HTTP_REFERER', '-'),
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
-                }
+        }
         for key, value in log_format.items():
             try:
                 log_format[key] = value.encode('utf-8', 'replace')
@@ -235,6 +235,7 @@ class TransformProtect(object):
             return start_response(status, headers, exc_info)
 
         return self.application(environ, replacement_start_response)
+
 
 class EncodeUTF8(object):
     """

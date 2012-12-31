@@ -35,7 +35,7 @@ ATTRIBUTE_SORT_KEY = {
         'modified': date_to_canonical,
         'created': date_to_canonical,
         'revision': as_int,
-        }
+}
 
 
 def sort_parse(attribute):
@@ -65,7 +65,7 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
     function by which we should generate the value for this
     attribute.
     """
-    if environ == None:
+    if environ is None:
         environ = {}
 
     store = environ.get('tiddlyweb.store', None)

@@ -29,7 +29,7 @@ def render_wikitext(tiddler=None, environ=None):
     Take a tiddler and render it's wikitext to some kind
     of HTML format.
     """
-    if environ == None:
+    if environ is None:
         environ = {}
     renderer_name = _determine_renderer(tiddler, environ)
     try:

@@ -133,7 +133,8 @@ def std_error_message(message):
         try:
             print >> sys.stderr, message
         except UnicodeDecodeError:
-            print >> sys.stderr, 'cannot display message due to mismatching terminal character encoding'
+            print >> sys.stderr, ('cannot display message due to '
+                    'mismatching terminal character encoding')
 
 
 def superclass_name(instance):

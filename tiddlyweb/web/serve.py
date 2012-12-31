@@ -23,7 +23,7 @@ def load_app(app_prefix=None, dirname=None):
     initialize_logging(config)
 
     mapfile = config['urls_map']
-    if app_prefix != None:
+    if app_prefix is not None:
         prefix = app_prefix
     else:
         prefix = config['server_prefix']

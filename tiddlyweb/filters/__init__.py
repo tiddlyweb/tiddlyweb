@@ -80,7 +80,7 @@ FILTER_PARSERS = {
         'select': select_parse,
         'sort': sort_parse,
         'limit': limit_parse,
-        }
+}
 
 
 def parse_for_filters(query_string, environ=None):
@@ -91,7 +91,7 @@ def parse_for_filters(query_string, environ=None):
     a string of whatever was in the query string that
     did not result in a filter.
     """
-    if environ == None:
+    if environ is None:
         environ = {}
 
     if ';' in query_string:

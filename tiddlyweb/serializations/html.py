@@ -242,7 +242,7 @@ class Serialization(SerializationInterface):
             base = 'recipes'
         else:
             base = 'bags'
-        return  ('<li><a href="%s/revisions/%s">%s:%s</a></li>' % (
+        return ('<li><a href="%s/revisions/%s">%s:%s</a></li>' % (
             tiddler_url(self.environ, tiddler, container=base, full=False),
             tiddler.revision,
             tiddler.title,

@@ -5,7 +5,7 @@ named A to tiddler B, we can effectively rename a tiddler
 while preserving history.
 """
 
-import simplejson 
+import simplejson
 
 from httpexceptor import HTTP400, HTTP409, HTTP412, HTTP415
 
