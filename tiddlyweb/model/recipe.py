@@ -69,7 +69,7 @@ class Recipe(object):
                         keyname = match.group(1)
                         value = template[keyname]
                     if value:
-                        value = re.sub('{{ [\w:]+ }}', value, item)
+                        value = re.sub(r'{{ [\w:]+ }}', value, item)
                         new_entry.append(value)
                     else:
                         new_entry.append(item)
