@@ -31,7 +31,7 @@ for additional details. Visit http://tiddlyweb.com/ for links to
 additional information.
 """
 
-__version__ = '1.3.4'
+__version__ = '1.3.5'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __copyright__ = 'Copyright UnaMesa Association 2008-2012'
 __contributors__ = ['Frederik Dohr', 'Zac Bir', 'Jeremy Ruston']

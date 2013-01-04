@@ -1,3 +1,7 @@
+1.3.5 Fri Jan  4 19:42:13 UTC 2013
+
+  * Refactored sendtiddlers.
+
 1.3.4 Sun Dec 23 12:47:24 UTC 2012
 
   * Improve cookie form challenger's HTML.
