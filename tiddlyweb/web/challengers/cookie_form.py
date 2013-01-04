@@ -56,8 +56,7 @@ class Challenger(ChallengerInterface):
         """
         start_response(status, [('Content-Type', 'text/html')])
         environ['tiddlyweb.title'] = 'Cookie Based Login'
-        return [
-"""
+        return ["""
 <p>%s</p>
 
 <form action="" method="POST">

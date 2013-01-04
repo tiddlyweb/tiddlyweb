@@ -92,7 +92,7 @@ class HTMLPresenter(object):
 </div>
 <div id="content">
 """ % (environ['tiddlyweb.title'], css, links,
-        environ['tiddlyweb.title'], header_extra)
+            environ['tiddlyweb.title'], header_extra)
 
     def _footer(self, environ):
         """
