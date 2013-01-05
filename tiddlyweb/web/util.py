@@ -332,12 +332,8 @@ def tiddler_etag(environ, tiddler):
 
 def tiddler_url(environ, tiddler, container='bags', full=True):
     """
-    Construct a URL for a tiddler. If the tiddler has a _canonical_uri
-    field, use that instead.
+    Construct a URL for a tiddler.
     """
-    if '_canonical_uri' in tiddler.fields:
-        return tiddler.fields['_canonical_uri'].encode('utf-8')
-
     container_name = tiddler.recipe if container == 'recipes' else tiddler.bag
     tiddler_link = '%s/%s/tiddlers/%s' % (container,
             encode_name(container_name), encode_name(tiddler.title))

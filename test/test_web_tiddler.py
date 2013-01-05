@@ -915,7 +915,7 @@ def test_put_canonical():
             body='{"fields": {"_canonical_uri": "http://peermore.com/images/peermore.png"}}')
 
     assert response['status'] == '204'
-    assert response['location'] == 'http://peermore.com/images/peermore.png'
+    assert response['location'] == 'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler'
 
     raised = 0
     try:

@@ -46,7 +46,9 @@ def test_tiddler_url():
     tiddler.fields['_canonical_uri'] = 'http://example.com'
     url = tiddler_url(environ, tiddler)
 
-    assert url == 'http://example.com'
+    # we decided url is always local
+    #assert url == 'http://example.com'
+    assert url == 'http://our_test_domain:8001/sleep/bags/zoom/tiddlers/foobar'
 
 def test_bad_http_timestamp():
     assert datetime_from_http_date('0') == None
