@@ -39,15 +39,15 @@ def list_entities(environ, start_response, method_name,
         if incoming_etag == etag_string:
             raise HTTP304(incoming_etag)
 
-    start_response("200 OK", [('Content-Type', mime_type),
-                ('Vary', 'Accept'),
-                ('Cache-Control', 'no-cache'),
-                ('Etag', etag_string)])
-
     try:
         output = serializer_list(kept_entities)
     except NoSerializationError:
         raise HTTP415('Content type not supported: %s' % mime_type)
+
+    start_response("200 OK", [('Content-Type', mime_type),
+                ('Vary', 'Accept'),
+                ('Cache-Control', 'no-cache'),
+                ('Etag', etag_string)])
 
     if isinstance(output, basestring):
         return [output]
