@@ -202,7 +202,7 @@ class Store(StorageInterface):
 
         locked = 0
         lock_attempts = 0
-        while (not locked):
+        while not locked:
             try:
                 lock_attempts = lock_attempts + 1
                 write_lock(tiddler_base_filename)

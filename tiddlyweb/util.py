@@ -186,7 +186,7 @@ def write_unlock(filename):
 
 def initialize_logging(config):
     """
-    Initialize the logging to tiddlyweb.log. We got to great lengths
+    Initialize the logging to tiddlyweb.log. We go to great lengths
     to avoid writing a tiddlyweb.log file when we don't actually need
     or want to.
     """
