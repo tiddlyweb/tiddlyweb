@@ -408,7 +408,7 @@ class Store(StorageInterface):
         """
         tiddler_string = read_utf8_file(tiddler_filename)
         self.serializer.object = tiddler
-        tiddler = self.serializer.from_string(tiddler_string)
+        self.serializer.from_string(tiddler_string)
         return tiddler
 
     def _read_tiddler_revision(self, tiddler, index=0):
