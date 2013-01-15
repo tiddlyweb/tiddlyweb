@@ -24,8 +24,7 @@ is required), PyYAML[4] and tiddlywebplugins.utils[5]. These
 tests run alongside the other tests without any special setup
 required.
 
-[1] py.test is part of py lib and can be found at
-http://codespeak.net/py/dist/test.html
+[1] http://pytest.org
 
 [2] http://code.google.com/p/httplib2/
 
