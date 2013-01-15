@@ -2,6 +2,7 @@
 Setup file for packaging TiddlyWeb
 """
 
+import sys
 import os
 
 from setuptools import setup, find_packages
@@ -34,6 +35,11 @@ META = {
     'include_package_data': True,
     'zip_safe': False,
 }
+# modern Selector requires modern Python, so downgrade for older versions
+if sys.version_info[0] == 2 and sys.version_info[1] < 6:
+    META['install_requires'] = ['%s<0.9.0' % dep if dep == 'selector' else dep
+            for dep in META['install_requires']]
+
 
 if __name__ == '__main__':
     setup(**META)
