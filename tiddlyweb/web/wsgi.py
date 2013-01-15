@@ -13,8 +13,6 @@ from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
 from tiddlyweb.web.util import server_base_url
 
-from tiddlyweb import __version__ as VERSION
-
 
 class Header(object):
     """
@@ -32,95 +30,6 @@ class Header(object):
             return []
         else:
             return self.application(environ, start_response)
-
-
-class HTMLPresenter(object):
-    """
-    Take the core app output, if tiddlyweb.title is set
-    in environ and we appear to be using a browser,
-    add some HTML framework.
-    """
-
-    def __init__(self, application):
-        self.application = application
-
-    def __call__(self, environ, start_response):
-        output = self.application(environ, start_response)
-        if self._needs_title(environ):
-
-            def wrapped_output(output):
-                yield self._header(environ)
-                for item in output:
-                    yield item
-                yield self._footer(environ)
-                return
-
-            return wrapped_output(output)
-        return output
-
-    def _needs_title(self, environ):
-        """
-        Determine if we are outputting html to a browser.
-        """
-        return ('tiddlyweb.title' in environ and 'Mozilla'
-                in environ.get('HTTP_USER_AGENT', ''))
-
-    def _header(self, environ):
-        """
-        Wrap the HTML in an HTML header.
-        """
-        css = ''
-        if environ['tiddlyweb.config'].get('css_uri', ''):
-            css = '<link rel="stylesheet" href="%s" type="text/css" />' % \
-                    environ['tiddlyweb.config']['css_uri']
-        try:
-            links = '\n'.join(environ['tiddlyweb.links'])
-        except KeyError:
-            links = ''
-        header_extra = self.header_extra(environ)
-        return """
-<html>
-<head>
-<title>TiddlyWeb - %s</title>
-%s
-%s
-</head>
-<body>
-<div id="header">
-<h1>%s</h1>
-%s
-</div>
-<div id="content">
-""" % (environ['tiddlyweb.title'], css, links,
-            environ['tiddlyweb.title'], header_extra)
-
-    def _footer(self, environ):
-        """
-        Wrap the HTML with an HTML footer.
-        """
-        footer_extra = self.footer_extra(environ)
-        return """
-</div>
-<div id="footer">
-%s
-<div id="badge">This is <a href="http://tiddlyweb.com/">TiddlyWeb</a> %s</div>
-<div id="usergreet">User %s.</div>
-</div>
-</body>
-</html>
-""" % (footer_extra, VERSION, environ['tiddlyweb.usersign']['name'])
-
-    def header_extra(self, environ):
-        """
-        Override this in plugins to add to the header.
-        """
-        return ''
-
-    def footer_extra(self, environ):
-        """
-        Override this in plugins to add to the footer.
-        """
-        return ''
 
 
 class SimpleLog(object):
