@@ -11,7 +11,4 @@ install:
 script: make test
 
 notifications:
-  email:
-    on_success: never
-    on_failure: never
   irc: "irc.freenode.net#tiddlyweb"
