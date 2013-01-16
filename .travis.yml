@@ -9,3 +9,9 @@ install:
     `python -c 'from setup import META; print " ".join(META["extras_require"]["testing"] + META["install_requires"])'`
 
 script: make test
+
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+  irc: "irc.freenode.net#tiddlyweb"
