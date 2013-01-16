@@ -9,8 +9,7 @@ from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
 
-HEADER = """
-<!DOCTYPE HTML>
+HEADER = """<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="UTF-8">
