@@ -531,7 +531,7 @@ def test_get_tiddler_text_created():
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == u'Towels' # text
     assert contents[-3] == u'tags: ' # tags
-    assert match('created: \d{12}', contents[1])
+    assert match('^created: \d{14}$', contents[1])
 
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('utf-8')
