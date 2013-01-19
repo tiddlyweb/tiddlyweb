@@ -9,6 +9,7 @@ import os
 import simplejson
 import shutil
 import time
+import re
 import urllib
 
 from tiddlyweb.model.bag import Bag
@@ -220,8 +221,13 @@ class Store(StorageInterface):
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
 
         self.serializer.object = tiddler
-        write_utf8_file(tiddler_filename, self.serializer.to_string())
+        serialization = self.serializer.to_string()
+        # drop creator field (as this is calculated rather than stored)
+        serialization = re.sub(r'^creator: .*\n', '', serialization)
+
+        write_utf8_file(tiddler_filename, serialization)
         write_unlock(tiddler_base_filename)
+
         tiddler.revision = revision
 
     def user_delete(self, user):

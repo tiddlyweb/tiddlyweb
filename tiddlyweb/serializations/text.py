@@ -111,7 +111,7 @@ class Serialization(SerializationInterface):
         Represent a tiddler as a text string: headers, blank line, text.
         """
         headers = []
-        for field in ['type', 'created', 'modifier', 'modified', 'tags']:
+        for field in ['type', 'creator', 'created', 'modifier', 'modified', 'tags']:
             value = getattr(tiddler, field)
             if value:
                 if field == 'tags': # XXX: special-casing

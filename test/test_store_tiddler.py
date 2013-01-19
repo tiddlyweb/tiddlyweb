@@ -54,8 +54,8 @@ def test_simple_put():
 
     assert os.path.exists(expected_stored_filename)
 
-    f = file(expected_stored_filename)
-    text = f.read()
+    fh = open(expected_stored_filename)
+    text = fh.read()
 
     assert text == expected_stored_text
 
