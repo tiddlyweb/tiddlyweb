@@ -58,7 +58,7 @@ class Tiddler(object):
               have any assocation with the tiddlyweb.usersign,
               though it may.
     tags: A list of strings that describe the tiddler.
-    fields: An arbitrary dictionary of extended fields on the tiddler.
+    fields: An arbitrary dictionary of extended (custom) fields on the tiddler.
     text: The contents of the tiddler. A string.
     revision: The revision of this tiddler. An int.
     bag: The name of the bag in which this tiddler exists,

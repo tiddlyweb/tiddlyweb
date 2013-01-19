@@ -110,32 +110,31 @@ class Serialization(SerializationInterface):
         """
         Represent a tiddler as a text string: headers, blank line, text.
         """
-        if not tiddler.text:
-            tiddler.text = ''
-        if not tiddler.type:
-            tiddler.type = ''
-        if not tiddler.modifier:
-            tiddler.modifier = ''
-        if binary_tiddler(tiddler):
-            tiddler.text = b64encode(tiddler.text)
-        return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
-                '%s\ntags: %s%s\n%s\n' %
-                (tiddler.modifier, tiddler.created, tiddler.modified,
-                    tiddler.type,
-                    self.tags_as(tiddler.tags).replace('\n', '\\n'),
-                    self.fields_as(tiddler), tiddler.text))
+        headers = []
+        for field in ['type', 'created', 'modifier', 'modified', 'tags']:
+            value = getattr(tiddler, field)
+            if value:
+                if field == 'tags': # XXX: special-casing
+                    value = self.tags_as(tiddler.tags).replace('\n', '\\n')
+                headers.append('%s: %s' % (field, value))
+
+        custom_fields = self.fields_as(tiddler)
+        headers.extend(custom_fields)
+
+        body = b64encode(tiddler.text) if binary_tiddler(tiddler) else tiddler.text
+
+        return '%s\n\n%s\n' % ('\n'.join(headers), body)
 
     def fields_as(self, tiddler):
         """
-        Turn tiddler fields into strings in
-        sort of a RFC 822 header form.
+        Turn extended tiddler fields into RFC 822-style header strings.
         """
-        info = '\n'
+        fields = []
         for key in tiddler.fields:
-            if not key.startswith('server.'):
+            if not key.startswith('server.'): # XXX: TiddlyWiki legacy remnant?
                 value = unicode(tiddler.fields[key])
-                info += '%s: %s\n' % (key, value.replace('\n', '\\n'))
-        return info
+                fields.append('%s: %s' % (key, value.replace('\n', '\\n')))
+        return fields
 
     def as_tiddler(self, tiddler, input_string):
         """
@@ -148,7 +147,7 @@ class Serialization(SerializationInterface):
             headers = header.split('\n')
 
             for field, value in [x.split(': ', 1) for x in headers]:
-                if value == '':
+                if value == '': # retained for backwards compatibility
                     continue
                 if hasattr(tiddler, field):
                     setattr(tiddler, field, value)
