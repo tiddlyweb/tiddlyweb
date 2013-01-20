@@ -25,7 +25,7 @@ cleanagain:
 	rm -r *-bundle* || true
 
 test:
-	py.test -x test
+	py.test -x --tb=short test
 
 makebundle: clean dist
 	# work around errors in pip when bundling a tarball by instead
