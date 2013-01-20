@@ -22,7 +22,7 @@ class Serialization(SerializationInterface):
     by the text Store.
     """
 
-    tiddler_fields = [field for field in Tiddler.fields if not field in
+    tiddler_fields = [field for field in Tiddler.data_fields if not field in
             ['title', 'text', 'creator', 'fields']]
 
     def list_recipes(self, recipes):
