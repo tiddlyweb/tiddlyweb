@@ -23,9 +23,7 @@ import py.test
 expected_stored_filename = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne', '1')
 
 expected_stored_text = """modifier: AuthorOne
-created: 
 modified: 200803030303
-type: 
 tags: tagone tagtwo [[tag five]]
 
 c tiddler one content
@@ -53,7 +51,7 @@ def test_simple_put():
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
-    
+
     assert os.path.exists(expected_stored_filename)
 
     f = file(expected_stored_filename)
@@ -116,7 +114,7 @@ def test_delete():
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
-    
+
     assert os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
     store.delete(tiddler)
     assert not os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
@@ -135,7 +133,7 @@ def test_failed_delete_perms():
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
-    
+
     path = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne')
     assert os.path.exists(path)
     os.chmod(path, 0555)
@@ -149,7 +147,7 @@ def test_store_lock():
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
-    
+
     write_lock('store/bags')
     py.test.raises(LockError, 'write_lock("store/bags")')
 

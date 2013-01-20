@@ -31,6 +31,7 @@ text_put_body=u"""modifier: JohnSmith
 created: 
 modified: 200803030303
 tags: tagone
+type: 
 
 Hello, I'm John Smith \xbb and I have something to sell.
 """
@@ -122,7 +123,8 @@ def test_put_tiddler_txt():
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == texts[-1] # text
-    assert contents[-3] == texts[-3] # tags
+    assert contents[-3] == texts[-3] # type
+    assert contents[-4] == texts[-4] # tags
 
 def test_put_tiddler_txt_no_modified():
     """
@@ -530,8 +532,7 @@ def test_get_tiddler_text_created():
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
     assert contents[-1] == u'Towels' # text
-    assert contents[-3] == u'tags: ' # tags
-    assert match('created: \d{12}', contents[1])
+    assert match('^created: \d{14}$', contents[0])
 
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('utf-8')

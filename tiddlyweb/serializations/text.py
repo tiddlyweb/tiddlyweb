@@ -7,7 +7,7 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
-
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.specialbag import get_bag_retriever
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
@@ -21,6 +21,9 @@ class Serialization(SerializationInterface):
     textual representations. This is primarily used
     by the text Store.
     """
+
+    tiddler_fields = [field for field in Tiddler.data_fields if not field in
+            ['title', 'text', 'creator', 'fields']]
 
     def list_recipes(self, recipes):
         """
@@ -106,36 +109,43 @@ class Serialization(SerializationInterface):
         recipe.set_recipe(recipe_lines)
         return recipe
 
-    def tiddler_as(self, tiddler):
+    def tiddler_as(self, tiddler, omit_empty=False):
         """
         Represent a tiddler as a text string: headers, blank line, text.
+
+        `omit_*` arguments are non-standard options, usable only when this
+        method is called directly (outside the regular Serializer interface)
         """
-        if not tiddler.text:
-            tiddler.text = ''
-        if not tiddler.type:
-            tiddler.type = ''
-        if not tiddler.modifier:
-            tiddler.modifier = ''
+        headers = []
+        for field in self.tiddler_fields:
+            value = getattr(tiddler, field)
+            if field == 'tags': # XXX: special-casing
+                value = self.tags_as(tiddler.tags).replace('\n', '\\n')
+            if value or not omit_empty:
+                if value is None:
+                    value = ''
+                headers.append('%s: %s' % (field, value))
+
+        custom_fields = self.fields_as(tiddler)
+        headers.extend(custom_fields)
+
         if binary_tiddler(tiddler):
-            tiddler.text = b64encode(tiddler.text)
-        return ('modifier: %s\ncreated: %s\nmodified: %s\ntype: '
-                '%s\ntags: %s%s\n%s\n' %
-                (tiddler.modifier, tiddler.created, tiddler.modified,
-                    tiddler.type,
-                    self.tags_as(tiddler.tags).replace('\n', '\\n'),
-                    self.fields_as(tiddler), tiddler.text))
+            body = b64encode(tiddler.text)
+        else:
+            body = tiddler.text
+
+        return '%s\n\n%s\n' % ('\n'.join(headers), body)
 
     def fields_as(self, tiddler):
         """
-        Turn tiddler fields into strings in
-        sort of a RFC 822 header form.
+        Turn extended tiddler fields into RFC 822-style header strings.
         """
-        info = '\n'
+        fields = []
         for key in tiddler.fields:
-            if not key.startswith('server.'):
+            if not key.startswith('server.'): # XXX: TiddlyWiki legacy remnant?
                 value = unicode(tiddler.fields[key])
-                info += '%s: %s\n' % (key, value.replace('\n', '\\n'))
-        return info
+                fields.append('%s: %s' % (key, value.replace('\n', '\\n')))
+        return fields
 
     def as_tiddler(self, tiddler, input_string):
         """
