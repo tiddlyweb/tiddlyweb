@@ -220,7 +220,9 @@ class Store(StorageInterface):
         tiddler_filename = self._tiddler_full_filename(tiddler, revision)
 
         self.serializer.object = tiddler
-        write_utf8_file(tiddler_filename, self.serializer.to_string())
+        representation = self.serializer.serialization.tiddler_as(tiddler,
+                omit_empty=True)
+        write_utf8_file(tiddler_filename, representation)
         write_unlock(tiddler_base_filename)
         tiddler.revision = revision
 

@@ -11,9 +11,11 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.config import config
 
-expected_string = """modifier: test@example.com
+expected_string = """created: 
+modifier: test@example.com
 modified: 200803030303
 tags: foobar [[foo bar]]
+type: 
 
 Hello, I'm the content.
 """

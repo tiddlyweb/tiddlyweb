@@ -109,16 +109,21 @@ class Serialization(SerializationInterface):
         recipe.set_recipe(recipe_lines)
         return recipe
 
-    def tiddler_as(self, tiddler):
+    def tiddler_as(self, tiddler, omit_empty=False):
         """
         Represent a tiddler as a text string: headers, blank line, text.
+
+        `omit_*` arguments are non-standard options, usable only when this
+        method is called directly (outside the regular Serializer interface)
         """
         headers = []
         for field in self.tiddler_fields:
             value = getattr(tiddler, field)
-            if value:
-                if field == 'tags': # XXX: special-casing
-                    value = self.tags_as(tiddler.tags).replace('\n', '\\n')
+            if field == 'tags': # XXX: special-casing
+                value = self.tags_as(tiddler.tags).replace('\n', '\\n')
+            if value or not omit_empty:
+                if value is None:
+                    value = ''
                 headers.append('%s: %s' % (field, value))
 
         custom_fields = self.fields_as(tiddler)
@@ -153,7 +158,7 @@ class Serialization(SerializationInterface):
             headers = header.split('\n')
 
             for field, value in [x.split(': ', 1) for x in headers]:
-                if value == '': # retained for backwards compatibility
+                if value == '':
                     continue
                 if hasattr(tiddler, field):
                     setattr(tiddler, field, value)
