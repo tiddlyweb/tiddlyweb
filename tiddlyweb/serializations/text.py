@@ -7,7 +7,7 @@ import simplejson
 
 from base64 import b64encode, b64decode
 
-
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.specialbag import get_bag_retriever
 from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
@@ -22,7 +22,8 @@ class Serialization(SerializationInterface):
     by the text Store.
     """
 
-    tiddler_fields = ['type', 'created', 'modifier', 'modified', 'tags']
+    tiddler_fields = [field for field in Tiddler.fields if not field in
+            ['title', 'text', 'creator', 'fields']]
 
     def list_recipes(self, recipes):
         """

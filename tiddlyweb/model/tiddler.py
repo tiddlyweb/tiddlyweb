@@ -69,15 +69,16 @@ class Tiddler(object):
            this tiddler from persistent storage.
     """
 
-    slots = ['title',
-            'created',
-            'modified',
-            'modifier',
+    fields = ['title',
             'creator',
+            'created',
+            'modifier',
+            'modified',
             'tags',
             'fields',
-            'text',
             'type',
+            'text']
+    slots = fields + [
             'revision',
             'bag',
             'recipe',
