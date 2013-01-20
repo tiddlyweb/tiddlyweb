@@ -121,7 +121,10 @@ class Serialization(SerializationInterface):
         custom_fields = self.fields_as(tiddler)
         headers.extend(custom_fields)
 
-        body = b64encode(tiddler.text) if binary_tiddler(tiddler) else tiddler.text
+        if binary_tiddler(tiddler):
+            body = b64encode(tiddler.text)
+        else:
+            body = tiddler.text
 
         return '%s\n\n%s\n' % ('\n'.join(headers), body)
 
