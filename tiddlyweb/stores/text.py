@@ -174,14 +174,13 @@ class Store(StorageInterface):
             # read in the desired tiddler
             tiddler = self._read_tiddler_revision(tiddler)
             # now make another tiddler to get created time
-            # base_tiddler is the head of the revision stack
-            base_tiddler = Tiddler(tiddler.title)
-            base_tiddler.bag = tiddler.bag
-            base_tiddler = self._read_tiddler_revision(base_tiddler, index=-1)
-            # set created on new tiddler from modified on base_tiddler
+            first_rev = Tiddler(tiddler.title)
+            first_rev.bag = tiddler.bag
+            first_rev = self._read_tiddler_revision(first_rev, index=-1)
+            # set created on new tiddler from modified on first_rev
             # (might be the same)
-            tiddler.created = base_tiddler.modified
-            tiddler.creator = base_tiddler.modifier
+            tiddler.created = first_rev.modified
+            tiddler.creator = first_rev.modifier
             return tiddler
         except IOError, exc:
             raise NoTiddlerError('no tiddler for %s: %s' %
