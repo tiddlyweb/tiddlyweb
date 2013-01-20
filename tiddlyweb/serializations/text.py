@@ -22,6 +22,9 @@ class Serialization(SerializationInterface):
     by the text Store.
     """
 
+    tiddler_fields = ['type', 'creator', 'created', 'modifier', 'modified',
+            'tags']
+
     def list_recipes(self, recipes):
         """
         Return a linefeed separated list of recipe names.
@@ -111,7 +114,7 @@ class Serialization(SerializationInterface):
         Represent a tiddler as a text string: headers, blank line, text.
         """
         headers = []
-        for field in ['type', 'creator', 'created', 'modifier', 'modified', 'tags']:
+        for field in self.tiddler_fields:
             value = getattr(tiddler, field)
             if value:
                 if field == 'tags': # XXX: special-casing
