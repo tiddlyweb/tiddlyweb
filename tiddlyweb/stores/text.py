@@ -222,7 +222,7 @@ class Store(StorageInterface):
 
         self.serializer.object = tiddler
         representation = self.serializer.serialization.tiddler_as(tiddler,
-                omit_empty=True)
+                omit_empty=True, omit_fields=['creator'])
         write_utf8_file(tiddler_filename, representation)
         write_unlock(tiddler_base_filename)
 
