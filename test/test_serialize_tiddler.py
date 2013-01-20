@@ -12,9 +12,11 @@ from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.config import config
 
 expected_string = """creator: test@example.com
+created: 
 modifier: test@example.com
 modified: 200803030303
 tags: foobar [[foo bar]]
+type: 
 
 Hello, I'm the content.
 """
