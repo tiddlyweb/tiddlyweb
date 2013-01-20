@@ -9,7 +9,6 @@ import os
 import simplejson
 import shutil
 import time
-import re
 import urllib
 
 from tiddlyweb.model.bag import Bag
