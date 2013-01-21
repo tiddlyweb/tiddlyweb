@@ -11,20 +11,19 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.serializer import Serializer, TiddlerFormatError
 from tiddlyweb.config import config
 
-expected_string = """modifier: test@example.com
+expected_string = """creator: test@example.com
 created: 
+modifier: test@example.com
 modified: 200803030303
-type: 
 tags: foobar [[foo bar]]
+type: 
 
 Hello, I'm the content.
 """
 
 # cosmic rays have injected noise into this tiddler string
 bad_string = """modifiXr: test@example.com
-created: 
 modiFied: 200803030303
-type: 
 tags:foobar [[foo bar]]
 
 Hello, I'm the content.
@@ -47,10 +46,7 @@ def test_generated_txt_string():
     serializer.object = tiddler
     string = serializer.to_string()
 
-    assert string == expected_string, \
-            'serialized recipe looks like we expect. should be %s, got %s' \
-            % (expected_string, string)
-
+    assert string == expected_string
     assert '%s' % serializer == expected_string, \
             'serializer goes to string as expected_string'
 

@@ -58,7 +58,7 @@ class Tiddler(object):
               have any assocation with the tiddlyweb.usersign,
               though it may.
     tags: A list of strings that describe the tiddler.
-    fields: An arbitrary dictionary of extended fields on the tiddler.
+    fields: An arbitrary dictionary of extended (custom) fields on the tiddler.
     text: The contents of the tiddler. A string.
     revision: The revision of this tiddler. An int.
     bag: The name of the bag in which this tiddler exists,
@@ -69,19 +69,17 @@ class Tiddler(object):
            this tiddler from persistent storage.
     """
 
-    slots = ['title',
-            'created',
-            'modified',
-            'modifier',
+    data_fields = ['title',
             'creator',
+            'created',
+            'modifier',
+            'modified',
             'tags',
             'fields',
-            'text',
             'type',
-            'revision',
-            'bag',
-            'recipe',
-            'store']
+            'text']
+    # TiddlyWeb-specific attributes
+    slots = data_fields + ['revision', 'bag', 'recipe', 'store']
 
     def __init__(self, title=None, bag=None):
         """
