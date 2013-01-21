@@ -22,7 +22,7 @@ class Serialization(SerializationInterface):
     by the text Store.
     """
 
-    tiddler_fields = [field for field in Tiddler.data_fields if not field in
+    tiddler_members = [field for field in Tiddler.data_members if not field in
             ['title', 'text', 'fields']]
 
     def list_recipes(self, recipes):
@@ -109,28 +109,33 @@ class Serialization(SerializationInterface):
         recipe.set_recipe(recipe_lines)
         return recipe
 
-    def tiddler_as(self, tiddler, omit_empty=False, omit_fields=None):
+    def tiddler_as(self, tiddler, omit_empty=False, omit_members=None):
         """
         Represent a tiddler as a text string: headers, blank line, text.
 
         `omit_*` arguments are non-standard options, usable only when this
         method is called directly (outside the regular Serializer interface)
+
+        If `omit_empty` is True, don't emit empty Tiddler members.
+
+        `omit_members` can represent a list of members to not include
+        in the output.
         """
-        omit_fields = omit_fields or []
+        omit_members = omit_members or []
 
         headers = []
-        for field in self.tiddler_fields:
-            if field in omit_fields:
+        for member in self.tiddler_members:
+            if member in omit_members:
                 continue
 
-            value = getattr(tiddler, field)
-            if field == 'tags': # XXX: special-casing
+            value = getattr(tiddler, member)
+            if member == 'tags': # XXX: special-casing
                 value = self.tags_as(tiddler.tags).replace('\n', '\\n')
 
             if value or not omit_empty:
                 if value is None:
                     value = ''
-                headers.append('%s: %s' % (field, value))
+                headers.append('%s: %s' % (member, value))
 
         custom_fields = self.fields_as(tiddler)
         headers.extend(custom_fields)

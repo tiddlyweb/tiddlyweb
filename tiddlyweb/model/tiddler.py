@@ -69,7 +69,7 @@ class Tiddler(object):
            this tiddler from persistent storage.
     """
 
-    data_fields = ['title',
+    data_members = ['title',
             'creator',
             'created',
             'modifier',
@@ -79,7 +79,7 @@ class Tiddler(object):
             'type',
             'text']
     # TiddlyWeb-specific attributes
-    slots = data_fields + ['revision', 'bag', 'recipe', 'store']
+    slots = data_members + ['revision', 'bag', 'recipe', 'store']
 
     def __init__(self, title=None, bag=None):
         """
