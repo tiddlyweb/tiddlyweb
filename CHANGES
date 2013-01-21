@@ -1,3 +1,9 @@
+1.4.0 Mon Jan 21 17:59:17 UTC 2013
+
+  * Remove HTMLPresenter in favor of more complete HTML serialization.
+  * Add creator to text serialization.
+  * Make text serialization more flexible (see tiddler_as).
+
 1.3.6 Tue Jan  8 11:29:58 UTC 2013
 
   * Correct serialization bug when listing bags and recipes.
