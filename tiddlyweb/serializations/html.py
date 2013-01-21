@@ -4,9 +4,36 @@ HTML based serializers.
 
 import urllib
 
+from tiddlyweb import __version__ as VERSION
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
+
+HEADER = """<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>TiddlyWeb - %(title)s</title>
+%(css)s
+%(links)s
+</head>
+<body>
+<div id="header">
+<h1>%(title)s</h1>
+</div>
+<div id="content">
+"""
+
+FOOTER = """
+</div>
+<div id="footer">
+<div id="badge">This is <a href="http://tiddlyweb.com/">TiddlyWeb</a>
+%(version)s</div>
+<div id="usergreet">User %(username)s.</div>
+</div>
+</body>
+</html>
+"""
 
 
 class Serialization(SerializationInterface):
@@ -28,11 +55,13 @@ class Serialization(SerializationInterface):
         self.environ['tiddlyweb.title'] = 'Recipes'
 
         def wrap_list():
+            yield self._header()
             yield '<ul id="recipes" class="listing">\n'
             for recipe in recipes:
                 yield '<li><a href="recipes/%s">%s</a></li>\n' % (
                         encode_name(recipe.name), recipe.name)
             yield '\n</ul>'
+            yield self._footer()
 
         return wrap_list()
 
@@ -43,11 +72,13 @@ class Serialization(SerializationInterface):
         self.environ['tiddlyweb.title'] = 'Bags'
 
         def wrap_list():
+            yield self._header()
             yield '<ul id="bags" class="listing">\n'
             for bag in bags:
                 yield '<li><a href="bags/%s/tiddlers">%s</a></li>\n' % (
                         encode_name(bag.name), bag.name)
             yield '\n</ul>'
+            yield self._footer()
 
         return wrap_list()
 
@@ -92,10 +123,13 @@ class Serialization(SerializationInterface):
         return """
 %s
 %s
+%s
 <ul id="tiddlers" class="listing">
 %s
 </ul>
-""" % (self._tiddler_list_header(representation_link), bag_link, output)
+%s
+""" % (self._header(), self._tiddler_list_header(representation_link),
+        bag_link, output, self._footer())
 
     def recipe_as(self, recipe):
         """
@@ -117,12 +151,14 @@ class Serialization(SerializationInterface):
         output = "\n".join(lines)
         tiddler_link = '%s/tiddlers' % encode_name(recipe.name)
         return """
+%s
 <div class="tiddlerslink"><a href="%s">Tiddlers in Recipe</a></div>
 <div id="recipedesc" class="description">%s</div>
 <ul id="recipe" class="listing">
 %s
 </ul>
-""" % (tiddler_link, recipe.desc, output)
+%s
+""" % (self._header(), tiddler_link, recipe.desc, output, self._footer())
 
     def bag_as(self, bag):
         """
@@ -131,9 +167,11 @@ class Serialization(SerializationInterface):
         self.environ['tiddlyweb.title'] = 'Bag %s' % bag.name
         tiddler_link = '%s/tiddlers' % encode_name(bag.name)
         return """
+%s
 <div id="bagdesc" class="description">%s</div>
 <div class="tiddlerslink"><a href="%s">Tiddlers in Bag %s</a></div>
-""" % (bag.desc, tiddler_link, bag.name)
+%s
+""" % (self._header(), bag.desc, tiddler_link, bag.name, self._footer())
 
     def tiddler_as(self, tiddler):
         """
@@ -153,7 +191,8 @@ class Serialization(SerializationInterface):
                 'title="tiddler list">%s</a></div>' % list_title)
         html = render_wikitext(tiddler, self.environ)
         self.environ['tiddlyweb.title'] = tiddler.title
-        return list_html + self._tiddler_div(tiddler) + html + '</div>'
+        return (self._header() + list_html + self._tiddler_div(tiddler)
+                + html + '</div>' + self._footer())
 
     def _server_prefix(self):
         """
@@ -247,3 +286,29 @@ class Serialization(SerializationInterface):
             tiddler.revision,
             tiddler.title,
             tiddler.revision))
+
+    def _header(self):
+        """
+        Return HTML header section.
+        """
+        css = ''
+        css_config = self.environ.get(
+                'tiddlyweb.config', {}).get('css_uri', '')
+        if css_config:
+            css = ('<link rel="stylesheet" href="%s" type="text/css" />' %
+                    css_config)
+        links = '\n'.join(self.environ.get('tiddlyweb.links', []))
+        template = {
+                'title': self.environ.get('tiddlyweb.title', ''),
+                'css': css,
+                'links': links,
+                }
+        return HEADER % template
+
+    def _footer(self):
+        """
+        Return a footer frame for the HTML.
+        """
+        return FOOTER % {'version': VERSION,
+                'username': self.environ.get(
+                    'tiddlyweb.usersign', {}).get('name', 'GUEST')}

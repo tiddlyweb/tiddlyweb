@@ -91,8 +91,8 @@ log_level -- String of loglevel to log. Pick one of 'CRITICAL', 'DEBUG',
 'ERROR', 'INFO', 'WARNING'.
 
 css_uri -- A url of a css file that can be used to style the HTML output
-of the server. See tiddlyweb.web.wsgi.HTMLPresenter and
-tiddlyweb.serializations.html for the classes and ids used.
+of the server. See tiddlyweb.serializations.html for the classes and
+ids used.
 
 wikitext.default_renderer -- The default module for rendering
 tiddler.text to HTML when tiddler.type is None.
@@ -127,7 +127,7 @@ from tiddlyweb.web.negotiate import Negotiate
 from tiddlyweb.web.query import Query
 from tiddlyweb.web.extractor import UserExtract
 from tiddlyweb.web.wsgi import StoreSet, EncodeUTF8, SimpleLog, \
-        Header, HTMLPresenter, PermissionsExceptor, TransformProtect
+        Header, PermissionsExceptor, TransformProtect
 
 # A dict containing the configuration of TiddlyWeb, both
 # as a server and as a library. This dictionary can contain
@@ -145,7 +145,6 @@ DEFAULT_CONFIG = {
             Header,
             Negotiate],
         'server_response_filters': [
-            HTMLPresenter,
             PermissionsExceptor,
             HTTPExceptor,
             EncodeUTF8,
