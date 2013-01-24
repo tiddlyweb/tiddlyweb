@@ -12,8 +12,8 @@ clean:
 
 tagv:
 	git tag -a \
-	    -m v`python -c 'import tiddlyweb; print tiddlyweb.__version__'` \
-	    v`python -c 'import tiddlyweb; print tiddlyweb.__version__'`
+		-m v`python -c 'import tiddlyweb; print tiddlyweb.__version__'` \
+		v`python -c 'import tiddlyweb; print tiddlyweb.__version__'`
 	git push origin master --tags
 
 cleanagain:
