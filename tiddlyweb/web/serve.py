@@ -27,7 +27,7 @@ def load_app(app_prefix=None, dirname=None):
     # If the logger is not already initialized (from twanager),
     # let's initialize it.
     if LOGGER.parent.name is not 'tiddlyweb':
-        initialize_logging(config)
+        initialize_logging(config, server=True)
 
     mapfile = config['urls_map']
     if app_prefix is not None:

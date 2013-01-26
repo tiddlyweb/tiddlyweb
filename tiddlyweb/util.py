@@ -208,13 +208,15 @@ def _initialize_logging(config):
     """
     syslog = config.get('log_syslog', None)
     logger = logging.getLogger('tiddlyweb')
+    logger.propagate = False
     plugin_logger = logging.getLogger('tiddlywebplugins')
+    plugin_logger.propagate = False
     logger.setLevel(config['log_level'])
     plugin_logger.setLevel(config['log_level'])
     if syslog:
         from logging.handlers import SysLogHandler
         syslog_handler = SysLogHandler(facility=syslog)
-        formatter = logging.Formatter('%(name)s: [%(levelname)s] %(message)s')
+        formatter = logging.Formatter('%(levelname)s %(name)s: %(message)s')
         syslog_handler.setFormatter(formatter)
         logger.addHandler(syslog_handler)
         plugin_logger.addHandler(syslog_handler)
@@ -222,7 +224,8 @@ def _initialize_logging(config):
         from logging import FileHandler
         file_handler = FileHandler(
                 filename=os.path.join(config['root_dir'], config['log_file']))
-        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+        formatter = logging.Formatter(
+                '%(asctime)s %(levelname)s %(name)s: %(message)s')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
         plugin_logger.addHandler(file_handler)
