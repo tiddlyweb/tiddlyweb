@@ -187,7 +187,7 @@ def write_unlock(filename):
 def initialize_logging(config, server=False):
     """
     Initialize the system logging. If run as twanager but there is
-    no sub_command, don't create a log, otherwise log.
+    no sub_command, don't log, otherwise do.
     """
     try:
         sub_command = sys.argv[1]
@@ -200,19 +200,22 @@ def initialize_logging(config, server=False):
 def _initialize_logging(config):
     """
     Configure logging. If 'log_syslog' has a value it should point
-    to a syslog logging level to which we will log.
+    to a syslog facility to which we will log.
 
     Two loggers are established: 'tiddlyweb' and 'tiddlywebplugins'.
     Modules which wish to log should use `logger.getLogger(__name__)`
-    to get logger in the right part of the logging tree.
+    to get a logger in the right part of the logging hierarchy.
     """
     syslog = config.get('log_syslog', None)
+
     logger = logging.getLogger('tiddlyweb')
     logger.propagate = False
+    logger.setLevel(config['log_level'])
+
     plugin_logger = logging.getLogger('tiddlywebplugins')
     plugin_logger.propagate = False
-    logger.setLevel(config['log_level'])
     plugin_logger.setLevel(config['log_level'])
+
     if syslog:
         from logging.handlers import SysLogHandler
         syslog_handler = SysLogHandler(facility=syslog)
@@ -229,6 +232,7 @@ def _initialize_logging(config):
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
         plugin_logger.addHandler(file_handler)
+
     logger.debug('TiddlyWeb starting up as %s', sys.argv[0])
 
 
