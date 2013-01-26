@@ -1,3 +1,7 @@
+1.4.1 Sat Jan 26 12:44:06 UTC 2013
+
+  * Fix presentation of challengers to include HTML framing.
+
 1.4.0 Mon Jan 21 17:59:17 UTC 2013
 
   * Remove HTMLPresenter in favor of more complete HTML serialization.
