@@ -305,7 +305,7 @@ class Serialization(SerializationInterface):
                 'title': title,
                 'css': css,
                 'links': links,
-                }
+        }
         return HEADER % template
 
     def _footer(self):

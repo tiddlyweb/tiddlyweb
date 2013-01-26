@@ -129,7 +129,7 @@ class Serialization(SerializationInterface):
                 continue
 
             value = getattr(tiddler, member)
-            if member == 'tags': # XXX: special-casing
+            if member == 'tags':  # XXX: special-casing
                 value = self.tags_as(tiddler.tags).replace('\n', '\\n')
 
             if value or not omit_empty:
@@ -153,7 +153,7 @@ class Serialization(SerializationInterface):
         """
         fields = []
         for key in tiddler.fields:
-            if not key.startswith('server.'): # XXX: TiddlyWiki legacy remnant?
+            if not key.startswith('server.'):  # XXX: TiddlyWiki legacy remnant?
                 value = unicode(tiddler.fields[key])
                 fields.append('%s: %s' % (key, value.replace('\n', '\\n')))
         return fields
