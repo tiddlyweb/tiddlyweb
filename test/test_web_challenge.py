@@ -28,6 +28,7 @@ def test_challenge_base():
     response, content = http.request('http://our_test_domain:8001/challenge', method='GET')
 
     assert response['status'] == '401'
+    assert '<title>TiddlyWeb - Login Challengers</title>' in content
     assert 'cookie_form' in content
     assert '>TiddlyWeb username and password</a>' in content
 
@@ -36,6 +37,7 @@ def test_challenge_cookie_form():
     response, content = http.request('http://our_test_domain:8001/challenge/cookie_form', method='GET')
 
     assert response['status'] == '401'
+    assert '<title>TiddlyWeb - Cookie Based Login</title>' in content
     assert '<form' in content
 
 def test_challenge_not_there_in_config():

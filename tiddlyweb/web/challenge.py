@@ -7,7 +7,7 @@ import urllib
 
 from httpexceptor import HTTP302, HTTP404
 
-from tiddlyweb.web.util import server_base_url, get_route_value
+from tiddlyweb.web.util import server_base_url, get_route_value, html_frame
 
 
 def base(environ, start_response):
@@ -20,7 +20,9 @@ def base(environ, start_response):
     if len(auth_systems) == 1:
         raise HTTP302(_challenger_url(environ, auth_systems[0]))
     start_response('401 Unauthorized', [('Content-Type', 'text/html')])
-    environ['tiddlyweb.title'] = 'Login Challengers'
+    title = 'Login Challengers'
+    
+    header, footer = html_frame(environ, title)
 
     challenger_info = []
     for system in auth_systems:
@@ -32,8 +34,9 @@ def base(environ, start_response):
         except ImportError:
             pass
 
-    return ['<li><a href="%s">%s</a></li>' % (uri, label) for uri, label in
-            challenger_info]
+    output = ['<li><a href="%s">%s</a></li>' % (uri, label)
+            for uri, label in challenger_info]
+    return [header] + output + [footer]
 
 
 def challenge_get(environ, start_response):

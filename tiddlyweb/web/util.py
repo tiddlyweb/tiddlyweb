@@ -141,6 +141,19 @@ def handle_extension(environ, resource_name):
     return resource_name
 
 
+def html_frame(environ, title=''):
+    """
+    Return the header and footer from the current HTML serialization.
+    """
+    # Get HTML framing
+    html = environ.get('tiddlyweb.config', {}).get(
+            'serializers', {}).get('text/html')[0]
+    html = Serializer(html, environ).serialization
+    header = html._header(title)
+    footer = html._footer()
+    return header, footer
+
+
 def http_date_from_timestamp(timestamp):
     """
     Turn a modifier or created tiddler timestamp

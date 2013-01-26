@@ -6,7 +6,7 @@ and password.
 import logging
 
 from tiddlyweb.web.challengers import ChallengerInterface
-from tiddlyweb.web.util import server_host_url, make_cookie
+from tiddlyweb.web.util import server_host_url, make_cookie, html_frame
 from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError
 
@@ -55,8 +55,9 @@ class Challenger(ChallengerInterface):
         and password.
         """
         start_response(status, [('Content-Type', 'text/html')])
-        environ['tiddlyweb.title'] = 'Cookie Based Login'
-        return ["""
+        title = 'Cookie Based Login'
+        header, footer = html_frame(environ, title)
+        return [header, """
 <p>%s</p>
 
 <form action="" method="POST">
@@ -71,7 +72,7 @@ class Challenger(ChallengerInterface):
     <input type="hidden" name="tiddlyweb_redirect" value="%s" />
     <input type="submit" value="submit" />
 </form>
-""" % (message, redirect)]
+""" % (message, redirect), footer]
 
     def _validate_and_redirect(self, environ, start_response, username,
             password, redirect):

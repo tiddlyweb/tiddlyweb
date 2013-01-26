@@ -287,7 +287,7 @@ class Serialization(SerializationInterface):
             tiddler.title,
             tiddler.revision))
 
-    def _header(self):
+    def _header(self, title=''):
         """
         Return HTML header section.
         """
@@ -298,8 +298,11 @@ class Serialization(SerializationInterface):
             css = ('<link rel="stylesheet" href="%s" type="text/css" />' %
                     css_config)
         links = '\n'.join(self.environ.get('tiddlyweb.links', []))
+        env_title = self.environ.get('tiddlyweb.title')
+        if env_title:
+            title = env_title
         template = {
-                'title': self.environ.get('tiddlyweb.title', ''),
+                'title': title,
                 'css': css,
                 'links': links,
                 }
