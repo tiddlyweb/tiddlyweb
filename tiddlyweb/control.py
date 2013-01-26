@@ -14,6 +14,9 @@ from tiddlyweb.store import NoBagError, StoreError
 from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def get_tiddlers_from_recipe(recipe, environ=None):
     """
     Return the list of tiddlers that result from processing the recipe.
@@ -101,7 +104,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
         try:
             tiddlers = index_module.index_query(environ, **kwords)
             if list(tiddlers):
-                logging.debug(
+                LOGGER.debug(
                         'satisfied recipe bag query via filter index: %s:%s',
                         bag.name, tiddler.title)
                 return bag
@@ -123,7 +126,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
         try:
             found_bag = _query_index(bag)
         except FilterIndexRefused:
-            logging.debug('determined bag filter refused')
+            LOGGER.debug('determined bag filter refused')
             found_bag = _query_bag(bag)
         if found_bag:
             return bag

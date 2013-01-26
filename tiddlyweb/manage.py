@@ -17,6 +17,9 @@ INTERNAL_PLUGINS = ['tiddlyweb.commands']
 COMMANDS = {}
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def make_command():
     """
     A decorator that marks the decorated method
@@ -61,7 +64,7 @@ def handle(args):
     try:
         plugins.extend(config['twanager_plugins'])
         for plugin in plugins:
-            logging.debug('attempting to import twanager plugin %s', plugin)
+            LOGGER.debug('attempting to import twanager plugin %s', plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -81,7 +84,7 @@ def handle(args):
 
     if candidate_command and candidate_command in COMMANDS:
         try:
-            logging.debug('running command %s with %s',
+            LOGGER.debug('running command %s with %s',
                     candidate_command, args)
             COMMANDS[candidate_command](args)
         except IndexError, exc:
@@ -90,7 +93,7 @@ def handle(args):
             if config.get('twanager.tracebacks', False):
                 raise
             import traceback
-            logging.error('twanager error with command "%s %s"\n%s',
+            LOGGER.error('twanager error with command "%s %s"\n%s',
                     candidate_command, args, traceback.format_exc())
             usage('%s: %s' % (exc.__class__.__name__, exc.args))
     else:

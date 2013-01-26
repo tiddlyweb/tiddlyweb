@@ -184,30 +184,49 @@ def write_unlock(filename):
     os.unlink(lock_filename)
 
 
-def initialize_logging(config):
+def initialize_logging(config, server=False):
     """
-    Initialize the logging to tiddlyweb.log. We go to great lengths
-    to avoid writing a tiddlyweb.log file when we don't actually need
-    or want to.
+    Initialize the system logging. If run as twanager but there is
+    no sub_command, don't create a log, otherwise log.
     """
     try:
-        try:
-            current_command = sys.argv[0]
-            current_sub_command = sys.argv[1]
-        except IndexError:
-            current_command = ''
-            current_sub_command = ''
-        # there's tiddlywebconfig.py here and it says log level is high, so log
-        if config['log_level'] != 'INFO':
-            raise IndexError
-        # we're running the server so we want to log
-        if 'twanager' in current_command and current_sub_command == 'server':
-            raise IndexError
+        sub_command = sys.argv[1]
     except IndexError:
-        logging.basicConfig(level=getattr(logging, config['log_level']),
-                format='%(asctime)s %(levelname)-8s %(message)s',
+        sub_command = None
+    if server or sub_command:
+        _initialize_logging(config)
+
+
+def _initialize_logging(config):
+    """
+    Configure logging. If 'log_syslog' has a value it should point
+    to a syslog logging level to which we will log.
+
+    Two loggers are established: 'tiddlyweb' and 'tiddlywebplugins'.
+    Modules which wish to log should use `logger.getLogger(__name__)`
+    to get logger in the right part of the logging tree.
+    """
+    syslog = config.get('log_syslog', None)
+    logger = logging.getLogger('tiddlyweb')
+    plugin_logger = logging.getLogger('tiddlywebplugins')
+    logger.setLevel(config['log_level'])
+    plugin_logger.setLevel(config['log_level'])
+    if syslog:
+        from logging.handlers import SysLogHandler
+        syslog_handler = SysLogHandler(facility=syslog)
+        formatter = logging.Formatter('%(name)s: [%(levelname)s] %(message)s')
+        syslog_handler.setFormatter(formatter)
+        logger.addHandler(syslog_handler)
+        plugin_logger.addHandler(syslog_handler)
+    else:
+        from logging import FileHandler
+        file_handler = FileHandler(
                 filename=os.path.join(config['root_dir'], config['log_file']))
-        logging.debug('TiddlyWeb starting up as %s', sys.argv[0])
+        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        plugin_logger.addHandler(file_handler)
+    logger.debug('TiddlyWeb starting up as %s', sys.argv[0])
 
 
 def _lock_filename(filename):

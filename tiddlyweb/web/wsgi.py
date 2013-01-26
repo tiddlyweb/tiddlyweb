@@ -47,7 +47,7 @@ class SimpleLog(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        logger = logging.getLogger()
+        logger = logging.getLogger('tiddlyweb')
         if logger.isEnabledFor(logging.INFO):
             return self._log_app(environ, start_response)
         else:

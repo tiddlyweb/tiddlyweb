@@ -32,6 +32,9 @@ CANONICAL_URI_FIELD = '_canonical_uri'
 CANONICAL_URI_PASS_TYPE = 'application/json'
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def get(environ, start_response):
     """
     Get a representation of a single tiddler,
@@ -300,7 +303,7 @@ def validate_tiddler_headers(environ, tiddler):
     request_method = environ['REQUEST_METHOD']
     tiddlers_etag = tiddler_etag(environ, tiddler)
 
-    logging.debug('attempting to validate %s with revision %s',
+    LOGGER.debug('attempting to validate %s with revision %s',
             tiddler.title, tiddler.revision)
 
     etag = None
@@ -308,7 +311,7 @@ def validate_tiddler_headers(environ, tiddler):
     if request_method == 'GET':
         incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
         if incoming_etag:
-            logging.debug('attempting to validate incoming etag(GET):'
+            LOGGER.debug('attempting to validate incoming etag(GET):'
                 '%s against %s', incoming_etag, tiddlers_etag)
             if incoming_etag == tiddlers_etag:
                 raise HTTP304(incoming_etag)
@@ -320,7 +323,7 @@ def validate_tiddler_headers(environ, tiddler):
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
-        logging.debug('attempting to validate incoming etag(PUT):'
+        LOGGER.debug('attempting to validate incoming etag(PUT):'
             '%s against %s', incoming_etag, tiddlers_etag)
         if incoming_etag and not _etag_write_match(incoming_etag,
                 tiddlers_etag):

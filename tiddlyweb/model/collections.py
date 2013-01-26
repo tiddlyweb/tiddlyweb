@@ -15,6 +15,9 @@ from tiddlyweb.util import sha
 from tiddlyweb.model.tiddler import Tiddler
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Collection(object):
     """
     Base class for all collections.
@@ -119,7 +122,7 @@ class Tiddlers(Collection):
                 try:
                     tiddler = self.store.get(tiddler)
                 except StoreError, exc:
-                    logging.debug('missed tiddler in collection: %s, %s',
+                    LOGGER.debug('missed tiddler in collection: %s, %s',
                             tiddler, exc)
                     continue
             yield tiddler
@@ -135,7 +138,7 @@ class Tiddlers(Collection):
             try:
                 tiddler = self.store.get(tiddler)
             except StoreError, exc:
-                logging.debug(
+                LOGGER.debug(
                         'tried to add missing tiddler to collection: %s, %s',
                         tiddler, exc)
                 return

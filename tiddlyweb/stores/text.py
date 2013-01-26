@@ -24,6 +24,9 @@ from tiddlyweb.util import LockError, write_lock, write_unlock, \
         read_utf8_file, write_utf8_file
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Store(StorageInterface):
     """
     A StorageInterface which stores text-based representations
@@ -369,7 +372,7 @@ class Store(StorageInterface):
                             yield tiddler
                             break
                 except (OSError, NoTiddlerError), exc:
-                    logging.warn('malformed tiddler during search: %s:%s, %s',
+                    LOGGER.warn('malformed tiddler during search: %s:%s, %s',
                             bagname, tiddler_name, exc)
         return
 

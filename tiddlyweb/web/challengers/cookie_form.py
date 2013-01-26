@@ -11,6 +11,9 @@ from tiddlyweb.model.user import User
 from tiddlyweb.store import NoUserError
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Challenger(ChallengerInterface):
     """
     A simple challenger that asks the user, by form, for their
@@ -92,7 +95,7 @@ class Challenger(ChallengerInterface):
                 cookie_header_string = make_cookie('tiddlyweb_user',
                         user.usersign, mac_key=secret,
                         path=self._cookie_path(environ), expires=cookie_age)
-                logging.debug('303 to %s', uri)
+                LOGGER.debug('303 to %s', uri)
                 start_response('303 Other',
                         [('Set-Cookie', cookie_header_string),
                             ('Content-Type', 'text/plain'),

@@ -7,6 +7,9 @@ which to set tiddlyweb.usersign.
 import logging
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class UserExtract(object):
     """
     WSGI Middleware to set the User, if it can be
@@ -50,7 +53,7 @@ def _try_extractors(environ, extractors, start_response):
         extractor = imported_module.Extractor()
         extracted_user = extractor.extract(environ, start_response)
         if extracted_user:
-            logging.debug('UserExtract:%s found %s',
+            LOGGER.debug('UserExtract:%s found %s',
                     extractor_name, extracted_user)
             return extracted_user
     return False

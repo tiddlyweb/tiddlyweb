@@ -15,6 +15,9 @@ from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def get_search_query(environ):
     """
     Inspect tiddlyweb.query in the environment to get
@@ -37,7 +40,7 @@ def get_tiddlers(environ):
     search_query = get_search_query(environ)
     store = environ['tiddlyweb.store']
     tiddlers = store.search(search_query)
-    logging.debug('got search results from store')
+    LOGGER.debug('got search results from store')
     return tiddlers
 
 

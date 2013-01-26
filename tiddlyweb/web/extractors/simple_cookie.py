@@ -12,6 +12,9 @@ from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.util import sha
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Extractor(ExtractorInterface):
     """
     Look in the headers for a cookie named 'tiddlyweb_user'.
@@ -26,7 +29,7 @@ class Extractor(ExtractorInterface):
         """
         try:
             user_cookie = environ['HTTP_COOKIE']
-            logging.debug('simple_cookie looking at cookie string: %s',
+            LOGGER.debug('simple_cookie looking at cookie string: %s',
                     user_cookie)
             cookie = Cookie.SimpleCookie()
             cookie.load(user_cookie)

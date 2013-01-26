@@ -8,6 +8,9 @@ import logging
 import mimeparse
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Negotiate(object):
     """
     Perform a form of content negotiation
@@ -44,7 +47,7 @@ def _figure_type_for_other(environ):
     """
     content_type = environ.get('CONTENT_TYPE', None)
     if content_type:
-        logging.debug('negotiating for content-type %s', content_type)
+        LOGGER.debug('negotiating for content-type %s', content_type)
         content_type = content_type.split(';')[0]
         environ['tiddlyweb.type'] = content_type
 
@@ -85,7 +88,7 @@ def _figure_type_for_get(environ):
         except ValueError:
             our_types.append(default_type)
 
-    logging.debug('negotiating for accept and extensions %s', our_types)
+    LOGGER.debug('negotiating for accept and extensions %s', our_types)
 
     environ['tiddlyweb.type'] = our_types
 

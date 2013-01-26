@@ -9,6 +9,9 @@ from selector import Selector
 from tiddlyweb.util import std_error_message, initialize_logging
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def load_app(app_prefix=None, dirname=None):
     """
     Create our application from a series of layers. The innermost
@@ -16,11 +19,15 @@ def load_app(app_prefix=None, dirname=None):
     is surround by wrappers, which either set something in the
     environment, modify the request, or transform output.
     """
+    global LOGGER
     from tiddlyweb.config import config
     if dirname:
         config['root_dir'] = dirname
 
-    initialize_logging(config)
+    # If the logger is not already initialized (from twanager),
+    # let's initialize it.
+    if LOGGER.parent.name is not 'tiddlyweb':
+        initialize_logging(config)
 
     mapfile = config['urls_map']
     if app_prefix is not None:
@@ -33,7 +40,7 @@ def load_app(app_prefix=None, dirname=None):
     try:
         plugins = config['system_plugins']
         for plugin in plugins:
-            logging.debug('attempt to import system plugin %s', plugin)
+            LOGGER.debug('attempt to import system plugin %s', plugin)
             # let the import fail with error if it does
             imported_module = __import__(plugin, {}, {}, ['init'])
             imported_module.init(config)
@@ -47,7 +54,7 @@ def load_app(app_prefix=None, dirname=None):
     wrappers.extend(config['server_response_filters'])
     if wrappers:
         for wrapper in wrappers:
-            logging.debug('wrapping app with %s', wrapper)
+            LOGGER.debug('wrapping app with %s', wrapper)
             if wrapper == Configurator:
                 app = wrapper(app, config=config)
             else:
@@ -66,7 +73,7 @@ def start_cherrypy(config):
     app = load_app()
     server = CherryPyWSGIServer((hostname, port), app)
     try:
-        logging.debug('starting CherryPy at %s://%s:%s',
+        LOGGER.debug('starting CherryPy at %s://%s:%s',
                 scheme, hostname, port)
         std_error_message("Starting CherryPy at %s://%s:%s"
                 % (scheme, hostname, port))
@@ -84,7 +91,7 @@ class RequestLogger(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        logging.debug('starting %s request with URI "%s", script_name "%s"'
+        LOGGER.debug('starting %s request with URI "%s", script_name "%s"'
                 ', path_info "%s" and query "%s"',
                 environ.get('REQUEST_METHOD', None),
                 environ.get('REQUEST_URI', None),

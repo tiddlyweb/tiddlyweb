@@ -16,6 +16,9 @@ from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
         check_last_modified)
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def send_tiddlers(environ, start_response, tiddlers=None):
     """
     Output the tiddlers contained in the provided
@@ -27,7 +30,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
     store = environ['tiddlyweb.store']
 
     if tiddlers.store is None and not filters:
-        logging.warn('Incoming tiddlers no store set %s', inspect.stack()[1])
+        LOGGER.warn('Incoming tiddlers no store set %s', inspect.stack()[1])
 
     if filters:
         candidate_tiddlers = _filter_tiddlers(filters, store, tiddlers)
