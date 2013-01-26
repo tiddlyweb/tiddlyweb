@@ -21,7 +21,7 @@ def base(environ, start_response):
         raise HTTP302(_challenger_url(environ, auth_systems[0]))
     start_response('401 Unauthorized', [('Content-Type', 'text/html')])
     title = 'Login Challengers'
-    
+
     header, footer = html_frame(environ, title)
 
     challenger_info = []
