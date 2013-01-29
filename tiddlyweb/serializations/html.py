@@ -250,7 +250,7 @@ class Serialization(SerializationInterface):
             links = []
             query_string = self.environ.get('QUERY_STRING', '')
             if query_string:
-                query_string = '?%s' % query_string
+                query_string = '?%s' % encode_name(query_string.decode('utf-8'))
             for extension in extension_types:
                 link = '<a href="%s.%s%s">%s</a>' % (representation_link,
                         extension, query_string, extension)
