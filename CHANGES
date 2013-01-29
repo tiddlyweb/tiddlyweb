@@ -1,3 +1,7 @@
+1.4.2 Tue Jan 29 14:43:24 UTC 2013
+
+  * Add log_syslog to config to allow logging to syslogd.
+
 1.4.1 Sat Jan 26 12:44:06 UTC 2013
 
   * Fix presentation of challengers to include HTML framing.
