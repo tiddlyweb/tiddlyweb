@@ -250,7 +250,9 @@ class Serialization(SerializationInterface):
             links = []
             query_string = self.environ.get('QUERY_STRING', '')
             if query_string:
-                query_string = '?%s' % query_string
+                # By now there would have already been a failure if 
+                # if the query string is not valid utf-8.
+                query_string = '?%s' % unicode(query_string, 'utf-8')
             for extension in extension_types:
                 link = '<a href="%s.%s%s">%s</a>' % (representation_link,
                         extension, query_string, extension)
