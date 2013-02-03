@@ -508,7 +508,13 @@ class Store(StorageInterface):
             revisions = self.list_tiddler_revisions(tiddler)
             if revisions:
                 revision = revisions[index]
-        return int(revision)
+
+        try:
+            revision = int(revision)
+        except ValueError, exc:
+            raise NoTiddlerError('%s is not a valid revision id' % exc)
+
+        return revision
 
     def _user_path(self, user):
         """
