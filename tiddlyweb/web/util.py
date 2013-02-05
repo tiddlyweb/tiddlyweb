@@ -38,6 +38,21 @@ def check_bag_constraint(environ, bag, constraint):
         raise exc.__class__(msg)
 
 
+def check_incoming_etag(environ, etag_string):
+    """
+    Raise 304 if the provided etag is the same as that found in the
+    If-None-Match header of the incoming request.
+
+    Return incoming_etag to indicate that an etag was there but
+    did not match.
+    """
+    incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
+    if incoming_etag:
+        if incoming_etag == etag_string:
+            raise HTTP304(incoming_etag)
+    return incoming_etag
+
+
 def check_last_modified(environ, last_modified_string):
     """
     Raise `HTTP304` if If-Modified-Since header matches `last_modified_string`

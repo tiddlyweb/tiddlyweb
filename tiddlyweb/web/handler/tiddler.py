@@ -6,7 +6,7 @@ a Tiddler, GET a list of revisions of a Tiddler.
 import logging
 
 from httpexceptor import (HTTP404, HTTP415, HTTP412, HTTP409,
-        HTTP400, HTTP304, HTTP302)
+        HTTP400, HTTP302)
 
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
@@ -22,7 +22,7 @@ from tiddlyweb import control
 from tiddlyweb.web.util import (check_bag_constraint, get_route_value,
         handle_extension, content_length_and_type, read_request_body,
         get_serialize_type, tiddler_etag, tiddler_url, encode_name,
-        http_date_from_timestamp, check_last_modified)
+        http_date_from_timestamp, check_last_modified, check_incoming_etag)
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
@@ -300,13 +300,8 @@ def validate_tiddler_headers(environ, tiddler):
     etag = None
     last_modified = None
     if request_method == 'GET':
-        incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-        if incoming_etag:
-            LOGGER.debug('attempting to validate incoming etag(GET):'
-                '%s against %s', incoming_etag, tiddlers_etag)
-            if incoming_etag == tiddlers_etag:
-                raise HTTP304(incoming_etag)
-        else:
+        incoming_etag = check_incoming_etag(environ, tiddlers_etag)
+        if not incoming_etag:  # only check last-modified if no etag
             last_modified_string = http_date_from_timestamp(
                     tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
@@ -446,13 +441,16 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     tiddlers.link = '%s/revisions' % tiddler_url(environ, tiddler,
             container=container, full=False)
 
-    recipe = tiddler.recipe
+    # Set the container on the tiddlers. Since tiddler.recipe
+    # defaults to None, we're "safe" here.
+    tiddlers.recipe = tiddler.recipe
+    tiddlers.bag = tiddler.bag
+
     try:
         for revision in store.list_tiddler_revisions(tiddler):
             tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
             tmp_tiddler.revision = revision
-            if recipe:
-                tmp_tiddler.recipe = recipe
+            tmp_tiddler.recipe = tiddler.recipe
             tiddlers.add(tmp_tiddler)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.

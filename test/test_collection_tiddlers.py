@@ -93,3 +93,18 @@ def test_tiddler_racing():
     assert 'z' in [tiddler.title for tiddler in tids]
     assert 'y' not in [tiddler.title for tiddler in tids]
 
+def test_tiddlers_container():
+    tiddlers = Tiddlers()
+
+    assert not tiddlers.is_search
+    assert not tiddlers.is_revisions
+    assert not tiddlers.bag
+    assert not tiddlers.recipe
+
+    tiddlers = Tiddlers(bag='foobar')
+    assert tiddlers.bag == 'foobar'
+    assert not tiddlers.recipe
+
+    tiddlers = Tiddlers(recipe='foobar')
+    assert tiddlers.recipe == 'foobar'
+    assert not tiddlers.bag

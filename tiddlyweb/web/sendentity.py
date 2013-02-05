@@ -3,10 +3,11 @@ Send a bag or recipe out HTTP, first serializing to the correct type.
 This consolidates common code for bags and recipes.
 """
 
-from httpexceptor import HTTP304, HTTP415
+from httpexceptor import HTTP415
 
 from tiddlyweb.serializer import Serializer, NoSerializationError
-from tiddlyweb.web.util import get_serialize_type, entity_etag
+from tiddlyweb.web.util import (get_serialize_type, entity_etag,
+        check_incoming_etag)
 
 
 def send_entity(environ, start_response, entity):
@@ -16,10 +17,7 @@ def send_entity(environ, start_response, entity):
     304.
     """
     etag_string = entity_etag(environ, entity)
-    incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-    if incoming_etag:
-        if incoming_etag == etag_string:
-            raise HTTP304(incoming_etag)
+    check_incoming_etag(environ, etag_string)
 
     try:
         serialize_type, mime_type = get_serialize_type(environ)

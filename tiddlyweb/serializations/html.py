@@ -90,32 +90,33 @@ class Serialization(SerializationInterface):
         title = tiddlers.title
         server_prefix = self._server_prefix()
         lines = []
-        representation_link = tiddlers.link
-        bag_link = ''
+        container_link = ''
+
+        if tiddlers.link:
+            representation_link = tiddlers.link
+        elif tiddlers.is_search:
+            representation_link = '%s/search' % server_prefix
+        else:
+            representation_link = ''
+
         for tiddler in tiddlers:
-            if not representation_link:
-                representation_link = self._tiddler_list_info(tiddler)
             if tiddlers.is_revisions:
                 line = self._tiddler_revision_info(tiddler)
             else:
                 line = self._tiddler_in_container_info(tiddler)
             lines.append(line)
 
-        if tiddlers.is_search:
-            representation_link = '%s/search' % server_prefix
-
-        try:
-            routing_args = self.environ.get('wsgiorg.routing_args')[1]
-        except (TypeError, IndexError, KeyError):
-            routing_args = {}
-
-        if 'bag_name' in routing_args and not 'tiddler_name' in routing_args:
-            bag_name = routing_args['bag_name']
-            bag_name = urllib.unquote(bag_name)
-            bag_name = unicode(bag_name, 'utf-8')
-            bag_link = ('<div class="baglink"><a href="%s/bags/%s">'
-                    'Bag %s</a></div>' % (server_prefix,
-                        encode_name(bag_name), bag_name))
+        if not tiddlers.is_revisions and not tiddlers.is_search:
+            if tiddlers.bag:
+                container_link = ('<div class="baglink">'
+                        '<a href="%s/bags/%s">Bag %s</a></div>'
+                        % (server_prefix, encode_name(tiddlers.bag),
+                            tiddlers.bag))
+            elif tiddlers.recipe:
+                container_link = ('<div class="recipelink">'
+                        '<a href="%s/recipes/%s">Recipe %s</a></div>'
+                        % (server_prefix, encode_name(tiddlers.recipe),
+                            tiddlers.recipe))
 
         output = "\n".join(lines)
         self.environ['tiddlyweb.title'] = title
@@ -129,7 +130,7 @@ class Serialization(SerializationInterface):
 </ul>
 %s
 """ % (self._header(), self._tiddler_list_header(representation_link),
-        bag_link, output, self._footer())
+        container_link, output, self._footer())
 
     def recipe_as(self, recipe):
         """
@@ -250,7 +251,7 @@ class Serialization(SerializationInterface):
             links = []
             query_string = self.environ.get('QUERY_STRING', '')
             if query_string:
-                # By now there would have already been a failure if 
+                # By now there would have already been a failure if
                 # if the query string is not valid utf-8.
                 query_string = '?%s' % unicode(query_string, 'utf-8')
             for extension in extension_types:
@@ -262,18 +263,6 @@ class Serialization(SerializationInterface):
 <div id="tiddlersheader">This list of tiddlers as: %s</div>
 """ % (link_info)
         return ''
-
-    def _tiddler_list_info(self, tiddler):
-        """
-        Get the basic link info needed for listing tiddlers.
-        """
-        if tiddler.recipe:
-            representation_link = '%s/recipes/%s/tiddlers' % (
-                    self._server_prefix(), encode_name(tiddler.recipe))
-        else:
-            representation_link = '%s/bags/%s/tiddlers' % (
-                    self._server_prefix(), encode_name(tiddler.bag))
-        return representation_link
 
     def _tiddler_revision_info(self, tiddler):
         """

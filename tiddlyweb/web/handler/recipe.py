@@ -91,10 +91,10 @@ def get_tiddlers(environ, start_response):
     except FilterError, exc:
         raise HTTP400('malformed filter: %s' % exc)
 
-    if filters:
-        tiddlers = Tiddlers(title=title)
-    else:
-        tiddlers = Tiddlers(title=title, store=store)
+    tiddlers = Tiddlers(title=title)
+    if not filters:
+        tiddlers.store = store
+    tiddlers.recipe = recipe.name
 
     for tiddler in candidate_tiddlers:
         tiddler.recipe = recipe.name

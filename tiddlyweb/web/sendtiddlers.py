@@ -6,14 +6,14 @@ including filter those tiddlers and validating request cache headers.
 import logging
 import inspect
 
-from httpexceptor import HTTP400, HTTP304, HTTP415
+from httpexceptor import HTTP400, HTTP415
 
 from tiddlyweb.filters import FilterError, recursive_filter
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
-        check_last_modified)
+        check_last_modified, check_incoming_etag)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -82,6 +82,8 @@ def _filter_tiddlers(filters, store, tiddlers):
         candidate_tiddlers.link = tiddlers.link
         candidate_tiddlers.is_search = tiddlers.is_search
         candidate_tiddlers.is_revisions = tiddlers.is_revisions
+        candidate_tiddlers.bag = tiddlers.bag
+        candidate_tiddlers.recipe = tiddlers.recipe
     except AttributeError:
         pass
     try:
@@ -118,11 +120,8 @@ def _validate_tiddler_list(environ, tiddlers):
             sha('%s:%s' % (username.encode('utf-8'), mime_type)).hexdigest())
     etag = ('Etag', etag_string)
 
-    incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-    if incoming_etag:
-        if incoming_etag == etag_string:
-            raise HTTP304(incoming_etag)
-    else:
+    incoming_etag = check_incoming_etag(environ, etag_string)
+    if not incoming_etag:  # only check last modified when no etag
         check_last_modified(environ, last_modified_string)
 
     return last_modified, etag

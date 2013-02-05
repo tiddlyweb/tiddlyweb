@@ -2,14 +2,14 @@
 Common code used for listing bags and recipes.
 """
 
-from httpexceptor import HTTP304, HTTP400, HTTP415
+from httpexceptor import HTTP400, HTTP415
 
 from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
-from tiddlyweb.web.util import get_serialize_type
+from tiddlyweb.web.util import get_serialize_type, check_incoming_etag
 
 
 def list_entities(environ, start_response, method_name,
@@ -34,10 +34,7 @@ def list_entities(environ, start_response, method_name,
 
     etag_string = '"%s:%s"' % (kept_entities.hexdigest(),
             sha(mime_type).hexdigest())
-    incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
-    if incoming_etag:
-        if incoming_etag == etag_string:
-            raise HTTP304(incoming_etag)
+    check_incoming_etag(environ, etag_string)
 
     try:
         output = serializer_list(kept_entities)

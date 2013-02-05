@@ -19,7 +19,6 @@ def load_app(app_prefix=None, dirname=None):
     is surround by wrappers, which either set something in the
     environment, modify the request, or transform output.
     """
-    global LOGGER
     from tiddlyweb.config import config
     if dirname:
         config['root_dir'] = dirname
