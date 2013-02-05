@@ -3,7 +3,7 @@ Send a bag or recipe out HTTP, first serializing to the correct type.
 This consolidates common code for bags and recipes.
 """
 
-from httpexceptor import HTTP304, HTTP415
+from httpexceptor import HTTP415
 
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.util import (get_serialize_type, entity_etag,

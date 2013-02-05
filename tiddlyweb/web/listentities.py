@@ -2,7 +2,7 @@
 Common code used for listing bags and recipes.
 """
 
-from httpexceptor import HTTP304, HTTP400, HTTP415
+from httpexceptor import HTTP400, HTTP415
 
 from tiddlyweb.filters import recursive_filter, FilterError
 from tiddlyweb.model.collections import Container
