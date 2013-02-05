@@ -82,6 +82,8 @@ def _filter_tiddlers(filters, store, tiddlers):
         candidate_tiddlers.link = tiddlers.link
         candidate_tiddlers.is_search = tiddlers.is_search
         candidate_tiddlers.is_revisions = tiddlers.is_revisions
+        candidate_tiddlers.bag = tiddlers.bag
+        candidate_tiddlers.recipe = tiddlers.recipe
     except AttributeError:
         pass
     try:

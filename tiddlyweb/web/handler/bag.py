@@ -79,10 +79,11 @@ def get_tiddlers(environ, start_response):
     # will raise exception if there are problems
     bag.policy.allows(usersign, 'read')
 
-    if filters:
-        tiddlers = Tiddlers(title=title)
-    else:
-        tiddlers = Tiddlers(title=title, store=store)
+    tiddlers = Tiddlers(title=title)
+    if not filters:
+        tiddlers.store = store
+    tiddlers.bag = bag_name
+
     for tiddler in store.list_bag_tiddlers(bag):
         tiddlers.add(tiddler)
 

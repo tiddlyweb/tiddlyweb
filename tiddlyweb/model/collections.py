@@ -104,10 +104,12 @@ class Tiddlers(Collection):
     to save memory and because often the data is not needed.
     """
 
-    def __init__(self, title='', store=None):
+    def __init__(self, title='', store=None, bag=None, recipe=None):
         Collection.__init__(self, title)
         self.is_revisions = False
         self.is_search = False
+        self.bag = bag
+        self.recipe = recipe
         self.store = store
 
     def __iter__(self):
