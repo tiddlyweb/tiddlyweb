@@ -1,3 +1,7 @@
+1.4.4 Tue Feb  5 18:16:40 UTC 2013
+
+  * Add .bag and .recipe attributes to Tiddlers collection.
+
 1.4.2 Tue Jan 29 14:43:24 UTC 2013
 
   * Add log_syslog to config to allow logging to syslogd.
