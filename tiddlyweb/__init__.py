@@ -33,6 +33,6 @@ additional information.
 
 __version__ = '1.4.3'
 __author__ = 'Chris Dent (cdent@peermore.com)'
-__copyright__ = 'Copyright UnaMesa Association 2008-2012'
+__copyright__ = 'Copyright UnaMesa Association 2008-2013'
 __contributors__ = ['Frederik Dohr', 'Zac Bir', 'Jeremy Ruston']
 __license__ = 'BSD'
