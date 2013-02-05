@@ -455,13 +455,16 @@ def _send_tiddler_revisions(environ, start_response, tiddler):
     tiddlers.link = '%s/revisions' % tiddler_url(environ, tiddler,
             container=container, full=False)
 
-    recipe = tiddler.recipe
+    # Set the container on the tiddlers. Since tiddler.recipe
+    # defaults to None, we're "safe" here.
+    tiddlers.recipe = tiddler.recipe
+    tiddlers.bag = tiddler.bag
+
     try:
         for revision in store.list_tiddler_revisions(tiddler):
             tmp_tiddler = Tiddler(title=tiddler.title, bag=tiddler.bag)
             tmp_tiddler.revision = revision
-            if recipe:
-                tmp_tiddler.recipe = recipe
+            tmp_tiddler.recipe = tiddler.recipe
             tiddlers.add(tmp_tiddler)
     except NoTiddlerError, exc:
         # If a tiddler is not present in the store.
