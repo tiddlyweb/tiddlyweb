@@ -60,7 +60,8 @@ class Tiddler(object):
     tags: A list of strings that describe the tiddler.
     fields: An arbitrary dictionary of extended (custom) fields on the tiddler.
     text: The contents of the tiddler. A string.
-    revision: The revision of this tiddler. An int.
+    revision: The revision of this tiddler. The type of a revision
+              is unspecified.
     bag: The name of the bag in which this tiddler exists,
          if any. Usually set by internal code.
     recipe: The name of the recipe in which this tiddler exists,
@@ -102,7 +103,7 @@ class Tiddler(object):
         self.fields = {}
         self.text = u''
         self.type = None
-        self.revision = 0
+        self.revision = None
         self.recipe = None
         # reference to the store which 'got' us
         self.store = None

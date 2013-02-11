@@ -95,13 +95,7 @@ def _base_tiddler_object(environ, tiddler_name, revisions):
         revision = None
 
     tiddler = Tiddler(tiddler_name)
-    if revision:
-        try:
-            revision = int(revision)
-            tiddler.revision = revision
-        except ValueError, exc:
-            raise HTTP404('%s not a revision of %s: %s' %
-                    (revision, tiddler_name, exc))
+    tiddler.revision = revision  # reset to default None if HEAD
     return tiddler
 
 
@@ -113,15 +107,12 @@ def _delete_tiddler(environ, start_response, tiddler):
 
     try:
         tiddler = store.get(tiddler)
-    except NoTiddlerError:
-        tiddler.revision = 1
-    validate_tiddler_headers(environ, tiddler)
+        validate_tiddler_headers(environ, tiddler)
 
-    bag = Bag(tiddler.bag)
-    # this will raise 403 if constraint does not pass
-    check_bag_constraint(environ, bag, 'delete')
+        bag = Bag(tiddler.bag)
+        # this will raise 403 if constraint does not pass
+        check_bag_constraint(environ, bag, 'delete')
 
-    try:
         store.delete(tiddler)
     except NoTiddlerError, exc:
         raise HTTP404('%s not found, %s' % (tiddler.title, exc))
@@ -231,7 +222,7 @@ def _check_and_validate_tiddler(environ, bag, tiddler):
         validate_tiddler_headers(environ, tiddler)
     except NoTiddlerError:
         check_bag_constraint(environ, bag, 'create')
-        tiddler.revision = 0
+        tiddler.revision = None
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         if incoming_etag and not (
                 incoming_etag == _new_tiddler_etag(tiddler)):
