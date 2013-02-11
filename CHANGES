@@ -1,3 +1,7 @@
+1.4.5 Mon Feb 11 17:18:18 UTC 2013
+
+  * Allow non integer revisions on tiddlers.
+
 1.4.4 Tue Feb  5 18:16:40 UTC 2013
 
   * Add .bag and .recipe attributes to Tiddlers collection.
