@@ -353,7 +353,7 @@ def tiddler_etag(environ, tiddler):
         tiddler.revision = 0
     bag_name = tiddler.bag or ''
     tiddler_id = '"%s/%s/%s:' % (encode_name(bag_name),
-            encode_name(tiddler.title), tiddler.revision)
+            encode_name(tiddler.title), encode_name('%s' % tiddler.revision))
     etag = entity_etag(environ, tiddler)
     tiddler.text = text
     etag = etag.replace('"', tiddler_id, 1)
