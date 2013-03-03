@@ -1,3 +1,7 @@
+1.4.7 Sun Mar  3 15:52:57 UTC 2013
+
+  * Correct sys-logging on older Python.
+
 1.4.6 Sun Feb 17 18:56:57 UTC 2013
 
   * Protect against unicode revision ids in etags.
