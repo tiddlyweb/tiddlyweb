@@ -1,6 +1,6 @@
 config = {
         'log_level':'DEBUG',
-        #'log_syslog': 'local7',
+        'log_syslog': 'local7',
         'extra': { 'stuff': ['one', 'two'], }, # required for test_merge_config
         #'server_prefix': '/wiki',
         #'system_plugins': ['tiddlywebplugins.whoosher'],

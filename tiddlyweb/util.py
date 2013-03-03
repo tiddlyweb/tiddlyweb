@@ -210,11 +210,11 @@ def _initialize_logging(config):
 
     logger = logging.getLogger('tiddlyweb')
     logger.propagate = False
-    logger.setLevel(config['log_level'])
+    logger.setLevel(logging._levelNames[config['log_level']])
 
     plugin_logger = logging.getLogger('tiddlywebplugins')
     plugin_logger.propagate = False
-    plugin_logger.setLevel(config['log_level'])
+    plugin_logger.setLevel(logging._levelNames[config['log_level']])
 
     if syslog:
         from logging.handlers import SysLogHandler
