@@ -512,7 +512,7 @@ class Store(StorageInterface):
         try:
             revision = int(revision)
         except ValueError, exc:
-            raise NoTiddlerError('%s is not a valid revision id' % exc)
+            raise NoTiddlerError('%s is not a valid revision id' % revision)
 
         return revision
 
