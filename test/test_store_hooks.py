@@ -1,4 +1,3 @@
-
 import sys
 from StringIO import StringIO
 from tiddlyweb.model.recipe import Recipe
@@ -7,15 +6,19 @@ from tiddlywebplugins.utils import get_store
 
 from tiddlyweb.store import HOOKS
 
+
 OUTPUT = ''
+
 
 def recipe_put_hook(store, recipe):
     global OUTPUT
     OUTPUT += 'recipe put hook ahoy! %s' % recipe.name
 
+
 def recipe_get_hook(store, recipe):
     global OUTPUT
     OUTPUT += 'recipe get hook ahoy! %s' % recipe.name
+
 
 def setup_module(module):
     module.store = get_store(config)

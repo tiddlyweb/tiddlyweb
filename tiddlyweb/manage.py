@@ -42,7 +42,7 @@ def usage(args):
     if args:
         std_error_message('ERROR: ' + args + '\n')
     for key in sorted(COMMANDS):
-        std_error_message('%10s: %s' % (key, COMMANDS[key].__doc__))
+        std_error_message('%10s: %s' % (key, COMMANDS[key].__doc__.strip()))
     sys.exit(1)
 
 
