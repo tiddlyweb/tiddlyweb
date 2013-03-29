@@ -107,14 +107,15 @@ class SerializationInterface(object):
 
     def as_tags(self, string):
         """
-        Not called directly, put made public for future
+        Not called directly, but made public for future
         use. Turn a string into a list of tags.
         """
         return string_to_tags_list(string)
 
-    def tags_as(self, tags):
+    @staticmethod
+    def tags_as(tags):
         """
-        Not called directly, put made public for future
+        Not called directly, but made public for future
         use. Turn a list of tags into a serialized list.
         """
         tag_string_list = []
