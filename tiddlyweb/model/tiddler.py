@@ -15,10 +15,23 @@ def current_timestring():
     return unicode(time_object.strftime('%Y%m%d%H%M%S'))
 
 
+def tags_list_to_string(tags):
+    """
+    Given a list of tags, turn them into the canonical string representation
+    (space-delimited, enclosing tags containing spaces in double brackets)
+    """
+    tag_string_list = []
+    for tag in tags:
+        if ' ' in tag:
+            tag = '[[%s]]' % tag
+        tag_string_list.append(tag)
+    return u' '.join(tag_string_list)
+
+
 def string_to_tags_list(string):
     """
-    Given a string representing tags in TiddlyWiki
-    format parse them into a list of tag strings.
+    Given a string representing tags (space-delimited, tags containing spaces
+    are enclosed in in double brackets), parse them into a list of tag strings.
     """
     tags = []
     tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
