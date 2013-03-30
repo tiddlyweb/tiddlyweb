@@ -15,6 +15,15 @@ def current_timestring():
     return unicode(time_object.strftime('%Y%m%d%H%M%S'))
 
 
+def tags_list_to_string(tags):
+    tag_string_list = []
+    for tag in tags:
+        if ' ' in tag:
+            tag = '[[%s]]' % tag
+        tag_string_list.append(tag)
+    return u' '.join(tag_string_list)
+
+
 def string_to_tags_list(string):
     """
     Given a string representing tags in TiddlyWiki

@@ -7,7 +7,7 @@ and model objects to strings of various forms.
 """
 
 from tiddlyweb.serializer import NoSerializationError
-from tiddlyweb.model.tiddler import string_to_tags_list
+from tiddlyweb.model.tiddler import tags_list_to_string, string_to_tags_list
 
 
 class SerializationInterface(object):
@@ -112,15 +112,9 @@ class SerializationInterface(object):
         """
         return string_to_tags_list(string)
 
-    @staticmethod
-    def tags_as(tags):
+    def tags_as(self, tags):
         """
         Not called directly, but made public for future
         use. Turn a list of tags into a serialized list.
         """
-        tag_string_list = []
-        for tag in tags:
-            if ' ' in tag:
-                tag = '[[%s]]' % tag
-            tag_string_list.append(tag)
-        return u' '.join(tag_string_list)
+        return tags_list_to_string(tags)
