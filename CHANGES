@@ -1,3 +1,7 @@
+1.4.8 Tue Apr  9 11:37:10 UTC 2013
+
+  * Ensure encode_name works correctly in Python 2.7.
+
 1.4.7 Sun Mar  3 15:52:57 UTC 2013
 
   * Correct sys-logging on older Python.
