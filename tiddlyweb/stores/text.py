@@ -551,4 +551,4 @@ def _encode_filename(filename):
 
     if not filename or '../' in filename:
         raise StoreEncodingError('invalid name for entity')
-    return urllib.quote(filename.encode('utf-8'), safe='')
+    return urllib.quote(filename.encode('utf-8'), safe=".!~*'()")

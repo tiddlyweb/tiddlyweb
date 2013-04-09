@@ -279,7 +279,7 @@ def encode_name(name):
     Encode a unicode as utf-8 and then url encode that
     string. Use for entity titles in URLs.
     """
-    return urllib.quote(name.encode('utf-8'), safe='')
+    return urllib.quote(name.encode('utf-8'), safe=".!~*'()")
 
 
 def html_encode(text):

@@ -2,7 +2,8 @@
 Test utilities in tiddlyweb.web.util
 """
 
-from tiddlyweb.web.util import tiddler_url, datetime_from_http_date
+from tiddlyweb.web.util import (tiddler_url, datetime_from_http_date,
+        encode_name)
 from tiddlyweb.model.tiddler import Tiddler
 
 from tiddlyweb.config import config
@@ -52,3 +53,9 @@ def test_tiddler_url():
 
 def test_bad_http_timestamp():
     assert datetime_from_http_date('0') == None
+
+def test_encode_name():
+    """
+    Ensure encode name encodes similarly to JavaScript.
+    """
+    assert encode_name("~alpha's (.beta*)!") == "~alpha's%20(.beta*)!"
