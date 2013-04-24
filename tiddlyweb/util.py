@@ -203,7 +203,7 @@ def _initialize_logging(config):
     to a syslog facility to which we will log.
 
     Two loggers are established: 'tiddlyweb' and 'tiddlywebplugins'.
-    Modules which wish to log should use `logger.getLogger(__name__)`
+    Modules which wish to log should use `logging.getLogger(__name__)`
     to get a logger in the right part of the logging hierarchy.
     """
     syslog = config.get('log_syslog', None)
