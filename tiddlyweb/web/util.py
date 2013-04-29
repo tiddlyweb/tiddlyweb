@@ -105,7 +105,7 @@ def get_serialize_type(environ, collection=False):
     does not match any serializer should lead to a 415.
     """
     config = environ['tiddlyweb.config']
-    accept = environ.get('tiddlyweb.type')[:]
+    accept = environ.get('tiddlyweb.type', [])[:]
     ext = environ.get('tiddlyweb.extension')
     extension_types = config['extension_types']
     serializers = config['serializers']
@@ -128,7 +128,7 @@ def get_serialize_type(environ, collection=False):
             raise HTTP415('%s type unsupported' % ext)
         # If we are a PUT and we haven't found a serializer, don't
         # state a default as that makes no sense.
-        if environ['REQUEST_METHOD'] == 'GET':
+        if environ.get('REQUEST_METHOD') == 'GET':
             default_serializer = config['default_serializer']
             serialize_type, mime_type = serializers[default_serializer]
     return serialize_type, mime_type
