@@ -42,8 +42,8 @@ server_host -- The hostname of this server, usually set from whatever
 starts the server. This is a dictionary with keys: scheme, host, port.
 
 server_prefix -- A URL path portion which is a prefix to every URL the
-system uses and produces. Use this to host TiddlyWeb in a subdirectory.
-Default is ''.
+system uses and produces. Use this to host TiddlyWeb in a subdirectory
+(e.g. '/wiki'). Default is ''.
 
 extension_types -- A dictionary that pairs extension strings used in
 URLs as human controlled content-negotiation with the MIME types they
