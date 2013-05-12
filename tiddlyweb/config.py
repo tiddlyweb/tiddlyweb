@@ -104,6 +104,10 @@ wikitext.type_render_map -- A dictionary mapping tiddler.type MIME-
 TYPES to modules with a render() function for turning that content-type
 into HTML.
 
+wsgi_server -- The name of a module that provides a start_server method
+which starts a server to run this TiddlyWeb instance. Used by the twanager
+server command only.
+
 special_bag_detectors -- A list of functions that take an environ and bag
 name and return a tuple of two functions: the first returns the tiddlers
 in that bag, the second returns one tiddler from that bag.
@@ -179,6 +183,7 @@ DEFAULT_CONFIG = {
         'css_uri': '',
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
+        'wsgi_server': 'tiddlyweb.web.serve',
         'root_dir': '',
         'special_bag_detectors': [],
 }

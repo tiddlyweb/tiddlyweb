@@ -54,9 +54,9 @@ def init(config):
                     'host': str(hostname),
                     'port': str(port),
             }
-
-        from tiddlyweb.web.serve import start_cherrypy
-        start_cherrypy(config)
+        server_module = config.get('wsgi_server', 'tiddlyweb.web.serve')
+        imported_module = __import__(server_module, {}, {}, ['start_server'])
+        imported_module.start_server(config)
 
     @make_command()
     def userpass(args):

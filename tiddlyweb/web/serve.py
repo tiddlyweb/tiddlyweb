@@ -61,24 +61,32 @@ def load_app(app_prefix=None, dirname=None):
     return app
 
 
-def start_cherrypy(config):
+def start_server(config):
     """
-    Start a CherryPy webserver to run our app.
+    Start a simple webserver to run our app.
     """
-    from cherrypy.wsgiserver import CherryPyWSGIServer
+
+    import sys
+    from wsgiref.simple_server import make_server, WSGIRequestHandler
+
+    class NoLogRequestHandler(WSGIRequestHandler):
+        def log_request(self, code='-', size='-'):
+            pass
+
     hostname = config['server_host']['host']
     port = int(config['server_host']['port'])
     scheme = config['server_host']['scheme']
-    app = load_app()
-    server = CherryPyWSGIServer((hostname, port), app)
+    httpd = make_server(hostname, port, load_app(),
+            handler_class=NoLogRequestHandler)
+
+    LOGGER.debug('starting wsgi server at %s://%s:%s',
+            scheme, hostname, port)
+    std_error_message("starting wsgi server at %s://%s:%s"
+            % (scheme, hostname, port))
     try:
-        LOGGER.debug('starting CherryPy at %s://%s:%s',
-                scheme, hostname, port)
-        std_error_message("Starting CherryPy at %s://%s:%s"
-                % (scheme, hostname, port))
-        server.start()
+        httpd.serve_forever()
     except KeyboardInterrupt:
-        server.stop()
+        sys.exit(0)
 
 
 class RequestLogger(object):
