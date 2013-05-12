@@ -115,9 +115,9 @@ def test_info(capsys):
 
 def test_server(capsys):
     import tiddlyweb.web.serve
-    def start_cherrypy(config):
+    def start_server(config):
         print 'host is %s' % config['server_host']['host']
-    tiddlyweb.web.serve.start_cherrypy = start_cherrypy
+    tiddlyweb.web.serve.start_server = start_server
     handle(['', 'server'])
     results, err = capsys.readouterr()
     assert 'host is our_test_domain' in results
