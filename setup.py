@@ -27,7 +27,7 @@ META = {
         'selector' + ('<0.9.0' if (sys.version_info[0] == 2 and
                 sys.version_info[1] < 6) else ''),
         'simplejson',
-        'html5lib',
+        'html5lib<0.96',
         'mimeparse',
         'cherrypy'],
     'extras_require': {
