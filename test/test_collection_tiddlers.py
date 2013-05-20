@@ -75,23 +75,32 @@ def test_tiddler_collection():
     assert modified == '30000000000000'
 
 def test_tiddler_racing():
-    bag = Bag('foo')
-    store.put(bag)
-    tiddlers = Tiddlers(store=store)
+    def race_tiddlers(bag_name, count=2, intitles=['x', 'z'], outtitles=['y']):
+        bag = Bag(bag_name)
+        store.put(bag)
+        tiddlers = Tiddlers(store=store)
 
-    for title in ['x', 'y', 'z']:
-        tiddler = Tiddler(title, 'foo')
-        store.put(tiddler)
-        tiddlers.add(tiddler)
+        for title in ['x', 'y', 'z']:
+            tiddler = Tiddler(title, 'foo')
+            store.put(tiddler)
+            tiddlers.add(tiddler)
 
-    tiddler = Tiddler('y', 'foo')
-    store.delete(tiddler)
+        tiddler = Tiddler('y', 'foo')
+        store.delete(tiddler)
 
-    tids = list(tiddlers)
-    assert len(tids) == 2
-    assert 'x' in [tiddler.title for tiddler in tids]
-    assert 'z' in [tiddler.title for tiddler in tids]
-    assert 'y' not in [tiddler.title for tiddler in tids]
+        tids = list(tiddlers)
+        assert len(tids) == count
+        for title in intitles:
+            assert title in [tiddler.title for tiddler in tids]
+        for title in outtitles:
+            assert title not in [tiddler.title for tiddler in tids]
+    stored_config = config.get('collections.use_memory')
+    config['collections.use_memory'] = False
+    race_tiddlers('foo')
+    config['collections.use_memory'] = True
+    race_tiddlers('bar', count=3, intitles=['x', 'y', 'z'], outtitles=[])
+    store.delete(Bag('foo'))
+    store.delete(Bag('bar'))
 
 def test_tiddlers_container():
     tiddlers = Tiddlers()

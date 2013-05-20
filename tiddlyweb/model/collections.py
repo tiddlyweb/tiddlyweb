@@ -144,12 +144,16 @@ class Tiddlers(Collection):
                         'tried to add missing tiddler to collection: %s, %s',
                         tiddler, exc)
                 return
-            reference = Tiddler(tiddler.title, tiddler.bag)
-            if tiddler.revision:
-                reference.revision = tiddler.revision
-            if tiddler.recipe:
-                reference.recipe = tiddler.recipe
-            self._container.append(reference)
+            if not self.store.environ['tiddlyweb.config'].get(
+                    'collections.use_memory', False):
+                reference = Tiddler(tiddler.title, tiddler.bag)
+                if tiddler.revision:
+                    reference.revision = tiddler.revision
+                if tiddler.recipe:
+                    reference.recipe = tiddler.recipe
+                self._container.append(reference)
+            else:
+                self._container.append(tiddler)
         else:
             self._container.append(tiddler)
         self._update_digest(tiddler)
