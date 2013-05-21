@@ -1,5 +1,5 @@
 # simple Makefile for some common tasks
-.PHONY: clean cleanagain test dist upload pypi peermore tagv
+.PHONY: clean cleanagain test dist release pypi peermore tagv
 
 clean:
 	find . -name "*.pyc" |xargs rm || true
@@ -25,7 +25,7 @@ test:
 dist: test
 	python setup.py sdist
 
-upload: clean test cleanagain tagv pypi peermore
+release: clean test cleanagain tagv pypi peermore
 
 pypi:
 	python setup.py sdist upload
