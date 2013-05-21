@@ -1,3 +1,9 @@
+1.4.11 Tue May 21 10:35:16 UTC 2013
+
+  * Add 'wsgi_server' config entry, defaulting to wsgiref.
+  * Remove support for building bundles.
+  * Add 'collections.use_memory' config setting.
+
 1.4.10 Fri May 17 16:40:43 UTC 2013
 
   * Peg html5lib version to continue Python 2.5 support.
