@@ -1,3 +1,6 @@
+1.4.10 Fri May 17 16:40:43 UTC 2013
+
+  * Peg html5lib version to continue Python 2.5 support.
 1.4.9 Mon Apr 29 20:00:19 UTC 2013
 
   * Fix bug in get_serialize_type when missing or incomplete environ.

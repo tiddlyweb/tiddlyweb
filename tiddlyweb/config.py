@@ -111,6 +111,9 @@ server command only.
 special_bag_detectors -- A list of functions that take an environ and bag
 name and return a tuple of two functions: the first returns the tiddlers
 in that bag, the second returns one tiddler from that bag.
+
+collections.use_memory -- If True Tiddler Collections are kept in
+memory during a single request. Defaults to False to save memory.
 """
 
 try:
@@ -186,6 +189,7 @@ DEFAULT_CONFIG = {
         'wsgi_server': 'tiddlyweb.web.serve',
         'root_dir': '',
         'special_bag_detectors': [],
+        'collections.use_memory': False,
 }
 
 
