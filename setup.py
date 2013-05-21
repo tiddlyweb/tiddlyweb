@@ -28,8 +28,7 @@ META = {
                 sys.version_info[1] < 6) else ''),
         'simplejson',
         'html5lib<0.96',
-        'mimeparse',
-        'cherrypy'],
+        'mimeparse'],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'wsgi_intercept', 'PyYAML',
                 'tiddlywebplugins.utils']
