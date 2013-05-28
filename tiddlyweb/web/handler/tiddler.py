@@ -301,14 +301,13 @@ def validate_tiddler_headers(environ, tiddler):
     last_modified = None
     if request_method == 'GET':
         last_modified_string = http_date_from_timestamp(tiddler.modified)
+        cache_header = 'no-cache'
         if CACHE_CONTROL_FIELD in tiddler.fields:
             try:
                 cache_header = 'max-age=%s' % int(
                         tiddler.fields[CACHE_CONTROL_FIELD])
             except ValueError:
                 pass  # if the value is not an int use default header
-        else:
-            cache_header = 'no-cache'
         incoming_etag = check_incoming_etag(environ, tiddlers_etag,
                 last_modified=last_modified_string,
                 cache_control=cache_header)
