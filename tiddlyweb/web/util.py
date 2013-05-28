@@ -11,11 +11,36 @@ try:
 except ImportError:  # Python < 2.5
     from email.Utils import parsedate
 
-from httpexceptor import HTTP415, HTTP400, HTTP304
+from httpexceptor import HTTP415, HTTP400, HTTPException
 
 from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
+
+
+# TODO: extract back to httpexceptor if we think it is okay
+class HTTP304(HTTPException):
+    """304 Not Modified"""
+
+    status = __doc__
+
+    def __init__(self, etag, **kwargs):
+        self.etag = etag
+        self._headers = {}
+        if etag:
+            self._headers['Etag'] = etag
+        for header in kwargs:
+            self._headers[header.replace('_', '-')] = kwargs[header]
+
+    def headers(self):
+        headers = []
+        for header in self._headers:
+            if self._headers[header]:
+                headers.append((header, self._headers[header]))
+        return headers
+
+    def body(self):
+        return ['']
 
 
 def check_bag_constraint(environ, bag, constraint):
@@ -38,7 +63,8 @@ def check_bag_constraint(environ, bag, constraint):
         raise exc.__class__(msg)
 
 
-def check_incoming_etag(environ, etag_string):
+def check_incoming_etag(environ, etag_string, cache_control='no-cache',
+        last_modified=None, vary='Accept'):
     """
     Raise 304 if the provided etag is the same as that found in the
     If-None-Match header of the incoming request.
@@ -49,11 +75,14 @@ def check_incoming_etag(environ, etag_string):
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
     if incoming_etag:
         if incoming_etag == etag_string:
-            raise HTTP304(incoming_etag)
+            raise HTTP304(incoming_etag, vary=vary,
+                    cache_control=cache_control,
+                    last_modified=last_modified)
     return incoming_etag
 
 
-def check_last_modified(environ, last_modified_string):
+def check_last_modified(environ, last_modified_string, etag='',
+        cache_control='no-cache', vary='Accept'):
     """
     Raise `HTTP304` if If-Modified-Since header matches `last_modified_string`
     """
@@ -62,7 +91,8 @@ def check_last_modified(environ, last_modified_string):
         incoming_modified = datetime_from_http_date(incoming_modified)
         if incoming_modified and (incoming_modified >=
                 datetime_from_http_date(last_modified_string)):
-            raise HTTP304('')
+            raise HTTP304(etag, vary=vary, cache_control=cache_control,
+                    last_modified=last_modified_string)
 
 
 def content_length_and_type(environ):

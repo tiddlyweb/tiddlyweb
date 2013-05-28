@@ -139,7 +139,7 @@ class TransformProtect(object):
     def __call__(self, environ, start_response):
 
         def replacement_start_response(status, headers, exc_info=None):
-            if '200' in status:
+            if '200' in status or '304' in status:
                 headers.append(('Cache-Control', 'no-transform'))
             return start_response(status, headers, exc_info)
 

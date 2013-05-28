@@ -38,7 +38,20 @@ def test_get_tiddler():
     store.put(tiddler)
 
     _get_entity('http://our_test_domain:8001/bags/%s/tiddlers/%s' % (
-        bag.name, tiddler.title))
+        bag.name, tiddler.title), test_last_modified=True)
+
+
+def test_get_maxage_tiddler():
+    bag = Bag(_random_name())
+    store.put(bag)
+
+    tiddler = Tiddler(_random_name(), bag.name)
+    tiddler.text = _random_name(10)
+    tiddler.fields['_cache-max-age'] = '3600'
+    store.put(tiddler)
+
+    _get_entity('http://our_test_domain:8001/bags/%s/tiddlers/%s' % (
+        bag.name, tiddler.title), test_last_modified=True)
 
 
 def test_get_bag():
@@ -61,10 +74,11 @@ def test_get_tiddlers():
         tiddler = Tiddler(_random_name(), bag.name)
         store.put(tiddler)
 
-    _get_entity('http://our_test_domain:8001/bags/%s/tiddlers' % bag.name)
+    _get_entity('http://our_test_domain:8001/bags/%s/tiddlers' % bag.name,
+            test_last_modified=True)
 
 
-def _get_entity(uri):
+def _get_entity(uri, test_last_modified=False):
     """
     Get a uri and confirm that for those relevant headers
     in a 200 response, the same things are there for a
@@ -76,6 +90,9 @@ def _get_entity(uri):
     assert response['status'] == '200', content
     response_200 = response
     etag = response['etag']
+    if 'last-modified' in response:
+        last_modified = response['last-modified']
+        
 
     response, content = http.request(uri,
         headers={'If-None-Match': etag},
@@ -88,3 +105,14 @@ def _get_entity(uri):
         if header in response_200:
             assert header in response_304
             assert response_200[header] == response_304[header]
+
+    if test_last_modified:
+        response, content = http.request(uri,
+                headers={'If-Modified-Since': last_modified},
+                method='GET')
+        response_lm_304 = response
+
+        for header in RELEVANT_HEADERS:
+            if header in response_200:
+                assert header in response_lm_304
+                assert response_200[header] == response_lm_304[header]

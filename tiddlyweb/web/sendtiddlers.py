@@ -120,8 +120,10 @@ def _validate_tiddler_list(environ, tiddlers):
             sha('%s:%s' % (username.encode('utf-8'), mime_type)).hexdigest())
     etag = ('Etag', etag_string)
 
-    incoming_etag = check_incoming_etag(environ, etag_string)
+    incoming_etag = check_incoming_etag(environ, etag_string,
+            last_modified=last_modified_string)
     if not incoming_etag:  # only check last modified when no etag
-        check_last_modified(environ, last_modified_string)
+        check_last_modified(environ, last_modified_string,
+                etag=etag_string)
 
     return last_modified, etag

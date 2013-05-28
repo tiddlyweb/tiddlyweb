@@ -300,12 +300,23 @@ def validate_tiddler_headers(environ, tiddler):
     etag = None
     last_modified = None
     if request_method == 'GET':
-        incoming_etag = check_incoming_etag(environ, tiddlers_etag)
+        last_modified_string = http_date_from_timestamp(tiddler.modified)
+        if CACHE_CONTROL_FIELD in tiddler.fields:
+            try:
+                cache_header = 'max-age=%s' % int(
+                        tiddler.fields[CACHE_CONTROL_FIELD])
+            except ValueError:
+                pass  # if the value is not an int use default header
+        else:
+            cache_header = 'no-cache'
+        incoming_etag = check_incoming_etag(environ, tiddlers_etag,
+                last_modified=last_modified_string,
+                cache_control=cache_header)
         if not incoming_etag:  # only check last-modified if no etag
-            last_modified_string = http_date_from_timestamp(
-                    tiddler.modified)
             last_modified = ('Last-Modified', last_modified_string)
-            check_last_modified(environ, last_modified_string)
+            check_last_modified(environ, last_modified_string,
+                    etag=tiddlers_etag,
+                    cache_control=cache_header)
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
