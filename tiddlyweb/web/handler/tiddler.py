@@ -292,7 +292,7 @@ def validate_tiddler_headers(environ, tiddler):
     b) we have edit contention when trying to write.
     """
     request_method = environ['REQUEST_METHOD']
-    tiddlers_etag = tiddler_etag(environ, tiddler)
+    this_tiddlers_etag = tiddler_etag(environ, tiddler)
 
     LOGGER.debug('attempting to validate %s with revision %s',
             tiddler.title.encode('utf-8'), tiddler.revision)
@@ -308,24 +308,24 @@ def validate_tiddler_headers(environ, tiddler):
                         tiddler.fields[CACHE_CONTROL_FIELD])
             except ValueError:
                 pass  # if the value is not an int use default header
-        incoming_etag = check_incoming_etag(environ, tiddlers_etag,
+        incoming_etag = check_incoming_etag(environ, this_tiddlers_etag,
                 last_modified=last_modified_string,
                 cache_control=cache_header)
         if not incoming_etag:  # only check last-modified if no etag
             last_modified = ('Last-Modified', last_modified_string)
             check_last_modified(environ, last_modified_string,
-                    etag=tiddlers_etag,
+                    etag=this_tiddlers_etag,
                     cache_control=cache_header)
 
     else:
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         LOGGER.debug('attempting to validate incoming etag(PUT):'
-            '%s against %s', incoming_etag, tiddlers_etag)
+            '%s against %s', incoming_etag, this_tiddlers_etag)
         if incoming_etag and not _etag_write_match(incoming_etag,
-                tiddlers_etag):
+                this_tiddlers_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
-    etag = ('Etag', '%s' % tiddlers_etag)
+    etag = ('Etag', '%s' % this_tiddlers_etag)
     return last_modified, etag
 
 
