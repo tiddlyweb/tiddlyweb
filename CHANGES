@@ -1,3 +1,7 @@
+1.4.12 Thu May 30 17:43:43 UTC 2013
+
+  * More closely follow the httpbis spec for 304 responses.
+
 1.4.11 Tue May 21 10:35:16 UTC 2013
 
   * Add 'wsgi_server' config entry, defaulting to wsgiref.
