@@ -11,39 +11,11 @@ try:
 except ImportError:  # Python < 2.5
     from email.Utils import parsedate
 
-from httpexceptor import HTTP415, HTTP400, HTTPException
+from httpexceptor import HTTP415, HTTP400, HTTP304
 
 from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
-
-
-# TODO: extract back to httpexceptor if we think it is okay
-class HTTP304(HTTPException):
-    """304 Not Modified"""
-
-    status = __doc__
-
-    def __init__(self, etag='', vary='', cache_control='', last_modified='',
-            content_location='', expires=''):
-        self._headers = {
-                'etag': etag,
-                'vary': vary,
-                'cache-control': cache_control,
-                'last-modified': last_modified,
-                'content-location': content_location,
-                'expires': expires
-        }
-
-    def headers(self):
-        headers = []
-        for header in self._headers:
-            if self._headers[header]:
-                headers.append((header, self._headers[header]))
-        return headers
-
-    def body(self):
-        return ['']
 
 
 def check_bag_constraint(environ, bag, constraint):

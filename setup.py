@@ -22,7 +22,7 @@ META = {
     'scripts': ['twanager'],
     'platforms': 'Posix; MacOS X; Windows',
     'install_requires': ['setuptools',
-        'httpexceptor',
+        'httpexceptor>=1.1.3',
         # modern Selector requires modern Python, so downgrade for older versions
         'selector' + ('<0.9.0' if (sys.version_info[0] == 2 and
                 sys.version_info[1] < 6) else ''),
