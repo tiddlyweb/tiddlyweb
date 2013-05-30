@@ -73,17 +73,24 @@ class Policy(object):
         self.manage = manage
         self.accept = accept
 
-    def allows(self, user, constraint):
+    def allows(self, usersign, constraint):
         """
-        Is user allowed to perform the action described
-        by constraint. The user has a name and some roles,
-        either may match in the constraint.
+        Is the user encapsulated by the usersign dict allowed to
+        perform the action described by constraint. If so, return
+        True. If not raise a UserRequiredError (if the user is
+        GUEST) or ForbiddenError exception.
+        
+        The dict has a name key with a string value which is a
+        username and a roles key with a list of roles as its value.
+        Either may match in the constraint. Usersign is usually
+        populated during the CredentialsExtractor phase of a
+        request.
         """
         try:
-            roles = user['roles']
+            roles = usersign['roles']
         except KeyError:
             roles = []
-        user_sign = user['name']
+        username = usersign['name']
 
         info_list = self.__getattribute__(constraint)
 
@@ -94,9 +101,9 @@ class Policy(object):
 
         # always reject if the constraint is NONE
         if _single_value_set(user_list, u'NONE'):
-            raise ForbiddenError('%s may not %s' % (user_sign, constraint))
+            raise ForbiddenError('%s may not %s' % (username, constraint))
 
-        if _user_valid(user_sign, user_list):
+        if _user_valid(username, user_list):
             return True
 
         role_list = [x[2:] for x in info_list if x.startswith('R:')]
@@ -106,11 +113,11 @@ class Policy(object):
 
         # if the user is set to GUEST (meaning nobody in credentials)
         # then we don't pass, and we need a user
-        if user_sign == u'GUEST':
+        if username == u'GUEST':
             raise UserRequiredError('real user required to %s' % constraint)
 
         # we've fallen through, the user we have matches nothing
-        raise ForbiddenError('%s may not %s' % (user_sign, constraint))
+        raise ForbiddenError('%s may not %s' % (username, constraint))
 
     def user_perms(self, usersign):
         """
