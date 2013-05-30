@@ -24,13 +24,16 @@ class HTTP304(HTTPException):
 
     status = __doc__
 
-    def __init__(self, etag, **kwargs):
-        self.etag = etag
-        self._headers = {}
-        if etag:
-            self._headers['Etag'] = etag
-        for header in kwargs:
-            self._headers[header.replace('_', '-')] = kwargs[header]
+    def __init__(self, etag='', vary='', cache_control='', last_modified='',
+            content_location='', expires=''):
+        self._headers = {
+                'etag': etag,
+                'vary': vary,
+                'cache-control': cache_control,
+                'last-modified': last_modified,
+                'content-location': content_location,
+                'expires': expires
+        }
 
     def headers(self):
         headers = []
