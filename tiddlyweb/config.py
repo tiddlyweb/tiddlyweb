@@ -15,7 +15,7 @@ system_plugins -- A list of Python module names that act as plugins for
 the running server. At server startup time they are found, compiled, and
 the function init(config) is called on them, with a reference to the
 current config being passed in. Use this to add functionality to the
-server that cannot be accomplised from the defaults, such as adding
+server that cannot be accomplished from the defaults, such as adding
 additional web handlers, storage hooks or overriding existing behaviors.
 
 twanager_plugins -- A list of Python module names that act as plugins
