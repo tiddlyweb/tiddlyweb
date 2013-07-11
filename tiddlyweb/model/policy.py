@@ -79,7 +79,7 @@ class Policy(object):
         perform the action described by constraint. If so, return
         True. If not raise a UserRequiredError (if the user is
         GUEST) or ForbiddenError exception.
-        
+
         The dict has a name key with a string value which is a
         username and a roles key with a list of roles as its value.
         Either may match in the constraint. Usersign is usually
