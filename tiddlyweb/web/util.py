@@ -4,7 +4,6 @@ General utility routines shared by various web related modules.
 
 import Cookie
 import urllib
-import time
 from datetime import datetime
 try:
     from email.utils import parsedate
