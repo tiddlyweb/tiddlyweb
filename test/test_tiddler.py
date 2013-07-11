@@ -10,13 +10,16 @@ from tiddlyweb.model.tiddler import (Tiddler, current_timestring,
 
 test_tiddler_text = "Race car drivers\ngo really very fast."
 
+
 def setup_module(module):
     pass
+
 
 def test_tiddler_create():
     tiddler = Tiddler('hello')
 
-    assert type(tiddler) == Tiddler, 'Tiddler returns a Tiddler, %s, %s' % (type(tiddler), Tiddler)
+    assert type(tiddler) == Tiddler, ('Tiddler returns a Tiddler, %s, %s'
+            % (type(tiddler), Tiddler))
     assert 'hello<tiddlyweb.model.tiddler.Tiddler object' in '%s' % tiddler
 
 
@@ -48,6 +51,7 @@ def test_tiddler_full_create():
     assert tiddler.revision is None, \
             'tiddler revision is None'
     assert tiddler.creator == 'test@example.com'
+
 
 def test_tiddler_revision_create():
     """
