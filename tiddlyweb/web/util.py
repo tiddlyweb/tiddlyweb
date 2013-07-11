@@ -13,7 +13,7 @@ except ImportError:  # Python < 2.5
 from httpexceptor import HTTP415, HTTP400, HTTP304
 
 from tiddlyweb.model.policy import PermissionsError
-from tiddlyweb.model.tiddler import timestring_to_datetime
+from tiddlyweb.model.tiddler import timestring_to_datetime, current_timestring
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
 
@@ -177,12 +177,13 @@ def html_frame(environ, title=''):
 def http_date_from_timestamp(timestamp):
     """
     Turn a modifier or created tiddler timestamp
-    into a proper formatted HTTP date.
+    into a proper formatted HTTP date. If the timestamp
+    is invalid use now as the timestamp.
     """
     try:
         timestamp_datetime = timestring_to_datetime(timestamp)
     except ValueError:
-        timestamp_datetime = datetime.utcnow()
+        timestamp_datetime = timestring_to_datetime(current_timestring())
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
 
