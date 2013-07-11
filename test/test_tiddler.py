@@ -3,7 +3,10 @@
 Test tiddler, a simple data container for a tiddler.
 """
 
-from tiddlyweb.model.tiddler import Tiddler
+import datetime
+
+from tiddlyweb.model.tiddler import (Tiddler, current_timestring,
+        tags_list_to_string, string_to_tags_list, timestring_to_datetime)
 
 test_tiddler_text = "Race car drivers\ngo really very fast."
 
@@ -60,3 +63,46 @@ def test_tiddler_revision_create():
             'Tiddler returns a Tiddler'
     assert tiddler.revision == 5, \
             'revision is set as expected, to 5'
+
+
+def test_current_timestring():
+    """
+    Confirm timestring has desired format and is at least in
+    the ballpark of now.
+    """
+
+    current_time = datetime.datetime.utcnow()
+    year = current_time.year
+    month = current_time.month
+    timestring = current_timestring()
+
+    assert len(timestring) == 14
+    assert timestring.startswith('%d%02d' % (year, month))
+
+
+def test_tags_list_to_string():
+    """
+    Confirm that tags format as TiddlyWiki likes them.
+    """
+    tags = ['alpha', 'beta', 'Gamma Fire', 'troll']
+
+    output = tags_list_to_string(tags)
+
+    assert output == 'alpha beta [[Gamma Fire]] troll'
+
+    assert sorted(string_to_tags_list(output)) == sorted(tags)
+
+
+def test_timestring_to_datetime():
+    """
+    Confirm a timestring becomes the expected datetime object.
+    """
+    timestring = '20130711154400'
+    date_object = timestring_to_datetime(timestring)
+
+    assert date_object.year == 2013
+    assert date_object.month == 7
+    assert date_object.day == 11
+    assert date_object.hour == 15
+    assert date_object.minute == 44
+    assert date_object.second == 00

@@ -5,6 +5,7 @@ A module containing the Tiddler class and related functions.
 import re
 
 from datetime import datetime
+from time import strptime
 
 
 def current_timestring():
@@ -13,6 +14,22 @@ def current_timestring():
     """
     time_object = datetime.utcnow()
     return unicode(time_object.strftime('%Y%m%d%H%M%S'))
+
+
+def timestring_to_datetime(timestring):
+    """
+    Turn a tiddler timestring into a datetime object.
+
+    Will raise ValueError if the input is not a 12 or 14
+    digit timestring.
+    """
+    try:
+        timestring_datetime = datetime(*(strptime(timestring,
+            '%Y%m%d%H%M')[0:6]))
+    except ValueError:
+        timestring_datetime = datetime(*(strptime(timestring,
+            '%Y%m%d%H%M%S')[0:6]))
+    return timestring_datetime
 
 
 def tags_list_to_string(tags):

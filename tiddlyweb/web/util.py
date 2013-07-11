@@ -14,6 +14,7 @@ except ImportError:  # Python < 2.5
 from httpexceptor import HTTP415, HTTP400, HTTP304
 
 from tiddlyweb.model.policy import PermissionsError
+from tiddlyweb.model.tiddler import timestring_to_datetime
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
 
@@ -180,12 +181,7 @@ def http_date_from_timestamp(timestamp):
     into a proper formatted HTTP date.
     """
     try:
-        try:
-            timestamp_datetime = datetime(*(time.strptime(timestamp,
-                '%Y%m%d%H%M')[0:6]))
-        except ValueError:
-            timestamp_datetime = datetime(*(time.strptime(timestamp,
-                '%Y%m%d%H%M%S')[0:6]))
+        timestamp_datetime = timestring_to_datetime(timestamp)
     except ValueError:
         timestamp_datetime = datetime.utcnow()
     return timestamp_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
