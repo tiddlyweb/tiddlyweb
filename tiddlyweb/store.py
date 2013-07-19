@@ -146,7 +146,7 @@ class Store(object):
                     thing = retriever[1](thing)
                 except SpecialBagError, exc:
                     raise NoTiddlerError(
-                            'unable to get remote tiddler: %s:%s:%s'
+                            'unable to get special tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
                 thing.store = self
                 self._do_hook('get', thing)
@@ -206,7 +206,7 @@ class Store(object):
             try:
                 return retriever[0](bag.name)
             except SpecialBagError, exc:
-                raise NoBagError('unable to get remote bag: %s: %s'
+                raise NoBagError('unable to get special bag: %s: %s'
                         % (bag.name, exc))
         list_func = getattr(self.storage, 'list_bag_tiddlers')
         return list_func(bag)

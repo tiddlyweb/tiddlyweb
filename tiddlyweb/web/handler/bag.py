@@ -84,8 +84,12 @@ def get_tiddlers(environ, start_response):
         tiddlers.store = store
     tiddlers.bag = bag_name
 
-    for tiddler in store.list_bag_tiddlers(bag):
-        tiddlers.add(tiddler)
+    # A special bag can raise NoBagError here.
+    try:
+        for tiddler in store.list_bag_tiddlers(bag):
+            tiddlers.add(tiddler)
+    except NoBagError, exc:
+        raise HTTP404('%s not found, %s' % (bag.name, exc))
 
     tiddlers.link = '%s/tiddlers' % web.bag_url(environ, bag, full=False)
 
