@@ -74,7 +74,7 @@
   - '"policy":'
   - '["bag24", "select=title:tiddler4"]'
   response_headers:
-    content-type: application/json; charset=UTF-8
+    content-type: application/json
 
 # The Text representation of a single recipe.
 - name: Get Text recipe

@@ -774,14 +774,14 @@ def test_binary_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng.json',
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermorepng',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
             method='GET')
@@ -792,14 +792,14 @@ def test_binary_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png.json',
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.png',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png',
             method='GET')
@@ -810,14 +810,14 @@ def test_binary_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png.json',
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.png',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar',
             method='GET')
@@ -828,14 +828,14 @@ def test_binary_tiddler():
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar.json',
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/peermore.foo.bar',
             headers={'Accept': 'application/json'},
             method='GET')
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
 
 def test_put_json_pseudo_binary():
     http = httplib2.Http()

@@ -163,7 +163,7 @@ def test_get_recipes_json():
             method='GET')
 
     assert response['status'] == '200'
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
     info = simplejson.loads(content)
     assert type(info) == list
     assert len(info) == 1

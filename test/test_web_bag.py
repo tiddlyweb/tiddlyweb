@@ -177,7 +177,8 @@ def test_get_bags_json():
             method='GET')
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
-    assert response['content-type'] == 'application/json; charset=UTF-8'
+    assert response['content-type'] == 'application/json'
+    assert 'charset=UTF-8' not in response['content-type']
     info = simplejson.loads(content)
     assert type(info) == list
     assert len(info) == 30
