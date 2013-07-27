@@ -197,6 +197,16 @@ def initialize_logging(config, server=False):
         _initialize_logging(config)
 
 
+def abspath(path, config):
+    """
+    Adjust the given path so it is absolute.
+    """
+    if not os.path.isabs(path):
+        root_dir = config.get('root_dir', '')
+        path = os.path.join(root_dir, path)
+    return path
+
+
 def _initialize_logging(config):
     """
     Configure logging. If 'log_syslog' has a value it should point
