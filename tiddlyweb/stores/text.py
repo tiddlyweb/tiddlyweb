@@ -21,7 +21,7 @@ from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
         NoUserError, StoreLockError, StoreEncodingError
 from tiddlyweb.stores import StorageInterface
 from tiddlyweb.util import LockError, write_lock, write_unlock, \
-        read_utf8_file, write_utf8_file
+        read_utf8_file, write_utf8_file, abspath
 
 
 LOGGER = logging.getLogger(__name__)
@@ -36,19 +36,9 @@ class Store(StorageInterface):
     def __init__(self, store_config=None, environ=None):
         super(Store, self).__init__(store_config, environ)
         self.serializer = Serializer('text')
-        self._root = self._fixup_root(store_config['store_root'])
+        self._root = abspath(store_config['store_root'],
+                self.environ['tiddlyweb.config'])
         self._init_store()
-
-    def _fixup_root(self, path):
-        """
-        Adjust the store_root path so it is absolute.
-
-        This is required in some web serving environments.
-        """
-        if not os.path.isabs(path):
-            path = os.path.join(self.environ['tiddlyweb.config'].
-                    get('root_dir', ''), path)
-        return path
 
     def _init_store(self):
         """
