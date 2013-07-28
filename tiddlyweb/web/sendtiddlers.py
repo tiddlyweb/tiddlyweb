@@ -74,7 +74,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
 def _filter_tiddlers(filters, store, tiddlers):
     """
-    Filter the tiddlers by filters provided by the enviornment.
+    Filter the tiddlers by filters provided by the environment.
     """
     candidate_tiddlers = Tiddlers(store=store)
     try:
