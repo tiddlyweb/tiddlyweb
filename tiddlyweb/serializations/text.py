@@ -153,6 +153,10 @@ class Serialization(SerializationInterface):
         """
         fields = []
         for key in tiddler.fields:
+            if hasattr(tiddler, key):
+                raise TiddlerFormatError(
+                        'reserved key "%s" in fields of tiddler: %s'
+                        % (key, tiddler.title))
             if not key.startswith('server.'):  # XXX: TiddlyWiki legacy remnant?
                 value = unicode(tiddler.fields[key])
                 fields.append('%s: %s' % (key, value.replace('\n', '\\n')))
