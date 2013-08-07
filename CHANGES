@@ -1,3 +1,7 @@
+1.4.16 Wed Aug  7 14:00:33 UTC 2013
+
+  * deny storing a tiddler using reserved fields
+
 1.4.12 Thu May 30 17:43:43 UTC 2013
 
   * More closely follow the httpbis spec for 304 responses.
