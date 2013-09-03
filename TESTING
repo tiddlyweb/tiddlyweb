@@ -1,0 +1,35 @@
+A sizable suite of tests is located in the test directory.
+
+The tests may be run with py.test[1]. If you have py.test
+installed, from the TiddlyWeb base directory simply type
+
+  py.test
+
+and the tests will be found and run. If there are failures
+the output can be a bit hard to interpret. You can run
+an individual test file, with more verbose output as follows:
+
+  py.test -v --nocapture test/test_web_tiddler.py
+
+You can run the tests to the first failure:
+
+  py.test -svx
+
+This helps quite a bit with dealing with the error
+output.
+
+Tests which test the web serving sides of the application
+require httplib2[2], wsgi_intercept[3] (so no web server
+is required), PyYAML[4] and tiddlywebplugins.utils[5]. These
+tests run alongside the other tests without any special setup
+required.
+
+[1] http://pytest.org
+
+[2] http://code.google.com/p/httplib2/
+
+[3] http://code.google.com/p/wsgi-intercept/
+
+[4] http://pyyaml.org
+
+[5] http://pypi.python.org/pypi/tiddlywebplugins.utils

@@ -1,0 +1,64 @@
+
+1.0 to 1.2
+----------
+
+Once a stable 1.0 release of TiddlyWeb was out in the wild, the number
+of people using the system, working the code and generally contributing
+to its well being took off. The improvement of the code since then is
+entirely the result of a diverse group of people from the TiddlyWeb
+google group, the TiddlyWiki community and the people who operate in and
+about Osmosoft.
+
+The Osmosoft project to create TiddlySpace has helped make TiddlyWeb far
+more robust, flexible and scalable.
+
+I (Chris Dent) am especially grateful to FND for his continued
+enthusiasm, limitless contributions, dogged attention to detail and
+invaluable service as a rubber duck.
+
+Thanks to BT for continuing to believe that supporting open source
+development has benefits in the short and long term. Without BT's
+support there would likely be no TiddlyWeb.
+
+Birth to 1.0
+------------
+
+The architecture, attitude and action of TiddlyWeb is the result of
+ideas and interactions with many people, all of whom are impossible to
+list here, but a few highlights:
+
+* The original mo'ass (mother of all server sides) idea, including the
+  concepts of recipes and bags, comes from Jeremy Ruston, the original
+  inventor of TiddlyWiki.
+
+* TiddlyWeb is a Python application in large part because of the WSGI
+  specification, PEP 333, authored by Phillip J. Eby and the stalwart
+  enthusiasm of Zac Bir, a long time Python confederate.
+
+* Zac is also a conceptual parent of the architectural style that drives
+  TiddlyWeb's extensibility in the stores and serializers and the
+  challengers and extractors. All four are modeled, at a distance, on
+  concepts in Zope and systems implemented or designed to varying
+  degrees while at Socialtext.
+
+* The RESTful principles, or at least web friendly principles depending
+  on how strict you care to think about such things, that drive the
+  TiddlyWeb HTTP API, are all based on research and development creating
+  the Socialtext REST API with Matt Liggett and Matthew O'Connor.
+
+* Frank McIngvale, the author of WikklyText which does the server-side
+  wikitext to HTML transformation originally in TiddlyWeb and then extracted
+  to a plugin (tiddlywebwiki), provided excellent input on many aspects
+  of TiddlyWeb, and of course built the excellent WikklyText.
+
+* Frederik Dohr is the earliest adopter of TiddlyWeb, and responsible
+  for most of the code that creates the TiddlyWebWiki vertical. He's
+  been invaluable in providing input on features, excellent bug reports,
+  and general support and comradeship throughout the development process.
+
+* Action requires communication to make go. Many thanks to Jon Lister,
+  Martin Budden, Paul Downey, Phil Hawksworth, Phil Whitehouse, Simon
+  McManus, Michael Mahemoff, Jon Robson and Ben Gillies from Osmosoft;
+  Tony, Oveek, Reenen, Ben Tremblay and others from the TiddlyWikiDev
+  and TiddlyWeb Google groups; and many others for comments, questions
+  and conversations about TiddlyWeb.
