@@ -1,7 +1,10 @@
 """
-Routines that integrate the basic model classes with the rest of the
-system. The model classes are intentionally simple. The methods here act
-as controllers on those classes.
+control provides routines which integrate the basic :py:mod:`model classes
+<tiddlyweb.model>` with the rest of the system. The model classes are
+intentionally simple. The methods here act as controllers on those classes.
+
+These are primarily related to handling :py:class:`recipes
+<tiddlyweb.model.recipe.Recipe>`.
 """
 
 import logging
@@ -19,12 +22,13 @@ LOGGER = logging.getLogger(__name__)
 
 def get_tiddlers_from_recipe(recipe, environ=None):
     """
-    Return the list of tiddlers that result from processing the recipe.
+    Return the list of tiddlers that result from processing the ``recipe``.
 
     This list of tiddlers is unique by title with tiddlers later in the
     recipe taking precedence over those earlier in the recipe.
 
-    The tiddlers returned are empty objects.
+    The tiddlers returned are empty objects (i.e. not loaded from the
+    :py:mod:`store <tiddlyweb.store>`).
     """
     template = recipe_template(environ)
     store = recipe.store
@@ -54,16 +58,17 @@ def get_tiddlers_from_recipe(recipe, environ=None):
 
 def determine_bag_from_recipe(recipe, tiddler, environ=None):
     """
-    We have a recipe and a tiddler. We need to know the bag in which
-    this tiddler can be found. This is different from
-    determine_bag_for_tiddler(). That one finds the bag the tiddler
-    _could_ be in. This is the bag the tiddler _is_ in.
+    Given a ``recipe`` and a ``tiddler`` determine the :py:class:`bag
+    <tiddlyweb.model.bag.Bag>` in which this :py:class:`tiddler
+    <tiddlyweb.model.tiddler.Tiddler>` can be found. This is different from
+    :py:func:`determine_bag_for_tiddler`. That one finds the bag the tiddler
+    *could* be in. This is the bag the tiddler *is* in.
 
-    We reverse the recipe_list, and filter each bag according to
-    the rule. Then we look in the list of tiddlers and see if ours
-    is in there.
+    This is done by reversing the recipe's list, and filtering each bag
+    according to any :py:mod:`filters <tiddlyweb.filters>` present. The
+    resulting tiddlers are checked.
 
-    If an indexer is configured use the index to determine if a bag
+    If an ``indexer`` is configured use the index to determine if a tiddler
     exists in a bag.
     """
     store = recipe.store
@@ -140,9 +145,11 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
 
 def readable_tiddlers_by_bag(store, tiddlers, usersign):
     """
-    Yield those tiddlers which are readable by the current usersign.
-    This means, depending on the read constraint on the tiddler's
-    bag's policy, yield or not.
+    Yield those tiddlers which are readable by the current ``usersign``.
+    This means, depending on the ``read`` constraint on the
+    :py:class:`tiddler's <tiddlyweb.model.tiddler.Tiddler>`
+    :py:class:`bag's <tiddlyweb.model.bag.Bag>` :py:class:`policy
+    <tiddlyweb.model.policy.Policy>`, yield or not.
     """
     bag_readable = {}
 
@@ -166,11 +173,14 @@ def readable_tiddlers_by_bag(store, tiddlers, usersign):
 
 def determine_bag_for_tiddler(recipe, tiddler, environ=None):
     """
-    Return the bag which this tiddler would be in if we were to save it
-    to the recipe rather than to a default bag.
+    Return the :py:class:`bag <tiddlyweb.model.bag.Bag>` which this
+    :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>` would be in
+    if we were to save it to the named :py:class:`recipe
+    <tiddlyweb.model.recipe.Recipe>` rather than to a bag.
 
-    This is a matter of reversing the recipe list and seeing if the
-    tiddler is a part of the bag + filter. If bag+filter is true,
+    This is done reversing the recipe list and seeing if the
+    tiddler passes the constraint of the bag and its associated
+    :py:mod:`filter <tiddlyweb.filters>`. If bag+filter is true,
     return that bag.
     """
     template = recipe_template(environ)
@@ -187,7 +197,13 @@ def determine_bag_for_tiddler(recipe, tiddler, environ=None):
 
 def get_tiddlers_from_bag(bag):
     """
-    Yield the tiddlers that are in a bag.
+    Yield the individual :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`
+    that are in a :py:class:`bag <tiddlyweb.model.bag.Bag>`.
+
+    The tiddlers return are empty objects that have not been loaded from
+    the :py:class:`store <tiddlyweb.store.Store>`.
+
+    Rarely used, see :py:func:`tiddlyweb.store.Store.list_bag_tiddlers`.
     """
     for tiddler in bag.store.list_bag_tiddlers(bag):
         yield tiddler
@@ -196,9 +212,10 @@ def get_tiddlers_from_bag(bag):
 def filter_tiddlers(tiddlers, filters, environ=None):
     """
     Return a generator of tiddlers resulting from filtering the provided
-    iterator of tiddlers by the provided filters.
+    iterator of tiddlers by the provided :py:mod:`filters <tiddlyweb.filters>`.
 
-    If filters is a string, it will be parsed for filters.
+    If filters is a string, it will be :py:func:`parsed for filters
+    <tiddlyweb.filters.parse_for_filters>`.
     """
     if isinstance(filters, basestring):
         filters, _ = parse_for_filters(filters, environ)
@@ -220,9 +237,13 @@ def _filter_tiddlers_from_bag(bag, filters, environ=None):
 
 def recipe_template(environ):
     """
-    Provide a means to specify custom {{ key }} values in recipes which
-    are then replaced with the value specified in
-    environ['tiddlyweb.recipe_template']
+    Provide a means to specify custom ``{{ key }}`` values in
+    :py:class:`recipes <tiddlyweb.model.recipe.Recipe>` which are then
+    replaced with the value specified in
+    ``environ['tiddlyweb.recipe_template']``.
+
+    This allows recipes to be dynamic in the face of conditions in the
+    current request.
     """
     template = {}
     if environ:
