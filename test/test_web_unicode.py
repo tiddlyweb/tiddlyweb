@@ -96,6 +96,32 @@ def test_filter_tiddlers():
     assert info[0]['bag'] == name
     assert len(info) == 1
 
+def test_double_uri_encoded_title():
+    """
+    This test works against wsgi-intercept but fails when
+    used with web server like CherryPy, nginx or Apache.
+
+    This is because PATH_INFO is being decoded before being given
+    to the environment. This is not a good thing, it means that things
+    like %2F get turned into / in URIs.
+
+    See: https://github.com/tiddlyweb/tiddlyweb/issues/86
+         https://mail.python.org/pipermail/web-sig/2008-January/thread.html#3122
+    """
+    http = httplib2.Http()
+    store.put(Bag('double'))
+
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/double/tiddlers/test%2520one',
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body='{"text": "hi"}')
+
+    assert response['status'] == '204'
+
+    tiddler = store.get(Tiddler('test%20one', 'double'))
+    assert tiddler.title == 'test%20one'
+
 def get_tiddlers_from_thing(container):
     http = httplib2.Http()
 
