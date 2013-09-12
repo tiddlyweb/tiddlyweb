@@ -1,10 +1,14 @@
 """
-Store TiddlyWeb entities to the configured StorageInterface.
+Store TiddlyWeb entities to a configured persistence layer.
 
 This module provides the facade for accessing one of many possible
 modules which provide storage for entities. It provides a general
-interface to get, put, delete or list entities. StorageInterface
-implementations do the actual interaction with the the storage medium.
+interface to get, put, delete or list :py:mod:`entities <tiddlyweb.model>`.
+
+Each of the single entity methods can be augmented with hooks
+provided by plugins. This allows actions to be performed based on
+data in the store being retrieved or updated, such as updating an
+index.
 """
 
 from copy import deepcopy
@@ -32,35 +36,36 @@ class StoreError(IOError):
 
 class StoreMethodNotImplemented(StoreError):
     """
-    A StorageInterface does not implement this method.
+    A :py:class:`tiddlyweb.stores.StorageInterface` does not implement
+    this method.
     """
     pass
 
 
 class NoBagError(StoreError):
     """
-    No Bag was found.
+    No :py:class:`tiddlyweb.model.bag.Bag` was found.
     """
     pass
 
 
 class NoRecipeError(StoreError):
     """
-    No Recipe was found.
+    No :py:class:`tiddlyweb.model.recipe.Recipe` was found.
     """
     pass
 
 
 class NoTiddlerError(StoreError):
     """
-    No Tiddler was found.
+    No :py:class:`tiddlyweb.model.tiddler.Tiddler` was found.
     """
     pass
 
 
 class NoUserError(StoreError):
     """
-    No User was found.
+    No :py:class:`tiddlyweb.model.user.User` was found.
     """
     pass
 
@@ -74,8 +79,8 @@ class StoreLockError(StoreError):
 
 class StoreEncodingError(StoreError):
     """
-    Something about an entity made it impossible to be
-    encoded to the form require by the store.
+    Something about an entity made it impossible to be encoded to the
+    form required by the store.
     """
     pass
 
@@ -95,9 +100,35 @@ HOOKS = {
 
 class Store(object):
     """
-    Provide a facade around implementations of StorageInterface
-    to handle the storage and retrieval of TiddlyWeb entities
-    to and from persistent storage.
+    A Store is a facade to an implementation of
+    :py:class:`tiddlyweb.stores.StorageInterface` to handle the storage
+    and retrieval of all :py:mod:`entities <tiddlyweb.model>` in the
+    TiddlyWeb system.
+
+    Because of the facade system it is relatively straightforward to
+    create diverse storage systems for all sorts of or multiple media. In
+    addition stores can be layered to provide robust caching and
+    reliability.
+
+    The Store distinguishes between single entities and collections.
+    With single entities, an entity is passed to the store and the
+    store is asked to :py:meth:`get`, :py:meth:`put` or :py:meth:`delete`
+    it. When :py:meth:`get` is used the provided object is updated in
+    place in operation that could be described as population. Dispatch
+    is based on the class of the provided entity.
+
+    After any of those operations optional ``HOOKS`` are called.
+
+    With collections there are specific ``list`` methods:
+
+    * :py:meth:`list_bags`
+    * :py:meth:`list_recipes`
+    * :py:meth:`list_bag_tiddlers`
+    * :py:meth:`list_tiddler_revisions`
+    * :py:meth:`list_users`
+
+    Finally a store may optionally provide a :py:meth:`search`. How
+    search works and what it even means is up to the implementation.
     """
 
     def __init__(self, engine, config=None, environ=None):
@@ -111,7 +142,7 @@ class Store(object):
 
     def _import(self):
         """
-        Import the required StorageInterface.
+        Import the required :py:class:`tiddlyweb.stores.StorageInterface`.
         """
         try:
             imported_module = __import__('tiddlyweb.stores.%s' % self.engine,
@@ -127,7 +158,7 @@ class Store(object):
 
     def delete(self, thing):
         """
-        Delete a known object.
+        Delete a thing: recipe, bag, tiddler or user.
         """
         func = self._figure_function('delete', thing)
         result = func(thing)
@@ -136,7 +167,7 @@ class Store(object):
 
     def get(self, thing):
         """
-        Get a thing: recipe, bag or tiddler
+        Get a thing: recipe, bag, tiddler or user.
         """
         lower_class = superclass_name(thing)
         if lower_class == 'tiddler':
@@ -167,10 +198,7 @@ class Store(object):
 
     def put(self, thing):
         """
-        Put a thing, recipe, bag or tiddler.
-
-        Should there be handling here for things of
-        wrong type?
+        Put a thing, recipe, bag, tiddler or user.
         """
         func = self._figure_function('put', thing)
         result = func(thing)
@@ -220,7 +248,8 @@ class Store(object):
 
     def list_tiddler_revisions(self, tiddler):
         """
-        List the revision ids of the revisions of the indicated tiddler.
+        List the revision ids of the revisions of the indicated tiddler
+        in reverse chronological older (newest first).
         """
         list_func = getattr(self.storage, 'list_tiddler_revisions')
         return list_func(tiddler)
@@ -235,7 +264,8 @@ class Store(object):
     def search(self, search_query):
         """
         Search in the store, using a search algorithm
-        specific to the StorageInterface implementation.
+        specific to the :py:class:`tiddlyweb.stores.StorageInterface`
+        implementation.
         """
         list_func = getattr(self.storage, 'search')
         return list_func(search_query)
