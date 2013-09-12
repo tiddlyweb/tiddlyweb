@@ -1,8 +1,13 @@
 """
-Provide the workings for the twanager command line tool.
-twanager calls handle() in this module and makes available
-all commands that have been put into the COMMANDS dictionary
-by the make_command() decorator.
+manage provides the workings for the ``twanager`` command line tool.
+``twanager`` calls :py:func:`handle`, making available all commands
+that have been put into the ``COMMANDS`` dictionary by the
+:py:func:`make_command` decorator. See :py:mod:`tiddlyweb.commands`
+for examples.
+
+Plugins which add commands must be added to the ``twanager_plugins``
+:py:mod:`config <tiddlyweb.config>` setting so they are imported at
+the proper time.
 """
 
 import logging
@@ -22,9 +27,11 @@ LOGGER = logging.getLogger(__name__)
 
 def make_command():
     """
-    A decorator that marks the decorated method
-    as a member of the commands dictionary, with
-    associated help.
+    A decorator that marks the decorated method as a member of the
+    commands dictionary, with associated help.
+
+    The pydoc of the method is used in automatically generated :py:func:usage
+    information.
     """
 
     def decorate(func):
@@ -48,8 +55,7 @@ def usage(args):
 
 def handle(args):
     """
-    Dispatch to the proper function for the command
-    given in a args[1].
+    Dispatch to the proper function for the command given in ``args[1]``.
     """
     from tiddlyweb.config import config
     try:
@@ -102,7 +108,7 @@ def handle(args):
 
 def _external_load(args, config):
     """
-    Load a module from by request of the command line.
+    Load a module from ``args[2]`` to adjust configuration.
     """
     module = args[2]
     args = [args[0]] + args[3:]
@@ -123,7 +129,7 @@ def _external_load(args, config):
 
 def _import_module_config(module):
     """
-    Import the module named module to get at its config.
+    Import the module named by ``module`` to get at its config.
     """
     imported_module = __import__(module, {}, {}, ['config'])
     return imported_module.config
