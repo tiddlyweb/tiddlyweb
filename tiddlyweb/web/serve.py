@@ -48,7 +48,7 @@ def load_app(app_prefix=None, dirname=None):
 
     wrappers = []
     wrappers.extend(reversed(config['server_request_filters']))
-    wrappers.append(RequestLogger)  # required as the first app
+    wrappers.append(RequestStarter)  # required as the first app
     wrappers.append(Configurator)  # required as the second app
     wrappers.extend(config['server_response_filters'])
     if wrappers:
@@ -89,9 +89,10 @@ def start_server(config):
         sys.exit(0)
 
 
-class RequestLogger(object):
+class RequestStarter(object):
     """
-    WSGI middleware that logs basic request information
+    WSGI middleware that logs basic request information and cleans
+    PATH_INFO in the environment.
     """
 
     def __init__(self, application):
@@ -105,7 +106,33 @@ class RequestLogger(object):
                 environ.get('SCRIPT_NAME', None),
                 environ.get('PATH_INFO', None),
                 environ.get('QUERY_STRING', None))
+        self.clean_path_info(environ)
         return self.application(environ, start_response)
+
+    def clean_path_info(self, environ):
+        """
+        Clean ``PATH_INFO`` in the environment.
+
+        This is necessary because WSGI servers tend to decode
+        the URI before putting it in PATH_INFO. This means that
+        uri encoded data, such as the ``%2F`` encoding of ``/``
+        will be decoded before we get to route dispatch handling,
+        by which time the ``/`` is treated as a separator. People
+        say that the right thing to do here is not use ``%2F``.
+        This is hogwash. The right thing to do is not decode
+        PATH_INFO. In this solution if REQUEST_URI is present
+        we use a portion of it to set PATH_INFO.
+        """
+        request_uri = environ.get('REQUEST_URI', environ.get('RAW_URI', ''))
+
+        if request_uri:
+            path_info = environ.get('PATH_INFO', '')
+            script_name = environ.get('SCRIPT_NAME', '')
+            query_string = environ.get('QUERY_STRING', '')
+
+            path_info = request_uri.replace(script_name, "", 1)
+            path_info = path_info.replace('?' + query_string, "", 1)
+            environ['PATH_INFO'] = path_info
 
 
 class Configurator(object):
