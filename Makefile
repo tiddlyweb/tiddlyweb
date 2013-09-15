@@ -6,6 +6,8 @@ clean:
 	rm -r dist || true
 	rm -r build || true
 	rm -r tiddlyweb.egg-info || true
+	rm -r htmlcov || true
+	rm .coverage || true
 
 tagv:
 	git tag -a \
@@ -21,6 +23,9 @@ cleanagain:
 
 test:
 	py.test -x --tb=short test
+
+test-cov:
+	py.test --cov-report html --cov test
 
 dist: test
 	python setup.py sdist

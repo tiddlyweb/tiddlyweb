@@ -67,6 +67,18 @@ Or you can install by hand, you will need the following requirements:
   http://code.google.com/p/html5lib/
 * httpexceptor: http://pypi.python.org/pypi/httpexceptor
 
+Building
+=============
+
+Tests are run using PyTest:
+
+   make test
+
+Coverage support with:
+
+https://pypi.python.org/pypi/coverage
+https://pypi.python.org/pypi/pytest-cov
+
 Miscellaneous
 =============
 
