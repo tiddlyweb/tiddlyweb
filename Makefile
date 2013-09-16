@@ -25,7 +25,10 @@ test:
 	py.test -x --tb=short test
 
 test-cov:
-	py.test --cov-report html --cov test
+	py.test --cov-report term-missing --cov tiddlyweb test
+
+test-cov-html:
+	py.test --cov-report html --cov tiddlyweb test
 
 dist: test
 	python setup.py sdist

@@ -9,7 +9,6 @@ from setuptools import setup, find_packages
 
 from tiddlyweb import __version__ as VERSION
 
-
 META = {
     'name': 'tiddlyweb',
     'version': VERSION,
@@ -31,7 +30,7 @@ META = {
         'mimeparse'],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'wsgi_intercept', 'PyYAML',
-                    'coverage','pytest-cov',
+                    'coverage','pytest-cov', 'python-coveralls',
                     'tiddlywebplugins.utils']
     },
     'include_package_data': True,
