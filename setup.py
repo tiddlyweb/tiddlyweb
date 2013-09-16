@@ -30,7 +30,6 @@ META = {
         'mimeparse'],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'wsgi_intercept', 'PyYAML',
-                    'coverage','pytest-cov', 'python-coveralls',
                     'tiddlywebplugins.utils']
     },
     'include_package_data': True,
