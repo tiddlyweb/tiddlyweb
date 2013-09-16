@@ -1,9 +1,6 @@
 .. image:: https://secure.travis-ci.org/tiddlyweb/tiddlyweb.png
     :target: http://travis-ci.org/tiddlyweb/tiddlyweb
     :alt: build status
-.. image:: https://coveralls.io/repos/tiddlyweb/tiddlyweb/badge.png
-    :target: https://coveralls.io/r/tiddlyweb/tiddlyweb
-    :alt: Coverage Status
 .. image:: https://pypip.in/v/tiddlyweb/badge.png
     :target: https://crate.io/packages/tiddlyweb
     :alt: Package Version
