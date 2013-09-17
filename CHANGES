@@ -1,3 +1,8 @@
+1.4.17 Tue Sep 17 16:41:54 UTC 2013
+
+  * Better handling of encoded % in URIs.
+  * Start at improved pydoc.
+
 1.4.16 Wed Aug  7 14:00:33 UTC 2013
 
   * deny storing a tiddler using reserved fields
