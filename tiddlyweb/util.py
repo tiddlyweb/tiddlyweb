@@ -104,7 +104,7 @@ def pseudo_binary(content_type):
     as :py:mod:`wikitext <tiddlyweb.wikitext>`. It is identified by a
     ``MIME`` type that looks like ``text``, ``json``, ``xml`` or
     ``javascript``.
-    
+
     TiddlyWeb requires that such content be uploaded encoded as ``UTF-8``.
     """
     content_type = content_type.lower()
@@ -146,7 +146,7 @@ def renderable(tiddler, environ=None):
 def std_error_message(message):
     """
     Display ``message`` on the ``stderr`` console.
-    
+ 
     Some finagling is done to ensure that unicode content makes its
     way to the console even if there are encoding problems.
     """
@@ -176,7 +176,7 @@ def superclass_name(instance):
 def write_utf8_file(filename, content):
     """
     Write the unicode string in ``content`` to a ``UTF-8`` encoded
-    file named ``filename``. 
+    file named ``filename``.
 
     Allow any exceptions to raise.
     """
@@ -216,7 +216,7 @@ def write_unlock(filename):
 def initialize_logging(config, server=False):
     """
     Initialize the system's logging.
-    
+
     If this code is reached from ``twanager`` when there is no sub_command
     logging is not started. This avoids spurious ``tiddlyweb.log`` files
     popping up all over the place.
