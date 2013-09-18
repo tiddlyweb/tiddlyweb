@@ -146,7 +146,7 @@ def renderable(tiddler, environ=None):
 def std_error_message(message):
     """
     Display ``message`` on the ``stderr`` console.
- 
+
     Some finagling is done to ensure that unicode content makes its
     way to the console even if there are encoding problems.
     """
