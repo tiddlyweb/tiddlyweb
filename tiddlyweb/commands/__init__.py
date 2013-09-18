@@ -1,10 +1,15 @@
 """
-Command line tools for TiddlyWeb, accessed via the twanager command line
-script. Each command below is added to the availble twanager commands.
-This list is extensible via twanager_plugins in tidldyweb.config.
+Command line tools for TiddlyWeb are accessed via the ``twanager``
+script. Each command is named by the first argument passed to the
+script.
 
-Typical commands do things like starting a server, create a user, list
-existing entities.
+The commands defined in this package are added to a list of available
+commands using the ``twanager`` plugin mechanism.  That list is extensible
+via ``twanager_plugins`` in :py:mod:`tiddlyweb.config` and
+:py:func:`tiddlyweb.manage.make_command`.
+
+Typical commands do things like starting a server, creating a user and
+listing existing entities.
 """
 
 import sys
@@ -20,7 +25,7 @@ from tiddlyweb import __version__ as VERSION
 
 def init(config):
     """
-    Establish the commands.
+    Establish the commands during ``twanager`` startup.
     """
 
     @make_command()

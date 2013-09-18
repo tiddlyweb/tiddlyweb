@@ -1,5 +1,23 @@
 """
-interactive shell (REPL)
+This module provides a ``twanager`` command ``interact`` which
+provides a Python shell preloaded with the necessary local
+variables to interact with the current instance's :py:class:`store
+<tiddlyweb.store.Store>` and the entities within. The locals are:
+
+* :py:class:`Recipe <tiddlyweb.model.recipe.Recipe>`
+* :py:class:`Bag <tiddlyweb.model.bag.Bag>`
+* :py:class:`Tiddler <tiddlyweb.model.tiddler.Tiddler>`
+* :py:class:`User <tiddlyweb.model.user.User>`
+* :py:class:`Policy <tiddlyweb.model.policy.Policy>`
+* :py:class:`Serializer <tiddlyweb.serializer.Serializer>`
+* :py:mod:`control <tiddlyweb.control>`
+* :py:mod:`util <tiddlyweb.util>`
+* :py:mod:`web <tiddlyweb.web.util>`
+* An ``environ`` containing ``tiddlyweb.config`` and
+  `tiddlyweb.store`` keys and values.
+* A ``config`` containing the current ``tiddlyweb.config``.
+
+These are enough to do most operations.
 """
 
 import sys
@@ -9,6 +27,9 @@ import rlcompleter
 
 
 def launch_shell(config, store, args):
+    """
+    Establish the basic environment for the shell and then start it.
+    """
     # make basic API elements available within the REPL context
     from tiddlyweb.model.recipe import Recipe
     from tiddlyweb.model.bag import Bag
@@ -36,6 +57,12 @@ def launch_shell(config, store, args):
 # http://stackoverflow.com/questions/7116038/python-tab-completion-mac-osx-10-7-lion
 # for the details on tab completion
 class TiddlyWebREPL(code.InteractiveConsole):
+    """
+    An interactive console for the current TiddlyWeb instance.
+
+    This augments it's super class by adding tab completion and
+    establishing a set of useful local variables.
+    """
 
     def __init__(self, locals=None, filename="<console>"):
         code.InteractiveConsole.__init__(self, locals, filename)
@@ -66,8 +93,15 @@ class TiddlyWebREPL(code.InteractiveConsole):
 
 
 class TabCompleter(rlcompleter.Completer):
+    """
+    Tab completion for the interactive shell that allows pressing
+    the tab character to indicate an indent.
+    """
 
     def complete(self, text, state):
+        """
+        Complete the provided ``text``. If there is no text, indent.
+        """
         if not text:
             return ('    ', None)[state]
         else:
