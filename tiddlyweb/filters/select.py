@@ -1,34 +1,34 @@
 """
-Filter routines for selecting some entities, usually tiddlers, from a
-collection of entities, usually by an attribute of the tiddlers.
+A :py:mod:`filter <tiddlyweb.filters>` type for selecting only some
+entities, usually :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`,
+from a collection of entities, usually by an attribute of the tiddlers.
 
-The syntax is:
+The syntax is::
 
     select=attribute:value    # attribute is value
     select=attribute:!value   # attribute is not value
     select=attribute:>value   # attribute is greater than value
     select=attribute:<value   # attribute is less than value
 
-ATTRIBUTE_SELECTOR is checked for a function which returns true or false
-for whether the provide value matches for the entity being tested. The
-default case is lower case string equality. Other functions may be
-provided by plugins and other extensions. Attributes may be virtual,
-i.e. not real attributes on entity. For example we can check for the
-presence of a tag in a tiddlers tags attribute with
+``ATTRIBUTE_SELECTOR`` is checked for a function which returns ``True``
+or ``False`` for whether the provided value matches for the entity being
+tested. The default case is lower case string equality. Other functions
+may be provided by plugins. Attributes may be virtual, i.e. not real
+attributes on entity. For example we can check for the presence of a
+tag in a tiddlers tags attribute with::
 
     select=tag:tagvalue
 
-An attribute function takes an entity, an attribute name and a value,
-may do anything it wants with it, and must return True or False.
+An attribute function takes an entity, an attribute name and a value.
+It may then do anything it wants with it, and must return ``True`` or
+``False``.
 
-'!' negates a selection, getting all those entities that don't match.
+* ``!`` negates a selection, getting all those entities that don't match.
+* ``>`` gets those entities that sort greater than the value.
+* ``<`` gets those entities that sort less than the value.
 
-'>' gets those entities that sort greater than the value.
-
-'<' gets those entities that sort less than the value.
-
-When doing sorting ATTRIBUTE_SORT_KEY is consulted to canonicalize the
-value. See tiddlyweb.filters.sort.
+When doing sorting ``ATTRIBUTE_SORT_KEY`` is consulted to canonicalize the
+value. See :py:mod:`tiddlyweb.filters.sort`.
 """
 
 from itertools import ifilter
@@ -40,10 +40,9 @@ from tiddlyweb.store import get_entity
 
 def select_parse(command):
     """
-    Parse a select parse command into
-    attributes and arguments and return a
-    function (for later use) which will do
-    the selecting.
+    Parse a select :py:mod:`filter <tiddlyweb.filters>` string into
+    attributes and arguments and return a function (for later use)
+    which will do the selecting.
     """
     attribute, args = command.split(':', 1)
 
@@ -96,7 +95,8 @@ def select_parse(command):
 
 def bag_in_recipe(entity, attribute, value):
     """
-    Return true if the named bag is in the recipe.
+    Return ``True`` if the named :py:class:`bag <tiddlyweb.model.bag.Bag>`
+    is in the :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`.
     """
     bags = [bag for bag, _ in entity.get_recipe()]
     return value in bags
@@ -104,24 +104,23 @@ def bag_in_recipe(entity, attribute, value):
 
 def field_in_fields(entity, attribute, value):
     """
-    Return true if the entity has the named field.
+    Return ``True`` if the entity has the named field.
     """
     return value in entity.fields
 
 
 def tag_in_tags(entity, attribute, value):
     """
-    Return true if the provided entity has
-    a tag of value in its tag list.
+    Return ``True`` if the provided entity has a tag of value in its
+    tag list.
     """
     return value in entity.tags
 
 
 def text_in_text(entity, attribute, value):
     """
-    Return true if the provided entity has
-    the string provided in value in its
-    text attribute.
+    Return ``True`` if the provided entity has the string provided in
+    ``value`` within its text attribute.
     """
     try:
         return value.lower() in entity.text.lower()
@@ -140,10 +139,9 @@ ATTRIBUTE_SELECTOR = {
 
 def default_func(entity, attribute, value):
     """
-    Look in the entity for an attribute with the
-    provided value. First proper attributes are
-    checked, then extended fields. If neither of
-    these are present, return False.
+    Look in the entity for an attribute with the provided value.
+    First real object attributes are checked, then, if available,
+    extended fields. If neither of these are present, return ``False``.
     """
     try:
         return getattr(entity, attribute) == value
@@ -157,9 +155,9 @@ def default_func(entity, attribute, value):
 def select_by_attribute(attribute, value, entities, negate=False,
         indexable=None, environ=None):
     """
-    Select entities where value of attribute matches the provide value.
+    Select entities where value of ``attribute`` matches the provide value.
 
-    If negate is true, get those that don't match.
+    If ``negate`` is ``True``, get those that don't match.
     """
     if environ is None:
         environ = {}
@@ -200,8 +198,8 @@ def select_by_attribute(attribute, value, entities, negate=False,
 def select_relative_attribute(attribute, value, entities,
         greater=False, lesser=False, environ=None):
     """
-    Select entities that sort greater or less than the provided value
-    for the provided attribute.
+    Select entities that sort greater or less than the provided ``value``
+    for the provided ``attribute``.
     """
     if environ is None:
         environ = {}

@@ -1,12 +1,13 @@
 """
-Sort a collection of entities by some attribute. The syntax is:
+A :py:mod:`filter <tiddlyweb.filters>` type to sort a collection of
+entities by some attribute. The syntax is::
 
     sort=attribute   # sort ascending
     sort=-attribute  # sort descending
 
 Atribute is either a real entity attribute or a key in
-ATTRIBUTE_SORT_KEY that has as its value a function used to generate a
-key to pass to the sort. ATTRIBUTE_SORT_KEY can be extended by plugins.
+``ATTRIBUTE_SORT_KEY`` that has as its value a function used to generate a
+key to pass to the sort. ``ATTRIBUTE_SORT_KEY`` can be extended by plugins.
 """
 
 from tiddlyweb.store import get_entity
@@ -14,16 +15,15 @@ from tiddlyweb.store import get_entity
 
 def date_to_canonical(datestring):
     """
-    Take a string of 14 or less digits
-    and turn it into 14 digits for the
-    sake of comparing entity dates.
+    Take a (TiddlyWiki-style) string of 14 or less digits and turn it
+    into 14 digits for the sake of comparing entity dates.
     """
     return datestring.ljust(14, '0')
 
 
 def as_int(attribute):
     """
-    Treat attribute as int if it looks like one.
+    Treat attribute as ``int`` if it looks like one.
     """
     try:
         return int(attribute)
@@ -40,8 +40,7 @@ ATTRIBUTE_SORT_KEY = {
 
 def sort_parse(attribute):
     """
-    Create a function which will sort a collection of
-    entities.
+    Create a function which will sort a collection of entities.
     """
     if attribute.startswith('-'):
         attribute = attribute.replace('-', '', 1)
@@ -61,7 +60,7 @@ def sort_parse(attribute):
 def sort_by_attribute(attribute, entities, reverse=False, environ=None):
     """
     Sort a group of entities by some attribute.
-    Inspect ATTRIBUTE_SORT_KEY to see if there is a special
+    Inspect ``ATTRIBUTE_SORT_KEY`` to see if there is a special
     function by which we should generate the value for this
     attribute.
     """

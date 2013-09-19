@@ -5,7 +5,9 @@ Overarching handler for TiddlyWeb `filters`_.
 
 Filters provide an extensible syntax for limiting any :py:class:`Collection
 <tiddlyweb.model.collections.Collection>` by attributes on the entities in
-the collection. Though primarily for :py:class:`Tiddlers <tiddlyweb.model.tiddler.Tiddler>`, :py:class:`Bags <tiddlyweb.model.bag.Bag>` and :py:class:`Recipes
+the collection. Though primarily for :py:class:`Tiddlers
+<tiddlyweb.model.tiddler.Tiddler>`, :py:class:`Bags
+<tiddlyweb.model.bag.Bag>` and :py:class:`Recipes
 <tiddlyweb.model.recipe.Recipe>` can be filtered as well.
 
 The basic filters provide for selecting and sorting on attributes of the
