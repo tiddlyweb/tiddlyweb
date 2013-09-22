@@ -1,5 +1,12 @@
 """
 A class representing a simple user entity.
+
+A User object is not required during TiddlyWeb requests,
+:py:class:`credentials extractors
+<tiddlyweb.web.extractors.ExtractorInterface>` and :py:class:`policies
+<tiddlyweb.model.policy.Policy>` may work with arbitrary data for
+authentication and authorization. However if a locally stored user
+is required the :py:class:`User` may be used.
 """
 
 from tiddlyweb.util import sha
@@ -21,13 +28,13 @@ class User(object):
 
     def add_role(self, role):
         """
-        Add the named role (a string) to this user.
+        Add the named ``role`` (a string) to this user.
         """
         self.roles.add(unicode(role))
 
     def del_role(self, role):
         """
-        Remove the named role (a string) from this user.
+        Remove the named ``role`` (a string) from this user.
         If it is not there, do nothing.
         """
         self.roles.discard(role)
@@ -51,7 +58,7 @@ class User(object):
 
     def check_password(self, candidate_password):
         """
-        Check the password for this user. Return true if correct.
+        Check the password for this user. Return ``True`` if correct.
         """
         if not self._password:
             return False

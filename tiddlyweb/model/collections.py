@@ -1,10 +1,12 @@
 """
-Collection classes.
+Classes representing collections of :py:class:`bags
+<tiddlyweb.model.bag.Bag>`, :py:class:`recipes
+<tiddlyweb.model.recipe.Recipe>` and :py:class:`tiddlers
+<tiddlyweb.model.tiddler.Tiddler>`.
 
-These classes are used for containing the other model classes. Because
-the main reason for having a collection is to send it out over the web,
-the collections keep track of their last-modified time and generate a
-hash suitable for use as an ETag.
+Because the main reason for having a collection is to send it out over
+the web, the collections keep track of their last-modified time and
+generate a hash suitable for use as an ETag.
 """
 
 import logging
@@ -22,9 +24,9 @@ class Collection(object):
     """
     Base class for all collections.
 
-    Can be used directly for general stuff if required.
+    Can be used directly for general collections if required.
 
-    A collection acts as generator, yield one of its contents when
+    A collection acts as generator, yielding one of its contents when
     iterated.
     """
 
@@ -40,8 +42,8 @@ class Collection(object):
 
     def add(self, thing):
         """
-        Add an item to the container, updating
-        the digest and modified information.
+        Add an item to the container, updating the digest and
+        modified information.
         """
         self._update_digest(thing)
         self._container.append(thing)
@@ -61,8 +63,8 @@ class Collection(object):
 
     def hexdigest(self):
         """
-        Return the current hex representation of
-        the hash digest of this collection.
+        Return the current hex representation of the hash digest of this
+        collection.
         """
         return self._digest.hexdigest()
 
@@ -76,32 +78,39 @@ class Collection(object):
 
 class Container(Collection):
     """
-    A collection of things which have a name attribute.
+    A collection of things which have a ``name`` attribute.
 
-    In TiddlyWeb this is for lists of bags and recipes.
+    In TiddlyWeb this is for lists of :py:class:`bags
+    <tiddlyweb.model.bag.Bag>` and :py:class:`recipes
+    <tiddlyweb.model.recipe.Recipe>`.
     """
 
     def _update_digest(self, thing):
         """
-        Update the digest with this thing.
+        Update the digest with this thing's ``name``.
         """
         self._digest.update(thing.name.encode('utf-8'))
 
 
 class Tiddlers(Collection):
     """
-    A Collection specifically for tiddlers.
+    A Collection specifically for :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>`.
 
     This differs from the base class in two ways:
 
     The calculation of the digest is more detailed in order to create
-    stong ETags for the collection.
+    stong ``ETags`` for the collection.
 
-    When iterated, if store is set on the Collection, then a yielded
+    When iterated, if ``store`` is set on the Collection, then a yielded
     tiddler will be loaded from the store to fill in all its attributes.
     When a tiddler is added to the collection, if it is already filled,
     a non-full copy is made and put into the collection. This is done
     to save memory and because often the data is not needed.
+
+    If ``collections.use_memory`` is ``True`` in ``config`` then the
+    full tiddler is kept in the collection. On servers with adequate
+    memory this can be more efficient.
     """
 
     def __init__(self, title='', store=None, bag=None, recipe=None):
@@ -114,10 +123,10 @@ class Tiddlers(Collection):
 
     def __iter__(self):
         """
-        Generate the items in this container.
-        Since these are tiddlers, load them if they are
-        not loaded. If a tiddler is now gone, skip right
-        over that.
+        Generate the items in this container. Since these are
+        :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`,
+        load them if they are not loaded. If a tiddler has been removed since
+        this request was started, skip it.
         """
         for tiddler in self._container:
             if not tiddler.store and self.store:
@@ -131,10 +140,11 @@ class Tiddlers(Collection):
 
     def add(self, tiddler):
         """
-        Add a reference to the tiddler to the container,
-        updating the digest and modified information. If
-        the tiddler has recently been deleted, resulting
-        in a StoreError, simply don't add it.
+        Add a reference to the :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>` to the container, updating the
+        digest and modified information. If the tiddler has recently been
+        deleted, resulting in a :py:class:`StoreError
+        <tiddlyweb.store.StoreError>`, don't add it.
         """
         if not tiddler.store and self.store:
             try:

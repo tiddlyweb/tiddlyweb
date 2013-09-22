@@ -13,18 +13,20 @@ RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
 class Recipe(object):
     """
     A Recipe is an ordered list that represents a program for creating a
-    collection of tiddlers.
+    collection of :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`.
 
-    Each line in the recipe is the combination of a bag and a filter
-    string. For this implementation we have a list of tuples.
+    Each line in the recipe is the combination of a :py:class:`bag
+    <tiddlyweb.model.bag.Bag>` name and a :py:mod:`filter <tiddlyweb.filters>`
+    string. This implementation uses list of tuples.
 
     In common usage a recipe contains only strings representing bags
     and filters, but for the sake of easy testing, the bag argument
-    can be a Bag.
+    can be a :py:class:`Bag <tiddlyweb.model.bag.Bag>` object.
 
-    A Recipe has a Policy (see tiddlyweb.policy) which may be used to
-    control access to the Recipe. These controls are optional and are
-    primarily designed for use within the web handlers.
+    A Recipe has a :py:class:`Policy <tiddlyweb.model.policy.Policy>`
+    which can be used to control access to the Recipe. These controls are
+    optional and are primarily designed for use within the :py:mod:`web
+    handlers <tiddlyweb.web.handler>`.
     """
 
     def __init__(self, name, desc=u''):
@@ -36,13 +38,13 @@ class Recipe(object):
 
     def set_recipe(self, recipe_list):
         """
-        Set the contents of the list.
+        Set the contents of the recipe list.
         """
         self._recipe = recipe_list
 
     def get_recipe(self, template=None):
         """
-        Return the recipe list, as a list.
+        Return the recipe list, as a list of tuple pairs.
         """
         our_list = self._recipe
         real_list = []

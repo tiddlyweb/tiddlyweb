@@ -1,9 +1,10 @@
 """
 Models for TiddlyWeb Entities.
 
-Psuedo-model classes representing the important entities/data classes in
-the TiddlyWeb system.
+Classes representing the important entities in the TiddlyWeb system.
 
 These are intentionally limited, making no effort to handle their own
-persistence or presentation. That is the job of other systems.
+persistence or presentation. That is the job of the :py:class:`store
+<tiddlyweb.store.Store>` and :py:class:`serializer
+<tiddlyweb.serializer.Serializer>`.
 """

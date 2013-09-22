@@ -1,5 +1,5 @@
 """
-A module containing the Tiddler class and related functions.
+A module containing the :py:class:`Tiddler` class and related functions.
 """
 
 import re
@@ -10,7 +10,7 @@ from time import strptime
 
 def current_timestring():
     """
-    Translate (now) into a TiddlyWiki conformat timestring.
+    Translate the current UTC time into a TiddlyWiki conformat timestring.
     """
     time_object = datetime.utcnow()
     return unicode(time_object.strftime('%Y%m%d%H%M%S'))
@@ -18,7 +18,7 @@ def current_timestring():
 
 def timestring_to_datetime(timestring):
     """
-    Turn a tiddler timestring into a datetime object.
+    Turn a TiddlyWiki timestring into a datetime object.
 
     Will raise ValueError if the input is not a 12 or 14
     digit timestring.
@@ -34,8 +34,8 @@ def timestring_to_datetime(timestring):
 
 def tags_list_to_string(tags):
     """
-    Given a list of tags, turn them into the canonical string representation
-    (space-delimited, enclosing tags containing spaces in double brackets)
+    Given a list of ``tags``, turn it into the canonical string representation
+    (space-delimited, enclosing tags containing spaces in double brackets).
     """
     tag_string_list = []
     for tag in tags:
@@ -49,6 +49,8 @@ def string_to_tags_list(string):
     """
     Given a string representing tags (space-delimited, tags containing spaces
     are enclosed in in double brackets), parse them into a list of tag strings.
+
+    Duplicates are removed.
     """
     tags = []
     tag_matcher = re.compile(r'([^ \]\[]+)|(?:\[\[([^\]]+)\]\])')
@@ -63,41 +65,59 @@ def string_to_tags_list(string):
 
 class Tiddler(object):
     """
-    The primary content object in the TiddlyWiki universe, vaguely
-    corresponding to a Page in other wiki systems. A Tiddler has
-    text and some associated metadata. The text can be anything, but
-    is usually wikitext in some form, or Javascript code to be used
-    as a plugin. It is possible for a Tiddler to container binary
-    content, such as image data.
+    The primary content object in the TiddlyWiki and TiddlyWeb universe,
+    representing a distinct piece of content, often vaguely
+    corresponding to a Page in wiki systems. A Tiddler has text and some
+    associated metadata. The text can be anything, often wikitext in
+    some form, or Javascript code. It is possible for a Tiddler to
+    container binary content, such as image data.
 
-    A Tiddler is intentionally just a container of data. That is, it has
+    A Tiddler is intentionally solely a container of data. That is, it has
     no methods which change the state of attributes in the Tiddler or
     manipulate the tiddler. Changing the attributes is done by directly
     changing the attributes. This is done to make the Tiddler easier to
-    store and serialize in many ways.
+    :py:class:`store <tiddlyweb.store.Store>` and :py:class:`serialize
+    <tiddlyweb.serializer.Serializer>` in many ways.
 
     A Tiddler has several attributes:
 
-    title: The name of the tiddler. Required.
-    created: A string representing when this tiddler was
-            created.
-    modified: A string representing when this tiddler was
-             last changed. Defaults to now.
-    modifier: A string representing a personage that changed
-              this tiddler in some way. This doesn't necessarily
-              have any assocation with the tiddlyweb.usersign,
-              though it may.
-    tags: A list of strings that describe the tiddler.
-    fields: An arbitrary dictionary of extended (custom) fields on the tiddler.
-    text: The contents of the tiddler. A string.
-    revision: The revision of this tiddler. The type of a revision
-              is unspecified.
-    bag: The name of the bag in which this tiddler exists,
-         if any. Usually set by internal code.
-    recipe: The name of the recipe in which this tiddler exists,
-            if any. Usually set by internal code.
-    store: A reference to the Store object which retrieved
-           this tiddler from persistent storage.
+    title
+        The name of the tiddler. Required.
+
+    created
+        A string representing when this tiddler was created.
+
+    modified
+        A string representing when this tiddler was last changed.
+        Defaults to now.
+
+    modifier
+        A string representing a personage that changed this tiddler in
+        some way. This doesn't necessarily have any assocation with the
+        tiddlyweb.usersign, though it may.
+
+    tags
+        A list of strings that describe the tiddler.
+
+    fields
+        An arbitrary dictionary of extended (custom) fields on the tiddler.
+
+    text
+        The contents of the tiddler. A string.
+
+    revision
+        The revision of this tiddler. The type of a revision is unspecified
+        and is :py:class:`store <tiddlyweb.store.Store>` dependent.
+
+    bag
+        The name of the bag in which this tiddler exists, if any.
+
+    recipe
+        The name of the recipe in which this tiddler exists, if any.
+
+    store
+        A reference to the :py:class:`Store <tiddlyweb.store.Store>` object
+        which retrieved this tiddler from persistent storage.
     """
 
     data_members = ['title',
@@ -116,7 +136,7 @@ class Tiddler(object):
         """
         Create a new Tiddler object.
 
-        A title is required to ceate a tiddler.
+        A ``title`` is required to ceate a tiddler.
         """
         if title:
             title = unicode(title)

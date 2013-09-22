@@ -1,11 +1,12 @@
 """
-A module containing the Policy class.
+A module containing the :py:class:`Policy` class and associated
+exceptions.
 """
 
 
 class PermissionsError(Exception):
     """
-    Base class for policy violation problems.
+    Base class for :py:class:`Policy` violations.
     """
 
 
@@ -25,24 +26,37 @@ class UserRequiredError(PermissionsError):
 
 class Policy(object):
     """
-    A container for information about the contraints on a bag or recipe.
-    Both are containers of tiddlers. We need to be able to say who can
-    do what to do those tiddlers. We also need to be able to say who can
-    manage those constraints.
+    A container for information about the contraints on a :py:class:`bag
+    <tiddlyweb.model.bag.Bag>` or :py:class:`recipe
+    <tiddlyweb.model.recipe.Recipe>`. Both are containers of
+    :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`. We need to
+    be able to control who can do what to do those tiddlers. We also
+    need to be able to control who can manage those constraints.
 
-    The init parameters represent a default policy.
+    The :pu:func:__init__ parameters represent a default policy.
 
-    There are six constraints plus one identifying atrribute (owner).
+    There are six constraints plus one identifying attribute (``owner``).
     The constraints are listed below with descriptions of what is allowed
     if the constraint passes.
 
-    read -- View this entity in lists. View the contained entities.
-    write -- Edit the contained entities that already exist.
-    create -- Create new entities in the container.
-    delete -- Remove a contained entity.
-    manage -- Change the policy itself.
-    accept -- Accept the entity into the container without requiring
-              validation.
+    read
+        View this entity in lists. View the contained entities.
+
+    write
+        Edit the contained entities that already exist.
+
+    create
+        Create new entities in the container.
+
+    delete
+        Remove a contained entity.
+
+    manage
+        Change the policy itself.
+
+    accept
+         Accept the entity into the container without requiring
+         :py:mod:`validation <tiddlyweb.web.validator>`.
     """
 
     attributes = [u'read', u'write', u'create', u'delete', u'manage',
@@ -75,15 +89,16 @@ class Policy(object):
 
     def allows(self, usersign, constraint):
         """
-        Is the user encapsulated by the usersign dict allowed to
-        perform the action described by constraint. If so, return
-        True. If not raise a UserRequiredError (if the user is
-        GUEST) or ForbiddenError exception.
+        Is the user encapsulated by the ``usersign`` dict allowed to
+        perform the action described by ``constraint``. If so, return
+        True. If not raise a :py:class:`UserRequiredError` (if the user is
+        ``GUEST``) or :py:class:`ForbiddenError` exception.
 
-        The dict has a name key with a string value which is a
-        username and a roles key with a list of roles as its value.
-        Either may match in the constraint. Usersign is usually
-        populated during the CredentialsExtractor phase of a
+        The dict has a ``name`` key with a string value which is a
+        ``username`` and a ``roles`` key with a list of roles as its value.
+        Either may match in the constraint. Usersign is usually populated
+        during the :py:class:`CredentialsExtractor
+        <tiddlyweb.web.extractors.ExtractorInterface>` phase of a
         request.
         """
         try:
@@ -137,8 +152,7 @@ class Policy(object):
 
 def create_policy_check(environ, entity, usersign):
     """
-    Determine if the user in usersign can create entity
-    type.
+    Determine if the user in ``usersign`` can create ``entity`` type.
     """
     try:
         entity_policy = '%s_create_policy' % entity
@@ -192,7 +206,7 @@ def _no_constraint(info_list):
 
 def _role_valid(roles, role_list):
     """
-    Return true if there is an intersection between the users roles
+    Return ``True`` if there is an intersection between the users roles
     and any roles in the constraint.
     """
     if [role for role in roles if role in role_list]:
