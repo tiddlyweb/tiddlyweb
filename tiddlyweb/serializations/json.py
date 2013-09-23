@@ -1,5 +1,6 @@
 """
-JSON based serializer.
+:py:class:`Serialization <tiddlyweb.serializations.SerializationInterface>`
+for ``JSON``.
 """
 
 import simplejson
@@ -19,28 +20,35 @@ from tiddlyweb.web.util import tiddler_url
 
 class Serialization(SerializationInterface):
     """
-    Turn various entities to and from JSON.
+    Turn entities and collections thereof to and from ``JSON``.
     """
 
     def list_recipes(self, recipes):
         """
-        Create a JSON list of recipe names from
-        the provided recipes.
+        Create a ``JSON`` list of :py:class:`recipe
+        <tiddlyweb.model.recipe.Recipe>` names from the provided ``recipes``.
         """
         return simplejson.dumps([recipe.name for recipe in recipes])
 
     def list_bags(self, bags):
         """
-        Create a JSON list of bag names from the
-        provided bags.
+        Create a ``JSON`` list of :py:class:`bag <tiddlyweb.model.bag.Bag>`
+        names from the provided ``bags``.
         """
         return simplejson.dumps([bag.name for bag in bags])
 
     def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers as JSON.
-        The format is a list of dicts in
-        the form described by self._tiddler_dict.
+        List the provided :py:class:`tiddlers
+        <tiddlyweb.model.tiddler.Tiddler>` as ``JSON``. The format is a
+        list of dicts in the form described by :py:fun:`_tiddler_dict`.
+
+        If ``fat=1`` is set in ``tiddlyweb.query`` include the ``text``
+        of each tiddler in the output.
+
+        If ``render=1`` is set in ``tiddlyweb.query`` include the
+        :py:mod:`rendering <tiddlyweb.wikitext>` of the ``text``
+        of each tiddler in the output, if the tiddler is renderable.
         """
         query = self.environ.get('tiddlyweb.query', {})
         fat = 0
@@ -56,7 +64,9 @@ class Serialization(SerializationInterface):
 
     def recipe_as(self, recipe):
         """
-        A recipe as a JSON dictionary.
+        A :py:class:`recipe <tiddlyweb.model.recipe.Recipe>` as a
+        ``JSON`` dictionary. Includes the recipe's :py:class:`policy
+        <tiddlyweb.model.policy.Policy>`.
         """
         policy_dict = dict([(key, getattr(recipe.policy, key)) for
                 key in Policy.attributes])
@@ -65,9 +75,9 @@ class Serialization(SerializationInterface):
 
     def as_recipe(self, recipe, input_string):
         """
-        Turn a JSON dictionary into a Recipe
-        if it is in the proper form. Include
-        the policy.
+        Turn a ``JSON`` dictionary into a :py:class:`recipe
+        <tiddlyweb.model.recipe.Recipe>` if it is in the proper form.
+        Include the :py:class:`policy <tiddlyweb.model.policy.Policy>`.
         """
         try:
             info = simplejson.loads(input_string)
@@ -85,8 +95,9 @@ class Serialization(SerializationInterface):
 
     def bag_as(self, bag):
         """
-        Create a JSON dictionary representing
-        a Bag and Policy.
+        A :py:class:`bag <tiddlyweb.model.bag.Bag>` as a
+        ``JSON`` dictionary. Includes the bag's :py:class:`policy
+        <tiddlyweb.model.policy.Policy>`.
         """
         policy_dict = dict([(key, getattr(bag.policy, key)) for
                 key in Policy.attributes])
@@ -95,7 +106,9 @@ class Serialization(SerializationInterface):
 
     def as_bag(self, bag, input_string):
         """
-        Turn a JSON string into a bag.
+        Turn a ``JSON`` dictionary into a :py:class:`bag
+        <tiddlyweb.model.bag.Bag>` if it is in the proper form.
+        Include the :py:class:`policy <tiddlyweb.model.policy.Policy>`.
         """
         try:
             info = simplejson.loads(input_string)
@@ -113,9 +126,15 @@ class Serialization(SerializationInterface):
 
     def tiddler_as(self, tiddler):
         """
-        Create a JSON dictionary representing
-        a tiddler, as described by _tiddler_dict
-        plus the text of the tiddler.
+        Create a ``JSON`` dictionary representing a tiddler, as described by
+        :py:func:`_tiddler_dict` plus the ``text`` of the tiddler.
+
+        If ``fat=0`` is set in ``tiddlyweb.query`` do not include the
+        ``text`` of the tiddler in the output.
+
+        If ``render=1`` is set in ``tiddlyweb.query`` include the
+        :py:mod:`rendering <tiddlyweb.wikitext>` of the ``text``
+        of the tiddler in the output, if the tiddler is renderable.
         """
         query = self.environ.get('tiddlyweb.query', {})
         fat = 1
@@ -131,7 +150,9 @@ class Serialization(SerializationInterface):
 
     def as_tiddler(self, tiddler, input_string):
         """
-        Turn a JSON dictionary into a Tiddler.
+        Turn a ``JSON`` dictionary into a :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>`. Any keys in the ``JSON``
+        which are not recognized will be ignored.
         """
         try:
             dict_from_input = simplejson.loads(input_string)

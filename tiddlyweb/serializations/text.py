@@ -1,5 +1,6 @@
 """
-Text based serializers.
+:py:class:`Serialization <tiddlyweb.serializations.SerializationInterface>`
+for plain text.
 """
 
 import urllib
@@ -19,7 +20,8 @@ class Serialization(SerializationInterface):
     """
     Serialize entities and collections to and from
     textual representations. This is primarily used
-    by the text Store.
+    by the :py:class:`text <tiddlyweb.stores.text.Store>`
+    :py:class:`Store <tiddlyweb.store.Store>`.
     """
 
     tiddler_members = [field for field in Tiddler.data_members if not field in
@@ -27,19 +29,25 @@ class Serialization(SerializationInterface):
 
     def list_recipes(self, recipes):
         """
-        Return a linefeed separated list of recipe names.
+        Return a linefeed separated list of :py:class:`recipe
+        <tiddlyweb.model.recipe.Recipe>` names in the ``recipes`` list.
         """
         return ('%s\n' % recipe.name for recipe in recipes)
 
     def list_bags(self, bags):
         """
-        Return a linefeed separated list of recipe names.
+        Return a linefeed separated list of :py:class:`bag
+        <tiddlyweb.model.bag.Bag>` names in the ``bags`` list.
         """
         return ('%s\n' % bag.name for bag in bags)
 
     def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers as text.
+        Return a linefeed separated list of :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>` titles in the ``tiddlers`` list.
+
+        If the tiddlers are a collection of revisions, include the
+        revision identifier.
         """
         tiddlers.store = None
         if hasattr(tiddlers, 'is_revisions') and tiddlers.is_revisions:
@@ -52,7 +60,7 @@ class Serialization(SerializationInterface):
 
     def recipe_as(self, recipe):
         """
-        Recipe as text.
+        Dump a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>` as text.
         """
         policy_dict = dict([(key, getattr(recipe.policy, key)) for
                 key in Policy.attributes])
@@ -78,7 +86,8 @@ class Serialization(SerializationInterface):
 
     def as_recipe(self, recipe, input_string):
         """
-        Turn a string back into a recipe.
+        Turn a string into a :py:class:`recipe
+        <tiddlyweb.model.recipe.Recipe>` if possible.
         """
 
         def _handle_headers(recipe, header):
@@ -111,15 +120,16 @@ class Serialization(SerializationInterface):
 
     def tiddler_as(self, tiddler, omit_empty=False, omit_members=None):
         """
-        Represent a tiddler as a text string: headers, blank line, text.
+        Represent a :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>`
+        as a text string: headers, blank line, text.
 
-        `omit_*` arguments are non-standard options, usable only when this
+        ``omit_*`` arguments are non-standard options, usable only when this
         method is called directly (outside the regular Serializer interface)
 
-        If `omit_empty` is True, don't emit empty Tiddler members.
+        If ``omit_empty`` is True, don't emit empty Tiddler members.
 
-        `omit_members` can represent a list of members to not include
-        in the output.
+        ``omit_members`` can be used to provide a list of members to not
+        include in the output.
         """
         omit_members = omit_members or []
 
@@ -149,7 +159,8 @@ class Serialization(SerializationInterface):
 
     def fields_as(self, tiddler):
         """
-        Turn extended tiddler fields into RFC 822-style header strings.
+        Turn extended :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>`
+        fields into RFC 822-style header strings.
         """
         fields = []
         for key in tiddler.fields:
@@ -164,8 +175,8 @@ class Serialization(SerializationInterface):
 
     def as_tiddler(self, tiddler, input_string):
         """
-        Transform a text representation of a tiddler into
-        tiddler attributes.
+        Transform a text representation of a :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>` into a tiddler object.
         """
         try:
             header, text = input_string.split('\n\n', 1)

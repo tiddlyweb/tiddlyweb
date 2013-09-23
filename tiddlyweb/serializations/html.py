@@ -1,5 +1,9 @@
 """
-HTML based serializers.
+:py:class:`Serialization <tiddlyweb.serializations.SerializationInterface>`
+for HTML.
+
+``HEADER`` and ``FOOTER`` can be overridden to change the basic framing
+of the system.
 """
 
 import urllib
@@ -38,9 +42,15 @@ FOOTER = """
 
 class Serialization(SerializationInterface):
     """
-    Serialize entities and collections to and from
-    HTML representations. This is primarily used
-    to create browser based presentations.
+    Serialize entities and collections to ``HTML`` representations. This
+    is primarily used to create browser based presentations. No support
+    is provided for turning ``HTML`` into entities.
+
+    Set ``css_uri`` in :py:mod:`config <tiddlyweb.config>` to control
+    CSS.
+
+    Set ``tiddlyweb.links`` in ``environ`` to a list of ``<link>``
+    elements to include those links in the output.
     """
 
     def __init__(self, environ=None):
@@ -50,7 +60,8 @@ class Serialization(SerializationInterface):
 
     def list_recipes(self, recipes):
         """
-        List the recipes on the system as html.
+        Yield the provided :py:class:`recipes <tiddlyweb.model.recipe.Recipe>`
+        as HTML.
         """
         self.environ['tiddlyweb.title'] = 'Recipes'
 
@@ -67,7 +78,8 @@ class Serialization(SerializationInterface):
 
     def list_bags(self, bags):
         """
-        List the bags on the system as html.
+        Yield the provided :py:class:`bags <tiddlyweb.model.bag.Bag>`
+        as HTML.
         """
         self.environ['tiddlyweb.title'] = 'Bags'
 
@@ -84,7 +96,12 @@ class Serialization(SerializationInterface):
 
     def list_tiddlers(self, tiddlers):
         """
-        List the tiddlers as html.
+        Yield the provided :py:class:`tiddlers
+        <tiddlyweb.model.tiddler.Tiddler>` as HTML.
+
+        This is somewhat more complex than the other list methods as
+        we need to list the tiddler whether it is a revision or not,
+        if it is in a bag or recipe or if it is a search result.
         """
         tiddlers.store = None
         title = tiddlers.title
@@ -134,7 +151,8 @@ class Serialization(SerializationInterface):
 
     def recipe_as(self, recipe):
         """
-        Recipe as html.
+        :py:class:`Recipe <tiddlyweb.model.recipe.Recipe>` as HTML,
+        including a link to the tiddlers within.
         """
         self.environ['tiddlyweb.title'] = 'Recipe %s' % recipe.name
         lines = []
@@ -163,7 +181,8 @@ class Serialization(SerializationInterface):
 
     def bag_as(self, bag):
         """
-        Bag as html.
+        :py:class:`Bag <tiddlyweb.model.bag.Bag>` as HTML,
+        including a link to the tiddlers within.
         """
         self.environ['tiddlyweb.title'] = 'Bag %s' % bag.name
         tiddler_link = '%s/tiddlers' % encode_name(bag.name)
@@ -176,10 +195,10 @@ class Serialization(SerializationInterface):
 
     def tiddler_as(self, tiddler):
         """
-        Transform the provided tiddler into an HTML
-        representation of the tiddler packaged in a
-        DIV. Render the content using the render_wikitext
-        subsystem.
+        Transform the provided :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>` into an HTML representation.
+        :py:mod:`Render <tiddlyweb.wikitext>` the ``text`` of the tiddler
+        if its ``type`` is configured.
         """
         if tiddler.recipe:
             list_link = 'recipes/%s/tiddlers' % encode_name(tiddler.recipe)
