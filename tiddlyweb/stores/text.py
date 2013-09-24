@@ -1,6 +1,7 @@
 """
-A text-based StorageInterface that stores entities
-in the filesystem.
+A text-based :py:class:`StorageInterface
+<tiddlyweb.stores.StorageInterface>` that stores entities
+in a hierarchy of directories in the filesystem.
 """
 
 import codecs
@@ -17,11 +18,11 @@ from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.user import User
 from tiddlyweb.serializer import Serializer
-from tiddlyweb.store import NoBagError, NoRecipeError, NoTiddlerError, \
-        NoUserError, StoreLockError, StoreEncodingError
+from tiddlyweb.store import (NoBagError, NoRecipeError, NoTiddlerError,
+        NoUserError, StoreLockError, StoreEncodingError)
 from tiddlyweb.stores import StorageInterface
-from tiddlyweb.util import LockError, write_lock, write_unlock, \
-        read_utf8_file, write_utf8_file
+from tiddlyweb.util import (LockError, write_lock, write_unlock,
+        read_utf8_file, write_utf8_file)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,8 +30,13 @@ LOGGER = logging.getLogger(__name__)
 
 class Store(StorageInterface):
     """
-    A StorageInterface which stores text-based representations
-    in a collection of directories and files.
+    A :py:class:`StorageInterface <tiddlyweb.stores.StorageInterface>`
+    which stores text-based representations in a collection of directories
+    and files.
+
+    Some of the entities are serialized to and from text by the
+    :py:class:`text <tiddlyweb.serializations.text.Serialization>`
+    :py:class:`Serializer <tiddlyweb.serializer.Serializer>`.
     """
 
     def __init__(self, store_config=None, environ=None):
@@ -41,7 +47,7 @@ class Store(StorageInterface):
 
     def _fixup_root(self, path):
         """
-        Adjust the store_root path so it is absolute.
+        Adjust the ``store_root`` path so it is absolute.
 
         This is required in some web serving environments.
         """
@@ -52,8 +58,7 @@ class Store(StorageInterface):
 
     def _init_store(self):
         """
-        Make sure the data storage directory and
-        structure is present.
+        Make sure the data storage directory and structure is present.
         """
         if not os.path.exists(self._store_root()):
             os.mkdir(self._store_root())
@@ -64,8 +69,9 @@ class Store(StorageInterface):
 
     def recipe_delete(self, recipe):
         """
-        Remove a recipe, irrevocably, from the system.
-        No impact on tiddlers.
+        Remove a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`,
+        irrevocably, from the system. No impact on :py:class:`tiddlers
+        <tiddlyweb.model.tiddler.Tiddler>`.
         """
         try:
             recipe_path = self._recipe_path(recipe)
@@ -80,7 +86,8 @@ class Store(StorageInterface):
 
     def recipe_get(self, recipe):
         """
-        Read a recipe from the store.
+        Fill :py:class:`recipe <tiddlyweb.model.recipe.Recipe>` with
+        data in the store.
         """
         try:
             recipe_path = self._recipe_path(recipe)
@@ -96,7 +103,8 @@ class Store(StorageInterface):
 
     def recipe_put(self, recipe):
         """
-        Put a recipe into the store.
+        Put :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`
+        into the store.
         """
         try:
             recipe_path = self._recipe_path(recipe)
@@ -107,7 +115,8 @@ class Store(StorageInterface):
 
     def bag_delete(self, bag):
         """
-        Delete a bag AND THE TIDDLERS WITHIN from
+        Delete :py:class:`bag <tiddlyweb.model.bag.Bag>` **and** the
+        :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>` within from
         the system.
         """
         bag_path = self._bag_path(bag.name)
@@ -123,7 +132,8 @@ class Store(StorageInterface):
 
     def bag_get(self, bag):
         """
-        Read a bag from the store.
+        Fill :py:class:`bag <tiddlyweb.model.bag.Bag>` with data
+        from the store.
         """
         bag_path = self._bag_path(bag.name)
 
@@ -139,8 +149,7 @@ class Store(StorageInterface):
 
     def bag_put(self, bag):
         """
-        Put a bag into the store, writing its
-        name, description and policy.
+        Put :py:class:`bag <tiddlyweb.model.bag.Bag>` into the store.
         """
         bag_path = self._bag_path(bag.name)
         tiddlers_dir = self._tiddlers_dir(bag.name)
@@ -156,7 +165,8 @@ class Store(StorageInterface):
 
     def tiddler_delete(self, tiddler):
         """
-        Irrevocably remove a tiddler and its directory.
+        Irrevocably remove :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>` from the filesystem.
         """
         try:
             tiddler_base_filename = self._tiddler_base_filename(tiddler)
@@ -170,8 +180,8 @@ class Store(StorageInterface):
 
     def tiddler_get(self, tiddler):
         """
-        Get a tiddler as string from a bag and deserialize it into
-        object.
+        Fill :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>` with
+        data from the store.
         """
         try:
             # read in the desired tiddler
@@ -191,9 +201,10 @@ class Store(StorageInterface):
 
     def tiddler_put(self, tiddler):
         """
-        Write a tiddler into the store. We only write if
-        the bag already exists. Bag creation is a
-        separate action from writing to a bag.
+        Write a :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>`
+        into the store. We only write if the tiddler's :py:class:`bag
+        <tiddlyweb.model.bag.Bag>` already exists. Bag creation is a
+        separate action.
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         if not os.path.exists(tiddler_base_filename):
@@ -230,7 +241,8 @@ class Store(StorageInterface):
 
     def user_delete(self, user):
         """
-        Delete a user from the store.
+        Delete :py:class:`user <tiddlyweb.model.user.User>` from
+        the store.
         """
         try:
             user_path = self._user_path(user)
@@ -244,7 +256,8 @@ class Store(StorageInterface):
 
     def user_get(self, user):
         """
-        Read a user from the store.
+        Fill :py:class:`user <tiddlyweb.model.user.User>` with
+        data from the store.
         """
         try:
             user_path = self._user_path(user)
@@ -264,9 +277,7 @@ class Store(StorageInterface):
 
     def user_put(self, user):
         """
-        Put a user data into the store.
-        The user's information is store as JSON,
-        for ease.
+        Put :py:class:`user <tiddlyweb.model.user.User>` data into the store.
         """
         user_path = self._user_path(user)
         user_dict = {}
@@ -283,7 +294,8 @@ class Store(StorageInterface):
 
     def list_recipes(self):
         """
-        List all the recipes in the store.
+        List all the :py:class:`recipes <tiddlyweb.model.recipe.Recipe>`
+        in the store.
         """
         path = os.path.join(self._store_root(), 'recipes')
         recipes = self._files_in_dir(path)
@@ -293,7 +305,8 @@ class Store(StorageInterface):
 
     def list_bags(self):
         """
-        List all the bags in the store.
+        List all the :py:class:`bags <tiddlyweb.model.bag.Bag>`
+        in the store.
         """
         bags = self._bag_filenames()
 
@@ -301,7 +314,8 @@ class Store(StorageInterface):
 
     def list_bag_tiddlers(self, bag):
         """
-        List all the tiddlers in the provided bag.
+        List all the :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`
+        in the provided :py:class:`bag <tiddlyweb.model.bag.Bag>`.
         """
         tiddlers_dir = self._tiddlers_dir(bag.name)
 
@@ -318,7 +332,8 @@ class Store(StorageInterface):
 
     def list_users(self):
         """
-        List all the users in the store.
+        List all the :py:class:`users <tiddlyweb.model.user.User>`
+        in the store.
         """
         path = os.path.join(self._store_root(), 'users')
         users = self._files_in_dir(path)
@@ -327,8 +342,8 @@ class Store(StorageInterface):
 
     def list_tiddler_revisions(self, tiddler):
         """
-        List all the revisions of one tiddler,
-        returning a list of ints.
+        List all the revisions of one :py:class:`tiddler
+        <tiddlyweb.model.tiddler.Tiddler>`, returning a list of ints.
         """
         tiddler_base_filename = self._tiddler_base_filename(tiddler)
         try:
@@ -343,8 +358,10 @@ class Store(StorageInterface):
 
     def search(self, search_query):
         """
-        Search in the store for tiddlers that match search_query.
-        This is intentionally simple, slow and broken to encourage overriding.
+        Search in the store for :py:class:`tiddlers
+        <tiddlyweb.model.tiddler.Tiddler>` that match ``search_query``.
+        This is intentionally implemented as a simple and limited grep
+        through files.
         """
         bag_filenames = self._bag_filenames()
 

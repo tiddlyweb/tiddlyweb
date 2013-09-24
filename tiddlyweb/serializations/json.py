@@ -41,7 +41,7 @@ class Serialization(SerializationInterface):
         """
         List the provided :py:class:`tiddlers
         <tiddlyweb.model.tiddler.Tiddler>` as ``JSON``. The format is a
-        list of dicts in the form described by :py:fun:`_tiddler_dict`.
+        list of dicts in the form described by :py:func:`_tiddler_dict`.
 
         If ``fat=1`` is set in ``tiddlyweb.query`` include the ``text``
         of each tiddler in the output.
