@@ -13,7 +13,8 @@ except ImportError:  # Python < 2.5
 from httpexceptor import HTTP415, HTTP400, HTTP304
 
 from tiddlyweb.model.policy import PermissionsError
-from tiddlyweb.model.tiddler import timestring_to_datetime, current_timestring
+from tiddlyweb.model.tiddler import (Tiddler, timestring_to_datetime,
+        current_timestring)
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
 
@@ -348,15 +349,20 @@ def tiddler_etag(environ, tiddler):
     Construct an etag for a tiddler from the tiddler's attributes,
     but not its text.
     """
-    text = tiddler.text
-    tiddler.text = ''
-    if not tiddler.revision:
-        tiddler.revision = 0
-    bag_name = tiddler.bag or ''
+    tmp_tiddler = Tiddler(tiddler.title, tiddler.bag)
+    tmp_tiddler.fields = tiddler.fields
+    tmp_tiddler.type = tiddler.type
+    tmp_tiddler.revision = tiddler.revision
+    tmp_tiddler.modifier = tiddler.modifier
+    tmp_tiddler.modified = tiddler.modified
+    tmp_tiddler.tags = tiddler.tags
+    if not tmp_tiddler.revision:
+        tmp_tiddler.revision = 0
+    bag_name =tmp_tiddler.bag or ''
     tiddler_id = '"%s/%s/%s:' % (encode_name(bag_name),
-            encode_name(tiddler.title), encode_name('%s' % tiddler.revision))
-    etag = entity_etag(environ, tiddler)
-    tiddler.text = text
+            encode_name(tmp_tiddler.title),
+            encode_name('%s' % tmp_tiddler.revision))
+    etag = entity_etag(environ, tmp_tiddler)
     etag = etag.replace('"', tiddler_id, 1)
     return etag
 
