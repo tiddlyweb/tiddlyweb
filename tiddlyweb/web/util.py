@@ -346,19 +346,15 @@ def bag_url(environ, bag, full=True):
 
 def tiddler_etag(environ, tiddler):
     """
-    Construct an etag for a tiddler from the tiddler's attributes,
-    but not its text.
+    Construct an etag for a tiddler from a limited set of a tiddler's
+    attributes. The chosen set should be enough to ensure unique.
     """
     tmp_tiddler = Tiddler(tiddler.title, tiddler.bag)
-    tmp_tiddler.fields = tiddler.fields
-    tmp_tiddler.type = tiddler.type
     tmp_tiddler.revision = tiddler.revision
-    tmp_tiddler.modifier = tiddler.modifier
     tmp_tiddler.modified = tiddler.modified
-    tmp_tiddler.tags = tiddler.tags
     if not tmp_tiddler.revision:
         tmp_tiddler.revision = 0
-    bag_name =tmp_tiddler.bag or ''
+    bag_name = tmp_tiddler.bag or ''
     tiddler_id = '"%s/%s/%s:' % (encode_name(bag_name),
             encode_name(tmp_tiddler.title),
             encode_name('%s' % tmp_tiddler.revision))
