@@ -1,6 +1,8 @@
 """
 WSGI App for running the base challenge system, which lists and links
-the available challengers. If there is only one, redirect to it.
+to the available :py:class:`challengers
+<tiddlyweb.web.challengers.ChallengerInterface>`. If there is only one
+challenger, redirect to it.
 """
 
 import urllib
@@ -13,8 +15,9 @@ from tiddlyweb.web.util import server_base_url, get_route_value, html_frame
 def base(environ, start_response):
     """
     The basic listing page that shows all available
-    challenger systems. If there is only one, we
-    redirect to that instead of listing.
+    :py:class:`challenger systems
+    <tiddlyweb.web.challengers.ChallengerInterface>`. If there is only
+    one challenger, we redirect to that instead of listing.
     """
     auth_systems = environ['tiddlyweb.config']['auth_systems']
     if len(auth_systems) == 1:
@@ -41,7 +44,8 @@ def base(environ, start_response):
 
 def challenge_get(environ, start_response):
     """
-    Dispatch a GET request to the chosen challenger.
+    Dispatch a ``GET`` request to the chosen :py:class:`challenger
+    <tiddlyweb.web.challengers.ChallengerInterface>`.
     """
     challenger = _determine_challenger(environ)
     return challenger.challenge_get(environ, start_response)
@@ -49,7 +53,8 @@ def challenge_get(environ, start_response):
 
 def challenge_post(environ, start_response):
     """
-    Dispatch a POST request to the chosen challenger.
+    Dispatch a ``POST`` request to the chosen :py:class:`challenger
+    <tiddlyweb.web.challengers.ChallengerInterface>`.
     """
     challenger = _determine_challenger(environ)
     return challenger.challenge_post(environ, start_response)

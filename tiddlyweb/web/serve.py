@@ -15,9 +15,12 @@ LOGGER = logging.getLogger(__name__)
 def load_app(app_prefix=None, dirname=None):
     """
     Create our application from a series of layers. The innermost
-    layer is a selector application based on urls_map in config. This
-    is surround by wrappers, which either set something in the
-    environment, modify the request, or transform output.
+    layer is a Selector application based on ``urls_map`` defined in
+    :py:mod:`config <tiddlyweb.config>`. This is surrounded by wrappers,
+    which either set something in the environment, modify the request,
+    or transform the response. The wrappers are WSGI middleware defined
+    by ``server_request_filters`` and ``server_response_filters`` in
+    :py:mod:`tiddlyweb.config`.
     """
     from tiddlyweb.config import config
     if dirname:
@@ -63,7 +66,7 @@ def load_app(app_prefix=None, dirname=None):
 
 def start_server(config):
     """
-    Start a simple webserver to run our app.
+    Start a simple webserver, from ``wsgiref``, to run our app.
     """
 
     import sys
@@ -92,7 +95,11 @@ def start_server(config):
 class RequestStarter(object):
     """
     WSGI middleware that logs basic request information and cleans
-    PATH_INFO in the environment.
+    ``PATH_INFO`` in the environment.
+
+    ``PATH_INFO`` cleaning is done to ensure that there is a
+    well known encoding of special characters and to support
+    ``/`` in entity names (see :py:func:`clean_path_info`).
     """
 
     def __init__(self, application):
@@ -114,14 +121,14 @@ class RequestStarter(object):
         Clean ``PATH_INFO`` in the environment.
 
         This is necessary because WSGI servers tend to decode
-        the URI before putting it in PATH_INFO. This means that
+        the URI before putting it in ``PATH_INFO``. This means that
         uri encoded data, such as the ``%2F`` encoding of ``/``
         will be decoded before we get to route dispatch handling,
         by which time the ``/`` is treated as a separator. People
         say that the right thing to do here is not use ``%2F``.
         This is hogwash. The right thing to do is not decode
-        PATH_INFO. In this solution if REQUEST_URI is present
-        we use a portion of it to set PATH_INFO.
+        ``PATH_INFO``. In this solution if ``REQUEST_URI`` is present
+        we use a portion of it to set ``PATH_INFO``.
         """
         request_uri = environ.get('REQUEST_URI', environ.get('RAW_URI', ''))
 
@@ -137,8 +144,8 @@ class RequestStarter(object):
 
 class Configurator(object):
     """
-    WSGI middleware to handle setting a config dict
-    for every request.
+    WSGI middleware to set ``tiddlyweb.config`` in ``environ`` for
+    every request from :py:mod:`config <tiddlyweb.config>`.
     """
 
     def __init__(self, application, config):

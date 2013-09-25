@@ -16,8 +16,8 @@ from tiddlyweb.web.util import server_base_url
 
 class Header(object):
     """
-    If REQUEST_METHOD is HEAD, change it to GET and
-    consume the output for lower requests.
+    If ``REQUEST_METHOD`` is HEAD, change it internally to ``GET`` and
+    consume the generated output so the response has no body.
     """
 
     def __init__(self, application):
@@ -34,7 +34,7 @@ class Header(object):
 
 class SimpleLog(object):
     """
-    WSGI Middleware to write a very simple log to stdout.
+    WSGI Middleware to write a very simple log to ``stdout``.
 
     Borrowed from Paste Translogger
     """
@@ -75,11 +75,11 @@ class SimpleLog(object):
 
     def write_log(self, environ, req_uri, status, size):
         """
-        Print the log info out in a formatted form to logging.info.
+        Write the log info out in a formatted form to ``logging.info``.
 
         This is rather more complex than desirable because there is
-        a mix of str and unicode in the gathered data and we need to
-        make it acceptable for output.
+        a mix of ``str`` and ``unicode`` in the gathered data and it
+        needs to be made acceptable for output.
         """
         environ['REMOTE_USER'] = None
         try:
@@ -111,8 +111,9 @@ class SimpleLog(object):
 
 class StoreSet(object):
     """
-    WSGI Middleware that sets our choice of Store (tiddlyweb.store)
-    in the environment.
+    WSGI Middleware that sets our choice of :py:class:`Store
+    <tiddlyweb.store.Store>` in the ``environ``. That is, initialize
+    the store for each request.
     """
 
     def __init__(self, application):
@@ -128,9 +129,10 @@ class StoreSet(object):
 
 class TransformProtect(object):
     """
-    WSGI Middleware to add a Cache-Control no-transform so that mobile
-    companies that transcode content over their 3G (etc) networks don't,
-    as it will break various JavaScript things, including TiddlyWiki.
+    WSGI Middleware to add a ``Cache-Control: no-transform``` header
+    so that mobile companies that transcode content over their 3G (etc)
+    networks don't, as it will break various JavaScript things,
+    including TiddlyWiki.
     """
 
     def __init__(self, application):
@@ -148,8 +150,9 @@ class TransformProtect(object):
 
 class EncodeUTF8(object):
     """
-    WSGI Middleware to ensure that the content we send out the pipe is encoded
-    as UTF-8. Within the application content is _unicode_ (i.e. not encoded).
+    WSGI Middleware to ensure that the unicode content sent out the
+    pipe is encoded to UTF-8. Within the application string-based content
+    is *unicode* (i.e. not encoded).
     """
 
     def __init__(self, application):
@@ -173,9 +176,9 @@ def _encoder(string):
 
 class PermissionsExceptor(object):
     """
-    Trap permissions exceptions and turn them into HTTP
-    exceptions so the errors are propagated to client
-    code.
+    Trap :py:class:`permissions exceptions
+    <tiddlyweb.model.policy.PermissionsError>` and turn them into HTTP
+    exceptions so the errors are propagated to clients.
     """
 
     def __init__(self, application):

@@ -1,5 +1,8 @@
 """
-Send a bag or recipe out HTTP, first serializing to the correct type.
+Send a :py:class:`bag <tiddlyweb.model.bag.Bag>` or :py:class:`recipe
+<tiddlyweb.model.recipe.Recipe>` out over HTTP, first :py:class:`serializing
+<tiddlyweb.serializer.Serializer>` to the correct type.
+
 This consolidates common code for bags and recipes.
 """
 
@@ -12,9 +15,11 @@ from tiddlyweb.web.util import (get_serialize_type, entity_etag,
 
 def send_entity(environ, start_response, entity):
     """
-    Send a bag or recipe out HTTP, first serializing to
-    the correct type. If the incoming etag matches, raise
-    304.
+    Send a :py:class:`bag <tiddlyweb.model.bag.Bag>` or :py:class:`recipe
+    <tiddlyweb.model.recipe.Recipe>` out over HTTP, first
+    :py:class:`serializing <tiddlyweb.serializer.Serializer>` to
+    the correct type. If an incoming ``Etag`` validates, raise a
+    ``304`` response.
     """
     etag_string = entity_etag(environ, entity)
     check_incoming_etag(environ, etag_string)

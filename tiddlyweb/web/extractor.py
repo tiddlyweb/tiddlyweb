@@ -1,8 +1,9 @@
 """
-A place for handling the extraction of user credentials from incoming
-requests. UserExtract passes to a stack of extractors. If an extractor
-returns something other than None, we have found valid data with
-which to set tiddlyweb.usersign.
+Extract of user credentials from incoming web requests.
+:py:class:`UserExtract` passes to a stack of extractors. If an
+:py:class:`extractor <tiddlyweb.web.extractors.ExtractorInterface>`
+returns something other than ``None``, we have found
+valid data with which to set ``tiddlyweb.usersign``.
 """
 import logging
 
@@ -12,8 +13,8 @@ LOGGER = logging.getLogger(__name__)
 
 class UserExtract(object):
     """
-    WSGI Middleware to set the User, if it can be
-    found in the request.
+    WSGI Middleware to set the ``tiddlyweb.usersign``, if it can
+    be found in the request.
     """
 
     def __init__(self, application):
@@ -36,7 +37,7 @@ class UserExtract(object):
 def _try_extractors(environ, extractors, start_response):
     """
     Loop through the available extractors until
-    one returns a usersign instead of undef, or we
+    one returns a usersign instead of None, or we
     run out of extractors.
     """
     for extractor_name in extractors:

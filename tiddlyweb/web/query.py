@@ -1,8 +1,8 @@
 """
-WSGI Middleware that extracts CGI parameters from the QUERY_STRING and
-puts them in tiddlyweb.query in the same structure that cgi.py users
-(dictionary of lists). If the current request is a POST of form data,
-parse that stuff too.
+WSGI Middleware that extracts ``CGI`` parameters from the
+``QUERY_STRING`` and puts them in ``tiddlyweb.query`` in the
+environ in the same structure that cgi.py uses (dictionary of lists).
+If the current request is a ``POST`` of HTML form data, parse that too.
 """
 
 try:
@@ -18,7 +18,7 @@ from tiddlyweb.web.util import read_request_body
 
 class Query(object):
     """
-    Extract CGI parameter data from QUERY_STRING and POSTed form data.
+    Extract ``CGI`` parameter data from ``QUERY_STRING`` and POSTed form data.
     """
 
     def __init__(self, application):
@@ -30,8 +30,10 @@ class Query(object):
 
     def extract_query(self, environ):
         """
-        Read the QUERY_STRING and body (if a POSTed form) to extract
-        query paremeters. Put the results in tiddlyweb.query.
+        Read the ``QUERY_STRING`` and body (if a POSTed form) to extract
+        query parameters. Put the results in ``tiddlyweb.query`` in
+        environ. The query names and values are decoded from UTF-8 to
+        unicode.
         """
         content_type = environ.get('CONTENT_TYPE', '')
         environ['tiddlyweb.query'] = {}

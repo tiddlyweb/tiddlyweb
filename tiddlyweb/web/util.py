@@ -20,12 +20,11 @@ from tiddlyweb.util import sha
 
 def check_bag_constraint(environ, bag, constraint):
     """
-    Check to see if the bag allows the current user
-    to perform the requested action. Lets NoBagError
-    raise.
+    Check to see if the provided :py:class:`bag <tiddlyweb.model.bag.Bag>`
+    allows the current ``tiddlyweb.usersign`` to perform the action described
+    by ``constraint``. Lets NoBagError raise if the bag does not exist.
 
-    This is a web util because user and store come from
-    environ.
+    This is a web util because user and store come from the WSGI environ.
     """
     try:
         store = environ['tiddlyweb.store']
@@ -41,10 +40,10 @@ def check_bag_constraint(environ, bag, constraint):
 def check_incoming_etag(environ, etag_string, cache_control='no-cache',
         last_modified=None, vary='Accept'):
     """
-    Raise 304 if the provided etag is the same as that found in the
-    If-None-Match header of the incoming request.
+    Raise 304 if the provided ``etag_string`` is the same as that found
+    in the ``If-None-Match`` header of the incoming request.
 
-    Return incoming_etag to indicate that an etag was there but
+    Return ``incoming_etag`` to indicate if an etag was there but
     did not match.
     """
     incoming_etag = environ.get('HTTP_IF_NONE_MATCH', None)
@@ -59,7 +58,8 @@ def check_incoming_etag(environ, etag_string, cache_control='no-cache',
 def check_last_modified(environ, last_modified_string, etag='',
         cache_control='no-cache', vary='Accept'):
     """
-    Raise `HTTP304` if If-Modified-Since header matches `last_modified_string`
+    Raise ``304`` if an ``If-Modified-Since`` header matches
+    ``last_modified_string``.
     """
     incoming_modified = environ.get('HTTP_IF_MODIFIED_SINCE', None)
     if incoming_modified:
@@ -72,8 +72,8 @@ def check_last_modified(environ, last_modified_string, etag='',
 
 def content_length_and_type(environ):
     """
-    To PUT or POST we must have content-length and content-type
-    headers. Raise 400 if we cannot get these things.
+    For ``PUT`` or ``POST`` request there must be ``Content-Length`` and
+    ``Content-Type`` headers. Raise ``400`` if not present in the request.
     """
     try:
         length = environ['CONTENT_LENGTH']
@@ -86,11 +86,11 @@ def content_length_and_type(environ):
 
 def get_route_value(environ, name):
     """
-    Retrieve and decode from UTF-8 data provided in WSGI route.
+    Retrieve and decode ``name`` from UTF-8 data provided in WSGI route.
 
-    If name is not present in the route, allow KeyError to raise.
+    If ``name`` is not present in the route, allow KeyError to raise.
 
-    If the provided data is not URI escaped UTF-8, raise an HTTP400
+    If found data is not URI escaped UTF-8, raise a ``400``.
     """
     try:
         value = environ['wsgiorg.routing_args'][1][name]
@@ -103,11 +103,11 @@ def get_route_value(environ, name):
 
 def get_serialize_type(environ, collection=False):
     """
-    Look in the environ to determine which serializer
-    we should use for this request.
+    Look in the ``environ`` to determine which :py:class:`serializer
+    <tiddlyweb.serializer.Serializer>` should be used for this request.
 
-    If collection is True, then the presence of an extension which
-    does not match any serializer should lead to a 415.
+    If ``collection`` is ``True``, then the presence of an extension
+    on the URI which does not match any serializer should lead to a ``415``.
     """
     config = environ['tiddlyweb.config']
     accept = environ.get('tiddlyweb.type', [])[:]
@@ -141,8 +141,9 @@ def get_serialize_type(environ, collection=False):
 
 def handle_extension(environ, resource_name):
     """
-    Look for an extension on the provided resource_name and
-    trim it off to give the "real" resource_name.
+    Look for an extension (as defined in :py:mod:`config <tiddlyweb.config>`)
+    on the provided ``resource_name`` and trim it off to give the
+    "real" resource name.
     """
     extension = environ.get('tiddlyweb.extension')
     extension_types = environ['tiddlyweb.config']['extension_types']
@@ -163,9 +164,10 @@ def handle_extension(environ, resource_name):
 
 def html_frame(environ, title=''):
     """
-    Return the header and footer from the current HTML serialization.
+    Return the header and footer from the current HTML
+    :py:class:`serialization
+    <tiddlyweb.serializations.SerializationInterface>`.
     """
-    # Get HTML framing
     html = environ.get('tiddlyweb.config', {}).get(
             'serializers', {}).get('text/html')[0]
     html = Serializer(html, environ).serialization
@@ -176,9 +178,9 @@ def html_frame(environ, title=''):
 
 def http_date_from_timestamp(timestamp):
     """
-    Turn a modifier or created tiddler timestamp
-    into a proper formatted HTTP date. If the timestamp
-    is invalid use now as the timestamp.
+    Turn a modifier or created tiddler ``timestamp``
+    into a properly formatted HTTP date. If the timestamp
+    is invalid use the current time as the timestamp.
     """
     try:
         timestamp_datetime = timestring_to_datetime(timestamp)
@@ -190,7 +192,7 @@ def http_date_from_timestamp(timestamp):
 def datetime_from_http_date(http_datestring):
     """
     Turn an HTTP formatted date into a datetime object.
-    Returns `None` if date string is invalid.
+    Return ``None`` if the date string is invalid.
     """
     if ';' in http_datestring:
         http_datestring = http_datestring.split(';', 1)[0].rstrip().lstrip()
@@ -204,7 +206,8 @@ def make_cookie(name, value, mac_key=None, path=None,
         expires=None, httponly=True, domain=None):
     """
     Create a cookie string, optionally with a MAC, path and
-    expires value. Expires is in seconds.
+    expires value. If ``expires`` is provided, its value should be
+    in seconds.
     """
     cookie = Cookie.SimpleCookie()
 
@@ -233,10 +236,10 @@ def make_cookie(name, value, mac_key=None, path=None,
 
 def read_request_body(environ, length):
     """
-    Read the wsgi.input representing the request body.
-    Length is required because it is tested for existence
-    earlier in the process so we don't want to bother
-    recalculating.
+    Read the ``wsgi.input`` handle to get the request body.
+
+    Length is a required parameter because it is tested for existence
+    earlier in the process.
     """
     try:
         length = int(length)
@@ -248,8 +251,8 @@ def read_request_body(environ, length):
 
 def server_base_url(environ):
     """
-    Using information in tiddlyweb.config, construct
-    the base URL of the server, sans the trailing /.
+    Using information in :py:mod:`tiddlyweb.config`, construct
+    the base URL of the server, without the trailing ``/``.
     """
     return '%s%s' % (server_host_url(environ), _server_prefix(environ))
 
@@ -269,7 +272,7 @@ def server_host_url(environ):
 
 def _server_prefix(environ):
     """
-    Get the server_prefix out of tiddlyweb.config.
+    Get the ``server_prefix`` out of :py:mod:`tiddlyweb.config`.
     """
     config = environ.get('tiddlyweb.config', {})
     return config.get('server_prefix', '')
@@ -277,7 +280,7 @@ def _server_prefix(environ):
 
 def encode_name(name):
     """
-    Encode a unicode as utf-8 and then url encode that
+    Encode a unicode value as utf-8 and then URL encode that
     string. Use for entity titles in URLs.
     """
     return urllib.quote(name.encode('utf-8'), safe=".!~*'()")
@@ -285,8 +288,8 @@ def encode_name(name):
 
 def html_encode(text):
     """
-    Encode &, < and > entities in text that will
-    be used in/as HTML.
+    Encode ``&``, ``<`` and ``>`` entities in ``text`` that will
+    be used in or as HTML.
     """
     return (text.replace('&', '&amp;').replace('<', '&lt;').
             replace('>', '&gt;'))
@@ -294,7 +297,7 @@ def html_encode(text):
 
 def escape_attribute_value(text):
     """
-    escape common character entities, incuding double quotes
+    Escape common HTML character entities, including double quotes
     in attribute values
 
     This assumes values are enclosed in double quotes (key="value").
@@ -307,7 +310,12 @@ def escape_attribute_value(text):
 
 def entity_etag(environ, entity):
     """
-    Construct an etag from the JSON rep of an entity.
+    Construct an Etag from the digest of the :py:class:`JSON
+    <tiddlyweb.serializations.json.Serialization>` reprepresentation
+    of an entity.
+
+    The JSON representation provides a reasonably repeatable and
+    unique string of data.
     """
     try:
         _, mime_type = get_serialize_type(environ)
@@ -326,14 +334,14 @@ def entity_etag(environ, entity):
 
 def bag_etag(environ, bag):
     """
-    Construct an etag for a bag.
+    Construct an etag for a :py:class:`bag <tiddlyweb.model.bag.Bag>`.
     """
     return entity_etag(environ, bag)
 
 
 def bag_url(environ, bag, full=True):
     """
-    Construct a URL for a bag.
+    Construct a URL for a :py:class:`bag <tiddlyweb.model.bag.Bag>`.
     """
     bag_link = 'bags/%s' % encode_name(bag.name)
 
@@ -345,7 +353,8 @@ def bag_url(environ, bag, full=True):
 
 def tiddler_etag(environ, tiddler):
     """
-    Construct an etag for a tiddler from the tiddler's attributes,
+    Construct an etag for a :py:class:`tiddler
+    <tiddlyweb.model.tiddler.Tiddler>` from the tiddler's attributes,
     but not its text.
     """
     text = tiddler.text
@@ -363,7 +372,8 @@ def tiddler_etag(environ, tiddler):
 
 def tiddler_url(environ, tiddler, container='bags', full=True):
     """
-    Construct a URL for a tiddler.
+    Construct a URL for a :py:class:`tiddler
+    <tiddlyweb.model.tiddler.Tiddler>`.
     """
     container_name = tiddler.recipe if container == 'recipes' else tiddler.bag
     tiddler_link = '%s/%s/tiddlers/%s' % (container,
@@ -377,14 +387,14 @@ def tiddler_url(environ, tiddler, container='bags', full=True):
 
 def recipe_etag(environ, recipe):
     """
-    Construct an etag for a recipe.
+    Construct an etag for a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`.
     """
     return entity_etag(environ, recipe)
 
 
 def recipe_url(environ, recipe, full=True):
     """
-    Construct a URL for a recipe.
+    Construct a URL for a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`.
     """
     recipe_link = 'recipes/%s' % encode_name(recipe.name)
 

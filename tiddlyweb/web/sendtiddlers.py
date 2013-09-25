@@ -1,6 +1,8 @@
 """
-Routines related to sending a list of tiddlers out to the web,
-including filter those tiddlers and validating request cache headers.
+Routines related to sending a list of :py:class:`tiddlers
+<tiddlyweb.model.tiddler.Tiddler>` out to the web, including optionally
+:py:mod:`filtering <tiddlyweb.filters>` those tiddlers and
+validating cache-oriented request headers.
 """
 
 import logging
@@ -21,9 +23,10 @@ LOGGER = logging.getLogger(__name__)
 
 def send_tiddlers(environ, start_response, tiddlers=None):
     """
-    Output the tiddlers contained in the provided
-    Tiddlers collection in a Negotiated representation.
-    Often, but not always, a wiki.
+    Output the :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`
+    contained in the provided :py:class:`Tiddlers collection
+    <tiddlyweb.model.collections.Tiddlers>` in a :py:mod:`Negotiated
+    <tiddlyweb.web.negotiate>` representation.
     """
     download = environ['tiddlyweb.query'].get('download', [None])[0]
     filters = environ['tiddlyweb.filters']

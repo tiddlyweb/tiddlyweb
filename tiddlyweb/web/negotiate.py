@@ -1,7 +1,11 @@
 """
-WSGI Middleware to do pseudo-content negotiation and put the type in
-tiddlyweb.type. If extensions are provided on a GET URI that match
-extension_types, they win over the Accept header.
+WSGI Middleware to do a limited version of content negotiation
+and put the type in ``tiddlyweb.type``. On ``GET`` and ``HEAD``
+requests the ``Accept`` header is examined. On ``POST`` and ``PUT``,
+``Content-Type``. If extensions are provided on a URI used in a ``GET``
+request if the extension matches something in ``extension_types`` in
+:py:mod:`config <tiddlyweb.config>`, the type indicated by the
+extension wins over the Accept header.
 """
 
 import logging
@@ -13,9 +17,8 @@ LOGGER = logging.getLogger(__name__)
 
 class Negotiate(object):
     """
-    Perform a form of content negotiation
-    to provide information to the environment
-    that will later be used to choose
+    Perform a form of content negotiation to provide information
+    to the WSGI environment that will later be used to choose
     serializers.
     """
 
@@ -29,9 +32,9 @@ class Negotiate(object):
 
 def figure_type(environ):
     """
-    Determine either the content-type (for POST, PUT, DELETE)
-    or accept header (for GET) and put that information
-    in tiddlyweb.type in the environment.
+    Determine either the ``Content-Type`` (for ``POST`` and ``PUT``)
+    or ``Accept`` header (for ``GET``) and put that information
+    in ``tiddlyweb.type`` in the WSGI environment.
     """
     if environ['REQUEST_METHOD'].upper() == 'GET':
         _figure_type_for_get(environ)
@@ -54,10 +57,12 @@ def _figure_type_for_other(environ):
 
 def _figure_type_for_get(environ):
     """
-    Determine the type for a GET request,
-    based on the Accept header and url path
-    filename extensions (if there an extension
-    wins).
+    Determine the type for a GET request, based on the ``Accept``
+    header and URI path filename extensions. If there is an extension
+    and the extension matches something in ``extension_types`` in
+    :py:mod:`config <tiddlyweb.config>`, the type indicated by the
+    extension wins over ``Accept``. This allows humans to easily
+    declare a desired representation from a browser.
     """
     accept_header = environ.get('HTTP_ACCEPT')
     path_info = environ.get('PATH_INFO')

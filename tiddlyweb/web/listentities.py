@@ -1,5 +1,6 @@
 """
-Common code used for listing bags and recipes.
+Common code used for listing :py:class:`bags <tiddlyweb.model.bag.Bag>`
+and :py:class:`recipes <tiddlyweb.model.recipe.Recipe>` in HTTP responses.
 """
 
 from httpexceptor import HTTP400, HTTP415
@@ -15,7 +16,10 @@ from tiddlyweb.web.util import get_serialize_type, check_incoming_etag
 def list_entities(environ, start_response, method_name,
         store_list=None, serializer_list=None):
     """
-    Get a list of all the bags or recipes the current user can read.
+    Get an optionally :py:mod:`filtered <tiddlyweb.filters>` list
+    of all the :py:class:`bags <tiddlyweb.model.bag.Bag>` or
+    :py:class:`recipes <tiddlyweb.model.recipe.Recipe>`
+    the current ``tiddlyweb.usersign`` can read.
     """
     store = environ['tiddlyweb.store']
     serialize_type, mime_type = get_serialize_type(environ, collection=True)
