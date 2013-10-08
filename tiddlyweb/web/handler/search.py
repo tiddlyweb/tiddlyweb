@@ -1,6 +1,7 @@
 """
-Make a query into the store to find some
-tiddlers and list them in the interface.
+Handle searches for :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>`
+if the configured :py:class:`store <tiddlyweb.stores.StorageInterface>`
+supports search.
 """
 
 import logging
@@ -20,8 +21,8 @@ LOGGER = logging.getLogger(__name__)
 
 def get_search_query(environ):
     """
-    Inspect tiddlyweb.query in the environment to get
-    the search query.
+    Inspect :py:mod:`tiddlyweb.query <tiddlyweb.web.query>` in the
+    environment to find the search query in a parameter named ``q``.
     """
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
@@ -33,9 +34,10 @@ def get_search_query(environ):
 
 def get_tiddlers(environ):
     """
-    Call search in the store with search query to
-    get the generator of tiddlers matching the
-    query.
+    Call search in the :py:class:`store <tiddlyweb.store.Store>`
+    to get the generator of :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>` matching the query found
+    by :py:func:`get_search_query`.
     """
     search_query = get_search_query(environ)
     store = environ['tiddlyweb.store']
@@ -46,10 +48,13 @@ def get_tiddlers(environ):
 
 def get(environ, start_response):
     """
-    Perform a search on the store. What search
-    means and what results are returned is dependent
-    on the search implementation (if any) in the
-    chosen store.
+    Handle ``GET`` on the search URI.
+
+    Perform a search against the :py:class:`store <tiddlyweb.store.Store>`.
+
+    What search means and what results are returned is dependent
+    on the search implementation (if any) in the :py:class:`chosen store
+    <tiddlyweb.stores.StorageInterface>`.
     """
     store = environ['tiddlyweb.store']
     filters = environ['tiddlyweb.filters']

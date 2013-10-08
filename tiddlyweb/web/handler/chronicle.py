@@ -1,8 +1,9 @@
 """
-A chronicle is a stack of tiddlers, usually revisions of
+A chronicle is a stack of :py:class:`tiddlers
+<tiddlyweb.model.tiddler.Tiddler>`, usually revisions of
 one tiddler. By POSTing a chronicle of tiddlers originally
-named A to tiddler B, we can effectively rename a tiddler
-while preserving history.
+named A to tiddler B, it is possible to rename a tiddler
+while preserving revision history.
 """
 
 import simplejson
@@ -20,9 +21,12 @@ from tiddlyweb.web.handler.tiddler import validate_tiddler_headers
 
 def post_revisions(environ, start_response):
     """
-    Take a collection of JSON tiddlers, each with a
+    Handle a ``POST`` of a chronicle of :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>` at a tiddler revisions
+    URI.
+
+    Take a collection of ``JSON`` tiddlers, each with a
     text key and value, and process them into the store.
-    That collection is known as a TiddlerChronicle.
     """
     tiddler_name = get_route_value(environ, 'tiddler_name')
     bag_name = get_route_value(environ, 'bag_name')
@@ -61,8 +65,8 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
 
 def _require_valid_etag_for_write(environ, tiddler):
     """
-    Unless there is an etag and it is valid
-    we send a 412.
+    Unless there is an Etag and it is valid
+    we send a ``412``.
     """
     incoming_etag = environ.get('HTTP_IF_MATCH', None)
     if not incoming_etag:
@@ -77,7 +81,7 @@ def _require_valid_etag_for_write(environ, tiddler):
 
 def _store_tiddler_revisions(environ, content, tiddler):
     """
-    Given json revisions in content, store them
+    Given JSON revisions in content, store them
     as a revision history to tiddler.
     """
     try:

@@ -1,7 +1,7 @@
 """
-Convenience routines for presenting the root of
-the web server. There are probably better places
-for this.
+Convenience routines for presenting the root of the web server.
+
+Here because nowhere else seems right.
 """
 
 from tiddlyweb.serializer import Serializer
@@ -15,7 +15,7 @@ ROOT_PAGE = """<ul id="root" class="listing">
 
 def root(environ, start_response):
     """
-    Convenience method to provide an entry point at root.
+    Convenience application to provide an entry point at root.
     """
 
     start_response("200 OK", [('Content-Type', 'text/html; charset=UTF-8')])

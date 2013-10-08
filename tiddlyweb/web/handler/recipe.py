@@ -1,7 +1,6 @@
 """
-Access to Recipe objects via the web. List recipes,
-GET a recipe, PUT a recipe, GET the tiddlers
-produced by a recipe.
+Methods for accessing :py:class:`Recipe
+<tiddlyweb.model.recipe.Recipe>` entities.
 """
 
 from httpexceptor import HTTP400, HTTP409, HTTP415, HTTP404
@@ -25,8 +24,12 @@ from tiddlyweb.web.validator import validate_recipe, InvalidBagError
 
 def delete(environ, start_response):
     """
-    Delete a recipe, where what delete means
-    depends on the store used.
+    Handle ``DELETE`` on a single recipe URI.
+
+    Delete a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>`.
+    This just removes the recipe, not any associated :py:class:`bags
+    <tiddlyweb.model.bag.Bag>` or :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>`.
     """
     recipe = _determine_recipe(environ)
     store = environ['tiddlyweb.store']
@@ -44,9 +47,12 @@ def delete(environ, start_response):
 
 def get(environ, start_response):
     """
-    Get the representation of a recipe, based on the
-    requested serialization. Will usually show the list
-    of bags and filters that make up the recipe.
+    Handle ``GET`` on a single recipe URI.
+
+    Get a representation in some serialization determined by
+    :py:mod:`tiddlyweb.web.negotiate` of a :py:class:`recipe
+    <tiddlyweb.model.recipe.Recipe>` (just the recipe itself,
+    not the tiddlers it can produce).
     """
     recipe = _determine_recipe(environ)
     recipe.policy.allows(environ['tiddlyweb.usersign'], 'read')
@@ -55,8 +61,14 @@ def get(environ, start_response):
 
 def get_tiddlers(environ, start_response):
     """
-    Get the list of tiddlers produced by this
-    recipe.
+    Handle ``GET`` on a tiddlers-within-a-recipe URI.
+
+    Get a list representation of the :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>` generated from a :py:class:`recipe
+    <tiddlyweb.model.recipe.Recipe>`.
+
+    The information sent is dependent on the serialization chosen
+    via :py:mod:`tiddlyweb.web.negotiate`.
     """
     usersign = environ['tiddlyweb.usersign']
     store = environ['tiddlyweb.store']
@@ -108,14 +120,24 @@ def get_tiddlers(environ, start_response):
 
 def list_recipes(environ, start_response):
     """
-    Get a list of all recipes the current user can read.
+    Handle ``GET`` on the recipes URI.
+
+    List all the :py:class:`recipes <tiddlyweb.model.recipe.Recipe>` that are
+    readable by the current usersign.
+
+    The information sent is dependent on the serialization chosen
+    via :py:mod:`tiddlyweb.web.negotiate`.
     """
     return list_entities(environ, start_response, 'list_recipes')
 
 
 def put(environ, start_response):
     """
-    Put a new recipe to the server.
+    Handle ``PUT`` on a single recipe URI.
+
+    Put a :py:class:`recipe <tiddlyweb.model.recipe.Recipe>` to the server,
+    meaning the description, policy and recipe list of the recipe,
+    if :py:class:`policy <tiddlyweb.model.policy.Policy>` allows.
     """
     recipe_name = web.get_route_value(environ, 'recipe_name')
     recipe_name = web.handle_extension(environ, recipe_name)
@@ -162,7 +184,7 @@ def put(environ, start_response):
 
 def _validate_recipe(environ, recipe):
     """
-    Unless recipe is valid raise a 409 with the reason why.
+    Unless recipe is valid raise a ``409`` with the reason why.
     """
     try:
         validate_recipe(recipe, environ)

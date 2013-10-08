@@ -1,9 +1,5 @@
 """
-Methods for accessing Bag entities, GET the
-tiddlers in the bag, list the available bags,
-PUT a Bag as a JSON object.
-
-These need some refactoring.
+Methods for accessing :py:class:`Bag <tiddlyweb.model.bag.Bag>` entities.
 """
 
 from httpexceptor import HTTP400, HTTP404, HTTP409, HTTP415
@@ -23,9 +19,14 @@ from tiddlyweb.web.validator import validate_bag, InvalidBagError
 
 def delete(environ, start_response):
     """
-    Remove a bag and its tiddlers from the store.
-    How the store chooses to handle remove and what
-    it means is up to the store.
+    Handle ``DELETE`` on a single bag URI.
+
+    Remove the :py:class:`bag <tiddlyweb.model.bag.Bag>` and the
+    :py:class:`tiddlers <tiddlyweb.model.tiddler.Tiddler>` within
+    from the :py:class:`store <tiddlyweb.store.Store>`.
+
+    How the store chooses to handle remove and what it means is
+    up to the store.
     """
     bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
@@ -50,8 +51,11 @@ def delete(environ, start_response):
 
 def get(environ, start_response):
     """
-    Get a representation in some serialization of
-    a bag (the bag itself not the tiddlers within).
+    Handle ``GET`` on a single bag URI.
+
+    Get a representation in some serialization determined by
+    :py:mod:`tiddlyweb.web.negotiate` of a :py:class:`bag
+    <tiddlyweb.model.bag.Bag>` (the bag itself, not the tiddlers within).
     """
     bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
@@ -64,9 +68,14 @@ def get(environ, start_response):
 
 def get_tiddlers(environ, start_response):
     """
-    Get a list representation of the tiddlers in a
-    bag. The information sent is dependent on the
-    serialization chosen.
+    Handle ``GET`` on a tiddlers-within-a-bag URI.
+
+    Get a list representation of the :py:class:`tiddlers
+    <tiddlyweb.model.tiddler.Tiddler>` in a :py:class:`bag
+    <tiddlyweb.model.bag.Bag>`.
+
+    The information sent is dependent on the serialization chosen
+    via :py:mod:`tiddlyweb.web.negotiate`.
     """
     store = environ['tiddlyweb.store']
     filters = environ['tiddlyweb.filters']
@@ -98,15 +107,24 @@ def get_tiddlers(environ, start_response):
 
 def list_bags(environ, start_response):
     """
-    List all the bags that the current user can read.
+    Handle ``GET`` on the bags URI.
+
+    List all the :py:class:`bags <tiddlyweb.model.bag.Bag>` that are
+    readable by the current usersign.
+
+    The information sent is dependent on the serialization chosen
+    via :py:mod:`tiddlyweb.web.negotiate`.
     """
     return list_entities(environ, start_response, 'list_bags')
 
 
 def put(environ, start_response):
     """
-    Put a bag to the server, meaning the description and
-    policy of the bag, if policy allows.
+    Handle ``PUT`` on a single bag URI.
+
+    Put a :py:class:`bag <tiddlyweb.model.bag.Bag>` to the server,
+    meaning the description and policy of the bag, if :py:class:`policy
+    <tiddlyweb.model.policy.Policy>` allows.
     """
     bag_name = web.get_route_value(environ, 'bag_name')
     bag_name = web.handle_extension(environ, bag_name)
@@ -149,7 +167,7 @@ def put(environ, start_response):
 
 def _validate_bag(environ, bag):
     """
-    Unless bag is valid raise a 409 with the reason why.
+    Unless bag is valid raise a `409` with the reason why.
     """
     try:
         validate_bag(bag, environ)

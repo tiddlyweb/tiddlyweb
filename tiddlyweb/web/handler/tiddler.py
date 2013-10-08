@@ -1,6 +1,6 @@
 """
-Access to Tiddlers via the web. GET and PUT
-a Tiddler, GET a list of revisions of a Tiddler.
+Methods for accessing :py:class:`Tiddler <tiddlyweb.model.tiddler.Tiddler>`
+entities.
 """
 
 import logging
@@ -37,9 +37,11 @@ LOGGER = logging.getLogger(__name__)
 
 def get(environ, start_response):
     """
-    Get a representation of a single tiddler,
-    dependent on the chosen serialization and permissions of the
-    containing bag.
+    Handle ``GET`` on a single tiddler or tiddler revision URI.
+
+    Get a representation in some serialization determined by
+    :py:mod:`tiddlyweb.web.negotiate` of a :py:class:`tiddler
+    <tiddlyweb.model.tiddler.Tiddler>`.
     """
     tiddler = _determine_tiddler(environ,
             control.determine_bag_from_recipe)
@@ -48,7 +50,11 @@ def get(environ, start_response):
 
 def get_revisions(environ, start_response):
     """
-    Get the list of revisions for this tiddler.
+    Handle ``GET`` on the collection of revisions of single tiddler URI.
+
+    Get a list representation in some serialization determined by
+    :py:mod:`tiddlyweb.web.negotiate` of the revisions of a :py:class:`tiddler
+    <tiddlyweb.model.tiddler.Tiddler>`.
     """
     tiddler = _determine_tiddler(environ,
             control.determine_bag_from_recipe,
@@ -58,8 +64,12 @@ def get_revisions(environ, start_response):
 
 def delete(environ, start_response):
     """
-    Delete this tiddler from the store. What
-    delete means is up to the store.
+    Handle ``DELETE`` on a single tiddler URI.
+
+    Delete a :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>` from
+    the :py:class:`store <tiddlyweb.store.Store>`.
+
+    What delete means is up to the store.
     """
     tiddler = _determine_tiddler(environ,
             control.determine_bag_from_recipe)
@@ -68,7 +78,10 @@ def delete(environ, start_response):
 
 def put(environ, start_response):
     """
-    Put a tiddler into the store.
+    Handle ``PUT`` on a single tiddler URI.
+
+    Put a :py:class:`tiddler <tiddlyweb.model.tiddler.Tiddler>` to
+    the server.
     """
     tiddler = _determine_tiddler(environ,
             control.determine_bag_for_tiddler)
@@ -128,7 +141,7 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
     of recipes and bags.
 
     Set revisions to True when the current request ends in
-    `/revisions` or `/revisions.*`. Doing so ensures that
+    ``/revisions`` or ``/revisions.*``. Doing so ensures that
     processing of extensions does not impact the name of
     the tiddler.
     """
@@ -166,7 +179,11 @@ def _determine_tiddler(environ, bag_finder, revisions=False):
 
 def _process_request_body(environ, tiddler):
     """
-    Read request body to set tiddler.text.
+    Read request body to set tiddler content.
+
+    If a serializer exists for the content type, use it,
+    otherwise treat the content as binary or pseudo-binary
+    tiddler.
     """
     length, content_type = content_length_and_type(environ)
     content = read_request_body(environ, length)
@@ -226,7 +243,7 @@ def _check_and_validate_tiddler(environ, bag, tiddler):
         incoming_etag = environ.get('HTTP_IF_MATCH', None)
         if incoming_etag and not (
                 incoming_etag == _new_tiddler_etag(tiddler)):
-            raise HTTP412('Etag incorrect for new tiddler')
+            raise HTTP412('ETag incorrect for new tiddler')
 
 
 def _put_tiddler(environ, start_response, tiddler):
@@ -264,7 +281,7 @@ def _put_tiddler(environ, start_response, tiddler):
         raise HTTP409('Unable to put badly formed tiddler, %s:%s. %s'
                 % (tiddler.bag, tiddler.title, exc))
 
-    etag = ('Etag', tiddler_etag(environ, tiddler))
+    etag = ('ETag', tiddler_etag(environ, tiddler))
     response = [('Location', tiddler_url(environ, tiddler))]
     if etag:
         response.append(etag)
@@ -287,9 +304,9 @@ def _validate_tiddler_content(environ, tiddler):
 
 def validate_tiddler_headers(environ, tiddler):
     """
-    Check ETAG and last modified information to
-    see if a) the client can use its cached tiddler
-    b) we have edit contention when trying to write.
+    Check ETag and last modified header information to
+    see if a) on ``GET`` the user agent can use its cached tiddler
+    b) on ``PUT`` we have edit contention.
     """
     request_method = environ['REQUEST_METHOD']
     this_tiddlers_etag = tiddler_etag(environ, tiddler)
@@ -325,14 +342,14 @@ def validate_tiddler_headers(environ, tiddler):
                 this_tiddlers_etag):
             raise HTTP412('Provided ETag does not match. '
                 'Server content probably newer.')
-    etag = ('Etag', '%s' % this_tiddlers_etag)
+    etag = ('ETag', '%s' % this_tiddlers_etag)
     return last_modified, etag
 
 
 def _etag_write_match(incoming_etag, server_etag):
     """
     Compare two tiddler etags for a satisfactory match
-    for a PUT or DELETE. This means comparing without the
+    for a ``PUT`` or ``DELETE``. This means comparing without the
     content type that _may_ be on the end.
     """
     incoming_etag = incoming_etag.split(':', 1)[0].strip('"')
@@ -398,7 +415,7 @@ def _send_tiddler(environ, start_response, tiddler):
 def _get_tiddler_content(environ, tiddler):
     """
     Extract the content of the tiddler, either straight up if
-    the content is not considered text, or serialized if it is
+    the content is not considered text, or serialized if it is.
     """
     config = environ['tiddlyweb.config']
     default_serializer = config['default_serializer']
