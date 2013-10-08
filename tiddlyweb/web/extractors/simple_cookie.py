@@ -1,6 +1,6 @@
 """
-An extractor for looking at a cookie
-named 'tiddlyweb_user'.
+An :py:class:`extractor <tiddlyweb.web.extractors.ExtractorInterface>`
+that looks at a cookie named ``tiddlyweb_user``.
 """
 
 import Cookie
@@ -17,9 +17,10 @@ LOGGER = logging.getLogger(__name__)
 
 class Extractor(ExtractorInterface):
     """
-    Look in the headers for a cookie named 'tiddlyweb_user'.
-    If it is there and the secret is valid, return the
-    indicated user.
+    Look in the headers for a cookie named ``tiddlyweb_user``.
+
+    If it is there and the associated hashed value validates against
+    a server side secret, return the indicated user.
     """
 
     def extract(self, environ, start_response):

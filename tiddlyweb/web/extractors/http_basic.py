@@ -1,6 +1,8 @@
 """
-A very simple extractor that looks at the HTTP Authorization
-header and looks for Basic auth information therein.
+A very simple :py:class:`extractor
+<tiddlyweb.web.extractors.ExtractorInterface>` that looks at the
+HTTP ``Authorization`` header and looks for Basic auth information
+therein.
 """
 
 from base64 import b64decode
@@ -10,15 +12,17 @@ from tiddlyweb.web.extractors import ExtractorInterface
 
 class Extractor(ExtractorInterface):
     """
-    An extractor for HTTP Basic Authentication. If there
-    is an Authorization header attempt to get a username and
-    password out of it. If the password is valid, return the
-    user information.
+    An :py:class:`extractor <tiddlyweb.web.extractors.ExtractorInterface>`
+    for HTTP Basic Authentication. If there is an `Authorization` header
+    attempt to get a username and password out of it and compare with
+    :py:class:`User <tiddlyweb.model.user.User>` information in the
+    :py:class:`Store <tiddlyweb.store.Store>`. If the password is valid,
+    return the user information. Otherwise return ``False``.
     """
 
     def extract(self, environ, start_response):
         """
-        Look in the request for an Authorization header.
+        Look in the request for an ``Authorization`` header.
         """
         user_info = environ.get('HTTP_AUTHORIZATION', None)
         if user_info is None:
