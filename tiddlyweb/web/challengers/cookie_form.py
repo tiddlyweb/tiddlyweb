@@ -1,6 +1,6 @@
 """
-Present or validate a form for getting a username
-and password.
+A :py:class:`challenger <tiddlyweb.web.challengers.ChallengerInterface>`
+that presents or validates a form for getting a username and password.
 """
 
 import logging
@@ -16,17 +16,22 @@ LOGGER = logging.getLogger(__name__)
 
 class Challenger(ChallengerInterface):
     """
-    A simple challenger that asks the user, by form, for their
-    username and password and validates it against the user
-    database. If it is good, a cookie is sent to the client which
-    is later used by the simple_cookie credentials extractor.
+    A simple login challenger that asks the user agent, via an HTML form,
+    for a username and password and vaidates it against a :py:class:`User
+    entity <tiddlyweb.model.user.User>` in the :py:class:`store
+    <tiddlyweb.store.Store>`.
+
+    If valid, a cookie is set in the response. This is used in subsequent
+    requests by the :py:mod:`simple_cookie
+    <tiddlyweb.web.extractors.simple_cookie>` :py:class:`credentials
+    extractor <tiddlyweb.web.extractors.ExtractorInterface>`.
     """
 
     desc = "TiddlyWeb username and password"
 
     def challenge_get(self, environ, start_response):
         """
-        Respond to a GET request by sending a form.
+        Respond to a ``GET`` request by sending a form.
         """
         redirect = (environ['tiddlyweb.query'].
                 get('tiddlyweb_redirect', ['/'])[0])
@@ -34,7 +39,7 @@ class Challenger(ChallengerInterface):
 
     def challenge_post(self, environ, start_response):
         """
-        Respond to a POST by processing data sent from a form.
+        Respond to a ``POST`` by processing data sent from a form.
         The form should include a username and password. If it
         does not, send the form aagain. If it does, validate
         the data.
