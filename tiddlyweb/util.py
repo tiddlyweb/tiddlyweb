@@ -231,15 +231,12 @@ def initialize_logging(config, server=False):
 
 def _initialize_logging(config):
     """
-    Configure logging. If ``log_syslog`` has a value it should point
-    to a syslog facility to which we will log.
+    Configure logging.
 
     Two loggers are established: ``tiddlyweb`` and ``tiddlywebplugins``.
     Modules which wish to log should use ``logging.getLogger(__name__)``
     to get a logger in the right part of the logging hierarchy.
     """
-    syslog = config.get('log_syslog', None)
-
     logger = logging.getLogger('tiddlyweb')
     logger.propagate = False
     logger.setLevel(logging._levelNames[config['log_level']])
@@ -248,22 +245,14 @@ def _initialize_logging(config):
     plugin_logger.propagate = False
     plugin_logger.setLevel(logging._levelNames[config['log_level']])
 
-    if syslog:
-        from logging.handlers import SysLogHandler
-        syslog_handler = SysLogHandler(facility=syslog)
-        formatter = logging.Formatter('%(levelname)s %(name)s: %(message)s')
-        syslog_handler.setFormatter(formatter)
-        logger.addHandler(syslog_handler)
-        plugin_logger.addHandler(syslog_handler)
-    else:
-        from logging import FileHandler
-        file_handler = FileHandler(
-                filename=os.path.join(config['root_dir'], config['log_file']))
-        formatter = logging.Formatter(
-                '%(asctime)s %(levelname)s %(name)s: %(message)s')
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
-        plugin_logger.addHandler(file_handler)
+    from logging import FileHandler
+    file_handler = FileHandler(
+            filename=os.path.join(config['root_dir'], config['log_file']))
+    formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s %(name)s: %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    plugin_logger.addHandler(file_handler)
 
     logger.debug('TiddlyWeb starting up as %s', sys.argv[0])
 

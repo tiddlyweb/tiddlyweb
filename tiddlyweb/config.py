@@ -111,10 +111,6 @@ log_level
     String of loglevel to log. Pick one of ``CRITICAL``, ``DEBUG``,
     ``ERROR``, ``INFO``, ``WARNING``.
 
-log_syslog
-    If set, the value will be used as the ``syslog`` facility to which
-    all log messages will be sent. By default ``syslog`` is not used.
-
 css_uri
     A URI of a css file that can be used to style the ``HTML`` output
     of the server. See :py:mod:`tiddlyweb.serializations.html` for the
@@ -210,7 +206,6 @@ DEFAULT_CONFIG = {
         'recipe_create_policy': '',  # ANY or ADMIN or ''
         'log_level': 'INFO',
         'log_file': './tiddlyweb.log',
-        'log_syslog': None,
         'css_uri': '',
         'wikitext.default_renderer': 'raw',
         'wikitext.type_render_map': {},
