@@ -1,3 +1,8 @@
+1.4.18 Thu Oct 10 15:11:53 UTC 2013
+
+  * Remove support for syslogd-based logging.
+  * Finished pydoc for http://tiddlyweb.readthedocs.org/
+
 1.4.17 Tue Sep 17 16:41:54 UTC 2013
 
   * Better handling of encoded % in URIs.
