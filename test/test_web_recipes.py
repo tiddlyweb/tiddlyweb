@@ -4,7 +4,7 @@ import urllib
 import httplib2
 import simplejson
 
-from fixtures import reset_textstore, _teststore, initialize_app
+from .fixtures import reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 
 def setup_module(module):

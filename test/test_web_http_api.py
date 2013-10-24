@@ -8,8 +8,9 @@ the capabilities of the API.
 
 import yaml
 
-from http_runner import *
+from .http_runner import *
 
 def setup_module(module):
-    tests = yaml.load(open('test/httptest.yaml'))
-    http_test(tests, 'http://our_test_domain:8001')
+    with open('test/httptest.yaml') as yaml_file:
+        tests = yaml.load(yaml_file)
+        http_test(tests, 'http://our_test_domain:8001')

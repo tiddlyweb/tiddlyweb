@@ -9,7 +9,7 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.config import config
 
-from fixtures import bagfour, tiddler_collection, reset_textstore
+from .fixtures import bagfour, tiddler_collection, reset_textstore
 
 
 def setup_module(module):
@@ -87,7 +87,7 @@ def test_json_to_bag():
 
 def test_text_list():
     serializer = Serializer('text')
-    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    bags = [Bag('bag' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_bags(bags))
 
     assert 'bag0' in string
@@ -95,7 +95,7 @@ def test_text_list():
 
 def test_html_list():
     serializer = Serializer('html')
-    bags = [Bag('bag' + str(name)) for name in xrange(2)]
+    bags = [Bag('bag' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_bags(bags))
 
     assert 'href="bags/bag0' in string

@@ -48,7 +48,7 @@ def _try_extractors(environ, extractors, start_response):
             try:
                 imported_module = __import__(extractor_name, {}, {},
                         ['Extractor'])
-            except ImportError, exc:
+            except ImportError as exc:
                 raise ImportError('could not load extractor %s: %s' %
                         (extractor_name, exc))
         extractor = imported_module.Extractor()

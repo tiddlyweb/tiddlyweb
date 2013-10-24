@@ -9,11 +9,11 @@ import urllib
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
 
-authorization = b64encode('cdent:cowpig')
+authorization = b64encode('cdent:cowpig'.encode('utf-8'))
 
 def setup_module(module):
     from tiddlyweb.filters.select import ATTRIBUTE_SELECTOR

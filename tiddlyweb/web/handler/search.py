@@ -78,7 +78,7 @@ def get(environ, start_response):
 
     except StoreMethodNotImplemented:
         raise HTTP400('Search system not implemented')
-    except StoreError, exc:
+    except StoreError as exc:
         raise HTTP400('Error while processing search: %s' % exc)
 
     return send_tiddlers(environ, start_response, tiddlers=candidate_tiddlers)

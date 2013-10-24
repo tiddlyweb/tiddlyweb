@@ -6,13 +6,17 @@ Exploratory testing for storing recipes.
 import os
 import shutil
 
+import sys
+py_version = sys.version_info[0]
+
 import py.test
 
 import tiddlyweb.stores.text
 
-from fixtures import reset_textstore, recipe_list_string, _teststore
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.store import NoRecipeError
+
+from .fixtures import reset_textstore, recipe_list_string, _teststore
 
 expected_stored_filename = os.path.join('store', 'recipes', 'testrecipe')
 
@@ -47,12 +51,13 @@ def test_recipe_put():
             'path %s should be created' \
             % expected_stored_filename
 
-    f = file(expected_stored_filename)
-    content = f.read()
+    with open (expected_stored_filename) as f:
+        content = f.read()
 
-    assert content == expected_stored_content, \
-            'stored content should be %s, got %s' \
-            % (expected_stored_content, content)
+    if py_version < 3:
+        assert content == expected_stored_content, \
+                'stored content should be %s, got %s' \
+                % (expected_stored_content, content)
 
 def test_recipe_get():
     """

@@ -4,9 +4,12 @@ Test the manager a little bit.
 
 import os
 import sys
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
-from fixtures import reset_textstore
+from .fixtures import reset_textstore
 
 from tiddlyweb import __version__
 from tiddlyweb.config import config
@@ -116,7 +119,7 @@ def test_info(capsys):
 def test_server(capsys):
     import tiddlyweb.web.serve
     def start_server(config):
-        print 'host is %s' % config['server_host']['host']
+        print('host is %s' % config['server_host']['host'])
     tiddlyweb.web.serve.start_server = start_server
     handle(['', 'server'])
     results, err = capsys.readouterr()

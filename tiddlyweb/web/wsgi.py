@@ -6,12 +6,21 @@ their own modules.
 import logging
 import time
 import urllib
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
 
 from httpexceptor import HTTP403, HTTP302
 
 from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
 from tiddlyweb.web.util import server_base_url
+
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
 
 
 class Header(object):
@@ -54,7 +63,7 @@ class SimpleLog(object):
             return self.application(environ, start_response)
 
     def _log_app(self, environ, start_response):
-        req_uri = urllib.quote(environ.get('SCRIPT_NAME', '')
+        req_uri = quote(environ.get('SCRIPT_NAME', '')
                 + environ.get('PATH_INFO', ''))
         if environ.get('QUERY_STRING'):
             req_uri += '?' + environ['QUERY_STRING']
@@ -188,9 +197,9 @@ class PermissionsExceptor(object):
         try:
             output = self.application(environ, start_response)
             return output
-        except ForbiddenError, exc:
+        except ForbiddenError as exc:
             raise HTTP403(exc)
-        except UserRequiredError, exc:
+        except UserRequiredError as exc:
             # We only send to the challenger on a GET
             # request. Otherwise we're in for major confusion
             # on dealing with redirects and the like in
@@ -213,6 +222,6 @@ def _challenge_url(environ):
     redirect = script_name
     if query_string:
         redirect += '?%s' % query_string
-    redirect = urllib.quote(redirect, safe='')
+    redirect = quote(redirect, safe='')
     return '%s/challenge?tiddlyweb_redirect=%s' % (
             server_base_url(environ), redirect)

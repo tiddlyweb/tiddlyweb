@@ -15,7 +15,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
 
-from fixtures import reset_textstore, muchdata, _teststore
+from .fixtures import reset_textstore, muchdata, _teststore
 
 def setup_module(module):
     reset_textstore()

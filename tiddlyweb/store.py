@@ -17,6 +17,10 @@ from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import superclass_name
 
+try:
+    basestring('foo')
+except NameError:
+    basestring = str
 
 class StoreError(IOError):
     """
@@ -147,11 +151,11 @@ class Store(object):
         try:
             imported_module = __import__('tiddlyweb.stores.%s' % self.engine,
                     {}, {}, ['Store'])
-        except ImportError, err:
+        except ImportError as err:
             err1 = err
             try:
                 imported_module = __import__(self.engine, {}, {}, ['Store'])
-            except ImportError, err:
+            except ImportError as err:
                 raise ImportError("couldn't load store for %s: %s, %s"
                         % (self.engine, err, err1))
         self.storage = imported_module.Store(self.config, self.environ)
@@ -175,7 +179,7 @@ class Store(object):
             if retriever:
                 try:
                     thing = retriever[1](thing)
-                except SpecialBagError, exc:
+                except SpecialBagError as exc:
                     raise NoTiddlerError(
                             'unable to get special tiddler: %s:%s:%s'
                             % (thing.bag, thing.title, exc))
@@ -213,7 +217,7 @@ class Store(object):
         lower_class = superclass_name(storable)
         try:
             func = getattr(self.storage, '%s_%s' % (lower_class, activity))
-        except AttributeError, exc:
+        except AttributeError as exc:
             raise AttributeError('unable to figure function for %s: %s'
                     % (lower_class, exc))
         return func
@@ -233,7 +237,7 @@ class Store(object):
         if retriever:
             try:
                 return retriever[0](bag.name)
-            except SpecialBagError, exc:
+            except SpecialBagError as exc:
                 raise NoBagError('unable to get special bag: %s: %s'
                         % (bag.name, exc))
         list_func = getattr(self.storage, 'list_bag_tiddlers')

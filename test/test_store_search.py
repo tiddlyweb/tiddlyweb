@@ -1,8 +1,8 @@
 
-
-from fixtures import reset_textstore, muchdata, _teststore
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
+
+from .fixtures import reset_textstore, muchdata, _teststore
 
 name = u'boom\u00BB\u00BBboom'
 

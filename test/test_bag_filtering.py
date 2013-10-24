@@ -8,9 +8,7 @@ from tiddlyweb.filters import parse_for_filters
 from tiddlyweb import control
 from tiddlyweb.model.bag import Bag
 
-from tiddlywebplugins.utils import get_store
-
-from fixtures import reset_textstore, tiddlers
+from .fixtures import reset_textstore, tiddlers, get_store
 
 
 def setup_module(module):

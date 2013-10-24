@@ -8,6 +8,12 @@ from datetime import datetime
 from time import strptime
 
 
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
+
+
 def current_timestring():
     """
     Translate the current UTC time into a TiddlyWiki conformat timestring.

@@ -4,9 +4,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.config import config
 
-from tiddlywebplugins.utils import get_store
-
-from fixtures import reset_textstore, _teststore
+from .fixtures import reset_textstore, _teststore, get_store
 
 import shutil
 

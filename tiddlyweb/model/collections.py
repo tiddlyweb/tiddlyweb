@@ -45,7 +45,8 @@ class Collection(object):
         Add an item to the container, updating the digest and
         modified information.
         """
-        self._update_digest(thing)
+        name = '%s' % thing
+        self._update_digest(name.encode('utf-8'))
         self._container.append(thing)
         try:
             modified_string = str(thing.modified)
@@ -132,7 +133,7 @@ class Tiddlers(Collection):
             if not tiddler.store and self.store:
                 try:
                     tiddler = self.store.get(tiddler)
-                except StoreError, exc:
+                except StoreError as exc:
                     LOGGER.debug('missed tiddler in collection: %s, %s',
                             tiddler, exc)
                     continue
@@ -149,7 +150,7 @@ class Tiddlers(Collection):
         if not tiddler.store and self.store:
             try:
                 tiddler = self.store.get(tiddler)
-            except StoreError, exc:
+            except StoreError as exc:
                 LOGGER.debug(
                         'tried to add missing tiddler to collection: %s, %s',
                         tiddler, exc)
@@ -181,4 +182,4 @@ class Tiddlers(Collection):
         except AttributeError:
             pass
         self._digest.update(tiddler.title.encode('utf-8'))
-        self._digest.update(str(tiddler.revision))
+        self._digest.update(str(tiddler.revision).encode('utf-8'))

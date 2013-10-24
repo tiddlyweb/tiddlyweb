@@ -86,7 +86,7 @@ def _store_tiddler_revisions(environ, content, tiddler):
     """
     try:
         json_tiddlers = simplejson.loads(content)
-    except ValueError, exc:
+    except ValueError as exc:
         raise HTTP409('unable to handle json: %s' % exc)
 
     store = environ['tiddlyweb.store']
@@ -97,5 +97,5 @@ def _store_tiddler_revisions(environ, content, tiddler):
             json_string = simplejson.dumps(json_tiddler)
             serializer.from_string(json_string.decode('utf-8'))
             store.put(tiddler)
-    except NoTiddlerError, exc:
+    except NoTiddlerError as exc:
         raise HTTP400('Unable to store tiddler revisions: %s', exc)

@@ -10,7 +10,7 @@ import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.config import config
 from tiddlyweb.model.user import User

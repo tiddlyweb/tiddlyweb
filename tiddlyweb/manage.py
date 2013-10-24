@@ -93,9 +93,9 @@ def handle(args):
             LOGGER.debug('running command %s with %s',
                     candidate_command, args)
             COMMANDS[candidate_command](args)
-        except IndexError, exc:
+        except IndexError as exc:
             usage('Incorect number of arguments')
-        except Exception, exc:
+        except Exception as exc:
             if config.get('twanager.tracebacks', False):
                 raise
             import traceback

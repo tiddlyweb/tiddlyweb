@@ -81,7 +81,7 @@ class Serialization(SerializationInterface):
         """
         try:
             info = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+        except simplejson.JSONDecodeError as exc:
             raise RecipeFormatError(
                     'unable to make json into recipe: %s, %s'
                     % (recipe.name, exc))
@@ -112,7 +112,7 @@ class Serialization(SerializationInterface):
         """
         try:
             info = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+        except simplejson.JSONDecodeError as exc:
             raise BagFormatError(
                     'unable to make json into bag: %s, %s'
                     % (bag.name, exc))
@@ -156,19 +156,19 @@ class Serialization(SerializationInterface):
         """
         try:
             dict_from_input = simplejson.loads(input_string)
-        except simplejson.JSONDecodeError, exc:
+        except simplejson.JSONDecodeError as exc:
             raise TiddlerFormatError(
                     'unable to make json into tiddler: %s, %s'
                     % (tiddler.title, exc))
         accepted_keys = ['created', 'modified', 'modifier', 'tags', 'fields',
                 'text', 'type']
-        for key, value in dict_from_input.iteritems():
+        for key, value in dict_from_input.items():
             if value is not None and key in accepted_keys:
                 setattr(tiddler, key, value)
         if binary_tiddler(tiddler):
             try:
                 tiddler.text = b64decode(tiddler.text)
-            except TypeError, exc:
+            except (TypeError, ValueError) as exc:
                 raise TiddlerFormatError(
                         'unable to decode expected base64 input in %s: %s'
                         % (tiddler.title, exc))

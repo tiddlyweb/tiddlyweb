@@ -9,12 +9,12 @@ import simplejson
 
 from base64 import b64encode
 
-from fixtures import reset_textstore, _teststore, initialize_app
+from .fixtures import reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.user import User
 from tiddlyweb.model.bag import Bag
 
-authorization = b64encode('cdent:cowpig')
+authorization = b64encode('cdent:cowpig'.encode('utf-8'))
 
 from tiddlyweb.web.validator import InvalidTiddlerError
 import tiddlyweb.web.validator

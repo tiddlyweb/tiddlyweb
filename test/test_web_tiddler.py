@@ -12,7 +12,7 @@ import simplejson
 from base64 import b64encode
 from re import match
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 import tiddlyweb.stores.text
 
@@ -23,9 +23,9 @@ from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import http_date_from_timestamp
 
-authorization = b64encode('cdent:cowpig')
-bad_authorization = b64encode('cdent:cdent')
-no_user_authorization = b64encode('foop:foop')
+authorization = b64encode('cdent:cowpig'.encode('utf-8'))
+bad_authorization = b64encode('cdent:cdent'.encode('utf-8'))
+no_user_authorization = b64encode('foop:foop'.encode('utf-8'))
 
 text_put_body=u"""modifier: JohnSmith
 created: 
@@ -924,8 +924,8 @@ def test_put_canonical():
         response, content = http.request(
                 'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
                 redirections=0)
-        print response, content
-    except httplib2.RedirectLimit, exc: 
+        print(response, content)
+    except httplib2.RedirectLimit as exc: 
         raised = 1
 
     assert raised

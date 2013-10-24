@@ -9,7 +9,7 @@ import simplejson
 
 from tiddlyweb.serializer import Serializer
 
-from fixtures import reset_textstore, _teststore, muchdata, initialize_app
+from .fixtures import reset_textstore, _teststore, muchdata, initialize_app
 
 def setup_module(module):
     initialize_app()

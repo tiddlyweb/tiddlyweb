@@ -6,7 +6,7 @@ Test search via the web.
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 def setup_module(module):
     initialize_app()

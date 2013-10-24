@@ -110,14 +110,15 @@ def test_tiddler_json_base64():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
     tiddler = Tiddler('binarytiddler')
     tiddler.bag = u'foo'
-    tiddler.text = file('test/peermore.png', 'rb').read()
+    with open('test/peermore.png', 'rb') as image_file:
+        tiddler.text = image_file.read()
     bininfo = tiddler.text
-    b64expected = b64encode(tiddler.text)
+    b64expected = b64encode(bininfo)
     tiddler.type = 'image/png'
     serializer.object = tiddler
     string = serializer.to_string()
     info = simplejson.loads(string)
-    assert info['text'] == b64expected
+    assert info['text'] == b64expected.decode('utf-8')
 
     tiddler = serializer.from_string(string)
     assert tiddler.text == bininfo

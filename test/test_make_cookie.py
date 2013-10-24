@@ -5,6 +5,9 @@ It creates the string used to put in a Set-Cookie
 header.
 """
 
+import sys
+py_version = sys.version_info[0]
+
 from tiddlyweb.util import sha
 
 from tiddlyweb.web.util import make_cookie
@@ -34,7 +37,10 @@ def test_cookie_mac():
 
     secret_string = sha('%s%s' % ('alpha4', 'secret')).hexdigest()
 
-    assert string == 'test4="alpha4:%s"; httponly' % secret_string
+    if py_version == 2:  # Cookie changed
+        assert string == 'test4="alpha4:%s"; httponly' % secret_string
+    else:
+        assert string == 'test4=alpha4:%s; httponly' % secret_string
 
 def test_cookie_domain():
   string = make_cookie('test5', 'alpha5', domain=".tiddlyspace.com")

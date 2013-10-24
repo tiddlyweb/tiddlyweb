@@ -97,7 +97,7 @@ def get_tiddlers(environ, start_response):
     try:
         for tiddler in store.list_bag_tiddlers(bag):
             tiddlers.add(tiddler)
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('%s not found, %s' % (bag.name, exc))
 
     tiddlers.link = '%s/tiddlers' % web.bag_url(environ, bag, full=False)
@@ -152,7 +152,7 @@ def put(environ, start_response):
 
         _validate_bag(environ, bag)
         store.put(bag)
-    except BagFormatError, exc:
+    except BagFormatError as exc:
         raise HTTP400('unable to put bag: %s' % exc)
     except TypeError:
         raise HTTP400('Content-type header required')
@@ -171,7 +171,7 @@ def _validate_bag(environ, bag):
     """
     try:
         validate_bag(bag, environ)
-    except InvalidBagError, exc:
+    except InvalidBagError as exc:
         raise HTTP409('Bag content is invalid: %s' % exc)
 
 
@@ -183,6 +183,6 @@ def _get_bag(environ, bag_name):
     bag = Bag(bag_name)
     try:
         bag = store.get(bag)
-    except NoBagError, exc:
+    except NoBagError as exc:
         raise HTTP404('%s not found, %s' % (bag.name, exc))
     return bag

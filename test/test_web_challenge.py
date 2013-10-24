@@ -8,7 +8,7 @@ import simplejson
 
 from base64 import b64encode
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.user import User
 from tiddlyweb.config import config
 
@@ -80,7 +80,7 @@ def test_simple_cookie_redirect():
                 headers={'content-type': 'application/x-www-form-urlencoded'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -119,7 +119,7 @@ def test_charset_in_content_type():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -150,7 +150,7 @@ def test_single_challenge_redirect():
     raised = 0
     try:
         response, content = http.request('http://our_test_domain:8001/challenge', method='GET', redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised
@@ -176,7 +176,7 @@ def test_cookie_path_prefix_max_age():
                 headers={'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-    except httplib2.RedirectLimit, e:
+    except httplib2.RedirectLimit as e:
         raised = 1
 
     assert raised

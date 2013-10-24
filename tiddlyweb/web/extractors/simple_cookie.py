@@ -3,7 +3,11 @@ An :py:class:`extractor <tiddlyweb.web.extractors.ExtractorInterface>`
 that looks at a cookie named ``tiddlyweb_user``.
 """
 
-import Cookie
+try:
+    from Cookie import SimpleCookie, CookieError
+except ImportError:
+    from http.cookies import SimpleCookie, CookieError
+
 import logging
 
 from httpexceptor import HTTP400
@@ -32,7 +36,7 @@ class Extractor(ExtractorInterface):
             user_cookie = environ['HTTP_COOKIE']
             LOGGER.debug('simple_cookie looking at cookie string: %s',
                     user_cookie)
-            cookie = Cookie.SimpleCookie()
+            cookie = SimpleCookie()
             cookie.load(user_cookie)
             cookie_value = cookie['tiddlyweb_user'].value
             secret = environ['tiddlyweb.config']['secret']
@@ -42,7 +46,7 @@ class Extractor(ExtractorInterface):
                 usersign = usersign.decode('utf-8')
                 user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
-        except Cookie.CookieError, exc:
+        except CookieError as exc:
             raise HTTP400('malformed cookie: %s' % exc)
         except (KeyError, ValueError):
             pass

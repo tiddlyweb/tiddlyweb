@@ -9,6 +9,11 @@ from tiddlyweb.model.policy import Policy
 RECIPE_TEMPLATE_RE = re.compile(r'{{ (\w+) }}')
 RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
 
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
+
 
 class Recipe(object):
     """

@@ -4,7 +4,7 @@ import selector
 import string
 import simplejson
 
-from http_runner import *
+from .http_runner import *
 
 def fixup(pattern):
     for replaceme in ['^', '\\', '(', ')', '?', '$', '[/]+', '[/.]+', '>']:

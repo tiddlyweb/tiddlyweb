@@ -12,7 +12,7 @@ from tiddlyweb.filters import FilterError, parse_for_filters, recursive_filter
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from fixtures import tiddlers
+from .fixtures import tiddlers
 
 import py.test
 

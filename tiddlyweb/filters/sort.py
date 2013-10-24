@@ -79,10 +79,10 @@ def sort_by_attribute(attribute, entities, reverse=False, environ=None):
         stored_entity = get_entity(entity, store)
         try:
             return func(getattr(stored_entity, attribute))
-        except AttributeError, attribute_exc:
+        except AttributeError as attribute_exc:
             try:
                 return func(stored_entity.fields[attribute])
-            except (AttributeError, KeyError), exc:
+            except (AttributeError, KeyError) as exc:
                 raise AttributeError('on %s, no attribute: %s, %s, %s'
                         % (stored_entity, attribute, attribute_exc, exc))
 

@@ -84,7 +84,7 @@ def _determine_challenger(environ, challenger_name=None):
         raise HTTP404('Challenger Not Found')
     try:
         return _get_challenger_module(challenger_name)
-    except ImportError, exc:
+    except ImportError as exc:
         raise HTTP404('Unable to import challenger %s: %s' %
                 (challenger_name, exc))
 

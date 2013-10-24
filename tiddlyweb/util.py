@@ -69,7 +69,7 @@ def read_config(global_config):
     try:
         from tiddlywebconfig import config as custom_config
         merge_config(global_config, custom_config, reconfig=False)
-    except ImportError, exc:
+    except ImportError as exc:
         if not exc.args[0].endswith('tiddlywebconfig'):
             raise  # error within tiddlywebconfig.py
 
@@ -78,7 +78,7 @@ def sha(data=''):
     """
     Create a sha1 digest of the ``data``.
     """
-    return sha1(data)
+    return sha1(data.encode('UTF-8'))
 
 
 def binary_tiddler(tiddler):
@@ -121,9 +121,8 @@ def read_utf8_file(filename):
 
     Allow any exceptions to raise.
     """
-    source_file = codecs.open(filename, encoding='utf-8')
-    content = source_file.read()
-    source_file.close()
+    with codecs.open(filename, encoding='utf-8') as source_file:
+        content = source_file.read()
     return content
 
 
@@ -151,14 +150,15 @@ def std_error_message(message):
     way to the console even if there are encoding problems.
     """
     try:
-        print >> sys.stderr, message.encode('utf-8', 'replace')
+        print(message.encode('utf-8', 'replace'), file=sys.stderr)
     # there's a mismatch between our encoding and the output terminal
     except UnicodeDecodeError:
         try:
-            print >> sys.stderr, message
+            print(message, file=sys.stderr)
         except UnicodeDecodeError:
-            print >> sys.stderr, ('cannot display message due to '
-                    'mismatching terminal character encoding')
+            print('cannot display message due to '
+                    'mismatching terminal character encoding',
+                    file=sys.stderr)
 
 
 def superclass_name(instance):

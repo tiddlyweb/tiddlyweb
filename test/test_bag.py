@@ -15,7 +15,7 @@ import copy
 
 def setup_module(module):
     module.bag = Bag(name='foobag')
-    from fixtures import tiddlers as tids
+    from .fixtures import tiddlers as tids
 # we need to copy tiddlers otherwise the test below which 
 # messes with the contents of tiddlers screws with others tests
     module.tiddlers = copy.deepcopy(tids)

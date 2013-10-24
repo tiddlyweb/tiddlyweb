@@ -3,17 +3,23 @@ Test a full suite of unicode interactions.
 """
 
 
-import urllib
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
 encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
-name = urllib.unquote(encoded_name).decode('utf-8')
+try:
+    name = unquote(encoded_name).decode('utf-8')
+except AttributeError:
+    name = unquote(encoded_name)
 
 def setup_module(module):
     initialize_app()

@@ -19,6 +19,10 @@ from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 
 LOGGER = logging.getLogger(__name__)
 
+try:
+    basestring('foo')
+except NameError:
+    basestring = str
 
 def get_tiddlers_from_recipe(recipe, environ=None):
     """
@@ -49,7 +53,7 @@ def get_tiddlers_from_recipe(recipe, environ=None):
             for tiddler in filter_tiddlers(retriever(bag), filter_string,
                     environ=environ):
                 uniquifier[tiddler.title] = tiddler
-        except SpecialBagError, exc:
+        except SpecialBagError as exc:
             raise NoBagError('unable to retrieve from special bag: %s, %s'
                     % (bag, exc))
 
@@ -113,7 +117,7 @@ def _look_for_tiddler_in_bag(tiddler, bag, filter_string,
                         'satisfied recipe bag query via filter index: %s:%s',
                         bag.name, tiddler.title)
                 return bag
-        except StoreError, exc:
+        except StoreError as exc:
             raise FilterIndexRefused('unable to index_query: %s' % exc)
         return None
 

@@ -126,9 +126,18 @@ def sanitize_html_fragment(fragment):
     Santize an HTML ``fragment``, returning a copy of the fragment
     that has been cleaned up.
     """
-    import html5lib
-    from html5lib import sanitizer
+    if fragment:
+        import html5lib
+        from html5lib.sanitizer import HTMLSanitizer
+        from html5lib.serializer.htmlserializer import HTMLSerializer
 
-    parser = html5lib.HTMLParser(tokenizer=sanitizer.HTMLSanitizer)
-    output = parser.parseFragment(fragment)
-    return output.toxml()
+        parser = html5lib.HTMLParser(tokenizer=HTMLSanitizer)
+        parsed = parser.parseFragment(fragment)
+        walker = html5lib.treewalkers.getTreeWalker('etree')
+        stream = walker(parsed)
+        serializer = HTMLSerializer(quote_attr_values=True,
+                omit_optional_tags=False)
+        output = serializer.render(stream)
+        return output
+    else: 
+        return fragment

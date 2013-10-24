@@ -62,14 +62,21 @@ the tiddlers is faster than using an index.
 """
 
 try:
-    from urlparse import parse_qs
+    from urllib.parse import parse_qs
 except ImportError:
-    from cgi import parse_qs
+    try:
+        from urlparse import parse_qs
+    except ImportError:
+        from cgi import parse_qs
 
 from tiddlyweb.filters.select import select_parse
 from tiddlyweb.filters.sort import sort_parse
 from tiddlyweb.filters.limit import limit_parse
 
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
 
 class FilterError(Exception):
     """
@@ -113,7 +120,7 @@ def parse_for_filters(query_string, environ=None):
     for string in strings:
         query = parse_qs(string)
         try:
-            key, value = query.items()[0]
+            key, value = list(query.items())[0]
 
             try:
                 argument = unicode(value[0], 'UTF-8')
@@ -147,9 +154,9 @@ def recursive_filter(filters, entities, indexable=False):
             environ = {}
         try:
             entities = active_filter(entities, indexable, environ)
-        except FilterIndexRefused, exc:
+        except FilterIndexRefused as exc:
             entities = active_filter(entities, False, environ)
-        except (ValueError, AttributeError), exc:
+        except (ValueError, AttributeError) as exc:
             raise FilterError('malformed filter: %s' % exc)
         indexable = False
     return entities

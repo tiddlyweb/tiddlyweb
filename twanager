@@ -8,6 +8,11 @@ cwd = os.getcwd()
 sys.path.insert(0, cwd)
 from tiddlyweb.manage import handle
 
+try:
+    unicode('foo')
+except NameError:
+    def unicode(input, encoding=None):
+        return input
 
 if __name__ == '__main__':
     args = [unicode(arg, 'UTF-8') for arg in sys.argv]

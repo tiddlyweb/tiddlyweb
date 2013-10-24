@@ -3,7 +3,13 @@
 for plain text.
 """
 
-import urllib
+try:
+    from urllib import quote, unquote as unquote2
+    def unquote(name):
+        return unquote2(name.encode('utf-8')).decode('utf-8')
+except ImportError:
+    from urllib.parse import quote, unquote
+
 import simplejson
 
 from base64 import b64encode, b64decode
@@ -14,6 +20,16 @@ from tiddlyweb.serializer import TiddlerFormatError
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler
+
+try:
+    basestring('foo')
+except NameError:
+    basestring = str
+
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
 
 
 class Serialization(SerializationInterface):
@@ -74,7 +90,7 @@ class Serialization(SerializationInterface):
             if not get_bag_retriever(self.environ, bag):
                 # If there is a retriever for this bag name then
                 # we want to write its name straight.
-                line += '/bags/%s/tiddlers' % urllib.quote(
+                line += '/bags/%s/tiddlers' % quote(
                         bag.encode('utf-8'), safe='')
             else:
                 line += bag
@@ -190,7 +206,7 @@ class Serialization(SerializationInterface):
                     setattr(tiddler, field, value)
                 else:
                     tiddler.fields[field] = value.replace('\\n', '\n')
-        except ValueError, exc:
+        except ValueError as exc:
             raise TiddlerFormatError('bad headers in tiddler: %s, %s' %
                     (tiddler.title, exc))
 
@@ -226,8 +242,7 @@ class Serialization(SerializationInterface):
                     filter_string = ''
                 if bag.startswith('/bags/'):
                     bagname = bag.split('/')[2]
-                    bagname = urllib.unquote(bagname.encode('utf-8'))
-                    bagname = bagname.decode('utf-8')
+                    bagname = unquote(bagname)
                 else:
                     bagname = bag
                 recipe_lines.append((bagname, filter_string))

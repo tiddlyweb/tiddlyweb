@@ -1,10 +1,15 @@
 import sys
-from StringIO import StringIO
-from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.config import config
-from tiddlywebplugins.utils import get_store
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+from tiddlyweb.config import config
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.store import HOOKS
+
+from .fixtures import get_store
 
 
 OUTPUT = ''

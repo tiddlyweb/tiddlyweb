@@ -14,7 +14,7 @@ from tiddlyweb.web import serve
 
 from test.simpleplugin import PluginHere
 
-from fixtures import initialize_app
+from .fixtures import initialize_app
 
 expected_content="""<ul id="root" class="listing">
 <li><a href="/recipes">recipes</a></li>
@@ -31,7 +31,7 @@ def test_get_root():
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert expected_content in content
+    assert expected_content in content.decode('utf-8')
 
 def test_head_root():
     http = httplib2.Http()

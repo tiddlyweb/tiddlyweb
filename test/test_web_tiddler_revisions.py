@@ -6,7 +6,7 @@ Test GETting a tiddler revision list.
 import httplib2
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 
 from tiddlyweb.util import sha

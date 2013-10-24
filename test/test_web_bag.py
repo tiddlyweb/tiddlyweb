@@ -7,7 +7,7 @@ import httplib2
 import urllib
 import simplejson
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.stores import StorageInterface

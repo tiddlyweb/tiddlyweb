@@ -14,9 +14,7 @@ from tiddlyweb.model.collections import Collection, Tiddlers
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from tiddlywebplugins.utils import get_store
-
-from fixtures import reset_textstore
+from .fixtures import reset_textstore, get_store
 
 
 def setup_module(module):

@@ -2,9 +2,20 @@
 General utility routines shared by various web related modules.
 """
 
-import Cookie
-import urllib
+try:
+    from Cookie import SimpleCookie
+except ImportError:
+    from http.cookies import SimpleCookie
+
+try:
+    from urllib import quote, unquote as unquote2
+    def unquote(name):
+        return unquote2(name.encode('utf-8')).decode('utf-8')
+except ImportError:
+    from urllib.parse import quote, unquote
+
 from datetime import datetime
+
 try:
     from email.utils import parsedate
 except ImportError:  # Python < 2.5
@@ -31,7 +42,7 @@ def check_bag_constraint(environ, bag, constraint):
         usersign = environ['tiddlyweb.usersign']
         bag = store.get(bag)
         bag.policy.allows(usersign, constraint)
-    except (PermissionsError), exc:
+    except (PermissionsError) as exc:
         # XXX this throws away traceback info
         msg = 'for bag %s: %s' % (bag.name, exc)
         raise exc.__class__(msg)
@@ -94,8 +105,8 @@ def get_route_value(environ, name):
     """
     try:
         value = environ['wsgiorg.routing_args'][1][name]
-        value = urllib.unquote(value).decode('utf-8')
-    except UnicodeDecodeError, exc:
+        value = unquote(value)
+    except UnicodeDecodeError as exc:
         raise HTTP400('incorrect encoding for %s, UTF-8 required: %s'
                 % (name, exc))
     return value
@@ -209,9 +220,10 @@ def make_cookie(name, value, mac_key=None, path=None,
     expires value. If ``expires`` is provided, its value should be
     in seconds.
     """
-    cookie = Cookie.SimpleCookie()
+    cookie = SimpleCookie()
 
-    value = value.encode('utf-8')
+    # XXX: backwards to 2.x?
+    #value = value.encode('utf-8')
 
     if mac_key:
         secret_string = sha('%s%s' % (value, mac_key)).hexdigest()
@@ -245,7 +257,7 @@ def read_request_body(environ, length):
         length = int(length)
         input_handle = environ['wsgi.input']
         return input_handle.read(length)
-    except (KeyError, ValueError, IOError), exc:
+    except (KeyError, ValueError, IOError) as exc:
         raise HTTP400('Error reading request body: %s', exc)
 
 
@@ -283,7 +295,7 @@ def encode_name(name):
     Encode a unicode value as utf-8 and then URL encode that
     string. Use for entity titles in URLs.
     """
-    return urllib.quote(name.encode('utf-8'), safe=".!~*'()")
+    return quote(name.encode('utf-8'), safe=".!~*'()")
 
 
 def html_encode(text):

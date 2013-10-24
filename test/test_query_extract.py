@@ -5,7 +5,10 @@ unicode handling.
 
 from tiddlyweb.web.query import Query
 
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 def app(environ, start_response):
     pass
@@ -34,7 +37,7 @@ def test_operation_encoded_get():
 
 def test_operation_simple_post():
     q = Query(app)
-    post = StringIO.StringIO()
+    post = StringIO()
     post.write('text=m%C3%B6ass')
     post.seek(0)
     environ = {}

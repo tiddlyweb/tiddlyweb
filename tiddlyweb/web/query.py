@@ -6,14 +6,24 @@ If the current request is a ``POST`` of HTML form data, parse that too.
 """
 
 try:
-    from urlparse import parse_qs
+    from urllib.parse import parse_qs
 except ImportError:
-    from cgi import parse_qs
+    try:
+        from urlparse import parse_qs
+    except ImportError:
+        from cgi import parse_qs
 
 from httpexceptor import HTTP400
 
 from tiddlyweb.filters import parse_for_filters
 from tiddlyweb.web.util import read_request_body
+
+try:
+    unicode('foo')
+except NameError:
+    def unicode(input, encoding=None):
+        return input
+
 
 
 class Query(object):
@@ -42,13 +52,13 @@ class Query(object):
             try:
                 length = environ['CONTENT_LENGTH']
                 content = read_request_body(environ, length)
-            except KeyError, exc:
+            except KeyError as exc:
                 raise HTTP400('Invalid post, unable to read content: %s'
                         % exc)
             posted_data = parse_qs(content, keep_blank_values=True)
             try:
                 _update_tiddlyweb_query(environ, posted_data)
-            except UnicodeDecodeError, exc:
+            except UnicodeDecodeError as exc:
                 raise HTTP400(
                         'Invalid encoding in query string, utf-8 required: %s',
                         exc)
@@ -57,7 +67,7 @@ class Query(object):
         query_data = parse_qs(leftovers, keep_blank_values=True)
         try:
             _update_tiddlyweb_query(environ, query_data)
-        except UnicodeDecodeError, exc:
+        except UnicodeDecodeError as exc:
             raise HTTP400(
                     'Invalid encoding in query string, utf-8 required: %s',
                     exc)

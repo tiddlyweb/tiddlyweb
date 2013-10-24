@@ -10,7 +10,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.user import User
 from tiddlyweb.util import sha
 
-from fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
 from base64 import b64encode
 authorization = b64encode(u'cd\u2714nt:cowpig'.encode('utf-8'))

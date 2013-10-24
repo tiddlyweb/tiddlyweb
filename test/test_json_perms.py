@@ -5,8 +5,9 @@ from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
-from tiddlywebplugins.utils import get_store
 from tiddlyweb.config import config
+
+from .fixtures import get_store
 
 
 def setup_module(module):

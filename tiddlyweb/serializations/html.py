@@ -6,12 +6,22 @@ for HTML.
 of the system.
 """
 
-import urllib
+try:
+    from urllib import quote, unquote as unquote2
+    def unquote(name):
+        return unquote2(name.encode('utf-8')).decode('utf-8')
+except ImportError:
+    from urllib.parse import quote, unquote
 
 from tiddlyweb import __version__ as VERSION
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
+
+try:
+    basestring('foo')
+except NameError:
+    basestring = str
 
 HEADER = """<!DOCTYPE HTML>
 <html>
@@ -163,7 +173,7 @@ class Serialization(SerializationInterface):
             line += '%s/bags/%s/tiddlers' % (
                     self._server_prefix(), encode_name(bag))
             if filter_string:
-                line += '?%s' % urllib.quote(
+                line += '?%s' % quote(
                         filter_string.encode('utf-8'), safe=':=;')
             line += '">bag: %s filter:%s</a></li>' % (bag, filter_string)
             lines.append(line)

@@ -84,6 +84,10 @@ recipe_list_string = [
         [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
          ]
 
+def get_store(config):
+    return Store(config['server_store'][0], config['server_store'][1],
+            {'tiddlyweb.config': config})
+
 def _teststore():
     return Store(config['server_store'][0], config['server_store'][1],
             environ={'tiddlyweb.config': config})

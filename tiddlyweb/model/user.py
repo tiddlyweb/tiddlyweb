@@ -11,6 +11,10 @@ is required the :py:class:`User` may be used.
 
 from tiddlyweb.util import sha
 
+try:
+    unicode('foo')
+except NameError:
+    unicode = str
 
 class User(object):
     """
@@ -54,7 +58,7 @@ class User(object):
         # The null password or empty password string never auths
         if not password:
             return
-        self._password = sha(password.strip().encode('utf-8')).hexdigest()
+        self._password = sha(password.strip()).hexdigest()
 
     def check_password(self, candidate_password):
         """
@@ -62,8 +66,7 @@ class User(object):
         """
         if not self._password:
             return False
-        crypted_thing = sha(candidate_password.strip().encode(
-            'utf-8')).hexdigest()
+        crypted_thing = sha(candidate_password.strip()).hexdigest()
         return crypted_thing == self._password
 
     def __repr__(self):
