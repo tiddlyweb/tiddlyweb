@@ -18,7 +18,7 @@ from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import superclass_name
 
 try:
-    basestring('foo')
+    basestring
 except NameError:
     basestring = str
 

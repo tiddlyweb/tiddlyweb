@@ -5,6 +5,8 @@ functions used throughout TiddlyWeb and plugins.
 Web specific utilities are in :py:mod:`tiddlyweb.web.util`.
 """
 
+from __future__ import print_function
+
 import logging
 import codecs
 import os

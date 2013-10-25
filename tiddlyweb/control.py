@@ -20,7 +20,7 @@ from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 LOGGER = logging.getLogger(__name__)
 
 try:
-    basestring('foo')
+    basestring
 except NameError:
     basestring = str
 

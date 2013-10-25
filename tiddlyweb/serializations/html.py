@@ -19,7 +19,7 @@ from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
 
 try:
-    basestring('foo')
+    basestring
 except NameError:
     basestring = str
 

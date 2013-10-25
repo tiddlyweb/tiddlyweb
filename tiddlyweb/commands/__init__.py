@@ -12,6 +12,8 @@ Typical commands do things like starting a server, creating a user and
 listing existing entities.
 """
 
+from __future__ import print_function
+
 import sys
 
 from tiddlyweb.store import Store, NoBagError

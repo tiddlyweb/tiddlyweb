@@ -22,7 +22,7 @@ from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler
 
 try:
-    basestring('foo')
+    basestring
 except NameError:
     basestring = str
 
