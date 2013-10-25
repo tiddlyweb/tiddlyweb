@@ -27,26 +27,26 @@ def test_create_collection():
     assert isinstance(collection, Collection)
 
 def test_collection_title():
-    collection = Collection('barney')
+    collection = Collection(u'barney')
 
-    assert collection.title == 'barney'
+    assert collection.title == u'barney'
 
 def test_add_thing():
     collection = Collection()
-    collection.add('monkey')
+    collection.add(u'monkey')
 
-    assert 'monkey' in collection
+    assert u'monkey' in collection
 
 def test_hash_things():
     collection = Collection()
 
-    collection.add('monkey')
-    assert 'monkey' in collection
+    collection.add(u'monkey')
+    assert u'monkey' in collection
     mdigest = collection.hexdigest()
     assert mdigest 
 
-    collection.add('cow')
-    assert 'cow' in collection
+    collection.add(u'cow')
+    assert u'cow' in collection
     cdigest = collection.hexdigest()
     assert cdigest 
 
@@ -54,22 +54,22 @@ def test_hash_things():
 
 def test_get_things():
     collection = Collection()
-    collection.add('monkey')
-    collection.add('cow')
+    collection.add(u'monkey')
+    collection.add(u'cow')
     all = list(collection)
-    assert all == ['monkey', 'cow']
+    assert all == [u'monkey', u'cow']
 
 def test_tiddler_collection():
     tiddlers = Tiddlers()
     n = 4
-    for title in ['how', 'now', 'cow']:
+    for title in [u'how', u'now', u'cow']:
         n = n - 1
         tiddler = Tiddler(title, 'bag')
         tiddler.modified = n 
         tiddlers.add(tiddler)
     digest = tiddlers.hexdigest()
     modified = tiddlers.modified
-    assert ['how', 'now', 'cow'] == list(tiddler.title for tiddler in tiddlers)
+    assert [u'how', u'now', u'cow'] == list(tiddler.title for tiddler in tiddlers)
     assert modified == '30000000000000'
 
 def test_tiddler_racing():

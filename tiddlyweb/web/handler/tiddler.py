@@ -26,6 +26,10 @@ from tiddlyweb.web.util import (check_bag_constraint, get_route_value,
 from tiddlyweb.web.sendtiddlers import send_tiddlers
 from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 CACHE_CONTROL_FIELD = '_cache-max-age'
 CANONICAL_URI_FIELD = '_canonical_uri'

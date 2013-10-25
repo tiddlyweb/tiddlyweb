@@ -26,7 +26,8 @@ def setup_module(module):
 
 
 def _random_name(length=5):
-        return ''.join(random.choice(string.lowercase) for i in range(length))
+        return ''.join(random.choice(string.ascii_lowercase)
+                for i in range(length))
 
 
 def test_get_tiddler():

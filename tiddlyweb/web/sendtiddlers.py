@@ -17,6 +17,10 @@ from tiddlyweb.util import sha
 from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
         check_last_modified, check_incoming_etag)
 
+try:
+    basestring
+except NameError:
+    basestring = str
 
 LOGGER = logging.getLogger(__name__)
 
@@ -120,7 +124,7 @@ def _validate_tiddler_list(environ, tiddlers):
     except TypeError:
         mime_type = ''
     etag_string = '"%s:%s"' % (tiddlers.hexdigest(),
-            sha('%s:%s' % (username.encode('utf-8'), mime_type)).hexdigest())
+            sha('%s:%s' % (username, mime_type)).hexdigest())
     etag = ('Etag', etag_string)
 
     incoming_etag = check_incoming_etag(environ, etag_string,

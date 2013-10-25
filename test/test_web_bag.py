@@ -4,8 +4,14 @@ Test that GETting a bag can list the tiddlers.
 
 
 import httplib2
-import urllib
 import simplejson
+
+try:
+    from urllib import unquote as unquote2
+    def unquote(name):
+        return unquote2(name.encode('utf-8')).decode('utf-8')
+except ImportError:
+    from urllib.parse import unquote
 
 from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
 
@@ -34,7 +40,7 @@ def test_get_bag_tiddler_list_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content.count('<li>') == 10
+    assert content.decode('utf-8').count('<li>') == 10
 
 def test_bad_http_caching_timestamp():
     """
@@ -56,7 +62,7 @@ def test_get_bag_tiddler_list_404():
             method='GET')
 
     assert response['status'] == '404'
-    assert '(' not in content
+    assert '(' not in content.decode('utf-8')
 
 def test_get_bag_tiddler_list_text():
     http = httplib2.Http()
@@ -65,7 +71,7 @@ def test_get_bag_tiddler_list_text():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/plain; charset=UTF-8'
-    assert len(content.rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
+    assert len(content.decode('utf-8').rstrip().split('\n')) == 10, 'len tiddlers should be 10 is %s' % len(content.split('\n'))
 
 def test_get_bag_tiddler_list_html():
     http = httplib2.Http()
@@ -74,7 +80,7 @@ def test_get_bag_tiddler_list_html():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content.count('<li>') == 10
+    assert content.decode('utf-8').count('<li>') == 10
 
 def test_get_bag_tiddler_list_415():
     http = httplib2.Http()
@@ -98,7 +104,7 @@ def test_get_bag_tiddler_list_html_default():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content.count('<li>') == 10
+    assert content.decode('utf-8').count('<li>') == 10
 
 def test_get_bag_tiddler_list_filtered():
     http = httplib2.Http()
@@ -107,7 +113,7 @@ def test_get_bag_tiddler_list_filtered():
 
     assert response['status'] == '200'
     assert response['last-modified'] == 'Fri, 23 May 2008 03:03:00 GMT'
-    assert len(content.rstrip().split('\n')) == 1, 'len tiddlers should be 1 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.decode('utf-8').rstrip().split('\n')) == 1
 
 def test_get_bag_tiddler_list_bogus_filter():
     http = httplib2.Http()
@@ -115,14 +121,15 @@ def test_get_bag_tiddler_list_bogus_filter():
             method='GET')
 
     assert response['status'] == '400'
-    assert 'malformed filter' in content
+    assert 'malformed filter' in content.decode('utf-8')
 
 def test_get_bags_default():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
+    content = content.decode('utf-8')
+    assert response['status'] == '200', content.decode('utf-8')
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert content.count('<li>') == 30
     assert content.count('bags/') == 30
@@ -134,13 +141,14 @@ def test_get_bags_txt():
 
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/plain; charset=UTF-8'
-    assert len(content.rstrip().split('\n')) == 30, 'len bags should be 32 is %s' % len(content.rstrip().split('\n'))
+    assert len(content.decode('utf-8').rstrip().split('\n')) == 30
 
 def test_get_bags_html():
     http = httplib2.Http()
     response, content = http.request('http://our_test_domain:8001/bags.html',
             method='GET')
 
+    content = content.decode('utf-8')
     assert response['status'] == '200', 'response status should be 200 is %s' % response['status']
     assert response['content-type'] == 'text/html; charset=UTF-8'
     assert content.count('<li>') == 30
@@ -261,6 +269,7 @@ def test_put_bag_bad_json():
     response, content = http.request('http://our_test_domain:8001/bags/bagpuss',
             method='PUT', headers={'Content-Type': 'application/json'}, body=json_string)
 
+    content = content.decode('utf-8')
     assert response['status'] == '400'
     assert 'unable to put bag' in content
     assert 'unable to make json into' in content
@@ -307,12 +316,12 @@ def test_get_bag_tiddlers_constraints():
     response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers',
             method='GET')
     assert response['status'] == '403'
-    assert 'may not read' in content
+    assert 'may not read' in content.decode('utf-8')
 
 def test_roundtrip_unicode_bag():
     http = httplib2.Http()
     encoded_bag_name = '%E3%81%86%E3%81%8F%E3%81%99'
-    bag_name = urllib.unquote(encoded_bag_name).decode('utf-8')
+    bag_name = unquote(encoded_bag_name)
     bag_content = {'policy':{'read':['a','b','c','GUEST']}}
     body = simplejson.dumps(bag_content)
     response, content = http.request('http://our_test_domain:8001/bags/%s' % encoded_bag_name,

@@ -45,8 +45,7 @@ class Collection(object):
         Add an item to the container, updating the digest and
         modified information.
         """
-        name = '%s' % thing
-        self._update_digest(name.encode('utf-8'))
+        self._update_digest(thing)
         self._container.append(thing)
         try:
             modified_string = str(thing.modified)
@@ -60,7 +59,7 @@ class Collection(object):
         """
         Update the digest with this thing.
         """
-        self._digest.update(thing)
+        self._digest.update(thing.encode('utf-8'))
 
     def hexdigest(self):
         """
