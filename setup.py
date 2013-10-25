@@ -29,7 +29,7 @@ META = {
         'html5lib',
         'mimeparse'],
     'extras_require': {
-        'testing': ['pytest', 'httplib2', 'PyYML',
+        'testing': ['pytest', 'httplib2', 'PyYAML',
             'git+https://github.com/cdent/python3-wsgi-intercept.git#egg=wsgi-intercept>=0.1',
             ]
     },
