@@ -23,6 +23,12 @@ try:
 except NameError:
     basestring = str
 
+try:
+    unicode
+except NameError:
+    def unicode(input, encoding=None):
+        return input
+
 HEADER = """<!DOCTYPE HTML>
 <html>
 <head>

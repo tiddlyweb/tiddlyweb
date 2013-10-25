@@ -44,7 +44,7 @@ def test_assert_response():
             'status': '200',
             'location': 'http://example.com',
             }
-    content = 'Hello World\n'
+    content = b'Hello World\n'
     status = '200'
     headers = {
             'location': 'http://example.com',
@@ -86,6 +86,7 @@ def _run_test(test):
     assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
 
 def assert_response(response, content, status, headers=None, expected=None):
+    content = content.decode('utf-8')
     if response['status'] == '500': print(content)
     assert response['status'] == '%s' % status, (response, content)
 

@@ -6,8 +6,6 @@ supports search.
 
 import logging
 
-import urllib
-
 from httpexceptor import HTTP400
 
 from tiddlyweb.control import readable_tiddlers_by_bag
@@ -26,7 +24,6 @@ def get_search_query(environ):
     """
     try:
         search_query = environ['tiddlyweb.query']['q'][0]
-        search_query = urllib.unquote(search_query)
     except (KeyError, IndexError):
         raise HTTP400('query string required')
     return search_query

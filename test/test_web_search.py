@@ -3,6 +3,7 @@ Test search via the web.
 """
 
 
+import sys
 import httplib2
 import simplejson
 
@@ -75,7 +76,13 @@ def test_json_search_filtered():
     assert len(info) == 30
 
 def test_funky_encoding():
+    """
+    Query parsing in python3 is more robust in the face of weird input.
+    """
     http = httplib2.Http()
     response, content = http.request(
             'http://our_test_domain:8001/search?q=title:\"\xd3ptica%20electromagn\xe9tica\"')
-    assert response['status'] == '400', content
+    if sys.version_info[0] > 2:
+        assert response['status'] == '200', content
+    else:
+        assert response['status'] == '400', content

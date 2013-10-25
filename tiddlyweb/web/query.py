@@ -19,7 +19,7 @@ from tiddlyweb.filters import parse_for_filters
 from tiddlyweb.web.util import read_request_body
 
 try:
-    unicode('foo')
+    unicode
 except NameError:
     def unicode(input, encoding=None):
         return input
