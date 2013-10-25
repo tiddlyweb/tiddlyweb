@@ -13,7 +13,7 @@ META = {
     'name': 'tiddlyweb',
     'version': VERSION,
     'description': 'An optionally headless, extensible HTTP datastore for tiddlers: bits of stuff.',
-    'long_description': file(os.path.join(os.path.dirname(__file__), 'README')).read(),
+    'long_description': open(os.path.join(os.path.dirname(__file__), 'README')).read(),
     'author': 'Chris Dent',
     'author_email': 'cdent@peermore.com',
     'url': 'http://pypi.python.org/pypi/tiddlyweb',
@@ -26,11 +26,12 @@ META = {
         'selector' + ('<0.9.0' if (sys.version_info[0] == 2 and
                 sys.version_info[1] < 6) else ''),
         'simplejson',
-        'html5lib<0.96',
+        'html5lib',
         'mimeparse'],
     'extras_require': {
-        'testing': ['pytest', 'httplib2', 'wsgi_intercept', 'PyYAML',
-                    'tiddlywebplugins.utils']
+        'testing': ['pytest', 'httplib2', 'PyYML',
+            'git+https://github.com/cdent/python3-wsgi-intercept.git#egg=wsgi-intercept>=0.1',
+            ]
     },
     'include_package_data': True,
     'zip_safe': False,
