@@ -8,6 +8,8 @@ import shutil
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 
+import httplib2
+
 from tiddlyweb.web.serve import load_app
 from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.model.bag import Bag
@@ -136,3 +138,19 @@ def create_bag(store, numeral):
     bag = Bag('bag%s' % numeral)
     store.put(bag)
     return bag
+
+
+def get_http():
+    """
+    Get a httplib2 object, patched to provide a requestU method
+    which returns decoded content.
+    """
+    def requestU(*args, **kwargs):
+        self = args[0]
+        args = args[1:]
+        response, content = self.request(*args, **kwargs)
+        return response, content.decode('utf-8')
+
+    http = httplib2.Http()
+    http.__class__.requestU = requestU
+    return http
