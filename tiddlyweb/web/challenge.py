@@ -5,7 +5,10 @@ to the available :py:class:`challengers
 challenger, redirect to it.
 """
 
-import urllib
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
 
 from httpexceptor import HTTP302, HTTP404
 
@@ -67,7 +70,7 @@ def _challenger_url(environ, system):
     default_redirect = '%s/' % environ['tiddlyweb.config']['server_prefix']
     redirect = (environ['tiddlyweb.query'].get('tiddlyweb_redirect',
             [default_redirect])[0])
-    redirect = '?tiddlyweb_redirect=%s' % urllib.quote(
+    redirect = '?tiddlyweb_redirect=%s' % quote(
             redirect.encode('utf-8'), safe='')
     return '%s/challenge/%s%s' % (server_base_url(environ), system, redirect)
 

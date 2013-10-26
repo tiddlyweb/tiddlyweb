@@ -7,11 +7,13 @@ If the current request is a ``POST`` of HTML form data, parse that too.
 
 try:
     from urllib.parse import parse_qs
+    ENCODED_QUERY = False
 except ImportError:
     try:
         from urlparse import parse_qs
     except ImportError:
         from cgi import parse_qs
+    ENCODED_QUERY = True
 
 from httpexceptor import HTTP400
 
@@ -50,23 +52,26 @@ class Query(object):
         if environ['REQUEST_METHOD'].upper() == 'POST' and \
                 content_type.startswith('application/x-www-form-urlencoded'):
             try:
-                length = environ['CONTENT_LENGTH']
-                content = read_request_body(environ, length)
-            except KeyError as exc:
-                raise HTTP400('Invalid post, unable to read content: %s'
-                        % exc)
-            posted_data = parse_qs(content, keep_blank_values=True)
-            try:
-                _update_tiddlyweb_query(environ, posted_data)
+                try:
+                    length = environ['CONTENT_LENGTH']
+                    content = read_request_body(environ, length)
+                    if not ENCODED_QUERY:
+                        content = content.decode('UTF-8')
+                except KeyError as exc:
+                    raise HTTP400('Invalid post, unable to read content: %s'
+                            % exc)
+                posted_data = parse_qs(content, keep_blank_values=True)
+                _update_tiddlyweb_query(environ, posted_data,
+                        encoded=ENCODED_QUERY)
             except UnicodeDecodeError as exc:
                 raise HTTP400(
-                        'Invalid encoding in query string, utf-8 required: %s',
+                        'Invalid encoding in query data, utf-8 required: %s',
                         exc)
         filters, leftovers = parse_for_filters(
                 environ.get('QUERY_STRING', ''), environ)
         query_data = parse_qs(leftovers, keep_blank_values=True)
         try:
-            _update_tiddlyweb_query(environ, query_data)
+            _update_tiddlyweb_query(environ, query_data, encoded=ENCODED_QUERY)
         except UnicodeDecodeError as exc:
             raise HTTP400(
                     'Invalid encoding in query string, utf-8 required: %s',
@@ -74,7 +79,11 @@ class Query(object):
         environ['tiddlyweb.filters'] = filters
 
 
-def _update_tiddlyweb_query(environ, data):
-    environ['tiddlyweb.query'].update(dict(
-        [(unicode(key, 'UTF-8'), [unicode(value, 'UTF-8') for value in values])
-            for key, values in data.items()]))
+def _update_tiddlyweb_query(environ, data, encoded=True):
+    if encoded:
+        environ['tiddlyweb.query'].update(dict(
+            [(unicode(key, 'UTF-8'), [unicode(value, 'UTF-8')
+                for value in values]) for key, values in data.items()]))
+    else:
+        environ['tiddlyweb.query'].update(data)
+

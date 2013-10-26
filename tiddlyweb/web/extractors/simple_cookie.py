@@ -43,7 +43,6 @@ class Extractor(ExtractorInterface):
             usersign, cookie_secret = cookie_value.rsplit(':', 1)
 
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
-                usersign = usersign.decode('utf-8')
                 user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
         except CookieError as exc:
