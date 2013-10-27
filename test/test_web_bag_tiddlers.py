@@ -15,7 +15,6 @@ from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
 
 from base64 import b64encode
 authorization = b64encode(u'cd\u2714nt:cowpig'.encode('utf-8')).decode('utf-8')
-print('a', authorization)
 
 def setup_module(module):
     initialize_app()

@@ -82,7 +82,6 @@ def test_simple_cookie_redirect():
                 headers={'content-type': 'application/x-www-form-urlencoded'},
                 body='user=cdent&password=cowpig&tiddlyweb_redirect=/recipes/long/tiddlers/tiddler8',
                 redirections=0)
-        print('rs', response)
     except httplib2.RedirectLimit as e:
         nested_response = e
 
