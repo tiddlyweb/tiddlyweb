@@ -22,6 +22,7 @@ try:
 except NameError:
     basestring = str
 
+
 class StoreError(IOError):
     """
     Base Exception for Store Exceptions.

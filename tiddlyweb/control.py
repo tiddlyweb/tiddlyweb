@@ -24,6 +24,7 @@ try:
 except NameError:
     basestring = str
 
+
 def get_tiddlers_from_recipe(recipe, environ=None):
     """
     Return the list of tiddlers that result from processing the ``recipe``.

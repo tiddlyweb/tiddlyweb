@@ -139,5 +139,5 @@ def sanitize_html_fragment(fragment):
                 omit_optional_tags=False)
         output = serializer.render(stream)
         return output
-    else: 
+    else:
         return fragment

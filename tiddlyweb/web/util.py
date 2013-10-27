@@ -9,6 +9,7 @@ except ImportError:
 
 try:
     from urllib import quote, unquote as unquote2
+
     def unquote(name):
         return unquote2(name.encode('utf-8')).decode('utf-8')
 except ImportError:

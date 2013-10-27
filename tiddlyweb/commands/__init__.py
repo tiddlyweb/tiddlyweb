@@ -25,10 +25,11 @@ from tiddlyweb.manage import make_command, usage
 from tiddlyweb import __version__ as VERSION
 
 try:
-    unicode('foo')
+    unicode
 except NameError:
     def unicode(input, encoding=None):
         return input
+
 
 def init(config):
     """

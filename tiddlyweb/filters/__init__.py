@@ -74,9 +74,10 @@ from tiddlyweb.filters.sort import sort_parse
 from tiddlyweb.filters.limit import limit_parse
 
 try:
-    unicode('foo')
+    unicode
 except NameError:
     unicode = str
+
 
 class FilterError(Exception):
     """

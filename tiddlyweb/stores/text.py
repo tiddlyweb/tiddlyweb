@@ -12,6 +12,7 @@ import shutil
 import time
 try:
     from urllib import quote, unquote as unquote2
+
     def unquote(name):
         return unquote2(name).decode('utf-8')
 except ImportError:
@@ -384,7 +385,7 @@ class Store(StorageInterface):
                         continue
                     with codecs.open(
                         self._tiddler_full_filename(tiddler, revision_id),
-                        encoding='utf-8') as tiddler_file:
+                            encoding='utf-8') as tiddler_file:
                         for line in tiddler_file:
                             if query in line.lower():
                                 yield tiddler

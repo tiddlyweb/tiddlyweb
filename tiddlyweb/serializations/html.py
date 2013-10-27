@@ -7,11 +7,9 @@ of the system.
 """
 
 try:
-    from urllib import quote, unquote as unquote2
-    def unquote(name):
-        return unquote2(name.encode('utf-8')).decode('utf-8')
+    from urllib import quote
 except ImportError:
-    from urllib.parse import quote, unquote
+    from urllib.parse import quote
 
 from tiddlyweb import __version__ as VERSION
 from tiddlyweb.serializations import SerializationInterface

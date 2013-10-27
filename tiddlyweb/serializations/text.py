@@ -5,6 +5,7 @@ for plain text.
 
 try:
     from urllib import quote, unquote as unquote2
+
     def unquote(name):
         return unquote2(name.encode('utf-8')).decode('utf-8')
 except ImportError:
@@ -184,7 +185,8 @@ class Serialization(SerializationInterface):
                 raise TiddlerFormatError(
                         'reserved key "%s" in fields of tiddler: %s'
                         % (key, tiddler.title))
-            if not key.startswith('server.'):  # XXX: TiddlyWiki legacy remnant?
+            # XXX: TiddlyWiki legacy remnant?
+            if not key.startswith('server.'):
                 value = unicode(tiddler.fields[key])
                 fields.append('%s: %s' % (key, value.replace('\n', '\\n')))
         return fields

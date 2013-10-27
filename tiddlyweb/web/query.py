@@ -85,4 +85,3 @@ def _update_tiddlyweb_query(environ, data, encoded=True):
                 for value in values]) for key, values in data.items()]))
     else:
         environ['tiddlyweb.query'].update(data)
-

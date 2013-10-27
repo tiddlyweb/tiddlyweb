@@ -17,6 +17,7 @@ try:
 except NameError:
     basestring = str
 
+
 def send_entity(environ, start_response, entity):
     """
     Send a :py:class:`bag <tiddlyweb.model.bag.Bag>` or :py:class:`recipe

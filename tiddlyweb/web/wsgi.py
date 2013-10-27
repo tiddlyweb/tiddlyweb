@@ -5,7 +5,6 @@ their own modules.
 
 import logging
 import time
-import urllib
 try:
     from urllib import quote
 except ImportError:
