@@ -188,10 +188,13 @@ class Serialization(SerializationInterface):
         wanted_info['permissions'] = self._tiddler_permissions(tiddler)
         wanted_info['uri'] = tiddler_url(self.environ, tiddler)
         if fat:
-            if binary_tiddler(tiddler):
-                wanted_info['text'] = b64encode(tiddler.text)
+            if tiddler.text:
+                if binary_tiddler(tiddler):
+                    wanted_info['text'] = b64encode(tiddler.text)
+                else:
+                    wanted_info['text'] = tiddler.text
             else:
-                wanted_info['text'] = tiddler.text
+                wanted_info['text'] = ''
         if render and renderable(tiddler, self.environ):
             wanted_info['render'] = render_wikitext(tiddler, self.environ)
         return wanted_info

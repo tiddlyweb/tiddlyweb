@@ -28,6 +28,7 @@ from tiddlyweb.web.validator import validate_tiddler, InvalidTiddlerError
 
 try:
     basestring
+    bytes = str
 except NameError:
     basestring = str
 
@@ -410,7 +411,7 @@ def _send_tiddler(environ, start_response, tiddler):
         response.append(etag)
     start_response("200 OK", response)
 
-    if isinstance(content, basestring):
+    if isinstance(content, basestring) or isinstance(content, bytes):
         return [content]
     else:
         return content
@@ -432,7 +433,7 @@ def _get_tiddler_content(environ, tiddler):
     # there unless we are requesting a json form
     if (CANONICAL_URI_FIELD in tiddler.fields
             and not CANONICAL_URI_PASS_TYPE in mime_type):
-        raise HTTP302(tiddler.fields[CANONICAL_URI_FIELD].encode('utf-8'))
+        raise HTTP302(tiddler.fields[CANONICAL_URI_FIELD])
 
     if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or

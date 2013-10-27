@@ -127,7 +127,7 @@ def text_in_text(entity, attribute, value):
     """
     try:
         return value.lower() in entity.text.lower()
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, TypeError):
         # Binary tiddler
         return False
 

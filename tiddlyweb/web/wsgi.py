@@ -18,7 +18,7 @@ from tiddlyweb.store import Store
 from tiddlyweb.web.util import server_base_url
 
 try:
-    unicode('foo')
+    unicode
 except NameError:
     unicode = str
 
