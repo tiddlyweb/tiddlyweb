@@ -4,7 +4,9 @@ Test a full suite of unicode interactions.
 
 
 try:
-    from urllib import unquote
+    from urllib import unquote as unquote2
+    def unquote(name):
+        return unquote2(name.encode('utf-8')).decode('utf-8')
 except ImportError:
     from urllib.parse import unquote
 import httplib2
@@ -16,10 +18,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 
 encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
-try:
-    name = unquote(encoded_name).decode('utf-8')
-except AttributeError:
-    name = unquote(encoded_name)
+name = unquote(encoded_name)
 
 def setup_module(module):
     initialize_app()
@@ -42,7 +41,7 @@ def test_put_unicode_bag():
     bag = store.get(bag)
     assert bag.policy.delete == bag_policy['delete']
     assert bag.name == bag_name
-    assert type(bag.name) == unicode
+
 
 def test_put_unicode_tiddler():
     http = httplib2.Http()

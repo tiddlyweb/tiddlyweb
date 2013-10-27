@@ -3,10 +3,10 @@ Test GETting a tiddler revision list.
 """
 
 
-import httplib2
 import simplejson
 
-from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
+        get_http)
 
 
 from tiddlyweb.util import sha
@@ -32,40 +32,49 @@ def setup_module(module):
     reset_textstore()
     module.store = _teststore()
     muchdata(module.store)
+    module.http = get_http()
 
 def test_put_tiddler_txt_1():
-    http = httplib2.Http()
     encoded_body = text_put_body.encode('utf-8')
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
+            method='PUT',
+            headers={'Content-Type': 'text/plain'},
+            body=encoded_body)
     assert response['status'] == '204'
 
 def test_put_tiddler_txt_2():
-    http = httplib2.Http()
     encoded_body = text_put_body.encode('utf-8')
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
+            method='PUT',
+            headers={'Content-Type': 'text/plain'},
+            body=encoded_body)
     assert response['status'] == '204'
 
 def test_put_tiddler_txt_3():
-    http = httplib2.Http()
     encoded_body = text_put_body.encode('utf-8')
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
+            method='PUT',
+            headers={'Content-Type': 'text/plain'},
+            body=encoded_body)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/TestOne/3:')
 
 def test_put_tiddler_txt_4():
-    http = httplib2.Http()
     encoded_body = text_put_body2.encode('utf-8')
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
-            method='PUT', headers={'Content-Type': 'text/plain'}, body=encoded_body)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne',
+            method='PUT',
+            headers={'Content-Type': 'text/plain'},
+            body=encoded_body)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/TestOne/4:')
 
 def test_get_tiddler_revision_list():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions',
             method='GET')
 
     assert response['status'] == '200'
@@ -73,33 +82,33 @@ def test_get_tiddler_revision_list():
     assert 'revisions' in content
 
 def test_get_tiddler_revision_1():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/1',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/1',
             method='GET')
     assert response['status'] == '200'
 
 def test_get_tiddler_revision_2():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/2',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/2',
             method='GET')
     assert response['status'] == '200'
 
 def test_get_tiddler_revision_3():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/3',
             method='GET')
     assert response['status'] == '200'
     assert response['etag'].startswith('"bag1/TestOne/3:')
 
 def test_get_tiddler_revision_5_fail():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/5',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/5',
             method='GET')
     assert response['status'] == '404'
 
 def test_get_tiddler_revision_nonint_fail():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/four',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/four',
             method='GET')
     assert response['status'] == '404'
 
@@ -107,8 +116,8 @@ def test_get_tiddler_revision_list_404():
     """
     Get a 404 when the tiddler doesn't exist.
     """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers/Test99/revisions',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag1/tiddlers/Test99/revisions',
             method='GET')
 
     assert response['status'] == '404'
@@ -117,8 +126,8 @@ def test_get_tiddler_not_revision_list():
     """
     When we retrieve a tiddler list we don't want their revision links.
     """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/bags/bag1/tiddlers',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag1/tiddlers',
             method='GET')
 
     assert response['status'] == '200'
@@ -126,23 +135,24 @@ def test_get_tiddler_not_revision_list():
     assert 'revisions' not in content
 
 def test_get_tiddler_revision_list_json():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json',
             method='GET')
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
     assert len(info) == 4
 
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?sort=revision',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?sort=revision',
             method='GET')
     info2 = simplejson.loads(content)
     assert len(info) == 4
     assert info[0]['revision'] == info2[-1]['revision']
 
 def test_tiddler_revision_list_json_fat():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
             method='GET')
 
     info = simplejson.loads(content)
@@ -155,18 +165,27 @@ def test_tiddler_revision_list_json_fat():
     assert info[-1]['creator'] == 'JohnSmith'
     assert 'I have something to sell' in info[0]['text']
 
-    response, resp_content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
-            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'text/plain'}, body=content)
+    response, resp_content = http.requestU(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+            method='POST',
+            headers={'if-match': '"bag28/tiddler0/1"',
+                'content-type': 'text/plain'},
+            body=content)
     assert response['status'] == '415'
     assert 'application/json required' in resp_content
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
-            method='POST', headers={'if-match': '"bag28/tiddler0/1"', 'content-type': 'application/json'}, body=content)
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+            method='POST',
+            headers={'if-match': '"bag28/tiddler0/1"',
+                'content-type': 'application/json'},
+            body=content)
 
     assert response['status'] == '204'
     assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
             method='GET')
 
     info = simplejson.loads(content)
@@ -191,7 +210,6 @@ def test_etag_generation():
     assert etag.startswith('"bar/monkey/1:')
 
 def test_tiddler_revision_list_bad_ext():
-    http = httplib2.Http()
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.monkeys',
             method='GET')
@@ -199,7 +217,6 @@ def test_tiddler_revision_list_bad_ext():
     assert response['status'] == '415'
 
 def test_tiddler_revision_list_bad_ext_accept():
-    http = httplib2.Http()
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.monkeys',
             method='GET',
@@ -209,18 +226,25 @@ def test_tiddler_revision_list_bad_ext_accept():
 
 def test_post_revision_etag_handling():
     # GET a list of revisions
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.json?fat=1',
             method='GET')
 
     json_content = content
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
-            method='POST', headers={'content-type': 'application/json'}, body=json_content)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
+            method='POST',
+            headers={'content-type': 'application/json'},
+            body=json_content)
 
     assert response['status'] == '412'
 
-    response, content = http.request('http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
-            method='POST', headers={'If-Match': '"bag28/newone/0"', 'content-type': 'application/json'}, body=json_content)
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/newone/revisions.json',
+            method='POST',
+            headers={'If-Match': '"bag28/newone/0"',
+                'content-type': 'application/json'},
+            body=json_content)
 
     assert response['status'] == '204'

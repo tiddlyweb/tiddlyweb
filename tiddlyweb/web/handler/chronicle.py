@@ -95,7 +95,7 @@ def _store_tiddler_revisions(environ, content, tiddler):
     try:
         for json_tiddler in reversed(json_tiddlers):
             json_string = simplejson.dumps(json_tiddler)
-            serializer.from_string(json_string.decode('utf-8'))
+            serializer.from_string(json_string)
             store.put(tiddler)
     except NoTiddlerError as exc:
         raise HTTP400('Unable to store tiddler revisions: %s', exc)
