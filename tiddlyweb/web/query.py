@@ -27,7 +27,6 @@ except NameError:
         return input
 
 
-
 class Query(object):
     """
     Extract ``CGI`` parameter data from ``QUERY_STRING`` and POSTed form data.

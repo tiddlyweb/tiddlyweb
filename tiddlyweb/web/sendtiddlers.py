@@ -15,7 +15,7 @@ from tiddlyweb.model.collections import Tiddlers
 from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
-        check_last_modified, check_incoming_etag)
+        check_last_modified, check_incoming_etag, encode_name)
 
 try:
     basestring
@@ -54,7 +54,7 @@ def send_tiddlers(environ, start_response, tiddlers=None):
 
     if download:
         response.append(('Content-Disposition',
-            'attachment; filename="%s"' % download.encode('utf-8')))
+            'attachment; filename="%s"' % encode_name(download)))
 
     if last_modified:
         response.append(last_modified)
