@@ -10,13 +10,6 @@ import os
 import simplejson
 import shutil
 import time
-try:
-    from urllib import quote, unquote as unquote2
-
-    def unquote(name):
-        return unquote2(name).decode('utf-8')
-except ImportError:
-    from urllib.parse import quote, unquote
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import Policy
@@ -29,6 +22,8 @@ from tiddlyweb.store import (NoBagError, NoRecipeError, NoTiddlerError,
 from tiddlyweb.stores import StorageInterface
 from tiddlyweb.util import (LockError, write_lock, write_unlock,
         read_utf8_file, write_utf8_file)
+
+from tiddlyweb.fixups import quote, unquote
 
 
 LOGGER = logging.getLogger(__name__)

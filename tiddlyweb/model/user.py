@@ -11,10 +11,7 @@ is required the :py:class:`User` may be used.
 
 from tiddlyweb.util import sha
 
-try:
-    unicode
-except NameError:
-    unicode = str
+from tiddlyweb.fixups import unicode
 
 
 class User(object):

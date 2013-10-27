@@ -7,11 +7,7 @@ import re
 from datetime import datetime
 from time import strptime
 
-
-try:
-    unicode('foo')
-except NameError:
-    unicode = str
+from tiddlyweb.fixups import unicode
 
 
 def current_timestring():

@@ -5,10 +5,6 @@ their own modules.
 
 import logging
 import time
-try:
-    from urllib import quote
-except ImportError:
-    from urllib.parse import quote
 
 from httpexceptor import HTTP403, HTTP302
 
@@ -16,8 +12,10 @@ from tiddlyweb.model.policy import UserRequiredError, ForbiddenError
 from tiddlyweb.store import Store
 from tiddlyweb.web.util import server_base_url
 
+from tiddlyweb.fixups import quote
+
 try:
-    unicode
+    unicode = unicode
 except NameError:
     unicode = str
 

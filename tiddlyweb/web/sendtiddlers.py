@@ -17,10 +17,8 @@ from tiddlyweb.util import sha
 from tiddlyweb.web.util import (get_serialize_type, http_date_from_timestamp,
         check_last_modified, check_incoming_etag, encode_name)
 
-try:
-    basestring
-except NameError:
-    basestring = str
+from tiddlyweb.fixups import basestring
+
 
 LOGGER = logging.getLogger(__name__)
 

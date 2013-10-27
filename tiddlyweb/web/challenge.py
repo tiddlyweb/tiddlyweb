@@ -5,14 +5,11 @@ to the available :py:class:`challengers
 challenger, redirect to it.
 """
 
-try:
-    from urllib import quote
-except ImportError:
-    from urllib.parse import quote
-
 from httpexceptor import HTTP302, HTTP404
 
 from tiddlyweb.web.util import server_base_url, get_route_value, html_frame
+
+from tiddlyweb.fixups import quote
 
 
 def base(environ, start_response):

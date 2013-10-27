@@ -12,10 +12,7 @@ from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.util import sha
 from tiddlyweb.web.util import get_serialize_type, check_incoming_etag
 
-try:
-    basestring
-except NameError:
-    basestring = str
+from tiddlyweb.fixups import basestring
 
 
 def list_entities(environ, start_response, method_name,

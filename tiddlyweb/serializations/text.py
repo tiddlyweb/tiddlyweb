@@ -3,14 +3,6 @@
 for plain text.
 """
 
-try:
-    from urllib import quote, unquote as unquote2
-
-    def unquote(name):
-        return unquote2(name.encode('utf-8')).decode('utf-8')
-except ImportError:
-    from urllib.parse import quote, unquote
-
 import simplejson
 
 from base64 import b64encode, b64decode
@@ -22,15 +14,7 @@ from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import binary_tiddler
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
-try:
-    unicode('foo')
-except NameError:
-    unicode = str
+from tiddlyweb.fixups import quote, unquote, basestring, unicode
 
 
 class Serialization(SerializationInterface):

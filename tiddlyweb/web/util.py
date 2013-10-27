@@ -2,19 +2,6 @@
 General utility routines shared by various web related modules.
 """
 
-try:
-    from Cookie import SimpleCookie
-except ImportError:
-    from http.cookies import SimpleCookie
-
-try:
-    from urllib import quote, unquote as unquote2
-
-    def unquote(name):
-        return unquote2(name.encode('utf-8')).decode('utf-8')
-except ImportError:
-    from urllib.parse import quote, unquote
-
 from datetime import datetime
 
 try:
@@ -28,6 +15,8 @@ from tiddlyweb.model.policy import PermissionsError
 from tiddlyweb.model.tiddler import timestring_to_datetime, current_timestring
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.util import sha
+
+from tiddlyweb.fixups import SimpleCookie, quote, unquote
 
 
 def check_bag_constraint(environ, bag, constraint):

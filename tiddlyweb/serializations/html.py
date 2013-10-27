@@ -6,28 +6,15 @@ for HTML.
 of the system.
 """
 
-try:
-    from urllib import quote
-except ImportError:
-    from urllib.parse import quote
-
 from tiddlyweb import __version__ as VERSION
 from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
 
-try:
-    basestring
-except NameError:
-    basestring = str
+from tiddlyweb.fixups import quote, basestring, unicode
 
-try:
-    unicode
-except NameError:
-    def unicode(input, encoding=None):
-        return input
 
-HEADER = """<!DOCTYPE HTML>
+HEADER = u"""<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -42,7 +29,7 @@ HEADER = """<!DOCTYPE HTML>
 <div id="content">
 """
 
-FOOTER = """
+FOOTER = u"""
 </div>
 <div id="footer">
 <div id="badge">This is <a href="http://tiddlyweb.com/">TiddlyWeb</a>

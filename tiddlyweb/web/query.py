@@ -5,6 +5,8 @@ environ in the same structure that cgi.py uses (dictionary of lists).
 If the current request is a ``POST`` of HTML form data, parse that too.
 """
 
+# XXX not using tiddlyweb.fixups here because of ENCODED_QUERY
+# presumably there is a way around that.
 try:
     from urllib.parse import parse_qs
     ENCODED_QUERY = False

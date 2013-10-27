@@ -3,10 +3,6 @@ An :py:class:`extractor <tiddlyweb.web.extractors.ExtractorInterface>`
 that looks at a cookie named ``tiddlyweb_user``.
 """
 
-try:
-    from Cookie import SimpleCookie, CookieError
-except ImportError:
-    from http.cookies import SimpleCookie, CookieError
 
 import logging
 
@@ -15,6 +11,7 @@ from httpexceptor import HTTP400
 from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.util import sha
 
+from tiddlyweb.fixups import SimpleCookie, CookieError
 
 LOGGER = logging.getLogger(__name__)
 

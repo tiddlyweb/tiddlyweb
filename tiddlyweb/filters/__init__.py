@@ -61,22 +61,11 @@ of any benefit. In some stores (for example caching stores) traversing
 the tiddlers is faster than using an index.
 """
 
-try:
-    from urllib.parse import parse_qs
-except ImportError:
-    try:
-        from urlparse import parse_qs
-    except ImportError:
-        from cgi import parse_qs
-
 from tiddlyweb.filters.select import select_parse
 from tiddlyweb.filters.sort import sort_parse
 from tiddlyweb.filters.limit import limit_parse
 
-try:
-    unicode
-except NameError:
-    unicode = str
+from tiddlyweb.fixups import parse_qs, unicode
 
 
 class FilterError(Exception):

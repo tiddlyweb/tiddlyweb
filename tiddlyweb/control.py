@@ -16,13 +16,10 @@ from tiddlyweb.filters import (FilterIndexRefused, parse_for_filters,
 from tiddlyweb.store import NoBagError, StoreError
 from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 
+from tiddlyweb.fixups import basestring
+
 
 LOGGER = logging.getLogger(__name__)
-
-try:
-    basestring
-except NameError:
-    basestring = str
 
 
 def get_tiddlers_from_recipe(recipe, environ=None):

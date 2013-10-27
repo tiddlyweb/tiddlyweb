@@ -24,12 +24,7 @@ from tiddlyweb.manage import make_command, usage
 
 from tiddlyweb import __version__ as VERSION
 
-try:
-    unicode
-except NameError:
-    def unicode(input, encoding=None):
-        return input
-
+from tiddlyweb.fixups import unicode
 
 def init(config):
     """

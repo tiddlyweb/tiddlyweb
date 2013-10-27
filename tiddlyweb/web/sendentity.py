@@ -12,10 +12,7 @@ from tiddlyweb.serializer import Serializer, NoSerializationError
 from tiddlyweb.web.util import (get_serialize_type, entity_etag,
         check_incoming_etag)
 
-try:
-    basestring
-except NameError:
-    basestring = str
+from tiddlyweb.fixups import basestring
 
 
 def send_entity(environ, start_response, entity):

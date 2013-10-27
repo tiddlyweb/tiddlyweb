@@ -33,7 +33,7 @@ value. See :py:mod:`tiddlyweb.filters.sort`.
 
 try:
     from itertools import ifilter as filter
-except ImportError:
+except ImportError: #  Python3 has built in filter that iterates
     pass
 from operator import gt, lt
 

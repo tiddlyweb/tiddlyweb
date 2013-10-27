@@ -17,10 +17,7 @@ from tiddlyweb.specialbag import get_bag_retriever, SpecialBagError
 from tiddlyweb.model.policy import Policy
 from tiddlyweb.util import superclass_name
 
-try:
-    basestring
-except NameError:
-    basestring = str
+from tiddlyweb.fixups import basestring
 
 
 class StoreError(IOError):
