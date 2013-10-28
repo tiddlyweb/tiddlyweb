@@ -8,10 +8,7 @@ import simplejson
 from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
         get_http)
 
-
-from tiddlyweb.util import sha
-
-text_put_body=u"""modifier: JohnSmith
+text_put_body = u"""modifier: JohnSmith
 created: 
 modified: 200803030303
 tags: [[tag three]]
@@ -19,20 +16,23 @@ tags: [[tag three]]
 Hello, I'm John Smith \xbb and I have something to sell.
 """
 
-text_put_body2=u"""modifier: Frank
+text_put_body2 = u"""modifier: Frank
 created: 
 modified: 200803030303
 tags: [[tag three]]
 
 Hello, I'm John Smith \xbb and I have something to sell.
 """
+
+http = get_http()
+
 
 def setup_module(module):
     initialize_app()
     reset_textstore()
     module.store = _teststore()
     muchdata(module.store)
-    module.http = get_http()
+
 
 def test_put_tiddler_txt_1():
     encoded_body = text_put_body.encode('utf-8')
@@ -43,6 +43,7 @@ def test_put_tiddler_txt_1():
             body=encoded_body)
     assert response['status'] == '204'
 
+
 def test_put_tiddler_txt_2():
     encoded_body = text_put_body.encode('utf-8')
     response, content = http.request(
@@ -51,6 +52,7 @@ def test_put_tiddler_txt_2():
             headers={'Content-Type': 'text/plain'},
             body=encoded_body)
     assert response['status'] == '204'
+
 
 def test_put_tiddler_txt_3():
     encoded_body = text_put_body.encode('utf-8')
@@ -62,6 +64,7 @@ def test_put_tiddler_txt_3():
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/TestOne/3:')
 
+
 def test_put_tiddler_txt_4():
     encoded_body = text_put_body2.encode('utf-8')
     response, content = http.request(
@@ -72,6 +75,7 @@ def test_put_tiddler_txt_4():
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/TestOne/4:')
 
+
 def test_get_tiddler_revision_list():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions',
@@ -81,17 +85,20 @@ def test_get_tiddler_revision_list():
     assert '3' in content
     assert 'revisions' in content
 
+
 def test_get_tiddler_revision_1():
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/1',
             method='GET')
     assert response['status'] == '200'
 
+
 def test_get_tiddler_revision_2():
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/2',
             method='GET')
     assert response['status'] == '200'
+
 
 def test_get_tiddler_revision_3():
     response, content = http.request(
@@ -100,17 +107,20 @@ def test_get_tiddler_revision_3():
     assert response['status'] == '200'
     assert response['etag'].startswith('"bag1/TestOne/3:')
 
+
 def test_get_tiddler_revision_5_fail():
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/5',
             method='GET')
     assert response['status'] == '404'
 
+
 def test_get_tiddler_revision_nonint_fail():
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag1/tiddlers/TestOne/revisions/four',
             method='GET')
     assert response['status'] == '404'
+
 
 def test_get_tiddler_revision_list_404():
     """
@@ -121,6 +131,7 @@ def test_get_tiddler_revision_list_404():
             method='GET')
 
     assert response['status'] == '404'
+
 
 def test_get_tiddler_not_revision_list():
     """
@@ -133,6 +144,7 @@ def test_get_tiddler_not_revision_list():
     assert response['status'] == '200'
     assert '3' in content
     assert 'revisions' not in content
+
 
 def test_get_tiddler_revision_list_json():
     response, content = http.requestU(
@@ -149,6 +161,7 @@ def test_get_tiddler_revision_list_json():
     info2 = simplejson.loads(content)
     assert len(info) == 4
     assert info[0]['revision'] == info2[-1]['revision']
+
 
 def test_tiddler_revision_list_json_fat():
     response, content = http.requestU(
@@ -209,12 +222,14 @@ def test_etag_generation():
     etag = tiddler_etag({'tiddlyweb.config': config}, tiddler)
     assert etag.startswith('"bar/monkey/1:')
 
+
 def test_tiddler_revision_list_bad_ext():
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/TestOne/revisions.monkeys',
             method='GET')
 
     assert response['status'] == '415'
+
 
 def test_tiddler_revision_list_bad_ext_accept():
     response, content = http.request(
@@ -223,6 +238,7 @@ def test_tiddler_revision_list_bad_ext_accept():
             headers={'Accept': 'text/html'})
 
     assert response['status'] == '415'
+
 
 def test_post_revision_etag_handling():
     # GET a list of revisions

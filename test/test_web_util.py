@@ -8,13 +8,16 @@ from tiddlyweb.model.tiddler import Tiddler
 
 from tiddlyweb.config import config
 
+
 def setup_module(module):
     config['server_host'] = {'scheme': 'http',
             'host': 'our_test_domain', 'port': '8001'}
     module.environ = {'tiddlyweb.config': config}
 
+
 def teardown_module(module):
     config['server_prefix'] = ''
+
 
 def test_tiddler_url():
     tiddler = Tiddler('foobar')
@@ -51,8 +54,10 @@ def test_tiddler_url():
     #assert url == 'http://example.com'
     assert url == 'http://our_test_domain:8001/sleep/bags/zoom/tiddlers/foobar'
 
+
 def test_bad_http_timestamp():
-    assert datetime_from_http_date('0') == None
+    assert datetime_from_http_date('0') is None
+
 
 def test_encode_name():
     """

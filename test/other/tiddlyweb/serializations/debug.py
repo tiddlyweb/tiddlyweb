@@ -5,6 +5,7 @@ External serialization for testing remote module loading.
 
 from tiddlyweb.serializations import SerializationInterface
 
+
 class Serialization(SerializationInterface):
 
     def list_recipes(self, recipes):

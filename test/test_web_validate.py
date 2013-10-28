@@ -2,8 +2,6 @@
 Test that GETting a tiddler in some form.
 """
 
-import os
-
 import simplejson
 
 from base64 import b64encode
@@ -18,17 +16,24 @@ authorization = b64encode('cdent:cowpig'.encode('utf-8'))
 from tiddlyweb.web.validator import InvalidTiddlerError
 import tiddlyweb.web.validator
 
+
+http = get_http()
+
+
 def check_for_text(tiddler, environ):
     if 'foobar' not in tiddler.text:
         raise InvalidTiddlerError('missing "foobar" in tiddler.text')
 
+
 def modify_text(tiddler, environ):
     tiddler.text = tiddler.text.replace('foobar', 'FOOBAR')
+
 
 tiddlyweb.web.validator.TIDDLER_VALIDATORS = [
         check_for_text,
         modify_text,
         ]
+
 
 def setup_module(module):
     initialize_app()
@@ -41,7 +46,7 @@ def setup_module(module):
     user = User('cdent')
     user.set_password('cowpig')
     module.store.put(user)
-    module.http = get_http()
+
 
 def test_validate_one_tiddler():
     """No policy"""
@@ -80,6 +85,7 @@ def test_validate_one_tiddler_reject():
     assert response['status'] == '409'
     assert 'Tiddler content is invalid' in content
 
+
 def test_validate_one_tiddler_modify():
     """No policy"""
     bag = Bag('bag0')
@@ -102,6 +108,7 @@ def test_validate_one_tiddler_modify():
     assert response['status'] == '200'
     assert 'FOOBAR' in content
 
+
 def test_validate_one_bag():
     bag_json = simplejson.dumps(dict(
         desc='<script>alert("hot!");</script>', policy={}))
@@ -122,6 +129,7 @@ def test_validate_one_bag():
 
     assert '<script>' not in content
     assert '&lt;script' in content
+
 
 def test_validate_one_recipe():
     recipe_json = simplejson.dumps(dict(
