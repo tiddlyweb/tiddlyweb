@@ -22,14 +22,13 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.user import User
-from tiddlyweb.util import sha
 from tiddlyweb.web.util import http_date_from_timestamp
 
 authorization = b64encode('cdent:cowpig'.encode('utf-8')).decode('utf-8')
 bad_authorization = b64encode('cdent:cdent'.encode('utf-8')).decode('utf-8')
 no_user_authorization = b64encode('foop:foop'.encode('utf-8')).decode('utf-8')
 
-text_put_body=u"""modifier: JohnSmith
+text_put_body = u"""modifier: JohnSmith
 created: 
 modified: 200803030303
 tags: tagone
@@ -37,6 +36,9 @@ type:
 
 Hello, I'm John Smith \xbb and I have something to sell.
 """
+
+http = get_http()
+
 
 def setup_module(module):
     initialize_app()
@@ -51,9 +53,8 @@ def setup_module(module):
     try:
         os.mkdir('.test_cache')
     except OSError:
-        pass # we don't care if it already exists
+        pass  # we don't care if it already exists
 
-    module.http = get_http()
 
 def test_get_tiddler():
     response, content = http.requestU(
@@ -61,7 +62,8 @@ def test_get_tiddler():
             method='GET')
 
     assert response['status'] == '200', content
-    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+    assert 'i am tiddler 8' in content
+
 
 def test_bad_http_caching_timestamp():
     """
@@ -74,28 +76,32 @@ def test_bad_http_caching_timestamp():
 
     assert response['status'] == '200', content
 
+
 def test_get_tiddler_revision():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler8/revisions/1',
             method='GET')
 
-    assert response['status'] == '200', 'response status should be 200'
-    assert 'i am tiddler 8' in content, 'tiddler should be correct content, is %s' % content
+    assert response['status'] == '200'
+    assert 'i am tiddler 8' in content
     assert 'revision="1"' in content
+
 
 def test_get_missing_tiddler():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler27',
             method='GET')
 
-    assert response['status'] == '404', 'response status should be 404'
+    assert response['status'] == '404'
+
 
 def test_get_missing_tiddler_revision():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/tiddler27/revisions/99',
             method='GET')
 
-    assert response['status'] == '404', 'response status should be 404'
+    assert response['status'] == '404'
+
 
 def test_get_tiddler_missing_revision():
     response, content = http.requestU(
@@ -104,10 +110,12 @@ def test_get_tiddler_missing_revision():
 
     assert response['status'] == '404'
 
+
 def test_put_tiddler_txt():
     encoded_body = text_put_body.encode('utf-8')
     funkity_encoding = text_put_body.encode('latin1')
-    response, content = http.request('http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
+    response, content = http.request(
+            'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT',
             headers={'Content-Type': 'text/plain'},
             body=encoded_body)
@@ -127,15 +135,15 @@ def test_put_tiddler_txt():
             headers={'Accept': 'text/plain'})
     contents = content.strip().rstrip().split('\n')
     texts = text_put_body.strip().rstrip().split('\n')
-    assert contents[-1] == texts[-1] # text
-    assert contents[-3] == texts[-3] # type
-    assert contents[-4] == texts[-4] # tags
+    assert contents[-1] == texts[-1]  # text
+    assert contents[-3] == texts[-3]  # type
+    assert contents[-4] == texts[-4]  # tags
+
 
 def test_put_tiddler_txt_no_modified():
     """
     Putting a tiddler with no modifier should make a default.
     """
-    encoded_body = text_put_body.encode('utf-8')
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
             method='PUT',
@@ -150,9 +158,10 @@ def test_put_tiddler_txt_no_modified():
             headers={'Accept': 'text/plain'})
     assert 'modified: 2' in content
 
+
 def test_put_tiddler_json():
     json = simplejson.dumps(dict(text='i fight for the users',
-        tags=['tagone','tagtwo'], modifier=''))
+        tags=['tagone', 'tagtwo'], modifier=''))
 
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestTwo',
@@ -185,14 +194,16 @@ def test_put_tiddler_json():
             headers={'Accept': 'application/json'})
     info = simplejson.loads(content)
     now_time = http_date_from_timestamp('')
-    assert response['last-modified'].split(':', 1)[0] == now_time.split(':', 1)[0]
+    assert response['last-modified'].split(':', 1)[0] == (
+            now_time.split(':', 1)[0])
     assert info['title'] == 'TestTwo'
     assert info['text'] == 'i fight for the users'
     assert info['uri'] == tiddler_url
 
+
 def test_put_tiddler_json_with_slash():
     json = simplejson.dumps(dict(text='i fight for the users',
-        tags=['tagone','tagtwo'], modifier='',
+        tags=['tagone', 'tagtwo'], modifier='',
         modified='200805230303', created='200803030303'))
 
     response, content = http.requestU(
@@ -257,7 +268,7 @@ def test_put_tiddler_json_bad_path():
         py.test.skip('skipping this test for non-text store')
 
     json = simplejson.dumps(dict(text='i fight for the users 2',
-        tags=['tagone','tagtwo'], modifier='',
+        tags=['tagone', 'tagtwo'], modifier='',
         modified='200803030303', created='200803030303'))
 
     response, content = http.requestU(
@@ -268,9 +279,10 @@ def test_put_tiddler_json_bad_path():
 
     assert response['status'] == '404'
 
+
 def test_put_tiddler_json_no_bag():
     json = simplejson.dumps(dict(text='i fight for the users 2',
-        tags=['tagone','tagtwo'], modifier='', modified='200803030303',
+        tags=['tagone', 'tagtwo'], modifier='', modified='200803030303',
         created='200803030303'))
 
     response, content = http.requestU(
@@ -282,6 +294,7 @@ def test_put_tiddler_json_no_bag():
     assert response['status'] == '409'
     assert 'There is no bag named: nobagheremaam' in content
 
+
 def test_get_tiddler_via_recipe():
     response, content = http.requestU(
             'http://our_test_domain:8001/recipes/long/tiddlers/tiddler8.json',
@@ -290,6 +303,7 @@ def test_get_tiddler_via_recipe():
     assert response['status'] == '200', content
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
+
 
 def test_get_tiddler_etag_recipe():
     response, content = http.requestU(
@@ -301,6 +315,7 @@ def test_get_tiddler_etag_recipe():
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
 
+
 def test_get_tiddler_etag_bag():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8.json',
@@ -310,6 +325,7 @@ def test_get_tiddler_etag_bag():
     assert response['etag'].startswith('"bag28/tiddler8/1:')
     tiddler_info = simplejson.loads(content)
     assert tiddler_info['bag'] == 'bag28'
+
 
 def test_get_tiddler_manual_cache():
     [os.unlink('.test_cache/%s' % x) for x in os.listdir('.test_cache')]
@@ -334,7 +350,7 @@ def test_get_tiddler_manual_cache():
     assert response['status'] == '200'
     assert response['cache-control'] == 'max-age=3000, no-transform'
     assert 'text/plain; charset=UTF-8' in response['content-type']
-    
+
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag28/tiddlers/cached')
     # this one does not cache because we Vary on Accept
@@ -380,7 +396,7 @@ def test_get_tiddler_cached():
     assert response.fromcache
     assert response['status'] == '304'
     assert response['etag'].startswith('"bag28/tiddler8/1:')
-    
+
     response, content = http.request(
             'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler8',
             headers={'Accept': 'text/html'},
@@ -405,6 +421,7 @@ def test_get_tiddler_cached():
     assert response['status'] == '304'
     assert response['etag'].startswith('"bag28/tiddler8/1:')
 
+
 def test_put_tiddler_recipe_with_filter():
     recipe = Recipe('recipe1')
     bag1 = Bag('bag1')
@@ -414,8 +431,8 @@ def test_put_tiddler_recipe_with_filter():
     store.put(bag2)
     store.put(recipe)
 
-    tiddler_json_one =simplejson.dumps(dict(text='hello', tags=[]))
-    tiddler_json_two =simplejson.dumps(dict(text='hello', tags=['foo']))
+    tiddler_json_one = simplejson.dumps(dict(text='hello', tags=[]))
+    tiddler_json_two = simplejson.dumps(dict(text='hello', tags=['foo']))
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/recipe1/tiddlers/tiddler_one',
@@ -452,54 +469,66 @@ def test_put_tiddler_cache_fakey():
     http = httplib2.Http()
 
     json = simplejson.dumps(dict(text='i fight for the users 2',
-        tags=['tagone','tagtwo'], modifier='',
+        tags=['tagone', 'tagtwo'], modifier='',
         modified='200803030303', created='200803030303'))
 
     response, content = http_caching.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body=json)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/CashForCache/1:')
 
     response, content = http_caching.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='GET', headers={'Accept': 'application/json'})
+            method='GET',
+            headers={'Accept': 'application/json'})
     assert response['status'] == '200'
     assert response['etag'].startswith('"bag1/CashForCache/1:')
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body=json)
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/CashForCache/2:')
 
     response, content = http_caching.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/CashForCache',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body=json)
     assert response['status'] == '412'
+
 
 def test_put_tiddler_via_recipe():
     json = simplejson.dumps(dict(text='i fight for the users 2',
-        tags=['tagone','tagtwo'], modifier='', modified='200803030303',
+        tags=['tagone', 'tagtwo'], modifier='', modified='200803030303',
         created='200803030303'))
 
     response, content = http.request(
             'http://our_test_domain:8001/recipes/long/tiddlers/FantasticVoyage',
-            method='PUT', headers={'Content-Type': 'application/json'}, body=json)
+            method='PUT',
+            headers={'Content-Type': 'application/json'},
+            body=json)
 
     assert response['status'] == '204'
     assert response['etag'].startswith('"bag1/FantasticVoyage/1:')
     url = response['location']
 
-    reponse, content = http.requestU(
-            url, method='GET', headers={'Accept': 'application/json'})
+    reponse, content = http.requestU(url,
+            method='GET',
+            headers={'Accept': 'application/json'})
     tiddler_dict = simplejson.loads(content)
     assert tiddler_dict['bag'] == 'bag1'
     assert response['etag'].startswith('"bag1/FantasticVoyage/1:')
 
+
 def test_slash_in_etag():
     json = simplejson.dumps(dict(text='i fight for the users',
-        tags=['tagone','tagtwo'], modifier='', modified='200805230303',
+        tags=['tagone', 'tagtwo'], modifier='', modified='200805230303',
         created='200803030303'))
 
     response, content = http.request(
@@ -533,9 +562,10 @@ def test_slash_in_etag():
             body=json)
     assert response['status'] == '204'
 
+
 def test_paren_in_etag():
     json = simplejson.dumps(dict(text='i fight for the users',
-        tags=['tagone','tagtwo'], modifier='', modified='200805230303',
+        tags=['tagone', 'tagtwo'], modifier='', modified='200805230303',
         created='200803030303'))
 
     response, content = http.request(
@@ -569,6 +599,7 @@ def test_paren_in_etag():
             body=json)
     assert response['status'] == '204'
 
+
 def test_get_tiddler_text_created():
     """
     Make sure the tiddler comes back to us as we expect.
@@ -581,10 +612,10 @@ def test_get_tiddler_text_created():
             headers={'Accept': 'text/xml; q=1, text/plain'})
 
     contents = content.strip().rstrip().split('\n')
-    texts = text_put_body.strip().rstrip().split('\n')
-    assert contents[-1] == u'Towels' # text
+    assert contents[-1] == u'Towels'  # text
     assert contents[0] == u'creator: JohnSmith'
     assert match(r'^created: \d{14}$', contents[1])
+
 
 def test_tiddler_bag_constraints():
     encoded_body = text_put_body.encode('utf-8')
@@ -692,6 +723,7 @@ def test_tiddler_bag_constraints():
                 'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '200'
     assert 'John Smith' in content
+
 
 def test_get_tiddler_via_recipe_with_perms():
     _put_policy('bag28',
@@ -811,11 +843,13 @@ def test_delete_tiddler_in_bag_perms():
             headers={'Authorization': 'Basic %s' % authorization})
     assert response['status'] == '404'
 
+
 def test_tiddler_no_recipe():
     response, content = http.request(
             'http://our_test_domain:8001/recipes/short/tiddlers/tiddler8',
             method='GET')
     assert response['status'] == '404'
+
 
 def test_binary_text_tiddler():
     text = 'alert("hello");'
@@ -844,6 +878,7 @@ def test_binary_text_tiddler():
             method='GET')
     assert response['status'] == '200'
     assert '"text"' in content
+
 
 def test_binary_tiddler():
     image = open('test/peermore.png', 'rb')
@@ -965,6 +1000,7 @@ def test_binary_tiddler():
     assert response['status'] == '200'
     assert response['content-type'] == 'application/json'
 
+
 def test_put_json_pseudo_binary():
     json_internal = simplejson.dumps(dict(alpha='car', beta='zoom'))
     json_external = simplejson.dumps(dict(text=json_internal,
@@ -984,6 +1020,7 @@ def test_put_json_pseudo_binary():
     assert response['status'] == '200', content
     assert content == json_internal
 
+
 @py.test.mark.skipif(sys.version_info[0] > 2,
         reason='modern python does not allow this web request')
 def test_bad_uri_encoding():
@@ -991,6 +1028,7 @@ def test_bad_uri_encoding():
             'http://our_test_domain:8001/bags/bag5/tiddlers/\x8a\xfa\x91\xd2\x96{\x93y\x98A\xe3\x94\x8c\x80\x92\xf1\x8f\xa1')
     assert response['status'] == '400', content
     assert "codec can't" in content
+
 
 def test_tiddler_put_create():
     tiddler_data = simplejson.dumps(dict(text='hello'))
@@ -1062,6 +1100,7 @@ def test_tiddler_put_create():
     # Correct ETag we get 204
     assert response['status'] == '204'
 
+
 def test_bad_tags_json_put():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag5/tiddlers/hellotiddler3',
@@ -1070,6 +1109,7 @@ def test_bad_tags_json_put():
             body='{"tags":[["foo","bar","baz"]]}')
     assert response['status'] == '409'
     assert 'Unable to put badly formed tiddler' in content
+
 
 def test_put_canonical():
     json_data = simplejson.dumps({'fields': {
@@ -1088,7 +1128,7 @@ def test_put_canonical():
         response, content = http.request(
                 'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
                 redirections=0)
-    except httplib2.RedirectLimit as exc: 
+    except httplib2.RedirectLimit as exc:
         nested_response = exc
 
     assert nested_response
@@ -1115,6 +1155,7 @@ def test_put_canonical():
     assert response['status'] == '200'
     info = simplejson.loads(content)
     assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
+
 
 def _put_policy(bag_name, policy_dict):
     json = simplejson.dumps(policy_dict)

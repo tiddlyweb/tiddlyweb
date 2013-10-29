@@ -1,14 +1,13 @@
 """
 Run through the entire API to expound,
 expand, explain, etc.
-
-Read the TESTS variable as document of
-the capabilities of the API.
 """
 
 import yaml
 
-from .http_runner import *
+# test_* required to make tests discoverable
+from .http_runner import http_test, test_the_TESTS, test_assert_response
+
 
 def setup_module(module):
     with open('test/httptest.yaml') as yaml_file:

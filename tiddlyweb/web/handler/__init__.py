@@ -20,7 +20,6 @@ def root(environ, start_response):
 
     start_response("200 OK", [('Content-Type', 'text/html; charset=UTF-8')])
     server_prefix = environ['tiddlyweb.config']['server_prefix']
-    print('sp', server_prefix)
     serializer = Serializer('html', environ)
     environ['tiddlyweb.title'] = 'Home'
     return [serializer.serialization._header(),

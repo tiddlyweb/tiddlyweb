@@ -4,10 +4,13 @@ Test search via the web.
 
 
 import sys
-import httplib2
 import simplejson
 
-from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
+        get_http)
+
+http = get_http()
+
 
 def setup_module(module):
     initialize_app()
@@ -15,31 +18,35 @@ def setup_module(module):
     module.store = _teststore()
     muchdata(module.store)
 
+
 def test_simple_search():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search?q=tiddler%200',
+    response, content = http.request(
+            'http://our_test_domain:8001/search?q=tiddler%200',
             headers={'User-Agent': 'Mozilla'},
             method='GET')
 
     assert response['status'] == '200'
 
+
 def test_title_search():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search?q=tiddler0',
+    response, content = http.request(
+            'http://our_test_domain:8001/search?q=tiddler0',
             method='GET')
 
     assert response['status'] == '200'
 
+
 def test_malformed_search():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search',
+    response, content = http.request(
+            'http://our_test_domain:8001/search',
             method='GET')
 
     assert response['status'] == '400'
 
+
 def test_json_search():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/search.json?q=tiddler%200',
             method='GET')
 
     assert response['status'] == '200'
@@ -47,16 +54,16 @@ def test_json_search():
     info = simplejson.loads(content)
     assert len(info) == 30
 
+
 def test_search_bad_ext():
-    http = httplib2.Http()
     response, content = http.request(
             'http://our_test_domain:8001/search.monkey?q=tiddler%200',
             method='GET')
 
     assert response['status'] == '415'
 
+
 def test_search_bad_ext_accept():
-    http = httplib2.Http()
     response, content = http.request(
             'http://our_test_domain:8001/search.monkey?q=tiddler%200',
             method='GET',
@@ -64,9 +71,10 @@ def test_search_bad_ext_accept():
 
     assert response['status'] == '415'
 
+
 def test_json_search_filtered():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/search.json?q=tiddler%200;select=tag:tagtwo',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/search.json?q=tiddler%200;select=tag:tagtwo',
             method='GET')
 
     assert response['status'] == '200'
@@ -75,12 +83,12 @@ def test_json_search_filtered():
     info = simplejson.loads(content)
     assert len(info) == 30
 
+
 def test_funky_encoding():
     """
     Query parsing in python3 is more robust in the face of weird input.
     """
-    http = httplib2.Http()
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/search?q=title:\"\xd3ptica%20electromagn\xe9tica\"')
     if sys.version_info[0] > 2:
         assert response['status'] == '200', content

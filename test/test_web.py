@@ -4,92 +4,114 @@ Test that GETting a bag can list the tiddlers.
 
 
 import sys
-import httplib2
 import py.test
 
 import tiddlyweb.web
 import tiddlyweb.web.util
+from tiddlyweb.config import config
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.web import serve
 
 from test.simpleplugin import PluginHere
 
-from .fixtures import initialize_app
+from .fixtures import initialize_app, get_http
 
-expected_content="""<ul id="root" class="listing">
+http = get_http()
+
+expected_content = """<ul id="root" class="listing">
 <li><a href="/recipes">recipes</a></li>
 <li><a href="/bags">bags</a></li>
 </ul>"""
 
+environ = {
+        'tiddlyweb.config': {
+            'server_host': {
+                'scheme': 'http',
+                'host': 'example.com',
+                'port': 80
+            }
+        }
+}
+
+
 def setup_module(module):
     initialize_app()
 
+
 def test_get_root():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/',
+    response, content = http.requestU('http://our_test_domain:8001/',
             method='GET')
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert expected_content in content.decode('utf-8')
+    assert expected_content in content
+
 
 def test_head_root():
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/',
             method='HEAD')
 
     assert response['status'] == '200'
     assert response['content-type'] == 'text/html; charset=UTF-8'
-    assert content.decode('utf-8') == ''
+    assert content == ''
+
 
 def test_with_header_and_css():
-    from tiddlyweb.config import config
     config['css_uri'] = 'http://example.com/example.css'
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/', method='GET',
+    response, content = http.requestU(
+            'http://our_test_domain:8001/',
+            method='GET',
             headers={'User-Agent': 'Mozilla/5'})
     assert response['status'] == '200'
-    assert 'link rel="stylesheet" href="http://example.com/example.css"' in content.decode('utf-8')
+    assert 'link rel="stylesheet" href="http://example.com/example.css"' in content
+
 
 def test_missing_system_plugin():
-    from tiddlyweb.config import config
     config['system_plugins'] = ['missingplugin']
     py.test.raises(ImportError, 'serve.load_app()')
     config['system_plugins'] = []
 
+
 def test_existing_system_plugin():
-    from tiddlyweb.config import config
     config['system_plugins'] = ['test.simpleplugin']
     py.test.raises(PluginHere, 'serve.load_app()')
     config['system_plugins'] = []
 
+
 def test_recipe_url():
-    environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
     recipe = Recipe('hello')
 
-    assert tiddlyweb.web.util.recipe_url(environ, recipe) == 'http://example.com/recipes/hello'
+    assert tiddlyweb.web.util.recipe_url(
+            environ, recipe) == 'http://example.com/recipes/hello'
+
 
 def test_bag_url():
     bag = Bag('hello')
-    environ = {'tiddlyweb.config': {'server_host':  {'scheme':'http', 'host':'example.com', 'port': 80}}}
 
-    assert tiddlyweb.web.util.bag_url(environ, bag) == 'http://example.com/bags/hello'
+    assert tiddlyweb.web.util.bag_url(
+            environ, bag) == 'http://example.com/bags/hello'
+
 
 def test_invalid_http_caching_timestamp():
     """
     Thunderbird's feed module sends `If-Modified-Since: 0`, which is invalid -
     Postel demands that we don't freak out over that
     """
-    http = httplib2.Http()
-    response, content = http.request('http://our_test_domain:8001/',
-            method='GET', headers={'If-Modified-Since': '0'})
+    response, content = http.request(
+            'http://our_test_domain:8001/',
+            method='GET',
+            headers={'If-Modified-Since': '0'})
 
     assert response['status'] == '200'
 
+
 def test_http_date_from_timestamp():
     timestamp = '200805231010'
-    assert tiddlyweb.web.util.http_date_from_timestamp(timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
+    assert tiddlyweb.web.util.http_date_from_timestamp(
+            timestamp) == 'Fri, 23 May 2008 10:10:00 GMT'
+
 
 def test_http_date_from_timestamp_invalid():
     timestamp = '200702291010'
@@ -104,6 +126,7 @@ def test_http_date_from_timestamp_invalid():
     py.test.raises(ValueError,
         'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
 
+
 def test_datetime_from_http_date():
     timestamp = '200805231010'
     datestring = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
@@ -113,9 +136,11 @@ def test_datetime_from_http_date():
     assert 'May' in datestring
     assert new_timestamp == timestamp
 
+
 def test_datetime_from_http_date_semi():
     """
-    IE likes to send a length attribute with the http date on an If-Modified-Since.
+    IE likes to send a length attribute with the http date on
+    an If-Modified-Since.
     """
     timestamp = '200805231010'
     datestring = tiddlyweb.web.util.http_date_from_timestamp(timestamp)
@@ -123,6 +148,7 @@ def test_datetime_from_http_date_semi():
     datetime_object = tiddlyweb.web.util.datetime_from_http_date(datestring)
     new_timestamp = datetime_object.strftime('%Y%m%d%H%M')
     assert new_timestamp == timestamp
+
 
 def test_datetime_form_http_date_utc():
     datestring = 'Wed, 09 Mar 2011 00:00:00 UTC'

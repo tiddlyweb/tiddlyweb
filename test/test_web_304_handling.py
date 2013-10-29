@@ -1,15 +1,15 @@
 
-import httplib2
 import random
 import string
 
-from .fixtures import reset_textstore, initialize_app, _teststore
+from .fixtures import reset_textstore, initialize_app, _teststore, get_http
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
 
+http = get_http()
 RELEVANT_HEADERS = [
         'cache-control',
         'etag',
@@ -21,8 +21,6 @@ def setup_module(module):
     initialize_app()
     reset_textstore()
     module.store = _teststore()
-    http = httplib2.Http()
-    module.http = http
 
 
 def _random_name(length=5):
@@ -93,7 +91,6 @@ def _get_entity(uri, test_last_modified=False):
     etag = response['etag']
     if 'last-modified' in response:
         last_modified = response['last-modified']
-        
 
     response, content = http.request(uri,
         headers={'If-None-Match': etag},
