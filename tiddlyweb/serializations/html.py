@@ -11,7 +11,7 @@ from tiddlyweb.serializations import SerializationInterface
 from tiddlyweb.web.util import encode_name, escape_attribute_value, tiddler_url
 from tiddlyweb.wikitext import render_wikitext
 
-from tiddlyweb.fixups import quote, basestring, unicode
+from tiddlyweb.fixups import quote, unicode
 
 
 HEADER = u"""<!DOCTYPE HTML>
@@ -159,8 +159,6 @@ class Serialization(SerializationInterface):
         lines = []
         for bag, filter_string in recipe.get_recipe():
             line = '<li><a href="'
-            if not isinstance(bag, basestring):
-                bag = bag.name
             line += '%s/bags/%s/tiddlers' % (
                     self._server_prefix(), encode_name(bag))
             if filter_string:

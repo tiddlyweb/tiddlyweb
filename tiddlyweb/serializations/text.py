@@ -70,8 +70,6 @@ class Serialization(SerializationInterface):
 
         for bag, filter_string in recipe.get_recipe():
             line = ''
-            if not isinstance(bag, basestring):
-                bag = bag.name
             if not get_bag_retriever(self.environ, bag):
                 # If there is a retriever for this bag name then
                 # we want to write its name straight.
