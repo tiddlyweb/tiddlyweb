@@ -3,24 +3,20 @@ An HTTP test running. Call http_test with the filename
 of a YAML file containing tests and a base_url for the
 test server.
 """
-import os
 
-import httplib2
-import simplejson
-
-from base64 import b64encode
-from re import match
-
-from .fixtures import muchdata, reset_textstore, _teststore, initialize_app
+from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
+        get_http)
 
 from tiddlyweb.model.user import User
 
-tests = store = http = None
+tests = store = base_url = None
+http = get_http()
 
 __all__ = ('http_test', 'test_assert_response', 'test_the_TESTS')
 
+
 def http_test(test_data, base):
-    global tests, store, http, base_url
+    global tests, store, base_url
     base_url = base
     tests = test_data
     initialize_app()
@@ -33,7 +29,6 @@ def http_test(test_data, base):
     user = User('cdent')
     user.set_password('cowpig')
     store.put(user)
-    http = httplib2.Http()
 
 
 def test_assert_response():
@@ -44,7 +39,7 @@ def test_assert_response():
             'status': '200',
             'location': 'http://example.com',
             }
-    content = b'Hello World\n'
+    content = 'Hello World\n'
     status = '200'
     headers = {
             'location': 'http://example.com',
@@ -76,18 +71,25 @@ def test_the_TESTS():
         test.update(test_data)
         yield test['name'], _run_test, test
 
+
 def _run_test(test):
     full_url = base_url + test['url']
     if test['method'] == 'GET' or test['method'] == 'DELETE':
-        response, content = http.request(full_url, method=test['method'], headers=test['request_headers'])
+        response, content = http.requestU(full_url,
+                method=test['method'],
+                headers=test['request_headers'])
     else:
-        response, content = http.request(full_url, method=test['method'], headers=test['request_headers'],
+        response, content = http.requestU(full_url,
+                method=test['method'],
+                headers=test['request_headers'],
                 body=test['data'].encode('UTF-8'))
-    assert_response(response, content, test['status'], headers=test['response_headers'], expected=test['expected'])
+    assert_response(response, content, test['status'],
+            headers=test['response_headers'], expected=test['expected'])
+
 
 def assert_response(response, content, status, headers=None, expected=None):
-    content = content.decode('utf-8')
-    if response['status'] == '500': print(content)
+    if response['status'] == '500':
+        print(content)
     assert response['status'] == '%s' % status, (response, content)
 
     if headers:

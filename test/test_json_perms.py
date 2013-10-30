@@ -1,5 +1,5 @@
 
-import simplejson 
+import simplejson
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
@@ -10,14 +10,12 @@ from tiddlyweb.config import config
 from .fixtures import get_store
 
 
-def setup_module(module):
-    module.store = get_store(config)
-
 def test_json_perms():
+    store = get_store(config)
     bag = Bag('permstest')
     store.put(bag)
     serializer = Serializer('json', environ={'tiddlyweb.usersign': {
-        'name':'bang', 'roles': []}, 'tiddlyweb.config': config})
+        'name': 'bang', 'roles': []}, 'tiddlyweb.config': config})
     tiddler = Tiddler('permstest', 'permstest')
     tiddler.text = 'permstest'
     store.put(tiddler)

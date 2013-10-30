@@ -6,7 +6,7 @@ tests.
 import py.test
 
 from tiddlyweb.config import config
-from tiddlyweb.store import Store, NoBagError
+from tiddlyweb.store import NoBagError
 from tiddlyweb.control import (determine_bag_for_tiddler,
         get_tiddlers_from_recipe, determine_bag_from_recipe,
         readable_tiddlers_by_bag)
@@ -14,11 +14,12 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
+from .fixtures import get_store
+
 
 def setup_module(module):
     module.environ = {'tiddlyweb.config': config}
-    module.store = Store(config['server_store'][0], config['server_store'][1],
-            environ=module.environ)
+    module.store = get_store(config)
     module.environ['tiddlyweb.store'] = module.store
 
 
@@ -73,7 +74,7 @@ def test_index_query_in_recipe():
     store.put(tiddler)
 
     recipe = Recipe('coolio')
-    recipe.set_recipe([('noop', ''), ('fwoop','')])
+    recipe.set_recipe([('noop', ''), ('fwoop', '')])
     recipe.store = store
 
     tiddler = Tiddler('swell')
@@ -88,7 +89,7 @@ def test_index_query_in_recipe():
     bag = determine_bag_from_recipe(recipe, tiddler, environ)
     assert bag.name == 'noop'
 
-    tiddler = Tiddler('carnaby') # nowhere
+    tiddler = Tiddler('carnaby')  # nowhere
     py.test.raises(NoBagError,
             'determine_bag_from_recipe(recipe, tiddler, environ)')
 

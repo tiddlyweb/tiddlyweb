@@ -22,7 +22,6 @@ def test_filter_bag_by_filter():
     """
     Confirm a bag will properly filter.
     """
-
     bagfour = Bag('bagfour')
     store.put(bagfour)
     bagfour.store = store

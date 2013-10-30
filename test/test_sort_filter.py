@@ -9,7 +9,6 @@ import py.test
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.filters.sort import sort_by_attribute, ATTRIBUTE_SORT_KEY
 
-        
 
 ATTRIBUTE_SORT_KEY['count'] = int
 
@@ -23,27 +22,29 @@ for i, tiddler in enumerate(tiddlers):
 
 def test_simple_sort():
     sorted_tiddlers = sort_by_attribute('title', tiddlers)
-
-    assert ['1','a','b','c'] == [tiddler.title for tiddler in sorted_tiddlers]
+    assert ['1', 'a', 'b', 'c'] == [
+            tiddler.title for tiddler in sorted_tiddlers]
 
 
 def test_reverse_sort():
     sorted_tiddlers = sort_by_attribute('title', tiddlers, reverse=True)
-
-    assert ['c','b','a','1'] == [tiddler.title for tiddler in sorted_tiddlers]
+    assert ['c', 'b', 'a', '1'] == [
+            tiddler.title for tiddler in sorted_tiddlers]
 
 
 def test_count_sort():
     sorted_tiddlers = sort_by_attribute('count', tiddlers)
+    assert ['5', '8', '13', '24'] == [tiddler.fields['count']
+            for tiddler in sorted_tiddlers]
 
-    assert ['5', '8', '13', '24'] == [tiddler.fields['count'] for tiddler in sorted_tiddlers]
 
 def test_modified_sort():
     sorted_tiddlers = sort_by_attribute('modified', tiddlers)
 
-    assert ['2007', '2008', '20090509000000', '200905090011'] == [tiddler.modified for tiddler in sorted_tiddlers]
+    assert ['2007', '2008', '20090509000000', '200905090011'] == [
+            tiddler.modified for tiddler in sorted_tiddlers]
 
 
 def test_modifier_sort():
-    py.test.raises(AttributeError, 'sort_by_attribute("blam", tiddlers, reverse=True)')
-
+    py.test.raises(AttributeError,
+            'sort_by_attribute("blam", tiddlers, reverse=True)')

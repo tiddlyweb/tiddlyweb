@@ -4,10 +4,11 @@ Get coverage on specialbag handling.
 
 from tiddlyweb.config import config
 from tiddlyweb.control import get_tiddlers_from_recipe
-from tiddlyweb.store import Store
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
+
+from .fixtures import get_store
 
 
 def get_x_tiddlers(environ, name):
@@ -37,9 +38,7 @@ def spector(environ, bagname):
 
 def setup_module(module):
     config['special_bag_detectors'] = [spector]
-    module.environ = {'tiddlyweb.config': config}
-    module.store = Store(config['server_store'][0], config['server_store'][1],
-            environ=module.environ)
+    module.store = get_store(config)
 
 
 def test_two_bags():
@@ -59,6 +58,7 @@ def test_two_bags():
     tiddler = store.get(tiddler)
     assert tiddler.text == 'alpha'
 
+
 def test_recipe_with_special():
     recipe = Recipe('special')
     recipe.set_recipe([
@@ -66,6 +66,7 @@ def test_recipe_with_special():
         ('Xnine', '')])
     recipe.store = store
 
+    environ = {'tiddlyweb.config': config}
     tiddlers = list(get_tiddlers_from_recipe(recipe, environ))
 
     assert len(tiddlers) == 4
@@ -79,4 +80,3 @@ def test_recipe_with_special():
     recipe2 = store.get(Recipe('special'))
 
     assert recipe.get_recipe() == recipe2.get_recipe()
-

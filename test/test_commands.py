@@ -2,7 +2,6 @@
 Test the manager a little bit.
 """
 
-import os
 import sys
 try:
     from StringIO import StringIO
@@ -42,11 +41,14 @@ def setup_module(module):
             config['server_store'][1],
             environ={'tiddlyweb.config': config})
 
+
 class InternalExit(Exception):
     pass
 
+
 def boring_exit(value):
     raise InternalExit()
+
 
 def teardown_module(module):
     sys.stdin = module.savedin
@@ -58,6 +60,7 @@ def test_adduser():
     the_user = store.get(the_user)
     assert the_user.check_password('crunk')
 
+
 def test_adduser_with_roles():
     handle(['', u'adduser', u'cdent', u'crunk', u'cow', u'monkey'])
     the_user = User('cdent')
@@ -66,17 +69,20 @@ def test_adduser_with_roles():
     assert 'cow' in the_user.list_roles()
     assert 'monkey' in the_user.list_roles()
 
+
 def test_addrole():
     handle(['', u'addrole', u'cdent', u'pig'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert 'cow' in the_user.list_roles()
 
+
 def test_userpass():
     handle(['', u'userpass', u'cdent', u'drunk'])
     the_user = User('cdent')
     the_user = store.get(the_user)
     assert the_user.check_password('drunk')
+
 
 def test_bag():
     set_stdin(BAG_STRING)
@@ -87,6 +93,7 @@ def test_bag():
 
     assert the_bag.name == 'bag1'
     assert the_bag.desc == 'hello'
+
 
 def test_recipe():
     set_stdin(RECIPE_STRING)
@@ -99,6 +106,7 @@ def test_recipe():
     assert u'bag1' in the_recipe.get_recipe()[0]
     assert u'bag2' in the_recipe.get_recipe()[1]
 
+
 def test_tiddler():
     set_stdin(TIDDLER_STRING)
     handle(['', u'tiddler', u'bag1', u'tiddler1'])
@@ -110,16 +118,20 @@ def test_tiddler():
     assert the_tiddler.bag == u'bag1'
     assert the_tiddler.modifier == 'cdent'
 
+
 def test_info(capsys):
     handle(['', 'info'])
     results, err = capsys.readouterr()
     assert 'current store is' in results
     assert __version__ in results
 
+
 def test_server(capsys):
     import tiddlyweb.web.serve
+
     def start_server(config):
         print('host is %s' % config['server_host']['host'])
+
     tiddlyweb.web.serve.start_server = start_server
     handle(['', 'server'])
     results, err = capsys.readouterr()
@@ -130,6 +142,7 @@ def test_server(capsys):
     assert 'host is 192.168.1.1' in results
     config['server_host']['host'] = 'our_test_domain'
 
+
 def test_lusers(capsys):
     handle(['', 'lusers'])
     results, err = capsys.readouterr()
@@ -137,15 +150,18 @@ def test_lusers(capsys):
     assert 'cdent' in results
     assert 'monkey' in results
 
+
 def test_lbags(capsys):
     handle(['', u'lbags'])
     results, err = capsys.readouterr()
     assert 'Name: bag1' in results
 
+
 def test_lrecipes(capsys):
     handle(['', u'lrecipes'])
     results, err = capsys.readouterr()
     assert 'recipe1 ' in results
+
 
 def test_ltiddlers(capsys):
     handle(['', u'ltiddlers'])
@@ -156,6 +172,7 @@ def test_ltiddlers(capsys):
     results, err = capsys.readouterr()
     assert 'bag1' in results
     assert '\ttiddler1' in results
+
 
 def set_stdin(content):
     f = StringIO(content)

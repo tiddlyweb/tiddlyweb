@@ -1,15 +1,11 @@
 """
 Make sure that tiddler fields which are not strings
-are stringified, otherwise, the text serialization will 
+are stringified, otherwise, the text serialization will
 assplode.
 """
 
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.model.tiddler import Tiddler
-
-
-def setup_module(module):
-    pass
 
 
 def test_float_field():

@@ -4,7 +4,9 @@ import selector
 import string
 import simplejson
 
-from .http_runner import *
+# test_the_TESTS required to make tests go
+from .http_runner import http_test, test_the_TESTS
+
 
 def fixup(pattern):
     for replaceme in ['^', '\\', '(', ')', '?', '$', '[/]+', '[/.]+', '>']:
@@ -82,6 +84,7 @@ def figure_tests(app):
             else:
                 continue
             tests.append(test)
+
     def test_sorter(test):
         method = test['method']
         if method == 'DELETE':
@@ -89,6 +92,7 @@ def figure_tests(app):
         else:
             key = test['method'] + 'x' * (70 - len(test['name']))
         return key
+
     return sorted(tests, key=test_sorter, reverse=True)
 
 
@@ -106,4 +110,3 @@ def do_run():
 
 if __name__ == '__main__':
     do_run()
-

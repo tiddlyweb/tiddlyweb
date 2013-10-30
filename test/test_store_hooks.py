@@ -1,9 +1,3 @@
-import sys
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 from tiddlyweb.config import config
 from tiddlyweb.model.recipe import Recipe
@@ -26,7 +20,6 @@ def recipe_get_hook(store, recipe):
 
 
 def setup_module(module):
-    module.store = get_store(config)
     HOOKS['recipe']['put'].append(recipe_put_hook)
     HOOKS['recipe']['get'].append(recipe_get_hook)
 
@@ -39,6 +32,7 @@ def teardown_module(module):
 def test_put_recipe():
     global OUTPUT
     assert OUTPUT == ''
+    store = get_store(config)
     recipe = Recipe('keen')
     store.put(recipe)
     store.get(recipe)

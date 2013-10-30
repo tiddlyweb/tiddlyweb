@@ -15,10 +15,10 @@ from .fixtures import reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()
-    module.store = _teststore()
 
 
 def test_title_fields():
+    store = _teststore()
     store.put(Bag('abag'))
 
     tiddler = Tiddler('one', 'abag')

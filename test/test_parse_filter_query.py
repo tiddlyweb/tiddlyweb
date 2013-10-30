@@ -9,6 +9,7 @@ from tiddlyweb.web.query import parse_for_filters
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.filters import recursive_filter
 
+
 def test_parsing():
     """
     Incomplete testing of parsing the filter string
@@ -34,6 +35,6 @@ def test_parsing():
     tiddlers = [Tiddler('a'), Tiddler('monkey')]
     tiddlers[1].tags = ['systemConfig', 'blog']
     tiddlers = list(recursive_filter(filters, tiddlers))
-    
+
     assert len(tiddlers) == 1
     assert tiddlers[0].title == 'monkey'

@@ -2,11 +2,9 @@ from tiddlyweb import control
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
-from tiddlyweb.config import config
 
-from .fixtures import reset_textstore, _teststore, get_store
+from .fixtures import reset_textstore, _teststore
 
-import shutil
 
 def setup_module(module):
     reset_textstore()

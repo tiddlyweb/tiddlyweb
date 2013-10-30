@@ -9,6 +9,7 @@ from copy import deepcopy
 from tiddlyweb.config import config as global_config
 from tiddlyweb.util import merge_config
 
+
 def setup_module(module):
     """
     Protect against py.test's new collection mechanism
@@ -23,8 +24,8 @@ def test_merge_sub_addition():
     new_config = {
             'serializers': {
                 'text/bar': ['bar', 'type'],
-                }
             }
+    }
     merge_config(config, new_config, reconfig=False)
     assert 'text/bar' in config['serializers']
     assert config['serializers']['text/bar'] == ['bar', 'type']
@@ -39,8 +40,8 @@ def test_merge_sub_replace():
     new_config = {
             'serializers': {
                 'text/html': ['bar', 'type'],
-                }
             }
+    }
     merge_config(config, new_config, reconfig=False)
     assert 'text/html' in config['serializers']
     assert config['serializers']['text/html'] == ['bar', 'type']
@@ -55,8 +56,8 @@ def test_merge_addition():
     new_config = {
             'extra': {
                 'stuff': ['one', 'two'],
-                }
             }
+    }
     merge_config(config, new_config, reconfig=False)
     assert 'extra' in config
     assert 'stuff' in config['extra']
@@ -69,13 +70,13 @@ def test_merge_addition_double_over_no_twc():
             'nextra': {
                 'show': ['three', 'four'],
                 'stuff': ['five', 'six'],
-                }
             }
+    }
     plugin_config = {
             'nextra': {
                 'show': ['seven', 'eight']
-                }
             }
+    }
     merge_config(config, custom_config, reconfig=False)
     assert 'nextra' in config
     assert 'stuff' in config['nextra']
@@ -98,8 +99,8 @@ def test_merge_addition_double_over_twc():
             'extra': {
                 'show': ['three', 'four'],
                 'stuff': ['five', 'six'],
-                }
             }
+    }
     merge_config(global_config, new_config)
     assert 'extra' in global_config
     assert 'stuff' in global_config['extra']

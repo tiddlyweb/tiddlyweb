@@ -38,8 +38,6 @@ tiddler.tags = ['foobar', 'foo bar']
 tiddler.text = "Hello, I'm the content."
 tiddler.modified = '200803030303'
 
-def setup_module(module):
-    pass
 
 def test_generated_txt_string():
     serializer = Serializer('text')
@@ -47,8 +45,8 @@ def test_generated_txt_string():
     string = serializer.to_string()
 
     assert string == expected_string
-    assert '%s' % serializer == expected_string, \
-            'serializer goes to string as expected_string'
+    assert '%s' % serializer == expected_string
+
 
 def test_bad_string_raises():
     serializer = Serializer('text')
@@ -56,6 +54,7 @@ def test_bad_string_raises():
     serializer.object = foobar
 
     pytest.raises(TiddlerFormatError, 'serializer.from_string(bad_string)')
+
 
 def test_generated_json_string():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
@@ -71,6 +70,7 @@ def test_generated_json_string():
             config['server_host']['host'],
             config['server_host']['port'])
 
+
 def test_tiddler_from_json():
     serializer = Serializer('json')
     tiddler = Tiddler('test tiddler')
@@ -79,6 +79,7 @@ def test_tiddler_from_json():
 
     assert tiddler.title == 'test tiddler'
     assert tiddler.text == "Hello, I'm the content."
+
 
 def test_tiddler_html_encode():
     serializer = Serializer('html')
@@ -90,8 +91,10 @@ def test_tiddler_html_encode():
 
     assert '"Hello." I\'m &gt; than 5 &amp; &lt; you.' in string
 
+
 def test_html_attribute_escape():
-    tiddler = Tiddler('escape "double" quotes & &amp; in <tiddler> field values')
+    tiddler = Tiddler(
+            'escape "double" quotes & &amp; in <tiddler> field values')
     tiddler.bag = u'foo "bar" baz'
     tiddler.modifier = 'Chris "sensei" Dent'
     tiddler.tags = ["foo", 'xxx "yyy" zzz']
@@ -105,6 +108,7 @@ def test_html_attribute_escape():
     assert r'''modifier="Chris &quot;sensei&quot; Dent"''' in string
     assert r'''tags="foo [[xxx &quot;yyy&quot; zzz]]"''' in string
     assert r'''custom="lorem 'ipsum' dolor &quot;sit&quot; amet"''' in string
+
 
 def test_tiddler_json_base64():
     serializer = Serializer('json', environ={'tiddlyweb.config': config})
@@ -127,6 +131,7 @@ def test_tiddler_json_base64():
     string = simplejson.dumps(info)
     pytest.raises(TiddlerFormatError, 'serializer.from_string(string)')
 
+
 def test_tiddler_json_render():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
         'render': [1]}, 'tiddlyweb.config': config})
@@ -141,6 +146,7 @@ def test_tiddler_json_render():
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
     assert info['text'] == '!Hi\n//you//'
 
+
 def test_tiddler_json_render_skinny():
     serializer = Serializer('json', environ={'tiddlyweb.query': {
         'render': ['1'], 'fat': ['0']}, 'tiddlyweb.config': config})
@@ -154,6 +160,7 @@ def test_tiddler_json_render_skinny():
     info = simplejson.loads(output)
     assert info['render'] == '<pre>\n!Hi\n//you//</pre>\n'
     pytest.raises(KeyError, "info['text']")
+
 
 def test_tiddler_no_text():
     serializer = Serializer('text')

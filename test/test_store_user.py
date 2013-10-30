@@ -12,9 +12,11 @@ from .fixtures import reset_textstore, _teststore
 
 expected_stored_filename = os.path.join('store', 'users', 'cdent')
 
+
 def setup_module(module):
     reset_textstore()
     module.store = _teststore()
+
 
 def test_simple_put():
     user = User('cdent', note='foo')
@@ -28,6 +30,7 @@ def test_simple_put():
 
     assert os.path.exists(expected_stored_filename)
 
+
 def test_simple_get():
     user = User('cdent')
     user = store.get(user)
@@ -37,8 +40,10 @@ def test_simple_get():
     assert sorted(user.list_roles()) == ['ADMIN', 'BOSS']
     assert not user.check_password('pigcow')
 
+
 def test_failed_get():
     py.test.raises(NoUserError, 'store.get(User("nothere"))')
+
 
 def test_list_users():
     user1 = User('test1')
@@ -54,6 +59,7 @@ def test_list_users():
     assert 'cdent' in usernames
     assert 'laramie' not in usernames
 
+
 def test_delete_users():
     user = User('test1')
     store.delete(user)
@@ -62,6 +68,7 @@ def test_delete_users():
     assert len(users) == 2
     usernames = [user.usersign for user in users]
     assert 'test1' not in usernames
+
 
 def test_delete():
     user = User('deleteme')
@@ -77,6 +84,7 @@ def test_delete():
 
     py.test.raises(NoUserError, 'store.get(deleted_user)')
     py.test.raises(NoUserError, 'store.delete(deleted_user)')
+
 
 def test_complex_username():
     username = u'test\u00BB\u00BBuser.com/foo'

@@ -24,14 +24,6 @@ config['server_host'] = {
         'port': '8001',
         }
 
-def initialize_app():
-    app = load_app()
-    def app_fn():
-        return app
-
-    httplib2_intercept.install()
-    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
-
 TiddlerOne = Tiddler('TiddlerOne')
 TiddlerOne.modifier = 'AuthorOne'
 TiddlerOne.text = u'c tiddler one content'
@@ -49,60 +41,50 @@ TiddlerThree.tags = [u'tagone', u'tagthree']
 tiddlers = [TiddlerOne, TiddlerTwo, TiddlerThree]
 
 bagone = Bag(name='bagone')
-container = Tiddlers()
-container.add(tiddlers[0])
-bagone.tiddlers = container
-
 bagtwo = Bag(name='bagtwo')
-container = Tiddlers()
-container.add(tiddlers[1])
-bagtwo.tiddlers = container
-
 bagthree = Bag(name='bagthree')
-container = Tiddlers()
-container.add(tiddlers[2])
-bagthree.tiddlers = container
-
 bagfour = Bag(name='bagfour')
-container = Tiddlers()
-for tiddler in tiddlers:
-    container.add(tiddler)
-bagfour.tiddlers = container
 
 tiddler_collection = Tiddlers()
 for tiddler in tiddlers:
     tiddler.bag = u'bagfour'
     tiddler_collection.add(tiddler)
 
-recipe_list = [
-        (bagone, u'select=title:TiddlerOne'),
-        (bagtwo, u'select=title:TiddlerTwo'),
-        (bagthree, u'select=tag:tagone;select=tag:tagthree')
-        ]
 
-recipe_list_string = [
-        [u'bagone', u'select=title:TiddlerOne'],
-        [u'bagtwo', u'select=title:TiddlerTwo'],
-        [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
-         ]
+def initialize_app():
+    app = load_app()
+
+    def app_fn():
+        return app
+
+    httplib2_intercept.install()
+    wsgi_intercept.add_wsgi_intercept('our_test_domain', 8001, app_fn)
+
 
 def get_store(config):
     return Store(config['server_store'][0], config['server_store'][1],
             {'tiddlyweb.config': config})
 
+
 def _teststore():
+    """
+    Different from the above because it is using config loaded in this
+    module. Kept for backwards awareness.
+    """
     return Store(config['server_store'][0], config['server_store'][1],
             environ={'tiddlyweb.config': config})
+
 
 def reset_textstore():
     if os.path.exists('store'):
         shutil.rmtree('store')
 
+
 def muchdata(store):
     for bag_numeral in range(30):
         bag = create_bag(store, bag_numeral)
         for tiddler_numeral in range(10):
-            tiddler = create_tiddler(store, bag, tiddler_numeral)
+            create_tiddler(store, bag, tiddler_numeral)
 
     recipe = Recipe('long')
 
@@ -133,6 +115,7 @@ def create_tiddler(store, bag, numeral):
     if tiddler.title == 'tiddler8':
         tiddler.modified = '200805230303'
     store.put(tiddler)
+
 
 def create_bag(store, numeral):
     bag = Bag('bag%s' % numeral)

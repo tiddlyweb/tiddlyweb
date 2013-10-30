@@ -12,13 +12,14 @@ import tiddlyweb.stores.text
 
 from tiddlyweb.store import NoBagError
 from tiddlyweb.model.bag import Bag
-from tiddlyweb.model.tiddler import Tiddler
 
 from .fixtures import tiddlers, bagone, reset_textstore, _teststore
+
 
 def setup_module(module):
     reset_textstore()
     module.store = _teststore()
+
 
 def test_simple_put():
     bagone.desc = 'I enjoy being stored'
@@ -27,18 +28,11 @@ def test_simple_put():
     if type(store.storage) != tiddlyweb.stores.text.Store:
         py.test.skip('skipping this test for non-text store')
 
-    assert os.path.exists('store/bags/bagone'), \
-            'path %s should be created' \
-            % 'store/bags/bagone'
-    assert os.path.exists('store/bags/bagone/policy'), \
-            'path %s should be created' \
-            % 'store/bags/bagone/policy'
-    assert os.path.exists('store/bags/bagone/description'), \
-            'path %s should be created' \
-            % 'store/bags/bagone/description'
-    assert os.path.exists('store/bags/bagone/tiddlers'), \
-            'path %s should be created' \
-            % 'store/bags/bagone/tiddlers'
+    assert os.path.exists('store/bags/bagone')
+    assert os.path.exists('store/bags/bagone/policy')
+    assert os.path.exists('store/bags/bagone/description')
+    assert os.path.exists('store/bags/bagone/tiddlers')
+
 
 def test_simple_get():
 
@@ -57,14 +51,16 @@ def test_simple_get():
     assert bag.policy.manage == bagone.policy.manage
     assert bag.policy.owner == bagone.policy.owner
     assert bag.desc == 'I enjoy being stored'
-    
+
     the_tiddler = store.get(the_tiddler)
     assert the_tiddler.title == tiddler.title
     assert sorted(the_tiddler.tags) == sorted(tiddler.tags)
 
+
 def test_failed_get():
     bag = Bag(name='bagnine')
     py.test.raises(NoBagError, 'store.get(bag)')
+
 
 def test_delete():
     bag = Bag('deleteme')
@@ -80,6 +76,7 @@ def test_delete():
 
     py.test.raises(NoBagError, 'store.get(deleted_bag)')
     py.test.raises(NoBagError, 'store.delete(deleted_bag)')
+
 
 def test_list():
     bag = Bag('bagtwo')

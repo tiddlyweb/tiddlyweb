@@ -1,10 +1,7 @@
-
 """
 Test a recipe to confirm it does all its recipe
 things.
 """
-
-import py.test
 
 from tiddlyweb.model.recipe import Recipe
 
@@ -12,13 +9,16 @@ recipe_list = [
         [u'bagone', u'select=title:TiddlerOne'],
         [u'bagtwo', u'select=title:TiddlerTwo'],
         [u'bagthree', u'select=tag:tagone;select=tag:tagthree']
-         ]
+]
+
 
 def setup_module(module):
     module.recipe = Recipe(name='foorecipe')
 
+
 def test_recipe_name():
     assert recipe.name == 'foorecipe', 'our recipe gets its name right'
+
 
 def test_set_recipe():
     """
@@ -27,11 +27,11 @@ def test_set_recipe():
     recipe.set_recipe(recipe_list)
     assert len(recipe.get_recipe()) == 3
 
+
 def test_recipe_has_description():
     """
     Confirm a recipe can set and use a description.
     """
-
     recipe = Recipe('hasbeen', desc='monkey puzzle')
 
     assert recipe.name == 'hasbeen'
@@ -40,6 +40,7 @@ def test_recipe_has_description():
     recipe.desc = 'collapsing sideburns'
     assert recipe.desc == 'collapsing sideburns'
 
+
 def test_get_recipe_list():
     """
     Get a representation of the recipe, a list of bag + filter URLs.
@@ -47,47 +48,41 @@ def test_get_recipe_list():
     Note that you can just use the object itself if you want.
     """
     rlist = recipe.get_recipe()
-    assert rlist == recipe_list, 'stored list should be same as given list'
+    assert rlist == recipe_list
+
 
 def test_get_recipe_list_templated_bag():
     recipe = Recipe('tr')
-    recipe.set_recipe([
-        ('{{ user }}', '')
-        ])
+    recipe.set_recipe([('{{ user }}', '')])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][0] == 'testuser'
 
 
 def test_get_recipe_list_templated_filter():
     recipe = Recipe('tr')
-    recipe.set_recipe([
-        ('system', 'modifier={{ user }}')
-        ])
+    recipe.set_recipe([('system', 'modifier={{ user }}')])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser'
 
+
 def test_get_recipe_list_templated_filter2():
     recipe = Recipe('tr')
-    recipe.set_recipe([
-        ('system', 'modifier={{ user }};creator={{ user }}')
-        ])
+    recipe.set_recipe([('system', 'modifier={{ user }};creator={{ user }}')])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser;creator=testuser'
 
+
 def test_get_recipe_list_templated_bag_filter():
     recipe = Recipe('tr')
-    recipe.set_recipe([
-        ('{{ bagname }}', 'modifier={{ user }}')
-        ])
+    recipe.set_recipe([('{{ bagname }}', 'modifier={{ user }}')])
     list = recipe.get_recipe({'user': 'testuser', 'bagname': 'foobar'})
     assert list[0][1] == 'modifier=testuser'
     assert list[0][0] == 'foobar'
 
+
 def test_get_recipe_list_templated_bag_filter_defaulted_bag():
     recipe = Recipe('tr')
-    recipe.set_recipe([
-        ('{{ bagname:common }}', 'modifier={{ user }}')
-        ])
+    recipe.set_recipe([('{{ bagname:common }}', 'modifier={{ user }}')])
     list = recipe.get_recipe({'user': 'testuser'})
     assert list[0][1] == 'modifier=testuser'
     assert list[0][0] == 'common'

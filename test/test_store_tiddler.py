@@ -10,18 +10,18 @@ Prequisites:
 
 import os
 
-from tiddlyweb.config import config
 from tiddlyweb.store import StoreLockError, NoTiddlerError, NoBagError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.stores.text import Store as Texter
 from tiddlyweb.util import write_lock, LockError
 
-from .fixtures import bagfour, tiddlers, reset_textstore, _teststore
+from .fixtures import tiddlers, reset_textstore, _teststore
 
 import py.test
 
-expected_stored_filename = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne', '1')
+expected_stored_filename = os.path.join('store', 'bags', 'bagone',
+    'tiddlers', 'TiddlerOne', '1')
 
 expected_stored_text = """modifier: AuthorOne
 modified: 200803030303
@@ -30,12 +30,14 @@ tags: tagone tagtwo [[tag five]]
 c tiddler one content
 """
 
+
 def setup_module(module):
     """
     Need to clean up the store here.
     """
     reset_textstore()
     module.store = _teststore()
+
 
 def test_simple_put():
     """
@@ -60,32 +62,32 @@ def test_simple_put():
 
     assert text == expected_stored_text
 
+
 def test_simple_get():
     """
-    get a tiddler that had been stored in bagfour
+    get a tiddler that had been stored
     """
-
-    stored_tiddler = Tiddler(title='TiddlerOne')
+    stored_tiddler = Tiddler('TiddlerOne')
     stored_tiddler.bag = u'bagone'
     stored_tiddler.modified = '200803030303'
     stored_tiddler = store.get(stored_tiddler)
 
-    assert stored_tiddler.title == 'TiddlerOne', 'retrieved tiddler has correct title'
-    assert stored_tiddler.bag == 'bagone', 'retrieve tiddler has correct bag'
-    assert stored_tiddler.text == 'c tiddler one content', 'text is %s should b %s' % (stored_tiddler.text, 'c tiddler one content\n')
+    assert stored_tiddler.title == 'TiddlerOne'
+    assert stored_tiddler.bag == 'bagone'
+    assert stored_tiddler.text == 'c tiddler one content'
 
     assert sorted(stored_tiddler.tags) == ['tag five', 'tagone', 'tagtwo']
+
 
 def test_get_revision():
     """
     Test we are able to retrieve a particular revision.
     """
-
     bagone = Bag('bagone')
 
     store.put(bagone)
     tiddler = Tiddler('RevisionTiddler')
-    tiddler.text='how now 1'
+    tiddler.text = 'how now 1'
     tiddler.bag = u'bagone'
     store.put(tiddler)
     tiddler.text = 'how now 2'
@@ -93,13 +95,13 @@ def test_get_revision():
     tiddler.text = 'how now 3'
     store.put(tiddler)
 
-    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    tiddler = Tiddler('RevisionTiddler', 'bagone')
     tiddler = store.get(tiddler)
 
     assert tiddler.text == 'how now 3'
     assert tiddler.revision == 3
 
-    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    tiddler = Tiddler('RevisionTiddler', 'bagone')
     tiddler.revision = 2
     tiddler = store.get(tiddler)
 
@@ -110,18 +112,22 @@ def test_get_revision():
     assert len(revisions) == 3
     assert revisions[0] == 3
 
+
 def test_delete():
-    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    tiddler = Tiddler('RevisionTiddler', 'bagone')
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
 
-    assert os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
+    assert os.path.exists(os.path.join('store', 'bags', 'bagone',
+        'tiddlers', 'RevisionTiddler'))
     store.delete(tiddler)
-    assert not os.path.exists(os.path.join('store', 'bags', 'bagone', 'tiddlers', 'RevisionTiddler'))
+    assert not os.path.exists(os.path.join('store', 'bags', 'bagone',
+        'tiddlers', 'RevisionTiddler'))
+
 
 def test_failed_delete_not_there():
-    tiddler = Tiddler(title='RevisionTiddler', bag='bagone')
+    tiddler = Tiddler('RevisionTiddler', 'bagone')
     # in case we skipped deleting it above, delete it again
     try:
         store.delete(tiddler)
@@ -129,8 +135,9 @@ def test_failed_delete_not_there():
         pass
     py.test.raises(NoTiddlerError, 'store.delete(tiddler)')
 
+
 def test_failed_delete_perms():
-    tiddler = Tiddler(title='TiddlerOne', bag='bagone')
+    tiddler = Tiddler('TiddlerOne', 'bagone')
 
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
@@ -141,11 +148,11 @@ def test_failed_delete_perms():
     py.test.raises(IOError, 'store.delete(tiddler)')
     os.chmod(path, 0o755)
 
+
 def test_store_lock():
     """
     Make the sure the locking system throws the proper lock.
     """
-
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
 
@@ -158,6 +165,7 @@ def test_store_lock():
     tiddler.bag = u'bagone'
     py.test.raises(StoreLockError, 'store.put(tiddler)')
 
+
 def test_put_with_slash():
     tiddler1 = Tiddler('He is 5 and 1/2', 'bagone')
     store.put(tiddler1)
@@ -166,9 +174,11 @@ def test_put_with_slash():
     store.get(tiddler2)
     assert tiddler1.title == tiddler2.title
 
+
 def test_put_no_bag():
     tiddler = Tiddler('hi')
     py.test.raises(NoBagError, 'store.put(tiddler)')
+
 
 def test_bad_filename():
     """
@@ -178,6 +188,7 @@ def test_bad_filename():
         py.test.skip('skipping this test for non-text store')
     tiddler = Tiddler('../nastyone', 'bagone')
     py.test.raises(NoTiddlerError, 'store.put(tiddler)')
+
 
 def test_put_and_get_dotted_file():
     """

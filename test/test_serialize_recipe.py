@@ -10,7 +10,12 @@ py_version = sys.version_info[0]
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.serializer import Serializer
 
-from .fixtures import recipe_list
+
+recipe_list = [
+        ('bagone', u'select=title:TiddlerOne'),
+        ('bagtwo', u'select=title:TiddlerTwo'),
+        ('bagthree', u'select=tag:tagone;select=tag:tagthree')
+]
 
 expected_string = """desc: 
 policy: {"read": [], "create": [], "manage": [], "accept": [], "write": [], "owner": null, "delete": []}
@@ -30,9 +35,11 @@ expected_html_string = """<div id="recipedesc" class="description">Courage of Ba
 <li><a href="/bags/bagthree/tiddlers?select=tag:tagone;select=tag:tagthree">bag: bagthree filter:select=tag:tagone;select=tag:tagthree</a></li>
 </ul>"""
 
+
 def setup_module(module):
     module.recipe = Recipe(name='testrecipe')
     module.recipe.set_recipe(recipe_list)
+
 
 @pytest.mark.skipif(py_version > 2, reason='python 2 required')
 def test_generated_text():
@@ -40,12 +47,9 @@ def test_generated_text():
     serializer.object = recipe
     string = serializer.to_string()
 
-    assert string == expected_string, \
-            'serialized recipe looks like we expect. should be %s, got %s' \
-            % (expected_string, string)
+    assert string == expected_string
+    assert '%s' % serializer == expected_string
 
-    assert '%s' % serializer == expected_string, \
-            'serializer goes to string as expected_string'
 
 def test_simple_recipe():
     recipe = Recipe('other')
@@ -67,7 +71,8 @@ def test_simple_recipe():
 
     recipe = Recipe('other')
     recipe.set_recipe([('bagboom', '')])
-    assert recipe != new_recipe, 'modified recipe not equal new_recipe'
+    assert recipe != new_recipe
+
 
 def test_json_recipe():
     """
@@ -93,6 +98,7 @@ def test_json_recipe():
 
     assert string == other_string
 
+
 @pytest.mark.skipif(py_version > 2, reason='python 2 required')
 def test_old_text():
     """
@@ -108,6 +114,7 @@ def test_old_text():
 
     assert output == expected_string
 
+
 def test_generated_html():
     serializer = Serializer('html')
     recipe.desc = 'Courage of Bags'
@@ -117,12 +124,14 @@ def test_generated_html():
     assert expected_html_string in string
     assert expected_html_string in '%s' % serializer
 
+
 def test_text_list():
     serializer = Serializer('text')
     recipes = [Recipe('recipe' + str(name)) for name in range(2)]
     string = ''.join(serializer.list_recipes(recipes))
 
     assert string == 'recipe0\nrecipe1\n'
+
 
 def test_html_list():
     serializer = Serializer('html')

@@ -10,12 +10,14 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
+
 def app(environ, start_response):
     pass
 
+
 def test_operation_simple_get():
     q = Query(app)
-    
+
     environ = {}
     environ['REQUEST_METHOD'] = 'GET'
     environ['QUERY_STRING'] = 'text=hello'
@@ -24,9 +26,10 @@ def test_operation_simple_get():
     assert 'text' in environ['tiddlyweb.query']
     assert environ['tiddlyweb.query']['text'][0] == 'hello'
 
+
 def test_operation_encoded_get():
     q = Query(app)
-    
+
     environ = {}
     environ['REQUEST_METHOD'] = 'GET'
     environ['QUERY_STRING'] = 'text=m%C3%B6ass'
@@ -34,6 +37,7 @@ def test_operation_encoded_get():
     q.extract_query(environ)
     assert 'text' in environ['tiddlyweb.query']
     assert environ['tiddlyweb.query']['text'][0] == u'm\xf6ass'
+
 
 def test_operation_simple_post():
     q = Query(app)
@@ -49,4 +53,3 @@ def test_operation_simple_post():
     q.extract_query(environ)
     assert 'text' in environ['tiddlyweb.query']
     assert environ['tiddlyweb.query']['text'][0] == u'm\xf6ass'
-

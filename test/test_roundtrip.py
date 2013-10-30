@@ -26,9 +26,16 @@ from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb import control
 
-from .fixtures import reset_textstore, recipe_list, _teststore
+from .fixtures import reset_textstore, _teststore
 
 import py.test
+
+recipe_list = [
+        ('bagone', u'select=title:TiddlerOne'),
+        ('bagtwo', u'select=title:TiddlerTwo'),
+        ('bagthree', u'select=tag:tagone;select=tag:tagthree')
+]
+
 
 def setup_module(module):
     reset_textstore()
@@ -36,30 +43,33 @@ def setup_module(module):
     if type(module.store.storage) != tiddlyweb.stores.text.Store:
         py.test.skip('skipping this test for non-text store')
 
+
 def test_no_bag_for_tiddler():
-    tiddler = Tiddler(title='testnobag')
+    tiddler = Tiddler('testnobag')
     tiddler.text = 'no bag here'
     tiddler.bag = u'no bag of this name'
 
     py.test.raises(NoBagError, "store.put(tiddler)")
 
+
 def test_put_and_get_tiddler():
-    tiddler = Tiddler(title='testbag')
+    tiddler = Tiddler('testbag')
     tiddler.text = 'bag1 here'
-    bag = Bag(name = 'bag1')
+    bag = Bag('bag1')
     tiddler.bag = u'bag1'
 
     store.put(bag)
     store.put(tiddler)
 
-    new_tiddler = Tiddler(title='testbag')
+    new_tiddler = Tiddler('testbag')
     new_tiddler.bag = u'bag1'
     new_tiddler = store.get(new_tiddler)
 
     assert new_tiddler.text == 'bag1 here'
 
+
 def test_get_diddle_put_tiddler():
-    new_tiddler = Tiddler(title='testbag')
+    new_tiddler = Tiddler('testbag')
     new_tiddler.bag = u'bag1'
     new_tiddler = store.get(new_tiddler)
 
@@ -76,6 +86,7 @@ def test_get_diddle_put_tiddler():
     assert os.path.exists('store/bags/bag2/tiddlers/testbag')
     assert os.path.exists('store/bags/bag1/tiddlers/testbag')
 
+
 def test_tiddler_unique_by_bags():
     tiddler_one = Tiddler('testbag')
     tiddler_one.bag = 'bag1'
@@ -91,6 +102,7 @@ def test_tiddler_unique_by_bags():
     assert tiddler_one.text != tiddler_two.text, \
             'empty tiddlers have different content'
 
+
 def test_put_recipe():
     recipe = Recipe('cookies')
     recipe.set_recipe(recipe_list)
@@ -99,10 +111,11 @@ def test_put_recipe():
 
     assert os.path.exists('store/recipes/cookies')
 
+
 def test_where_this_tiddler():
     """
     recipe bag determination presumes there is a tiddler of the same name
-    already in the bag. Is this right or not? Seems like maybe we want to 
+    already in the bag. Is this right or not? Seems like maybe we want to
     put the bag in the collection if it matches the filter stream.
     """
     tiddler_lonely = Tiddler('TiddlerOne')
@@ -123,4 +136,3 @@ def test_where_this_tiddler():
         store.put(tiddler_lonely)
 
     assert os.path.exists('store/bags/bagone/tiddlers/TiddlerOne')
-

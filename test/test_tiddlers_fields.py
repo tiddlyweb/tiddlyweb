@@ -16,23 +16,28 @@ from tiddlyweb.model.bag import Bag
 
 from .fixtures import reset_textstore, _teststore
 
+
 def setup_module(module):
     reset_textstore()
     module.store = _teststore()
+
 
 def test_tiddler_has_fields():
     tiddler = Tiddler('feebles')
     assert hasattr(tiddler, 'fields')
 
+
 def test_tiddler_fields_dict():
     tiddler = Tiddler('feebles')
     assert type(tiddler.fields) == dict
 
+
 def test_tiddler_fields_contains_stuff():
     tiddler = Tiddler('feebles')
-    tiddler.fields = {u'this':u'is cool', u'so':u'is that'}
+    tiddler.fields = {u'this': u'is cool', u'so': u'is that'}
     assert tiddler.fields['this'] == 'is cool'
     assert tiddler.fields['so'] == 'is that'
+
 
 def test_tiddler_fields_are_stored():
     bag = Bag('bag0')
@@ -46,12 +51,14 @@ def test_tiddler_fields_are_stored():
     assert tiddler_second.fields['field1'] == 'value1'
     assert tiddler_second.fields['field2'] == 'value2'
 
+
 def test_tiddler_fields_ignore_server():
     bag = Bag('bag0')
     store.put(bag)
     tiddler = Tiddler('server\nimpostor', bag='bag0')
     tiddler.tags = [u'foo\nbar']
-    tiddler.fields = {u'field1': u'value1\nafterlinefeed', u'server.host': u'value1', u'server.type': u'value2'}
+    tiddler.fields = {u'field1': u'value1\nafterlinefeed',
+            u'server.host': u'value1', u'server.type': u'value2'}
     store.put(tiddler)
 
     tiddler_second = Tiddler('server\nimpostor', bag='bag0')
@@ -59,6 +66,7 @@ def test_tiddler_fields_ignore_server():
     assert tiddler_second.fields['field1'] == 'value1\nafterlinefeed'
     assert 'server.host' not in tiddler_second.fields.keys()
     assert 'server.type' not in tiddler_second.fields.keys()
+
 
 # these following rely on the previous
 def test_tiddler_fields_as_text():
@@ -69,6 +77,7 @@ def test_tiddler_fields_as_text():
     text_of_tiddler = serializer.to_string()
     assert 'field1: value1\n' in text_of_tiddler
     assert 'field2: value2\n' in text_of_tiddler
+
 
 def test_tiddler_fields_as_json():
     tiddler = Tiddler('feebles', bag='bag0')
@@ -88,6 +97,7 @@ def test_tiddler_fields_as_json():
     assert tiddler.fields['field1'] == 'value1'
     assert tiddler.fields['field2'] == 'value2'
     assert tiddler.bag == 'bag0'
+
 
 def test_tiddler_fields_as_html():
     tiddler = Tiddler('feebles', bag='bag0')
