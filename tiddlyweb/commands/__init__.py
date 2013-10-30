@@ -26,6 +26,7 @@ from tiddlyweb import __version__ as VERSION
 
 from tiddlyweb.fixups import unicode
 
+
 def init(config):
     """
     Establish the commands during ``twanager`` startup.
