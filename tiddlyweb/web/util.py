@@ -4,10 +4,7 @@ General utility routines shared by various web related modules.
 
 from datetime import datetime
 
-try:
-    from email.utils import parsedate
-except ImportError:  # Python < 2.5
-    from email.Utils import parsedate
+from email.utils import parsedate
 
 from httpexceptor import HTTP415, HTTP400, HTTP304
 
