@@ -23,7 +23,7 @@ META = {
     'install_requires': ['setuptools',
         'httpexceptor>=1.3.0',
         #'selector', # selector is currently in flux
-        'git+https://github.com/cdent/selector.git@python2and3#egg=selector=>0.9',
+        'git+https://github.com/cdent/selector.git@python2and3#egg=selector>=0.9',
         'simplejson',
         'html5lib',
         'mimeparse'],
