@@ -24,14 +24,17 @@ def setup_module(module):
 
 
 def teardown_module(module):
-    del config['indexer']
+    try:
+        del config['indexer']
+    except KeyError:
+        pass
 
 
 def test_determine_bag_for_tiddler():
     recipe = Recipe('example')
     recipe.set_recipe([
-        ('bagone', ''),
-        ('bagtwo', 'select=title:monkey')])
+        ('bagone', u''),
+        ('bagtwo', u'select=title:monkey')])
 
     tiddler = Tiddler('happy')
 
@@ -43,8 +46,8 @@ def test_determine_bag_for_tiddler():
     assert bag.name == 'bagtwo'
 
     recipe.set_recipe([
-        ('bagone', 'select=tag:foo'),
-        ('bagtwo', 'select=title:monkeys')])
+        ('bagone', u'select=tag:foo'),
+        ('bagtwo', u'select=title:monkeys')])
 
     py.test.raises(NoBagError, 'determine_bag_for_tiddler(recipe, tiddler)')
 
@@ -74,7 +77,7 @@ def test_index_query_in_recipe():
     store.put(tiddler)
 
     recipe = Recipe('coolio')
-    recipe.set_recipe([('noop', ''), ('fwoop', '')])
+    recipe.set_recipe([('noop', u''), ('fwoop', u'')])
     recipe.store = store
 
     tiddler = Tiddler('swell')
