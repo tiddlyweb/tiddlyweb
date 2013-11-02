@@ -26,7 +26,7 @@ META = {
         'git+https://github.com/cdent/selector.git@python2and3#egg=selector>=0.9',
         'simplejson',
         'html5lib',
-        'mimeparse>0.1.3'],
+        'python-mimeparse>0.1.3'],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'PyYAML',
             'git+https://github.com/cdent/python3-wsgi-intercept.git#egg=wsgi-intercept>=0.1',
