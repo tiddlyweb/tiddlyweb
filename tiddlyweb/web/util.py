@@ -15,6 +15,11 @@ from tiddlyweb.util import sha
 
 from tiddlyweb.fixups import SimpleCookie, quote, unquote
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
 
 def check_bag_constraint(environ, bag, constraint):
     """
@@ -117,7 +122,7 @@ def get_serialize_type(environ, collection=False):
     if collection and ext and ext not in extension_types:
         accept = [None]
 
-    if type(accept) == str:
+    if type(accept) == unicode or type(accept) == str:
         accept = [accept]
 
     while len(accept) and serialize_type is None:
