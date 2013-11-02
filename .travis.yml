@@ -1,9 +1,11 @@
 language: python
 python:
+- 2.6
+- 2.7
 - 3.3
 
 install:
-- pip install --use-mirrors \
+- pip install -U --use-mirrors \
     `python -c 'from setup import META; print(" ".join(META["extras_require"]["testing"] + META["install_requires"]))'`
 
 script: make test
