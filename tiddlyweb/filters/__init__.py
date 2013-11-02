@@ -112,6 +112,11 @@ def parse_for_filters(query_string, environ=None):
         try:
             key, value = list(query.items())[0]
 
+            # We need to adapt to different types from the
+            # query_string. It changes per Python version,
+            # and per store (because of Python version).
+            # Sometimes we will already be unicode here,
+            # sometimes not.
             try:
                 argument = unicode(value[0], 'UTF-8')
             except TypeError:
