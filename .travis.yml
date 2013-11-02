@@ -5,7 +5,8 @@ python:
 - 3.3
 
 install:
-- pip install -U pip setuptools pytest
+- pip install -U pip
+- pip install -U setuptools pytest
 - pip install --use-mirrors \
     `python -c 'from setup import META; print(" ".join(META["extras_require"]["testing"] + META["install_requires"]))'`
 
