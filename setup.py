@@ -21,17 +21,16 @@ META = {
     'scripts': ['twanager'],
     'platforms': 'Posix; MacOS X; Windows',
     'install_requires': ['setuptools',
-        'httpexceptor>=1.2.0',
-        # modern Selector requires modern Python, so downgrade for older versions
-        'selector' + ('<0.9.0' if (sys.version_info[0] == 2 and
-                sys.version_info[1] < 6) else ''),
+        'httpexceptor>=1.3.0',
+        #'selector', # selector is currently in flux
+        'git+https://github.com/cdent/selector.git@python2and3#egg=selector=>0.9'
         'simplejson',
         'html5lib',
         'mimeparse'],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'PyYAML',
             'git+https://github.com/cdent/python3-wsgi-intercept.git#egg=wsgi-intercept>=0.1',
-            ]
+        ]
     },
     'include_package_data': True,
     'zip_safe': False,
