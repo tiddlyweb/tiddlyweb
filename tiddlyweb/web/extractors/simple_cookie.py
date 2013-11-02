@@ -34,7 +34,7 @@ class Extractor(ExtractorInterface):
             LOGGER.debug('simple_cookie looking at cookie string: %s',
                     user_cookie)
             cookie = SimpleCookie()
-            cookie.load(user_cookie)
+            cookie.load(str(user_cookie))
             cookie_value = cookie['tiddlyweb_user'].value
             secret = environ['tiddlyweb.config']['secret']
             usersign, cookie_secret = cookie_value.rsplit(':', 1)
