@@ -28,9 +28,7 @@ META = {
         'html5lib',
         'python-mimeparse>0.1.3'],
     'extras_require': {
-        'testing': ['pytest', 'httplib2', 'PyYAML',
-            'git+https://github.com/cdent/python3-wsgi-intercept.git#egg=wsgi-intercept>=0.1',
-        ]
+        'testing': ['pytest', 'httplib2', 'PyYAML', 'wsgi-intercept>=0.6.0']
     },
     'include_package_data': True,
     'zip_safe': False,
