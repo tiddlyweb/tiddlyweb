@@ -9,6 +9,17 @@ from setuptools import setup, find_packages
 
 from tiddlyweb import __version__ as VERSION
 
+CLASSIFIERS = """
+Environment :: Web Environment
+License :: OSI Approved :: BSD License
+Operating System :: OS Independent
+Programming Language :: Python :: 2.6
+Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3.3
+Topic :: Internet :: WWW/HTTP :: WSGI :: Application
+""".strip().splitlines()
+
+
 META = {
     'name': 'tiddlyweb',
     'version': VERSION,
@@ -20,6 +31,7 @@ META = {
     'packages': find_packages(exclude=['test', 'test.*', 'profile']),
     'scripts': ['twanager'],
     'platforms': 'Posix; MacOS X; Windows',
+    'classifiers': CLASSIFIERS,
     'install_requires': ['setuptools',
         'httpexceptor>=1.3.0',
         #'selector', # selector is currently in flux
