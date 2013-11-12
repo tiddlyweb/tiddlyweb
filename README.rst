@@ -13,6 +13,12 @@
 
 For additional installation instructions see http://tiddlyweb.tiddlyspace.com/
 
+**With the ``2.0.0`` release of TiddlyWeb versions 2.7 and 3.3 and beyond
+of Python are supported. Earlier versions may work but are not explicitly
+tested.** Note that ``tiddlywebwiki`` and most plugins have not yet been
+ported to work with Python 3 but will work with 2.7. Work to bring them up
+to date is in progress.
+
 Introduction
 ============
 
