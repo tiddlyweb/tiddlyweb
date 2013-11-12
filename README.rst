@@ -70,9 +70,8 @@ via pip. Installing tiddlywebwiki will install tiddlyweb for you:::
 
 Or you can install by hand, you will need the following requirements:
 
-* Python 2.5, 2.6 or 2.7. (A Python 3 port exists but is incomplete,
-  contact the authors if you are interested in the Python 3 version. Python
-  2.4 may work but is neither tested nor recommended.)
+* Python 2.7 or Python 3.3. Earlier versions may work but are neither
+  tested nor recommended.
 * selector: http://lukearno.com/projects/selector/
 * simplejson: http://undefined.org/python/#simplejson
 * html5lib (for sanitizing input which may be rendered as HTML):
