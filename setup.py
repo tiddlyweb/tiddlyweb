@@ -34,11 +34,11 @@ META = {
     'classifiers': CLASSIFIERS,
     'install_requires': ['setuptools',
         'httpexceptor>=1.3.0',
-        #'selector', # selector is currently in flux
-        'git+https://github.com/cdent/selector.git@python2and3#egg=selector>=0.9',
+        'selector>=0.10.0',
         'simplejson',
         'html5lib',
-        'python-mimeparse>0.1.3'],
+        'python-mimeparse>0.1.3'
+    ],
     'extras_require': {
         'testing': ['pytest', 'httplib2', 'PyYAML', 'wsgi-intercept>=0.6.0']
     },
