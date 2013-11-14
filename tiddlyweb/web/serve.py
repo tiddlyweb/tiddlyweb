@@ -133,6 +133,7 @@ class RequestStarter(object):
         request_uri = environ.get('REQUEST_URI', environ.get('RAW_URI', ''))
 
         if request_uri:
+            request_uri = request_uri.decode()
             path_info = environ.get('PATH_INFO', '')
             script_name = environ.get('SCRIPT_NAME', '')
             query_string = environ.get('QUERY_STRING', '')

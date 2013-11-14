@@ -104,7 +104,7 @@ class Challenger(ChallengerInterface):
                 start_response('303 See Other',
                         [('Set-Cookie', cookie_header_string),
                             ('Content-Type', 'text/plain'),
-                            ('Location', uri.encode('utf-8'))])
+                            ('Location', uri)])
                 return [uri]
         except KeyError:
             pass
