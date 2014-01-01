@@ -101,7 +101,7 @@ def handle(args):
             import traceback
             LOGGER.error('twanager error with command "%s %s"\n%s',
                     candidate_command, args, traceback.format_exc())
-            usage('%s: %s' % (exc.__class__.__name__, exc.args))
+            usage('%s: %s' % (exc.__class__.__name__, ' '.join(exc.args)))
     else:
         usage('No matching command found')
 
