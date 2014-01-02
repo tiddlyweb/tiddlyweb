@@ -1,14 +1,11 @@
 """
-This is a handler for running tiddlyweb
-under apache using either mod_wsgi or mod_python.
+This is a handler for running tiddlyweb under web servers that can be
+configured to host an Python module as a WSGI application. Such servers
+include apache2 using mod_wsgi, or nginx using uwsgi.
 
-Of those two, mod_wsgi is a better choice.
+This file has also been used with Passenger: http://www.modrails.com/
 
-This file has also been used with Passenger:
-http://www.modrails.com/
-
-There are configuration variables to set after
-this docstring.
+The hosted module provides a global named 'application'.
 
 ##################################################
 For mod_wsgi
@@ -16,7 +13,7 @@ For mod_wsgi
 Your apache must be configured to use mod_wsgi.
 
 Add the following to server config (this is a real virtual host,
-the name have been changed...):
+the names have been changed...):
 
 <VirtualHost *>
     ServerName barney.example.com
@@ -31,12 +28,12 @@ the name have been changed...):
     WSGIDaemonProcess barney.example.com user=barney processes=1 threads=10
     WSGIProcessGroup barney.example.com
     WSGIPassAuthorization On
-    WSGIScriptAlias /wiki /home/barney/tiddlywebs/barney.example.com/apache.py
+    WSGIScriptAlias /wiki /home/barney/tiddlywebs/barney.example.com/wsgiapp.py
 </VirtualHost>
 
 Replace barney.example.com with the hostname being used.
 Replace barney with the user the process should run as.
-Replace /wiki with the prefix to the tiddlyweb.
+Replace /wiki with the prefix to the tiddlyweb (often just '/').
 Replace the path after /wiki with the path to apache.py which
     should live in in the tiddlyweb instance directory.
 
@@ -47,43 +44,18 @@ mod_wsgi, you need to set
 
 in the apache configuration.
 
-In WSGIScriptAlias you may use just / for the path, but it
-can result in challenges for hosting other things on the same
-VirtualHost.
-
 For more mod_wsgi configuration info see:
 
     http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives
 
 ##################################################
-For mod_python
 
-Your apache must be configured with mod_python.
+Information on using nginx and uwsgi can be found at:
 
-What this script does is provide a callable
-(named application) to a WSGI handler running under
-mod_python.
-
-A gateway from mod_python to WSGI is required
-it can be found at:
-
-    http://www.aminus.net/wiki/ModPythonGateway
-
-Adjust your apache configuration similar to the following:
-
-        <Location /wiki>
-                PythonPath "['/home/barney/www/wiki'] + sys.path"
-                PythonOption SCRIPT_NAME /wiki
-                SetHandler python-program
-                PythonHandler modpython_gateway::handler
-                PythonOption wsgi.application apache::application
-        </Location>
-
-In your own setup the name wiki and the path to it
-would need to be changed.
+    http://tiddlyweb.tiddlyspace.com/Using%20nginx%20and%20uwsgi
+    http://tsdbup.tiddlyspace.com/WorkingNginxConfig
 
 ##################################################
-For both
 
 In tiddlywebconfig.py:
 
@@ -98,11 +70,12 @@ server_host is a complex data structure as follows:
         'host': 'some.example.com',
         'port': '80',
     }
+
 ##################################################
 
 If you are using Passenger, thus far the only 
 testing has been with Dreamhosts setup. For that
-rename apache.py to passenger_wsgi.py and configure
+rename wsgiapp.py to passenger_wsgi.py and configure
 as described here:
 
     http://wiki.dreamhost.com/Passenger_WSGI
@@ -129,5 +102,5 @@ def start():
     app = serve.load_app(app_prefix='', dirname=dirname)
     return app
 
-# web server code will look for a callable # named application
+# web server code will look for a callable named application
 application = start()
