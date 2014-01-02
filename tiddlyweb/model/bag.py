@@ -4,8 +4,6 @@ A module containing the :py:class:`Bag` class.
 
 from tiddlyweb.model.policy import Policy
 
-from tiddlyweb.fixups import unicode
-
 
 class Bag(object):
     """
