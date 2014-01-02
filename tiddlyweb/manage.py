@@ -25,6 +25,12 @@ COMMANDS = {}
 LOGGER = logging.getLogger(__name__)
 
 
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
+
 def make_command():
     """
     A decorator that marks the decorated method as a member of the
@@ -88,6 +94,7 @@ def handle(args):
     except IndexError:
         args = []
 
+    args = [unicode(arg) for arg in args]
     if candidate_command and candidate_command in COMMANDS:
         try:
             LOGGER.debug('running command %s with %s',
