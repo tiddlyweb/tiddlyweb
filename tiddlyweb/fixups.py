@@ -3,6 +3,7 @@ Fixups used in various places to manage simultaneous support
 for Python 2.7 and 3.
 """
 
+
 try:
     unicode = unicode
 except NameError:
@@ -28,7 +29,9 @@ try:
     from urllib import quote, unquote as unquote2
 
     def unquote(name):
-        return unquote2(name.encode('utf-8')).decode('utf-8')
+        if isinstance(name, unicode):
+            name = name.encode('UTF-8')
+        return unquote2(name).decode('UTF-8')
 except ImportError:
     from urllib.parse import quote, unquote
 

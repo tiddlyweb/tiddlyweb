@@ -6,7 +6,6 @@ import re
 
 from tiddlyweb.model.policy import Policy
 
-from tiddlyweb.fixups import unicode
 
 RECIPE_TEMPLATE_RE = re.compile(r'{{ (\w+) }}')
 RECIPE_TEMPLATE_DEFAULT_RE = re.compile(r'{{ (\w+):(\w+) }}')
@@ -33,8 +32,8 @@ class Recipe(object):
 
     def __init__(self, name, desc=u''):
         self._recipe = []
-        self.name = unicode(name)
-        self.desc = unicode(desc)
+        self.name = name
+        self.desc = desc
         self.store = None
         self.policy = Policy()
 

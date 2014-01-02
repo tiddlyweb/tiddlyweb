@@ -89,19 +89,13 @@ def content_length_and_type(environ):
 
 def get_route_value(environ, name):
     """
-    Retrieve and decode ``name`` from UTF-8 data provided in WSGI route.
+    Retrieve and decode ``name`` from data provided in WSGI route.
 
     If ``name`` is not present in the route, allow KeyError to raise.
-
-    If found data is not URI escaped UTF-8, raise a ``400``.
     """
-    try:
-        value = environ['wsgiorg.routing_args'][1][name]
-        value = unquote(value)
-    except UnicodeDecodeError as exc:
-        raise HTTP400('incorrect encoding for %s, UTF-8 required: %s'
-                % (name, exc))
-    return value
+    value = environ['wsgiorg.routing_args'][1][name]
+    value = unquote(value)
+    return value.replace('%2F', '/')
 
 
 def get_serialize_type(environ, collection=False):

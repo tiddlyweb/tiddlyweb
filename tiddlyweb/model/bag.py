@@ -31,8 +31,8 @@ class Bag(object):
     """
 
     def __init__(self, name, desc=u''):
-        self.name = unicode(name)
-        self.desc = unicode(desc)
+        self.name = name
+        self.desc = desc
         self.policy = Policy()  # set to default policy
         self.store = None
 

@@ -1021,9 +1021,8 @@ def test_put_json_pseudo_binary():
     assert content == json_internal
 
 
-@py.test.mark.skipif(sys.version_info[0] > 2,
-        reason='modern python does not allow this web request')
 def test_bad_uri_encoding():
+    py.test.skip('modern python does not allow this web request')
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag5/tiddlers/\x8a\xfa\x91\xd2\x96{\x93y\x98A\xe3\x94\x8c\x80\x92\xf1\x8f\xa1')
     assert response['status'] == '400', content
