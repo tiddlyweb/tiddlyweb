@@ -12,3 +12,4 @@ dropall
 tiddlyweb.egg-info
 covered
 .coverage
+__pycache__
