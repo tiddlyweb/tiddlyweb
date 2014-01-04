@@ -2,10 +2,10 @@
     :target: http://travis-ci.org/tiddlyweb/tiddlyweb
     :alt: build status
 .. image:: https://pypip.in/v/tiddlyweb/badge.png
-    :target: https://crate.io/packages/tiddlyweb
+    :target: https://pypi.python.org/pypi/tiddlyweb
     :alt: Package Version
 .. image:: https://pypip.in/d/tiddlyweb/badge.png
-    :target: https://crate.io/packages/tiddlyweb
+    :target: https://pypi.python.org/pypi/tiddlyweb
     :alt: Package Downloads
 
 * TiddlyWeb Home Site: http://tiddlyweb.com/
