@@ -1,4 +1,4 @@
-include index.cgi apache.py CHANGES COPYRIGHT Makefile
+include index.cgi wsgiapp.py CHANGES COPYRIGHT Makefile
 include tiddlyweb/urls.map
 recursive-include test *
 recursive-include docs *
