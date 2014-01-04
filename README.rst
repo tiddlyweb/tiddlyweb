@@ -120,4 +120,4 @@ There are a few tools that make exploring TiddlyWeb a bit easier:
 License
 =======
 TiddlyWeb is released under the BSD License and is copyright
-2008-2013 UnaMesa Association.
+2008-2014 UnaMesa Association.
