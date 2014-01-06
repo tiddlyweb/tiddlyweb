@@ -150,7 +150,7 @@ class Serialization(SerializationInterface):
         headers.extend(custom_fields)
 
         if binary_tiddler(tiddler):
-            body = b64encode(tiddler.text)
+            body = b64encode(tiddler.text).decode('UTF-8')
         else:
             body = tiddler.text
 

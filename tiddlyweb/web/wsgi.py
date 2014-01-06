@@ -106,11 +106,6 @@ class SimpleLog(object):
                 'HTTP_REFERER': environ.get('HTTP_REFERER', '-'),
                 'HTTP_USER_AGENT': environ.get('HTTP_USER_AGENT', '-'),
         }
-        for key, value in log_format.items():
-            try:
-                log_format[key] = value.encode('utf-8', 'replace')
-            except UnicodeDecodeError:
-                log_format[key] = value
         message = self.format % log_format
         logging.info(message)
 

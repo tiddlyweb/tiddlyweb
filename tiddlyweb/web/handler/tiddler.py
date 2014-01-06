@@ -314,7 +314,7 @@ def validate_tiddler_headers(environ, tiddler):
     this_tiddlers_etag = tiddler_etag(environ, tiddler)
 
     LOGGER.debug('attempting to validate %s with revision %s',
-            tiddler.title.encode('utf-8'), tiddler.revision)
+            tiddler.title, tiddler.revision)
 
     etag = None
     last_modified = None
