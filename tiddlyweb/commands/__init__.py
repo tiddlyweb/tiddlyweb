@@ -64,7 +64,7 @@ def init(config):
                 pass
 
         if pid:
-            pid_file = 'server_%s.pid' % port
+            pid_file = 'server%s.pid' % ("_%s" % port if port else "")
             if os.path.isfile(pid_file):
                 print('ERROR: PID file "%s" exists, server already running?' %
                         pid_file)
