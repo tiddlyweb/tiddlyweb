@@ -66,9 +66,8 @@ def init(config):
         if pid:
             pid_file = 'server%s.pid' % ("_%s" % port if port else "")
             if os.path.isfile(pid_file):
-                print('ERROR: PID file "%s" exists, server already running?' %
-                        pid_file)
-                sys.exit(1)  # XXX: should be handled by `make_command`
+                raise RuntimeError('ERROR: PID file "%s" exists, server already'
+                        'running?' % pid_file)
             with open(pid_file, 'w') as fh:
                 fh.write('%s\n' % pid)
 
