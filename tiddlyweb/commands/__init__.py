@@ -47,7 +47,7 @@ def init(config):
     @make_command()
     def server(args):
         """Start the server using config settings. Provide <host name or IP number> <port> to override."""
-        pid = args[0] == '--pid'
+        pid = len(args) and args[0] == '--pid'
         if pid:
             import os
             args.pop(0)
