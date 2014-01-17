@@ -47,6 +47,12 @@ def init(config):
     @make_command()
     def server(args):
         """Start the server using config settings. Provide <host name or IP number> <port> to override."""
+        pid = args[0] == '--pid'
+        if pid:
+            import os
+            args.pop(0)
+            pid = os.getpid()
+
         hostname = port = ''
         try:
             hostname, port = args[0:2]
@@ -57,6 +63,15 @@ def init(config):
             else:
                 pass
 
+        if pid:
+            pid_file = 'server_%s.pid' % port
+            if os.path.isfile(pid_file):
+                print('ERROR: PID file "%s" exists, server already running?' %
+                        pid_file)
+                sys.exit(1)  # XXX: should be handled by `make_command`
+            with open(pid_file, 'w') as fh:
+                fh.write('%s\n' % pid)
+
         if hostname and port:
             config['server_host'] = {
                     'scheme': 'http',
@@ -65,7 +80,11 @@ def init(config):
             }
         server_module = config.get('wsgi_server', 'tiddlyweb.web.serve')
         imported_module = __import__(server_module, {}, {}, ['start_server'])
-        imported_module.start_server(config)
+        try:
+            imported_module.start_server(config)
+        finally:
+            if pid:
+                os.remove(pid_file)
 
     @make_command()
     def userpass(args):
