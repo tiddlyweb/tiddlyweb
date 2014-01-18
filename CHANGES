@@ -1,3 +1,8 @@
+2.0.1 Sat Jan 18 18:16:53 UTC 2014
+
+  * Encoding tweaks to align with Python 3 expectations.
+  * Make sure wsgiapp is included in the MANIFEST.
+
 2.0.0 Sat Jan  4 14:13:12 UTC 2014
 
   * Add support for Python 3.3
