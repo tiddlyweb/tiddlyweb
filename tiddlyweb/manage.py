@@ -65,15 +65,7 @@ def handle(args):
     """
     from tiddlyweb.config import config
 
-    options = {}
-    parameterized = ['load']
-    while len(args) > 1 and args[1].startswith('--'):
-        option = args.pop(1)[2:]
-        if option in parameterized:
-            options[option] = args.pop(1)
-        else:
-            options[option] = None
-
+    options = _extract_options(args, ['load'])
     if 'load' in options:
         _external_load(options['load'], config)
     if 'tb' in options:
@@ -144,3 +136,19 @@ def _import_module_config(module):
     """
     imported_module = __import__(module, {}, {}, ['config'])
     return imported_module.config
+
+
+def _extract_options(args, parameterized=[]):
+    """
+    Parse command-line arguments, removing options prefixed by "--" from the
+    given list and returning them as a dictionary.
+    """
+    options = {}
+    while len(args) > 1 and args[1].startswith('--'):
+        option = args.pop(1)[2:]
+        if option in parameterized:
+            options[option] = args.pop(1)
+        else:
+            options[option] = None
+
+    return options
