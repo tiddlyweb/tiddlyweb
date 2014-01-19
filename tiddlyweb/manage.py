@@ -64,11 +64,12 @@ def handle(args):
     Dispatch to the proper function for the command given in ``args[1]``.
     """
     from tiddlyweb.config import config
-    try:
-        if args[1] == '--load':
-            args = _external_load(args, config)
-    except IndexError:
-        args = []
+
+    options = _extract_options(args, ['load'])
+    if 'load' in options:
+        _external_load(options['load'], config)
+    if 'tb' in options:
+        config['twanager.tracebacks'] = True
 
     initialize_logging(config)
 
@@ -113,13 +114,10 @@ def handle(args):
         usage('No matching command found')
 
 
-def _external_load(args, config):
+def _external_load(module, config):
     """
-    Load a module from ``args[2]`` to adjust configuration.
+    Load a module to adjust configuration.
     """
-    module = args[2]
-    args = [args[0]] + args[3:]
-
     if module.endswith('.py'):
         path, module = os.path.split(module)
         module = module.replace('.py', '')
@@ -131,8 +129,6 @@ def _external_load(args, config):
 
     merge_config(config, imported_config)
 
-    return args
-
 
 def _import_module_config(module):
     """
@@ -140,3 +136,19 @@ def _import_module_config(module):
     """
     imported_module = __import__(module, {}, {}, ['config'])
     return imported_module.config
+
+
+def _extract_options(args, parameterized=[]):
+    """
+    Parse command-line arguments, removing options prefixed by "--" from the
+    given list and returning them as a dictionary.
+    """
+    options = {}
+    while len(args) > 1 and args[1].startswith('--'):
+        option = args.pop(1)[2:]
+        if option in parameterized:
+            options[option] = args.pop(1)
+        else:
+            options[option] = None
+
+    return options
