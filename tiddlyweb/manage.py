@@ -64,11 +64,20 @@ def handle(args):
     Dispatch to the proper function for the command given in ``args[1]``.
     """
     from tiddlyweb.config import config
-    try:
-        if args[1] == '--load':
-            args = _external_load(args, config)
-    except IndexError:
-        args = []
+
+    options = {}
+    parameterized = ['load']
+    while len(args) > 1 and args[1].startswith('--'):
+        option = args.pop(1)[2:]
+        if option in parameterized:
+            options[option] = args.pop(1)
+        else:
+            options[option] = None
+
+    if 'load' in options:
+        _external_load(options['load'], config)
+    if 'tb' in options:
+        config['twanager.tracebacks'] = True
 
     initialize_logging(config)
 
@@ -113,13 +122,10 @@ def handle(args):
         usage('No matching command found')
 
 
-def _external_load(args, config):
+def _external_load(module, config):
     """
-    Load a module from ``args[2]`` to adjust configuration.
+    Load a module to adjust configuration.
     """
-    module = args[2]
-    args = [args[0]] + args[3:]
-
     if module.endswith('.py'):
         path, module = os.path.split(module)
         module = module.replace('.py', '')
@@ -130,8 +136,6 @@ def _external_load(args, config):
         imported_config = _import_module_config(module)
 
     merge_config(config, imported_config)
-
-    return args
 
 
 def _import_module_config(module):
