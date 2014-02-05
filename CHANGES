@@ -1,3 +1,7 @@
+2.0.2 Wed Feb  5 19:45:04 UTC 2014
+
+  * Make policies compoarable.
+
 2.0.1 Sat Jan 18 18:16:53 UTC 2014
 
   * Encoding tweaks to align with Python 3 expectations.
