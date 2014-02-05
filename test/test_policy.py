@@ -134,3 +134,23 @@ def test_confirm_attributes():
     for name in ['read', 'write', 'create', 'delete', 'accept',
             'manage', 'owner']:
         assert name in attributes
+
+
+def test_policy_equal():
+    policy1 = Policy()
+    policy2 = Policy()
+    policy1.owner = 'frank'
+    policy1.read = ['cow', 'moo']
+    policy2.owner = 'frank'
+    policy2.read = ['cow', 'moo']
+
+    assert policy1 == policy2
+
+    policy2.read = ['cow', 'noo']
+
+    assert policy1 != policy2
+
+    policy2.read = ['cow', 'moo']
+    policy2.owner = 'sam'
+
+    assert policy1 != policy2
