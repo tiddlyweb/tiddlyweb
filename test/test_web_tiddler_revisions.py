@@ -172,10 +172,10 @@ def test_tiddler_revision_list_json_fat():
     assert response['status'] == '200'
     assert len(info) == 4
     assert info[0]['revision'] == 4
-    assert info[0]['modifier'] == 'Frank'
-    assert info[0]['creator'] == 'JohnSmith'
-    assert info[-1]['modifier'] == 'JohnSmith'
-    assert info[-1]['creator'] == 'JohnSmith'
+    assert info[0]['modifier'] == 'GUEST'
+    assert info[0]['creator'] == 'GUEST'
+    assert info[-1]['modifier'] == 'GUEST'
+    assert info[-1]['creator'] == 'GUEST'
     assert 'I have something to sell' in info[0]['text']
 
     response, resp_content = http.requestU(

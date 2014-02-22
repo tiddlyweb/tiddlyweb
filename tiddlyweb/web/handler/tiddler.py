@@ -263,8 +263,7 @@ def _put_tiddler(environ, start_response, tiddler):
         _check_and_validate_tiddler(environ, bag, tiddler)
 
         user = environ['tiddlyweb.usersign']['name']
-        if not user == 'GUEST':
-            tiddler.modifier = user
+        tiddler.modifier = user
         tiddler.modified = current_timestring()
 
         try:

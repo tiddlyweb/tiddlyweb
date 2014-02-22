@@ -120,6 +120,7 @@ def test_put_tiddler_txt():
             headers={'Content-Type': 'text/plain'},
             body=encoded_body)
     tiddler_url = response['location']
+    assert response['status'] == '204', content
 
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
@@ -133,16 +134,22 @@ def test_put_tiddler_txt():
 
     response, content = http.requestU(tiddler_url,
             headers={'Accept': 'text/plain'})
-    contents = content.strip().rstrip().split('\n')
-    texts = text_put_body.strip().rstrip().split('\n')
-    assert contents[-1] == texts[-1]  # text
-    assert contents[-3] == texts[-3]  # type
-    assert contents[-4] == texts[-4]  # tags
+    contents = content.strip().split('\n\n')[0].split('\n')
+    texts = text_put_body.strip().split('\n\n')[0].split('\n')
+    received_headers = {key : value
+            for key, value in [line.split(': ') for line in contents]}
+    sent_headers = {key : value
+            for key, value in [line.split(': ') for line in texts]}
+    assert sent_headers['type'] == received_headers['type']
+    assert sent_headers['tags'] == received_headers['tags']
+    assert sent_headers['modifier'] == 'JohnSmith'
+    assert received_headers['modifier'] == 'GUEST'
+    assert received_headers['creator'] == 'GUEST'
 
 
 def test_put_tiddler_txt_with_modifier():
     """
-    Putting a tiddler with modifier and no auth should use input.
+    Putting a tiddler with modifier and no auth should result in default.
     """
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
@@ -157,7 +164,8 @@ def test_put_tiddler_txt_with_modifier():
     response, content = http.requestU(tiddler_url,
             headers={'Accept': 'text/plain'})
     assert 'modified: 2' in content
-    assert 'modifier: ArthurDent' in content
+    assert 'modifier: GUEST' in content
+    assert 'creator: GUEST' in content
 
 
 def test_put_tiddler_json():
@@ -614,7 +622,7 @@ def test_get_tiddler_text_created():
 
     contents = content.strip().rstrip().split('\n')
     assert contents[-1] == u'Towels'  # text
-    assert contents[0] == u'creator: JohnSmith'
+    assert contents[0] == u'creator: GUEST'
     assert match(r'^created: \d{14}$', contents[1])
 
 
