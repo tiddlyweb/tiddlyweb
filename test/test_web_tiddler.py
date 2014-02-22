@@ -140,9 +140,9 @@ def test_put_tiddler_txt():
     assert contents[-4] == texts[-4]  # tags
 
 
-def test_put_tiddler_txt_no_modified():
+def test_put_tiddler_txt_with_modifier():
     """
-    Putting a tiddler with no modifier should make a default.
+    Putting a tiddler with modifier and no auth should use input.
     """
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag0/tiddlers/TestOne',
@@ -157,6 +157,7 @@ def test_put_tiddler_txt_no_modified():
     response, content = http.requestU(tiddler_url,
             headers={'Accept': 'text/plain'})
     assert 'modified: 2' in content
+    assert 'modifier: ArthurDent' in content
 
 
 def test_put_tiddler_json():
