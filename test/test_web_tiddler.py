@@ -136,10 +136,10 @@ def test_put_tiddler_txt():
             headers={'Accept': 'text/plain'})
     contents = content.strip().split('\n\n')[0].split('\n')
     texts = text_put_body.strip().split('\n\n')[0].split('\n')
-    received_headers = {key : value
-            for key, value in [line.split(': ') for line in contents]}
-    sent_headers = {key : value
-            for key, value in [line.split(': ') for line in texts]}
+    received_headers = dict((key, value)
+            for key, value in [line.split(': ') for line in contents])
+    sent_headers = dict((key, value)
+            for key, value in [line.split(': ') for line in texts])
     assert sent_headers['type'] == received_headers['type']
     assert sent_headers['tags'] == received_headers['tags']
     assert sent_headers['modifier'] == 'JohnSmith'
