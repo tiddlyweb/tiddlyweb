@@ -1,3 +1,7 @@
+2.1.0 Sat Feb 22 21:46:41 UTC 2014
+
+  * Never accept modifier from incoming data on tiddler PUT.
+
 2.0.2 Wed Feb  5 19:45:04 UTC 2014
 
   * Make policies compoarable.
