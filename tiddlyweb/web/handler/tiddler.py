@@ -319,6 +319,7 @@ def validate_tiddler_headers(environ, tiddler):
     last_modified = None
     if request_method == 'GET':
         last_modified_string = http_date_from_timestamp(tiddler.modified)
+        last_modified = ('Last-Modified', last_modified_string)
         cache_header = 'no-cache'
         if CACHE_CONTROL_FIELD in tiddler.fields:
             try:
@@ -330,7 +331,6 @@ def validate_tiddler_headers(environ, tiddler):
                 last_modified=last_modified_string,
                 cache_control=cache_header)
         if not incoming_etag:  # only check last-modified if no etag
-            last_modified = ('Last-Modified', last_modified_string)
             check_last_modified(environ, last_modified_string,
                     etag=this_tiddlers_etag,
                     cache_control=cache_header)
