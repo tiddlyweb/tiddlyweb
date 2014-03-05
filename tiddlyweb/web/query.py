@@ -53,38 +53,8 @@ class Query(object):
         content_type = environ.get('CONTENT_TYPE', '')
         environ['tiddlyweb.query'] = {}
         environ['tiddlyweb.input_files'] = []
-        if environ['REQUEST_METHOD'].upper() == 'POST' and (
-                content_type.startswith(
-                    'application/x-www-form-urlencoded') or
-                content_type.startswith('multipart/form-data')):
-            try:
-                posted_data = {}
-                if content_type.startswith(
-                            'application/x-www-form-urlencoded'):
-                    try:
-                        length = environ['CONTENT_LENGTH']
-                        content = read_request_body(environ, length)
-                        if not ENCODED_QUERY:
-                            content = content.decode('UTF-8')
-                    except KeyError as exc:
-                        raise HTTP400('Invalid post, unable to read content: %s'
-                                % exc)
-                    posted_data = parse_qs(content, keep_blank_values=True)
-                elif content_type.startswith('multipart/form-data'):
-                    field_storage = FieldStorage(fp=environ['wsgi.input'],
-                            environ=environ, keep_blank_values=True)
-                    for key in field_storage.keys():
-                        if field_storage[key].filename:
-                            environ['tiddlyweb.input_files'].append(
-                                    field_storage[key])
-                        else:
-                            posted_data[key] = field_storage.getlist(key)
-                _update_tiddlyweb_query(environ, posted_data,
-                        encoded=ENCODED_QUERY)
-            except UnicodeDecodeError as exc:
-                raise HTTP400(
-                        'Invalid encoding in query data, utf-8 required: %s',
-                        exc)
+        if _cgi_post(environ, content_type):
+            _process_post(environ, content_type)
         filters, leftovers = parse_for_filters(
                 environ.get('QUERY_STRING', ''), environ)
         query_data = parse_qs(leftovers, keep_blank_values=True)
@@ -104,3 +74,47 @@ def _update_tiddlyweb_query(environ, data, encoded=True):
                 for value in values]) for key, values in data.items()]))
     else:
         environ['tiddlyweb.query'].update(data)
+
+
+def _cgi_post(environ, content_type):
+    return (environ['REQUEST_METHOD'].upper() == 'POST'
+            and (
+                content_type.startswith('application/x-www-form-urlencoded')
+                or content_type.startswith('multipart/form-data')))
+
+
+def _process_post(environ, content_type):
+    try:
+        if content_type.startswith('application/x-www-form-urlencoded'):
+            posted_data = _process_encodedform(environ)
+        elif content_type.startswith('multipart/form-data'):
+            posted_data = _process_multipartform(environ)
+        _update_tiddlyweb_query(environ, posted_data, encoded=ENCODED_QUERY)
+    except UnicodeDecodeError as exc:
+        raise HTTP400(
+                'Invalid encoding in query data, utf-8 required: %s',
+                exc)
+
+
+def _process_encodedform(environ):
+    try:
+        length = environ['CONTENT_LENGTH']
+        content = read_request_body(environ, length)
+        if not ENCODED_QUERY:
+            content = content.decode('UTF-8')
+    except KeyError as exc:
+        raise HTTP400('Invalid post, unable to read content: %s' % exc)
+    return parse_qs(content, keep_blank_values=True)
+
+
+def _process_multipartform(environ):
+    posted_data = {}
+    field_storage = FieldStorage(fp=environ['wsgi.input'],
+            environ=environ, keep_blank_values=True)
+    for key in field_storage.keys():
+        if field_storage[key].filename:
+            environ['tiddlyweb.input_files'].append(
+                    field_storage[key])
+        else:
+            posted_data[key] = field_storage.getlist(key)
+    return posted_data
