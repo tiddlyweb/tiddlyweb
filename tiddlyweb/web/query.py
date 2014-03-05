@@ -76,7 +76,7 @@ class Query(object):
                     for key in field_storage.keys():
                         if field_storage[key].filename:
                             environ['tiddlyweb.input_files'].append(
-                                    field_storage[key].file)
+                                    field_storage[key])
                         else:
                             posted_data[key] = field_storage.getlist(key)
                 _update_tiddlyweb_query(environ, posted_data,
