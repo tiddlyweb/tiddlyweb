@@ -49,6 +49,10 @@ class Query(object):
         query parameters. Put the results in ``tiddlyweb.query`` in
         environ. The query names and values are decoded from UTF-8 to
         unicode.
+
+        If there are file uploads in posted form data, the files are
+        not put into ``tiddlyweb.query``. Instead the file handles are
+        appended to ``tiddlyweb.input_files``.
         """
         content_type = environ.get('CONTENT_TYPE', '')
         environ['tiddlyweb.query'] = {}
@@ -68,6 +72,9 @@ class Query(object):
 
 
 def _update_tiddlyweb_query(environ, data, encoded=True):
+    """
+    Update ``tiddlyweb.query`` with decoded form data.
+    """
     if encoded:
         environ['tiddlyweb.query'].update(dict(
             [(unicode(key, 'UTF-8'), [unicode(value, 'UTF-8')
@@ -77,6 +84,9 @@ def _update_tiddlyweb_query(environ, data, encoded=True):
 
 
 def _cgi_post(environ, content_type):
+    """
+    Test if there is POST form data to handle.
+    """
     return (environ['REQUEST_METHOD'].upper() == 'POST'
             and (
                 content_type.startswith('application/x-www-form-urlencoded')
@@ -84,6 +94,9 @@ def _cgi_post(environ, content_type):
 
 
 def _process_post(environ, content_type):
+    """
+    Process posted form data.
+    """
     try:
         if content_type.startswith('application/x-www-form-urlencoded'):
             posted_data = _process_encodedform(environ)
@@ -97,6 +110,10 @@ def _process_post(environ, content_type):
 
 
 def _process_encodedform(environ):
+    """
+    Read ``application/x-www-form-urlencoded`` from the request
+    body and parse for form data and return.
+    """
     try:
         length = environ['CONTENT_LENGTH']
         content = read_request_body(environ, length)
@@ -108,6 +125,11 @@ def _process_encodedform(environ):
 
 
 def _process_multipartform(environ):
+    """
+    Read ``multipart/form-data`` using ``FieldStorage``, return
+    a dictionary of form data and set ``tiddlyweb.input_files``
+    to a list of available files.
+    """
     posted_data = {}
     field_storage = FieldStorage(fp=environ['wsgi.input'],
             environ=environ, keep_blank_values=True)
