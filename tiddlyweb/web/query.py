@@ -17,6 +17,8 @@ except ImportError:
         from cgi import parse_qs
     ENCODED_QUERY = True
 
+from cgi import FieldStorage
+
 from httpexceptor import HTTP400
 
 from tiddlyweb.filters import parse_for_filters
@@ -50,18 +52,33 @@ class Query(object):
         """
         content_type = environ.get('CONTENT_TYPE', '')
         environ['tiddlyweb.query'] = {}
-        if environ['REQUEST_METHOD'].upper() == 'POST' and \
-                content_type.startswith('application/x-www-form-urlencoded'):
+        environ['tiddlyweb.input_files'] = []
+        if environ['REQUEST_METHOD'].upper() == 'POST' and (
+                content_type.startswith(
+                    'application/x-www-form-urlencoded') or
+                content_type.startswith('multipart/form-data')):
             try:
-                try:
-                    length = environ['CONTENT_LENGTH']
-                    content = read_request_body(environ, length)
-                    if not ENCODED_QUERY:
-                        content = content.decode('UTF-8')
-                except KeyError as exc:
-                    raise HTTP400('Invalid post, unable to read content: %s'
-                            % exc)
-                posted_data = parse_qs(content, keep_blank_values=True)
+                posted_data = {}
+                if content_type.startswith(
+                            'application/x-www-form-urlencoded'):
+                    try:
+                        length = environ['CONTENT_LENGTH']
+                        content = read_request_body(environ, length)
+                        if not ENCODED_QUERY:
+                            content = content.decode('UTF-8')
+                    except KeyError as exc:
+                        raise HTTP400('Invalid post, unable to read content: %s'
+                                % exc)
+                    posted_data = parse_qs(content, keep_blank_values=True)
+                elif content_type.startswith('multipart/form-data'):
+                    field_storage = FieldStorage(fp=environ['wsgi.input'],
+                            environ=environ, keep_blank_values=True)
+                    for key in field_storage.keys():
+                        if field_storage[key].filename:
+                            environ['tiddlyweb.input_files'].append(
+                                    field_storage[key].file)
+                        else:
+                            posted_data[key] = field_storage.getlist(key)
                 _update_tiddlyweb_query(environ, posted_data,
                         encoded=ENCODED_QUERY)
             except UnicodeDecodeError as exc:
