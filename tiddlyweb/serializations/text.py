@@ -189,9 +189,12 @@ class Serialization(SerializationInterface):
             for field, value in [x.split(': ', 1) for x in headers]:
                 if value == '':
                     continue
-                if hasattr(tiddler, field):
-                    setattr(tiddler, field, value)
-                else:
+                try:
+                    if hasattr(tiddler, field):
+                        setattr(tiddler, field, value)
+                    else:
+                        tiddler.fields[field] = value.replace('\\n', '\n')
+                except UnicodeEncodeError:
                     tiddler.fields[field] = value.replace('\\n', '\n')
         except ValueError as exc:
             raise TiddlerFormatError('bad headers in tiddler: %s, %s' %

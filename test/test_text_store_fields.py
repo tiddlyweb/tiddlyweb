@@ -15,10 +15,10 @@ from .fixtures import reset_textstore, _teststore
 
 def setup_module(module):
     reset_textstore()
+    module.store = _teststore()
 
 
 def test_title_fields():
-    store = _teststore()
     store.put(Bag('abag'))
 
     tiddler = Tiddler('one', 'abag')
@@ -29,3 +29,16 @@ def test_title_fields():
     assert tiddler.fields['title'] == 'two'
 
     pytest.raises(TiddlerFormatError, 'store.put(tiddler)')
+
+
+def test_unicode_field_keys():
+    tiddler = Tiddler('two', 'abag')
+    tiddler.text = 'hi'
+    tiddler.fields = {u'h\u8976': 'two'}
+
+    assert tiddler.fields[u'h\u8976'] == 'two'
+
+    store.put(tiddler)
+
+    tiddler = store.get(Tiddler('two', 'abag'))
+    assert tiddler.fields[u'h\u8976'] == 'two'
