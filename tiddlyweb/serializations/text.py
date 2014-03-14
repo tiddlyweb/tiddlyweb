@@ -163,10 +163,13 @@ class Serialization(SerializationInterface):
         """
         fields = []
         for key in tiddler.fields:
-            if hasattr(tiddler, key):
-                raise TiddlerFormatError(
-                        'reserved key "%s" in fields of tiddler: %s'
-                        % (key, tiddler.title))
+            try:
+                if hasattr(tiddler, key):
+                    raise TiddlerFormatError(
+                            'reserved key "%s" in fields of tiddler: %s'
+                            % (key, tiddler.title))
+            except UnicodeEncodeError:
+                pass
             # XXX: TiddlyWiki legacy remnant?
             if not key.startswith('server.'):
                 value = unicode(tiddler.fields[key])
