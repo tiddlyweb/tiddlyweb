@@ -2,11 +2,20 @@
 Test utilities in tiddlyweb.web.util
 """
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+from httpexceptor import HTTP400
+
 from tiddlyweb.web.util import (tiddler_url, datetime_from_http_date,
-        encode_name)
+        encode_name, read_request_body)
 from tiddlyweb.model.tiddler import Tiddler
 
 from tiddlyweb.config import config
+
+import pytest
 
 
 def setup_module(module):
@@ -64,3 +73,20 @@ def test_encode_name():
     Ensure encode name encodes similarly to JavaScript.
     """
     assert encode_name("~alpha's (.beta*)!") == "~alpha's%20(.beta*)!"
+
+
+def test_read_request_body():
+    data = 'content of handle'
+    data_length = len(data)
+    fh = StringIO(data)
+    environ['wsgi.input'] = fh
+
+    output = read_request_body(environ, data_length)
+    assert output == data
+
+    output = read_request_body(environ, data_length)
+    assert output == ''
+
+    fh.close()
+
+    pytest.raises(HTTP400, 'read_request_body(environ, data_length)')
