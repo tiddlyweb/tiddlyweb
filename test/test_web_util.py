@@ -10,7 +10,9 @@ except ImportError:
 from httpexceptor import HTTP400
 
 from tiddlyweb.web.util import (tiddler_url, datetime_from_http_date,
-        encode_name, read_request_body)
+        encode_name, bag_etag, recipe_etag, read_request_body)
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 
 from tiddlyweb.config import config
@@ -90,3 +92,27 @@ def test_read_request_body():
     fh.close()
 
     pytest.raises(HTTP400, 'read_request_body(environ, data_length)')
+
+
+def test_bag_etag():
+    """
+    Explicitly test bag_etag method (not used by the core code).
+    """
+    bag1 = Bag('foo')
+    bag1.desc = 'desc'
+    bag2 = Bag('foo')
+    bag2.desc = 'desc'
+
+    assert bag_etag(environ, bag1) == bag_etag(environ, bag2)
+
+
+def test_recipe_etag():
+    """
+    Explicitly test recipe_etag method (not used by the core code).
+    """
+    recipe1 = Recipe('foo')
+    recipe1.desc = 'desc'
+    recipe2 = Recipe('foo')
+    recipe2.desc = 'desc'
+
+    assert recipe_etag(environ, recipe1) == recipe_etag(environ, recipe2)
