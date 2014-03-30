@@ -131,10 +131,14 @@ def _process_multipartform(environ):
     to a list of available files.
     """
     posted_data = {}
-    field_storage = FieldStorage(fp=environ['wsgi.input'],
-            environ=environ, keep_blank_values=True)
+    try:
+        field_storage = FieldStorage(fp=environ['wsgi.input'],
+                environ=environ, keep_blank_values=True)
+    except ValueError as exc:
+        raise HTTP400('Invalid post, bad form: %s' % exc)
     for key in field_storage.keys():
-        if field_storage[key].filename:
+        if (hasattr(field_storage[key], 'filename')
+                and field_storage[key].filename):
             environ['tiddlyweb.input_files'].append(
                     field_storage[key])
         else:
