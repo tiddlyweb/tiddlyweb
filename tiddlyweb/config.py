@@ -192,7 +192,8 @@ DEFAULT_CONFIG = {
         'serializers': {
             'text/html': ['html', 'text/html; charset=UTF-8'],
             'text/plain': ['text', 'text/plain; charset=UTF-8'],
-            'application/json': ['json', 'application/json']},
+            'application/json': ['json', 'application/json'],
+            'application/x-tiddler+json': ['json', 'application/json']},
         'default_serializer': 'text/html',
         'extractors': [
             'http_basic',
