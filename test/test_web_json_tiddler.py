@@ -40,7 +40,7 @@ def test_tiddler_is_json():
 
 
 def test_get_tiddler_as_default():
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json1')
 
     assert response['status'] == '200'
@@ -48,7 +48,7 @@ def test_get_tiddler_as_default():
     assert '"alpha": "one"' in content
     assert '"text"' not in content
 
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json1',
             headers={'Accept': 'application/json'})
 
@@ -59,7 +59,7 @@ def test_get_tiddler_as_default():
 
 
 def test_get_tiddler_as_tiddler():
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json1',
             headers={'Accept': 'application/x-tiddler+json'})
 
@@ -74,7 +74,7 @@ def test_put_tiddler_x_tiddler():
     json_external_data = simplejson.dumps({'type': 'application/json',
         'text': json_internal_data})
 
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json2',
             headers={'Content-Type': 'application/x-tiddler+json'},
             method='PUT',
@@ -83,13 +83,13 @@ def test_put_tiddler_x_tiddler():
     assert response['status'] == '204'
 
     location = response['location']
-    response, content = http.request(location,
+    response, content = http.requestU(location,
             headers={'Accept': 'application/json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
     assert '"alpha": "one"' in content
 
-    response, content = http.request(location,
+    response, content = http.requestU(location,
             headers={'Accept': 'application/x-tiddler+json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
@@ -101,7 +101,7 @@ def test_put_tiddler_json():
     json_external_data = simplejson.dumps({'type': 'application/json',
         'text': json_internal_data})
 
-    response, content = http.request(
+    response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json3',
             headers={'Content-Type': 'application/json'},
             method='PUT',
@@ -110,13 +110,13 @@ def test_put_tiddler_json():
     assert response['status'] == '204'
 
     location = response['location']
-    response, content = http.request(location,
+    response, content = http.requestU(location,
             headers={'Accept': 'application/json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
     assert '"alpha": "one"' in content
 
-    response, content = http.request(location,
+    response, content = http.requestU(location,
             headers={'Accept': 'application/x-tiddler+json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
