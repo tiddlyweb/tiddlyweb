@@ -61,7 +61,7 @@ def test_get_tiddler_as_default():
 def test_get_tiddler_as_tiddler():
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json1',
-            headers={'Accept': 'application/x-tiddler+json'})
+            headers={'Accept': 'application/vnd.tiddlyweb+json'})
 
     assert response['status'] == '200'
     assert 'application/json' in response['content-type']
@@ -76,7 +76,7 @@ def test_put_tiddler_x_tiddler():
 
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/holder/tiddlers/json2',
-            headers={'Content-Type': 'application/x-tiddler+json'},
+            headers={'Content-Type': 'application/vnd.tiddlyweb+json'},
             method='PUT',
             body=json_external_data)
 
@@ -90,7 +90,7 @@ def test_put_tiddler_x_tiddler():
     assert '"alpha": "one"' in content
 
     response, content = http.requestU(location,
-            headers={'Accept': 'application/x-tiddler+json'})
+            headers={'Accept': 'application/vnd.tiddlyweb+json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
     assert r'\"alpha\": \"one\"' in content
@@ -117,7 +117,7 @@ def test_put_tiddler_json():
     assert '"alpha": "one"' in content
 
     response, content = http.requestU(location,
-            headers={'Accept': 'application/x-tiddler+json'})
+            headers={'Accept': 'application/vnd.tiddlyweb+json'})
     assert response['status'] == '200'
     assert response['content-type'].startswith('application/json')
     assert r'\"alpha\": \"one\"' in content
