@@ -138,7 +138,7 @@ class Tiddler(object):
         """
         Create a new Tiddler object.
 
-        A ``title`` is required to ceate a tiddler.
+        A ``title`` is required to create a tiddler.
         """
         self.title = title
         self.bag = bag
