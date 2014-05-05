@@ -17,6 +17,11 @@ def test_cookie_name_value():
     assert string == 'test1=alpha1; httponly'
 
 
+def test_unicode_cookie_value():
+    string = make_cookie('tiddlyweb', u'\u3454')
+    assert string == 'tiddlyweb=%E3%91%94; httponly'
+
+
 def test_cookie_path():
     string = make_cookie('test2', 'alpha2', path='/path/to/location')
 

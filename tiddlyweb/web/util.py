@@ -208,8 +208,7 @@ def make_cookie(name, value, mac_key=None, path=None,
     """
     cookie = SimpleCookie()
 
-    # XXX: backwards to 2.x?
-    #value = value.encode('utf-8')
+    value = encode_name(value)
 
     if mac_key:
         secret_string = sha('%s%s' % (value, mac_key)).hexdigest()

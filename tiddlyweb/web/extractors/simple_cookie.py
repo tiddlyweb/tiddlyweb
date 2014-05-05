@@ -11,7 +11,7 @@ from httpexceptor import HTTP400
 from tiddlyweb.web.extractors import ExtractorInterface
 from tiddlyweb.util import sha
 
-from tiddlyweb.fixups import SimpleCookie, CookieError
+from tiddlyweb.fixups import SimpleCookie, CookieError, unquote
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,6 +40,7 @@ class Extractor(ExtractorInterface):
             usersign, cookie_secret = cookie_value.rsplit(':', 1)
 
             if cookie_secret == sha('%s%s' % (usersign, secret)).hexdigest():
+                usersign = unquote(usersign)
                 user = self.load_user(environ, usersign)
                 return {"name": user.usersign, "roles": user.list_roles()}
         except CookieError as exc:
