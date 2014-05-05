@@ -42,7 +42,7 @@ See the documentation for other modules and packages within tiddlyweb
 for additional details.
 """
 
-__version__ = '2.1.5'
+__version__ = '2.2.0'
 __author__ = 'Chris Dent (cdent@peermore.com)'
 __copyright__ = 'Copyright UnaMesa Association 2008-2014'
 __contributors__ = ['Frederik Dohr', 'Zac Bir', 'Jeremy Ruston']
