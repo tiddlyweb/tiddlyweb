@@ -41,10 +41,6 @@ def setup_module(module):
     module.store.put(user)
 
 
-def teardown_module(module):
-    config['extractors'].pop()
-
-
 def test_extractor_not_there_in_config():
     config['extractors'].append('saliva')
     response, content = http.requestU(

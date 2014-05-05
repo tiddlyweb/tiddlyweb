@@ -5,12 +5,15 @@ Test a full suite of unicode interactions.
 
 from tiddlyweb.fixups import unquote
 import simplejson
+import httplib2
 
 from .fixtures import (reset_textstore, _teststore, initialize_app,
         get_http)
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.user import User
+from tiddlyweb.config import config
 
 encoded_name = 'aaa%25%E3%81%86%E3%81%8F%E3%81%99'
 name = unquote(encoded_name)
@@ -21,6 +24,29 @@ def setup_module(module):
     initialize_app()
     reset_textstore()
     module.store = _teststore()
+    user = User(name)
+    user.set_password(name)
+    module.store.put(user)
+    module.cookie = None
+
+
+def test_unicode_cookie():
+    global cookie
+    nested_response = None
+    try:
+        response, content = http.requestU(
+                'http://our_test_domain:8001/challenge/cookie_form',
+                method='POST',
+                body='user=%s&password=%s' % (encoded_name, encoded_name),
+                redirections=0,
+                headers={'Content-type': 'application/x-www-form-urlencoded'}
+                )
+    except httplib2.RedirectLimit as e:
+        nested_response = e
+
+    assert nested_response.response['status'] == '303', content
+    cookie = nested_response.response['set-cookie']
+    assert encoded_name in cookie
 
 
 def test_put_unicode_bag():
@@ -33,12 +59,14 @@ def test_put_unicode_bag():
             'http://our_test_domain:8001/bags/%s' % encoded_bag_name,
             method='PUT',
             body=bag_json,
-            headers={'Content-Type': 'application/json'})
+            headers={'Content-Type': 'application/json',
+                'Cookie': cookie})
     assert response['status'] == '204'
 
     bag = Bag(bag_name)
     bag = store.get(bag)
     assert bag.policy.delete == bag_policy['delete']
+    assert bag.policy.owner == name
     assert bag.name == bag_name
 
 
