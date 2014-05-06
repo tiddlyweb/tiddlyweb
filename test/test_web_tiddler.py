@@ -1027,6 +1027,15 @@ def test_put_json_pseudo_binary():
             'http://our_test_domain:8001/bags/bag5/tiddlers/intjson.json')
 
     assert response['status'] == '200', content
+
+    info = simplejson.loads(content)
+    assert info['text'] == json_internal
+
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/intjson',
+            headers={'Accept': 'application/json'})
+
+    assert response['status'] == '200', content
     assert content == json_internal
 
 
