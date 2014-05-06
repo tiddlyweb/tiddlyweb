@@ -1150,6 +1150,14 @@ def test_put_canonical():
     info = simplejson.loads(content)
     assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
 
+    # vnd.tiddlyweb
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler',
+            headers={'Accept': 'application/vnd.tiddlyweb+json'})
+    assert response['status'] == '200'
+    info = simplejson.loads(content)
+    assert info['fields']['_canonical_uri'] == 'http://peermore.com/images/peermore.png'
+
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag5/tiddlers/cantiddler.json')
     assert response['status'] == '200'
