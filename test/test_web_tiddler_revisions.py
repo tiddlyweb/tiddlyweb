@@ -185,7 +185,7 @@ def test_tiddler_revision_list_json_fat():
                 'content-type': 'text/plain'},
             body=content)
     assert response['status'] == '415'
-    assert 'application/json required' in resp_content
+    assert 'application/vnd.tiddlyweb+json required' in resp_content
 
     response, content = http.requestU(
             'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
@@ -203,6 +203,17 @@ def test_tiddler_revision_list_json_fat():
 
     info = simplejson.loads(content)
     assert response['status'] == '200'
+
+    # confirm new media type
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0/revisions.json',
+            method='POST',
+            headers={'if-match': '"bag28/tiddler0/5"',
+                'content-type': 'application/vnd.tiddlyweb+json'},
+            body=content)
+
+    assert response['status'] == '204'
+    assert response['location'] == 'http://our_test_domain:8001/bags/bag28/tiddlers/tiddler0'
 
 
 def test_etag_generation():

@@ -19,6 +19,9 @@ from tiddlyweb.web.util import (get_route_value, content_length_and_type,
 from tiddlyweb.web.handler.tiddler import validate_tiddler_headers
 
 
+CHRONICLE_TYPES = ['application/json', 'application/vnd.tiddlyweb+json']
+
+
 def post_revisions(environ, start_response):
     """
     Handle a ``POST`` of a chronicle of :py:class:`tiddlers
@@ -40,8 +43,8 @@ def _post_tiddler_revisions(environ, start_response, tiddler):
     """
     length, content_type = content_length_and_type(environ)
 
-    if content_type != 'application/json':
-        raise HTTP415('application/json required')
+    if content_type not in CHRONICLE_TYPES:
+        raise HTTP415('application/vnd.tiddlyweb+json required')
 
     # we need a matching etag in order to be able to do
     # this operation. This will raise exception if there

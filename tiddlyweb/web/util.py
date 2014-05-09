@@ -98,7 +98,7 @@ def get_route_value(environ, name):
     return value.replace('%2F', '/')
 
 
-def get_serialize_type(environ, collection=False):
+def get_serialize_type(environ, collection=False, accept_type=False):
     """
     Look in the ``environ`` to determine which :py:class:`serializer
     <tiddlyweb.serializer.Serializer>` should be used for this request.
@@ -111,7 +111,7 @@ def get_serialize_type(environ, collection=False):
     ext = environ.get('tiddlyweb.extension')
     extension_types = config['extension_types']
     serializers = config['serializers']
-    serialize_type, mime_type = None, None
+    serialize_type, mime_type, candidate_type = None, None, None
 
     if collection and ext and ext not in extension_types:
         accept = [None]
@@ -133,7 +133,10 @@ def get_serialize_type(environ, collection=False):
         if environ.get('REQUEST_METHOD') == 'GET':
             default_serializer = config['default_serializer']
             serialize_type, mime_type = serializers[default_serializer]
-    return serialize_type, mime_type
+    if accept_type:
+        return serialize_type, mime_type, candidate_type
+    else:
+        return serialize_type, mime_type
 
 
 def handle_extension(environ, resource_name):

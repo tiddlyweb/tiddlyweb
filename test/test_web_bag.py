@@ -386,6 +386,45 @@ def test_no_delete_store():
     pass
 
 
+def test_put_bag_vnd():
+    """
+    PUT a new bag to the server with vnd.tiddlyweb
+    """
+    json_string = simplejson.dumps(dict(policy=policy_dict))
+
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bagpuss',
+            method='PUT',
+            headers={'Content-Type': 'application/vnd.tiddlyweb+json'},
+            body=json_string)
+    location = response['location']
+
+    assert response['status'] == '204'
+    assert location == 'http://our_test_domain:8001/bags/bagpuss'
+
+    response, content = http.requestU(location,
+            method='GET',
+            headers={'Accept': 'application/vnd.tiddlyweb+json'})
+
+    assert response['status'] == '200'
+    assert 'etag' in response
+    etag = response['etag']
+    info = simplejson.loads(content)
+    assert info['policy']['delete'] == policy_dict['delete']
+
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bagpuss.json',
+            method='GET',
+            headers={'if-none-match': etag})
+    assert response['status'] == '304', content
+
+    response, content = http.requestU(
+            'http://our_test_domain:8001/bags/bagpuss.json',
+            method='GET',
+            headers={'if-none-match': etag + 'foo'})
+    assert response['status'] == '200', content
+
+
 def _put_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!

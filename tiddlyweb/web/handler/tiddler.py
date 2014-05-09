@@ -421,7 +421,8 @@ def _get_tiddler_content(environ, tiddler):
     config = environ['tiddlyweb.config']
     default_serializer = config['default_serializer']
     default_serialize_type = config['serializers'][default_serializer][0]
-    serialize_type, mime_type = get_serialize_type(environ)
+    serialize_type, mime_type, accept = get_serialize_type(
+            environ, accept_type=True)
     extension = environ.get('tiddlyweb.extension')
     serialized = False
 
@@ -433,7 +434,7 @@ def _get_tiddler_content(environ, tiddler):
 
     if not renderable(tiddler, environ):
         if (serialize_type == default_serialize_type or
-                mime_type.startswith(tiddler.type) or
+                accept.startswith(tiddler.type) or
                 extension == 'html'):
             mime_type = tiddler.type
             content = tiddler.text
