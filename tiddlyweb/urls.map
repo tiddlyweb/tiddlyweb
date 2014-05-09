@@ -40,7 +40,7 @@
 # List of recipes in a variety of formats.
 # Supports GET: text/plain: list of recipe_name
 #               text/html: list of links to /recipes/{recipe_name}
-#               application/json: list of recipe_name
+#               application/vnd.tiddlyweb+json: list of recipe_name
 
 
 /recipes/{recipe_name:segment}
@@ -50,9 +50,9 @@
 # Representation of a Recipe resource, an ordered list of bag+filter
 # Supports GET: text/plain: text representation of list of bags+filters
 #               text/html: links to bag with filter query string
-#               application/json: list of bag, filter pairs
+#               application/vnd.tiddlyweb+json: list of bag, filter pairs
 # Supports PUT: text/plain: text representation (bag+filter URL)
-#               application/json: list of bag, filter lists (as follows)
+#               application/vnd.tiddlyweb+json: list of bag, filter lists (as follows)
 #                 [ [ bag_name, filter_string], [ bag_name, filter_string] ]
 
 
@@ -61,7 +61,7 @@
 # The collection of Tiddlers created by this Recipe.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers _in their bag_
-#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               application/vnd.tiddlyweb+json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}
@@ -70,10 +70,10 @@
 # A single Tiddler produced by this Recipe.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
-#               application/json: a JSON dict representing the tiddler
+#               application/vnd.tiddlyweb+json: a JSON dict representing the tiddler
 # Supports PUT: text/plain: a text representation of a tiddler (see
 #                             tiddlyweb.serializations.text)
-#               application/json: a JSON dict representation of a tiddler (see
+#               application/vnd.tiddlyweb+json: a JSON dict representation of a tiddler (see
 #                                   tiddlyweb.serializations.json)
 
 
@@ -82,7 +82,7 @@
 # A single revision of a Tiddler produced by this Recipe.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
-#               application/json: a JSON dict representing the tiddler
+#               application/vnd.tiddlyweb+json: a JSON dict representing the tiddler
 
 
 /recipes/{recipe_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
@@ -90,7 +90,7 @@
 # The collection of revisions of a single Tiddler produced by this Recipe.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers _in their bag_
-#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               application/vnd.tiddlyweb+json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 
 
 /bags[.{format}]
@@ -98,7 +98,7 @@
 # The list of bags available on the system (to the current user)
 # Supports GET: text/plain: a list of bag names
 #               text/html: a list of bag names linking to the the list of tidders in the bag
-#               application/json: a list of bag names
+#               application/vnd.tiddlyweb+json: a list of bag names
 
 
 /bags/{bag_name:segment}
@@ -106,9 +106,9 @@
     PUT tiddlyweb.web.handler.bag:put
     DELETE tiddlyweb.web.handler.bag:delete
 # A representation of a single Bag.
-# Supports GET: application/json: The Bag description and Policy.
+# Supports GET: application/vnd.tiddlyweb+json: The Bag description and Policy.
 #               text/html: The bag description and link to tiddlers.
-# Supports PUT: application/json: 
+# Supports PUT: application/vnd.tiddlyweb+json: 
 # Supports DELETE: (removes the bag and its tiddlers)
 
 
@@ -117,7 +117,7 @@
 # The collection of Tiddlers in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers 
-#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               application/vnd.tiddlyweb+json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}
     GET tiddlyweb.web.handler.tiddler:get
@@ -126,10 +126,10 @@
 # A single Tiddler located in this Bag.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
-#               application/json: a JSON dict representing the tiddler
+#               application/vnd.tiddlyweb+json: a JSON dict representing the tiddler
 # Supports PUT: text/plain: a text representation of a tiddler (see
 #                             tiddlyweb.serializations.text)
-#               application/json: a JSON dict representation of a tiddler (see
+#               application/vnd.tiddlyweb+json: a JSON dict representation of a tiddler (see
 #                                   tiddlyweb.serializations.json)
 # Supports DELETE: (irrevocably removes the tiddler)
 
@@ -139,7 +139,7 @@
 # A single revision of a Tiddler in this Bag.
 # Supports GET: text/plain: a text representation of the tiddler
 #               text/html: the tiddler rendered as HTML, in a div
-#               application/json: a JSON dict representing the tiddler
+#               application/vnd.tiddlyweb+json: a JSON dict representing the tiddler
 
 
 /bags/{bag_name:segment}/tiddlers/{tiddler_name:segment}/revisions[.{format}]
@@ -148,8 +148,8 @@
 # The collection of revisions of a single Tiddler in this Bag.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers
-#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
-#         POST: application/json: a JSON list of tiddlers which have content set (a text key and value)
+#               application/vnd.tiddlyweb+json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#         POST: application/vnd.tiddlyweb+json: a JSON list of tiddlers which have content set (a text key and value)
 
 
 /search[.{format}]
@@ -159,7 +159,7 @@
 # Returns a collection of Tiddlers.
 # Supports GET: text/plain: a list of tiddler names
 #               text/html: a list of links to the tiddlers
-#               application/json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
+#               application/vnd.tiddlyweb+json: a JSON list of dicts of tiddlers {title: ... revision:  ... bag: ...}
 
 
 /challenge

@@ -446,6 +446,28 @@ def test_recipe_bad_filter_400():
     assert response['status'] == '400', content
 
 
+def test_put_recipe():
+    """
+    Get a recipe as json then put it back with a different name
+    using vnd.tiddlyweb.
+    """
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/long.json',
+            method='GET')
+
+    json = content
+    assert response['status'] == '200'
+
+    response, content = http.requestU(
+            'http://our_test_domain:8001/recipes/other',
+            method='PUT', headers={'Content-Type':
+                'application/vnd.tiddlyweb+json'},
+            body=json)
+
+    assert response['status'] == '204'
+    assert response['location'] == 'http://our_test_domain:8001/recipes/other'
+
+
 def _put_bag_policy(bag_name, policy_dict):
     """
     XXX: This is duplicated from test_web_tiddler. Clean up!
