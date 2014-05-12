@@ -1,3 +1,8 @@
+2.3.0 Mon May 12 15:30:54 UTC 2014
+
+  * Switch default JSON Accept from application/json to
+    application/vnd.tiddlyweb+json.
+
 2.2.0 Mon May  5 16:34:26 UTC 2014
 
   * Allow Unicode usernames in cookie-based auth and extraction.
