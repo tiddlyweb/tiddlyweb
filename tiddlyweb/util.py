@@ -115,7 +115,8 @@ def pseudo_binary(content_type):
             or content_type.endswith('+xml')
             or content_type.endswith('+json')
             or content_type == 'application/javascript'
-            or content_type == 'application/json')
+            or content_type == 'application/json'
+            or content_type == 'application/x-tiddler-dictionary')
 
 
 def read_utf8_file(filename):
