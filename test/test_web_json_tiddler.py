@@ -15,6 +15,7 @@ from tiddlyweb.model.tiddler import Tiddler
 from .fixtures import (reset_textstore, _teststore, initialize_app,
         get_http)
 
+
 def setup_module(module):
     initialize_app()
 

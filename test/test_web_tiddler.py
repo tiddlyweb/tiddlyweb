@@ -3,7 +3,6 @@ Test that GETting a tiddler in some form.
 """
 
 import os
-import sys
 
 import py.test
 

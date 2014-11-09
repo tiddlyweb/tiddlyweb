@@ -99,8 +99,6 @@ def figure_tests(app):
 def setup_module(module):
     tests = do_run()
     http_test(tests, 'http://our_test_domain:8001')
-    # the below is for testing tiddlynode
-    #http_test(tests, 'http://127.0.0.1:8000')
 
 
 def do_run():
