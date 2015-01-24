@@ -29,11 +29,11 @@ def base(environ, start_response):
 
     challenger_info = []
     for system in auth_systems:
-        uri = _challenger_url(environ, system)
+        challenger_uri = _challenger_url(environ, system)
         try:
             challenger = _get_challenger_module(system)
-            label = getattr(challenger, 'desc', uri)
-            challenger_info.append((uri, label))
+            challenger_label = getattr(challenger, 'desc', challenger_uri)
+            challenger_info.append((challenger_uri, challenger_label))
         except ImportError:
             pass
 

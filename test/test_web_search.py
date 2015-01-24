@@ -3,11 +3,11 @@ Test search via the web.
 """
 
 
-import sys
 import simplejson
 
 from .fixtures import (muchdata, reset_textstore, _teststore, initialize_app,
         get_http)
+
 
 http = get_http()
 

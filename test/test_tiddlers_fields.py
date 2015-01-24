@@ -109,6 +109,3 @@ def test_tiddler_fields_as_html():
     assert 'field1="value1"' in wiki_string
     assert 'field2="value2"' in wiki_string
     assert 'title="feebles"' in wiki_string
-
-#def test_fields_in_tiddler_put():
-#def test_fields_in_tiddler_get():

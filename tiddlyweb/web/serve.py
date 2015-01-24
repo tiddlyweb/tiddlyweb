@@ -133,7 +133,10 @@ class RequestStarter(object):
         request_uri = environ.get('REQUEST_URI', environ.get('RAW_URI', ''))
 
         if request_uri:
-            request_uri = request_uri.decode()
+            try:
+                request_uri = request_uri.decode()
+            except AttributeError:
+                pass
             path_info = environ.get('PATH_INFO', '')
             script_name = environ.get('SCRIPT_NAME', '')
             query_string = environ.get('QUERY_STRING', '')

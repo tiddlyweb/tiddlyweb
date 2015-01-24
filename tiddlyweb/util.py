@@ -18,6 +18,14 @@ except ImportError:
     from sha import sha as sha1
 
 
+PSEUDO_BINARY_TYPES = [
+    'application/javascript',
+    'application/json',
+    # TiddlyWiki5 Textual Data Dictionary
+    'application/x-tiddler-dictionary'
+]
+
+
 class LockError(IOError):
     """
     This process was unable to get a lock.
@@ -114,8 +122,7 @@ def pseudo_binary(content_type):
     return (content_type.startswith('text/')
             or content_type.endswith('+xml')
             or content_type.endswith('+json')
-            or content_type == 'application/javascript'
-            or content_type == 'application/json')
+            or content_type in PSEUDO_BINARY_TYPES)
 
 
 def read_utf8_file(filename):
@@ -230,11 +237,11 @@ def _initialize_logging(config):
     """
     logger = logging.getLogger('tiddlyweb')
     logger.propagate = False
-    logger.setLevel(logging._levelNames[config['log_level']])
+    logger.setLevel(config['log_level'])
 
     plugin_logger = logging.getLogger('tiddlywebplugins')
     plugin_logger.propagate = False
-    plugin_logger.setLevel(logging._levelNames[config['log_level']])
+    plugin_logger.setLevel(config['log_level'])
 
     from logging import FileHandler
     file_handler = FileHandler(

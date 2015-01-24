@@ -429,7 +429,7 @@ def _get_tiddler_content(environ, tiddler):
     # If this is a tiddler with a CANONICAL_URI_FIELD redirect
     # there unless we are requesting a json form
     if (CANONICAL_URI_FIELD in tiddler.fields
-            and not CANONICAL_URI_PASS_TYPE in mime_type):
+            and CANONICAL_URI_PASS_TYPE not in mime_type):
         raise HTTP302(tiddler.fields[CANONICAL_URI_FIELD])
 
     if not renderable(tiddler, environ):
