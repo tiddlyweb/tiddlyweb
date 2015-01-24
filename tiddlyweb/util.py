@@ -230,11 +230,11 @@ def _initialize_logging(config):
     """
     logger = logging.getLogger('tiddlyweb')
     logger.propagate = False
-    logger.setLevel(logging._levelNames[config['log_level']])
+    logger.setLevel(config['log_level'])
 
     plugin_logger = logging.getLogger('tiddlywebplugins')
     plugin_logger.propagate = False
-    plugin_logger.setLevel(logging._levelNames[config['log_level']])
+    plugin_logger.setLevel(config['log_level'])
 
     from logging import FileHandler
     file_handler = FileHandler(
