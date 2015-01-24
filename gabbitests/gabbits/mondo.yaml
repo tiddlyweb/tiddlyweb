@@ -1,0 +1,16 @@
+fixtures:
+    - TempInstance
+    - MondoData
+
+tests:
+    - name: all those bags
+      url: /bags?sort=name
+      request_headers:
+        accept: application/json
+      response_headers:
+        content-type: application/json
+      response_json_paths:
+        $[25]: z
+
+    - name: recipes
+      url: /recipes

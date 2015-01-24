@@ -1,5 +1,5 @@
 # simple Makefile for some common tasks
-.PHONY: clean cleanagain test dist release pypi peermore tagv
+.PHONY: clean cleanagain test dist release pypi peermore tagv gabbi
 
 clean:
 	find . -name "*.pyc" |xargs rm || true
@@ -21,6 +21,12 @@ cleanagain:
 
 test:
 	py.test -x --tb=short test
+
+gabbi: .testrepository
+	testr run --parallel
+
+.testrepository:
+	testr init
 
 dist: test
 	python setup.py sdist

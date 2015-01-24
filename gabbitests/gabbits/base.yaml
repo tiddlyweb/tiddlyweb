@@ -1,0 +1,10 @@
+
+fixtures:
+    - TempInstance
+
+tests:
+    - name: root
+      url: /
+      response_strings:
+          - TiddlyWeb
+          - /bags
