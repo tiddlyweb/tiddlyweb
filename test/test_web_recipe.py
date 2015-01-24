@@ -446,7 +446,7 @@ def test_recipe_bad_filter_400():
     assert response['status'] == '400', content
 
 
-def test_put_recipe():
+def test_put_recipe_vnd():
     """
     Get a recipe as json then put it back with a different name
     using vnd.tiddlyweb.

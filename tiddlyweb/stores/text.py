@@ -349,7 +349,7 @@ class Store(StorageInterface):
         try:
             revisions = sorted(
                     int(x) for x in
-                        self._numeric_files_in_dir(tiddler_base_filename))
+                    self._numeric_files_in_dir(tiddler_base_filename))
         except OSError as exc:
             raise NoTiddlerError('unable to list revisions in tiddler: %s'
                     % exc)

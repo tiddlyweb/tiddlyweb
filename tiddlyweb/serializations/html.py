@@ -147,8 +147,9 @@ class Serialization(SerializationInterface):
 %s
 </ul>
 %s
-""" % (self._header(), self._tiddler_list_header(representation_link),
-        container_link, output, self._footer())
+""" % (self._header(),
+          self._tiddler_list_header(representation_link),
+          container_link, output, self._footer())
 
     def recipe_as(self, recipe):
         """

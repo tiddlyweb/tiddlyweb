@@ -25,7 +25,7 @@ class Serialization(SerializationInterface):
     :py:class:`Store <tiddlyweb.store.Store>`.
     """
 
-    tiddler_members = [field for field in Tiddler.data_members if not field in
+    tiddler_members = [field for field in Tiddler.data_members if field not in
             ['title', 'text', 'fields']]
 
     def list_recipes(self, recipes):
