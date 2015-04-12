@@ -211,7 +211,7 @@ def _process_request_body(environ, tiddler):
             else:
                 tiddler.text = content
     except UnicodeDecodeError as exc:
-        raise HTTP400('unable to decode tiddler, utf-8 expected: %s', exc)
+        raise HTTP400('unable to decode tiddler, utf-8 expected: %s' % exc)
 
 
 def _check_and_validate_tiddler(environ, bag, tiddler):

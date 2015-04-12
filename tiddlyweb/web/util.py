@@ -246,7 +246,7 @@ def read_request_body(environ, length):
         input_handle = environ['wsgi.input']
         return input_handle.read(length)
     except (KeyError, ValueError, IOError) as exc:
-        raise HTTP400('Error reading request body: %s', exc)
+        raise HTTP400('Error reading request body: %s' % exc)
 
 
 def server_base_url(environ):

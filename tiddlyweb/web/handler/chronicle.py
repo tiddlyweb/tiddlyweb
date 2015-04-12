@@ -101,4 +101,4 @@ def _store_tiddler_revisions(environ, content, tiddler):
             serializer.from_string(json_string)
             store.put(tiddler)
     except NoTiddlerError as exc:
-        raise HTTP400('Unable to store tiddler revisions: %s', exc)
+        raise HTTP400('Unable to store tiddler revisions: %s' % exc)
