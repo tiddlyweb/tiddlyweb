@@ -107,7 +107,7 @@ def test_bad_cookie():
             method='GET',
             headers={'Cookie': 'foo(bar)bar="monkey"'})
     assert response['status'] == '400'
-    assert 'Illegal key value' in content
+    assert 'Illegal key ' in content
 
 
 def test_malformed_tiddlyweb_cookie():
