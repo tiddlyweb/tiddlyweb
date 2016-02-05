@@ -1,13 +1,13 @@
 language: python
 python:
-- 2.6
 - 2.7
-- 3.3
+- 3.4
+- 3.5
 
 install:
 - pip install -U pip
 - pip install -U setuptools pytest
-- pip install --use-mirrors \
+- pip install -U \
     `python -c 'from setup import META; print(" ".join(META["extras_require"]["testing"] + META["install_requires"]))'`
 
 script: make test
