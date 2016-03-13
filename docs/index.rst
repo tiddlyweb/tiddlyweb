@@ -17,8 +17,8 @@ TiddlyWeb is an open source `HTTP API`_  for storing and accessing
 flexible and composable microcontent. It is also a toolkit for
 `tiddlers`_ on the web and a robust server side for `TiddlyWiki`_.
 
-.. _HTTP API: http://tiddlyweb.tiddlyspace.com/HTTP%20API
-.. _tiddlers: http://tiddlyweb.tiddlyspace.com/tiddler
+.. _HTTP API: http://docs.tiddlyweb.com/HTTP%20API
+.. _tiddlers: http://docs.tiddlyweb.com/tiddler
 .. _TiddlyWiki: http://tiddlywiki.com/
 
 TiddlyWeb by itself provides the base HTTP API, storage engine and
@@ -36,14 +36,14 @@ TiddlyWeb is to install `tiddlywebwiki`_.
 See the `quick start`_ documentation for that.
 
 .. _tiddlywebwiki: https://pypi.python.org/pypi/tiddlywebwiki
-.. _quick start: http://tiddlyweb.tiddlyspace.com/Quick%20Start
+.. _quick start: http://docs.tiddlyweb.com/Quick%20Start
 
 Additional Documentation
 ------------------------
 
 Besides package documentation starting at :doc:`tiddlyweb`, additional
 documentation can be found at http://tiddlyweb.com and
-http://tiddlyweb.tiddlyspace.com/.
+http://docs.tiddlyweb.com/.
 
 Note that all of this documentation is in a constant state of flux, as
 it should be. If you find an error please help to fix it.

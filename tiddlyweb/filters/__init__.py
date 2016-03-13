@@ -1,7 +1,7 @@
 """
 Overarching handler for TiddlyWeb `filters`_.
 
-.. _filters: http://tiddlyweb.tiddlyspace.com/filter
+.. _filters: http://docs.tiddlyweb.com/filter
 
 Filters provide an extensible syntax for limiting any :py:class:`Collection
 <tiddlyweb.model.collections.Collection>` by attributes on the entities in

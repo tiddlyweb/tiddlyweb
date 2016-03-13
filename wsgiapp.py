@@ -52,8 +52,7 @@ For more mod_wsgi configuration info see:
 
 Information on using nginx and uwsgi can be found at:
 
-    http://tiddlyweb.tiddlyspace.com/Using%20nginx%20and%20uwsgi
-    http://tsdbup.tiddlyspace.com/WorkingNginxConfig
+    http://docs.tiddlyweb.com/Using%20nginx%20and%20uwsgi
 
 ##################################################
 

@@ -11,7 +11,7 @@
 * TiddlyWeb Home Site: http://tiddlyweb.com/
 * TiddlyWeb Git Repo: http://github.com/tiddlyweb/tiddlyweb
 
-For additional installation instructions see http://tiddlyweb.tiddlyspace.com/
+For additional installation instructions see http://docs.tiddlyweb.com/
 
 **With the 2.0.0 release of TiddlyWeb versions 2.7 and 3.3 and beyond
 of Python are supported. Earlier versions may work but are not explicitly
@@ -96,9 +96,6 @@ Miscellaneous
 See http://pypi.python.org/pypi?%3Aaction=search&term=tiddlywebplugins
 for plugins that TiddlyWeb can use with itself.
 
-See http://tiddlyspace.com/ for a shared hosting service built on
-TiddlyWeb.
-
 If you have questions or contributions on making TiddlyWeb work
 for you, please post to the TiddlyWeb group at google groups:
 
@@ -112,12 +109,10 @@ Please report bugs and issues at the github issue tracker:
 
 There are a few tools that make exploring TiddlyWeb a bit easier:
 
-* HTTP API explorer: http://tiddlyweb.tiddlyspace.com/explorer
 * Python API explorer: ``twanager interact`` (once in type ``locals().keys()``)
-* HTTP API quick ref: http://tiddlyweb.tiddlyspace.com/HTTP%20API
-* x-doc serialization: http://tiddlyweb.tiddlyspace.com/HTTP%20API.x-doc
+* HTTP API quick ref: http://docs.tiddlyweb.com/HTTP%20API
 
 License
 =======
 TiddlyWeb is released under the BSD License and is copyright
-2008-2014 UnaMesa Association.
+2008-2016 UnaMesa Association.

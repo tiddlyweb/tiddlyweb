@@ -2,7 +2,7 @@
 For more complete information also see:
 
 * http://tiddlyweb.com/
-* http://tiddlyweb.tiddlyspace.com/
+* http://docs.tiddlyweb.com/
 * http://tiddlyweb.readthedocs.org/
 
 TiddlyWeb is a web service and library for managing and manipulating
@@ -23,27 +23,27 @@ and authentication (see :mod:`tiddlyweb.web.challenger` and
 :mod:`tiddlyweb.web.extractor`) systems. There are also ``system_plugins`` and
 ``twanager_plugins`` for further extensibility.
 
-.. _tiddlywebconfig.py: http://tiddlyweb.tiddlyspace.com/tiddlywebconfig.py
+.. _tiddlywebconfig.py: http://docs.tiddlyweb.com/tiddlywebconfig.py
 
 The primary resources presented by the server are `Recipes`_, `Bags`_ and
 `Tiddlers`_. See the :mod:`tiddlyweb.model` package.
 
-.. _Recipes: http://tiddlyweb.tiddlyspace.com/recipe
-.. _Bags: http://tiddlyweb.tiddlyspace.com/bag
-.. _Tiddlers: http://tiddlyweb.tiddlyspace.com/tiddler
+.. _Recipes: http://docs.tiddlyweb.com/recipe
+.. _Bags: http://docs.tiddlyweb.com/bag
+.. _Tiddlers: http://docs.tiddlyweb.com/tiddler
 
 TiddlyWeb includes `twanager`_, a command line tool for doing a variety
 of TiddlyWeb activities. Run ``twanager`` without arguments for a list
 of commands.
 
-.. _twanager: http://tiddlyweb.tiddlyspace.com/twanager
+.. _twanager: http://docs.tiddlyweb.com/twanager
 
 See the documentation for other modules and packages within tiddlyweb
 for additional details.
 """
 
-__version__ = '2.4.1'
+__version__ = '2.4.2'
 __author__ = 'Chris Dent (cdent@peermore.com)'
-__copyright__ = 'Copyright UnaMesa Association 2008-2014'
+__copyright__ = 'Copyright UnaMesa Association 2008-2016'
 __contributors__ = ['Frederik Dohr', 'Zac Bir', 'Jeremy Ruston']
 __license__ = 'BSD'
