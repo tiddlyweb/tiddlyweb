@@ -36,7 +36,7 @@ META = {
         'httpexceptor>=1.3.0',
         'selector>=0.10.0',
         'simplejson',
-        'html5lib',
+        'html5lib<0.99999999',
         'python-mimeparse>0.1.3'
     ],
     'extras_require': {
