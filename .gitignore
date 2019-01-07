@@ -13,3 +13,4 @@ tiddlyweb.egg-info
 covered
 .coverage
 __pycache__
+.tox

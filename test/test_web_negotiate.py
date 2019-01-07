@@ -59,7 +59,7 @@ def test_accept_extension():
 
 def test_file_extension():
     """
-    Given a \.extension in the path_info,
+    Given a .extension in the path_info,
     determine the type we want.
     """
     environ['PATH_INFO'] = '/bags/bag0/tiddlers/bigbox.html'
