@@ -79,8 +79,10 @@ def test_recipe_delete():
     deleted_recipe = Recipe('deleteme')
     store.delete(deleted_recipe)
 
-    py.test.raises(NoRecipeError, 'store.get(deleted_recipe)')
-    py.test.raises(NoRecipeError, 'store.delete(deleted_recipe)')
+    with py.test.raises(NoRecipeError):
+        store.get(deleted_recipe)
+    with py.test.raises(NoRecipeError):
+        store.delete(deleted_recipe)
 
 
 def test_recipe_no_recipe():
@@ -124,5 +126,7 @@ def test_recipe_weird_bag():
 
 def test_recipe_bad_name():
     recipe = Recipe('../badname')
-    py.test.raises(NoRecipeError, 'store.put(recipe)')
-    py.test.raises(NoRecipeError, 'store.get(recipe)')
+    with py.test.raises(NoRecipeError):
+        store.put(recipe)
+    with py.test.raises(NoRecipeError):
+        store.get(recipe)

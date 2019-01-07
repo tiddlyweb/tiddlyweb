@@ -26,9 +26,11 @@ def test_ranged_limit():
 
 
 def test_negative_limit():
-    py.test.raises(ValueError, 'limit(tiddlers, index=-1, count=2)')
+    with py.test.raises(ValueError):
+        limit(tiddlers, index=-1, count=2)
 
 
 def test_exception():
     filter, _ = parse_for_filters('limit=-1,2')
-    py.test.raises(FilterError, 'recursive_filter(filter, tiddlers)')
+    with py.test.raises(FilterError):
+        recursive_filter(filter, tiddlers)

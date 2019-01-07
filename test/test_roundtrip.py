@@ -49,7 +49,8 @@ def test_no_bag_for_tiddler():
     tiddler.text = 'no bag here'
     tiddler.bag = u'no bag of this name'
 
-    py.test.raises(NoBagError, "store.put(tiddler)")
+    with py.test.raises(NoBagError):
+        store.put(tiddler)
 
 
 def test_put_and_get_tiddler():
@@ -76,7 +77,8 @@ def test_get_diddle_put_tiddler():
     new_tiddler.bag = u'bag2'
     new_tiddler.text = 'bag2 here'
 
-    py.test.raises(NoBagError, "store.put(new_tiddler)")
+    with py.test.raises(NoBagError):
+        store.put(new_tiddler)
 
     bag = Bag('bag2')
     store.put(bag)

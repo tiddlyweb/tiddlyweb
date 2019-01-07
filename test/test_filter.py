@@ -115,7 +115,8 @@ def test_sort_filter_by_bogus():
     """
     Attempt to sort by a field that does not exist. Get an error.
     """
-    py.test.raises(FilterError, 'filter("sort=monkey", tiddlers)')
+    with py.test.raises(FilterError):
+        filter("sort=monkey", tiddlers)
 
 
 def test_count_filter():

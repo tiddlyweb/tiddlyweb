@@ -28,7 +28,8 @@ def test_user_create():
 
 
 def test_user_args():
-    py.test.raises(TypeError, 'user = User()')
+    with py.test.raises(TypeError):
+        user = User()
 
 
 def test_user_stringification():

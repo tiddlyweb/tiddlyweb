@@ -59,7 +59,8 @@ def test_simple_get():
 
 def test_failed_get():
     bag = Bag(name='bagnine')
-    py.test.raises(NoBagError, 'store.get(bag)')
+    with py.test.raises(NoBagError):
+        store.get(bag)
 
 
 def test_delete():
@@ -74,8 +75,10 @@ def test_delete():
     deleted_bag = Bag('deleteme')
     store.delete(deleted_bag)
 
-    py.test.raises(NoBagError, 'store.get(deleted_bag)')
-    py.test.raises(NoBagError, 'store.delete(deleted_bag)')
+    with py.test.raises(NoBagError):
+        store.get(deleted_bag)
+    with py.test.raises(NoBagError):
+        store.delete(deleted_bag)
 
 
 def test_list():

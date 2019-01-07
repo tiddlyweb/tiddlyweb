@@ -14,8 +14,8 @@ def setup_module(module):
 
 
 def test_module_load_fail():
-    py.test.raises(ImportError,
-            'serializer = Serializer("notexistserialization")')
+    with py.test.raises(ImportError):
+        serializer = Serializer("notexistserialization")
 
 
 def test_load_module_on_other_path():
@@ -32,5 +32,7 @@ def test_wrong_class():
     serializer.object = foo
     string = 'haha'
 
-    py.test.raises(AttributeError, 'serializer.to_string()')
-    py.test.raises(AttributeError, 'serializer.from_string(string)')
+    with py.test.raises(AttributeError):
+        serializer.to_string()
+    with py.test.raises(AttributeError):
+        serializer.from_string(string)

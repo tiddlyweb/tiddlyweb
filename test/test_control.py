@@ -49,7 +49,8 @@ def test_determine_bag_for_tiddler():
         ('bagone', u'select=tag:foo'),
         ('bagtwo', u'select=title:monkeys')])
 
-    py.test.raises(NoBagError, 'determine_bag_for_tiddler(recipe, tiddler)')
+    with py.test.raises(NoBagError):
+        determine_bag_for_tiddler(recipe, tiddler)
 
 
 def test_bag_object_in_recipe():
@@ -81,8 +82,8 @@ def test_index_query_in_recipe():
     recipe.store = store
 
     tiddler = Tiddler('swell')
-    py.test.raises(ImportError,
-            'determine_bag_from_recipe(recipe, tiddler, environ)')
+    with py.test.raises(ImportError):
+        determine_bag_from_recipe(recipe, tiddler, environ)
 
     config['indexer'] = 'test.indexer'
     bag = determine_bag_from_recipe(recipe, tiddler, environ)
@@ -93,8 +94,8 @@ def test_index_query_in_recipe():
     assert bag.name == 'noop'
 
     tiddler = Tiddler('carnaby')  # nowhere
-    py.test.raises(NoBagError,
-            'determine_bag_from_recipe(recipe, tiddler, environ)')
+    with py.test.raises(NoBagError):
+        determine_bag_from_recipe(recipe, tiddler, environ)
 
 
 def test_readable_tiddlers_by_bag():

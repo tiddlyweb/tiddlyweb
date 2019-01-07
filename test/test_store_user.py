@@ -42,7 +42,8 @@ def test_simple_get():
 
 
 def test_failed_get():
-    py.test.raises(NoUserError, 'store.get(User("nothere"))')
+    with py.test.raises(NoUserError):
+        store.get(User("nothere"))
 
 
 def test_list_users():
@@ -82,8 +83,10 @@ def test_delete():
     deleted_user = User('deleteme')
     store.delete(deleted_user)
 
-    py.test.raises(NoUserError, 'store.get(deleted_user)')
-    py.test.raises(NoUserError, 'store.delete(deleted_user)')
+    with py.test.raises(NoUserError):
+        store.get(deleted_user)
+    with py.test.raises(NoUserError):
+        store.delete(deleted_user)
 
 
 def test_complex_username():
