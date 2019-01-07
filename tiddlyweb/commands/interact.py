@@ -20,7 +20,6 @@ variables to interact with the current instance's :py:class:`store
 These are enough to do most operations.
 """
 
-import sys
 import atexit
 import code
 import rlcompleter
@@ -31,15 +30,15 @@ def launch_shell(config, store, args):
     Establish the basic environment for the shell and then start it.
     """
     # make basic API elements available within the REPL context
-    from tiddlyweb.model.recipe import Recipe
-    from tiddlyweb.model.bag import Bag
-    from tiddlyweb.model.policy import Policy
-    from tiddlyweb.model.tiddler import Tiddler
-    from tiddlyweb.model.user import User
-    from tiddlyweb.serializer import Serializer
-    from tiddlyweb import control
-    from tiddlyweb import util
-    from tiddlyweb.web import util as web
+    from tiddlyweb.model.recipe import Recipe  # noqa
+    from tiddlyweb.model.bag import Bag  # noqa
+    from tiddlyweb.model.policy import Policy  # noqa
+    from tiddlyweb.model.tiddler import Tiddler  # noqa
+    from tiddlyweb.model.user import User  # noqa
+    from tiddlyweb.serializer import Serializer  # noqa
+    from tiddlyweb import control  # noqa
+    from tiddlyweb import util  # noqa
+    from tiddlyweb.web import util as web  # noqa
 
     environ = {
         'tiddlyweb.config': config,
