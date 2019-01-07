@@ -89,7 +89,8 @@ def test_read_request_body():
 
     fh.close()
 
-    pytest.raises(HTTP400, 'read_request_body(environ, data_length)')
+    with pytest.raises(HTTP400):
+        read_request_body(environ, data_length)
 
 
 def test_bag_etag():

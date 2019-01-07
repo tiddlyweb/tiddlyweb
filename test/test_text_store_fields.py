@@ -28,7 +28,8 @@ def test_title_fields():
     assert tiddler.title == 'one'
     assert tiddler.fields['title'] == 'two'
 
-    pytest.raises(TiddlerFormatError, 'store.put(tiddler)')
+    with pytest.raises(TiddlerFormatError):
+        store.put(tiddler)
 
 
 def test_unicode_field_keys():
