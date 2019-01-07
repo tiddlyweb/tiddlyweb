@@ -41,16 +41,6 @@ def setup_module(module):
     module.recipe.set_recipe(recipe_list)
 
 
-@pytest.mark.skipif(py_version > 2, reason='python 2 required')
-def test_generated_text():
-    serializer = Serializer('text')
-    serializer.object = recipe
-    string = serializer.to_string()
-
-    assert string == expected_string
-    assert '%s' % serializer == expected_string
-
-
 def test_simple_recipe():
     recipe = Recipe('other')
     recipe.set_recipe([('bagbuzz', '')])
@@ -97,22 +87,6 @@ def test_json_recipe():
     other_string = serializer.to_string()
 
     assert string == other_string
-
-
-@pytest.mark.skipif(py_version > 2, reason='python 2 required')
-def test_old_text():
-    """
-    Send in text without a description
-    and make sure we are able to accept it.
-    """
-    recipe = Recipe('other')
-    serializer = Serializer('text')
-    serializer.object = recipe
-    serializer.from_string(no_desc)
-
-    output = serializer.to_string()
-
-    assert output == expected_string
 
 
 def test_generated_html():

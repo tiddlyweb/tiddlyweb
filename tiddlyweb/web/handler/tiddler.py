@@ -268,7 +268,7 @@ def _put_tiddler(environ, start_response, tiddler):
 
         try:
             check_bag_constraint(environ, bag, 'accept')
-        except (PermissionsError) as exc:
+        except (PermissionsError):
             _validate_tiddler_content(environ, tiddler)
 
         store.put(tiddler)

@@ -13,7 +13,8 @@ from .fixtures import get_store
 
 
 def test_module_load_fail():
-    py.test.raises(ImportError, 'store = Store("notexiststore")')
+    with py.test.raises(ImportError):
+        store = Store("notexiststore")
 
 
 def test_unsupported_class():
@@ -23,4 +24,5 @@ def test_unsupported_class():
 
     foo = Foo()
     store = get_store(config)
-    py.test.raises(AttributeError, 'store.put(foo)')
+    with py.test.raises(AttributeError):
+        store.put(foo)

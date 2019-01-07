@@ -1,17 +1,27 @@
 language: python
 sudo: false
-python:
-- 2.7
-- 3.4
-- 3.5
-
+dist: xenial
 install:
-- pip install -U pip
-- pip install -U setuptools pytest
-- pip install -U \
-    `python -c 'from setup import META; print(" ".join(META["extras_require"]["testing"] + META["install_requires"]))'`
+    - pip install tox
+script:
+    - tox
 
-script: make test
+matrix:
+    include:
+        - env: TOXENV=py27
+        - env: TOXENV=pep8
+        - python: pypy
+          env: TOXENV=pypy
+          dist: trusty
+        - python: pypy3
+          env: TOXENV=pypy3
+          dist: trusty
+        - python: 3.5
+          env: TOXENV=py35
+        - python: 3.6
+          env: TOXENV=py36
+        - python: 3.7
+          env: TOXENV=py37
 
 notifications:
   irc: "irc.freenode.net#tiddlyweb"

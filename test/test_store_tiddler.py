@@ -133,7 +133,8 @@ def test_failed_delete_not_there():
         store.delete(tiddler)
     except NoTiddlerError:
         pass
-    py.test.raises(NoTiddlerError, 'store.delete(tiddler)')
+    with py.test.raises(NoTiddlerError):
+        store.delete(tiddler)
 
 
 def test_failed_delete_perms():
@@ -145,7 +146,8 @@ def test_failed_delete_perms():
     path = os.path.join('store', 'bags', 'bagone', 'tiddlers', 'TiddlerOne')
     assert os.path.exists(path)
     os.chmod(path, 0o555)
-    py.test.raises(IOError, 'store.delete(tiddler)')
+    with py.test.raises(IOError):
+        store.delete(tiddler)
     os.chmod(path, 0o755)
 
 
@@ -157,13 +159,15 @@ def test_store_lock():
         py.test.skip('skipping this test for non-text store')
 
     write_lock('store/bags')
-    py.test.raises(LockError, 'write_lock("store/bags")')
+    with py.test.raises(LockError):
+        write_lock("store/bags")
 
     write_lock('store/bags' + '/bagone/tiddlers/foobar')
     tiddler = Tiddler('foobar')
     tiddler.text = 'hello'
     tiddler.bag = u'bagone'
-    py.test.raises(StoreLockError, 'store.put(tiddler)')
+    with py.test.raises(StoreLockError):
+        store.put(tiddler)
 
 
 def test_put_with_slash():
@@ -177,7 +181,8 @@ def test_put_with_slash():
 
 def test_put_no_bag():
     tiddler = Tiddler('hi')
-    py.test.raises(NoBagError, 'store.put(tiddler)')
+    with py.test.raises(NoBagError):
+        store.put(tiddler)
 
 
 def test_bad_filename():
@@ -187,7 +192,8 @@ def test_bad_filename():
     if type(store.storage) != Texter:
         py.test.skip('skipping this test for non-text store')
     tiddler = Tiddler('../nastyone', 'bagone')
-    py.test.raises(NoTiddlerError, 'store.put(tiddler)')
+    with py.test.raises(NoTiddlerError):
+        store.put(tiddler)
 
 
 def test_put_and_get_dotted_file():

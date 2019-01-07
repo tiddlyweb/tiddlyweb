@@ -13,7 +13,8 @@ def test_bag_create():
     """
     Confirm that Bag() requires a name argument.
     """
-    py.test.raises(TypeError, "Bag()")
+    with py.test.raises(TypeError):
+        Bag()
 
 
 def test_bag_name():

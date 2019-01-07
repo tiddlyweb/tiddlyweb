@@ -55,12 +55,6 @@ def test_recipe_put():
 
     assert os.path.exists(expected_stored_filename)
 
-    with open(expected_stored_filename) as f:
-        content = f.read()
-
-    if sys.version_info[0] < 3:
-        assert content == expected_stored_content
-
 
 def test_recipe_get():
     """
@@ -85,8 +79,10 @@ def test_recipe_delete():
     deleted_recipe = Recipe('deleteme')
     store.delete(deleted_recipe)
 
-    py.test.raises(NoRecipeError, 'store.get(deleted_recipe)')
-    py.test.raises(NoRecipeError, 'store.delete(deleted_recipe)')
+    with py.test.raises(NoRecipeError):
+        store.get(deleted_recipe)
+    with py.test.raises(NoRecipeError):
+        store.delete(deleted_recipe)
 
 
 def test_recipe_no_recipe():
@@ -130,5 +126,7 @@ def test_recipe_weird_bag():
 
 def test_recipe_bad_name():
     recipe = Recipe('../badname')
-    py.test.raises(NoRecipeError, 'store.put(recipe)')
-    py.test.raises(NoRecipeError, 'store.get(recipe)')
+    with py.test.raises(NoRecipeError):
+        store.put(recipe)
+    with py.test.raises(NoRecipeError):
+        store.get(recipe)

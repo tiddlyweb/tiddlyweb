@@ -61,22 +61,29 @@ def test_policy_allows():
     assert policy.allows(chris_info, 'read')
     assert policy.allows(chris_info, 'delete')
     assert policy.allows(jeremy_info, 'read')
-    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "write")')
+    with py.test.raises(ForbiddenError):
+        policy.allows(jeremy_info, "write")
     assert policy.allows(chris_info, 'manage')
-    py.test.raises(ForbiddenError, 'policy.allows(jeremy_info, "manage")')
+    with py.test.raises(ForbiddenError):
+        policy.allows(jeremy_info, "manage")
     assert policy.allows(chris_info, 'create')
-    py.test.raises(ForbiddenError, 'policy.allows(none_info, "write")')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "read")')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "write")')
+    with py.test.raises(ForbiddenError):
+        policy.allows(none_info, "write")
+    with py.test.raises(ForbiddenError):
+        policy.allows(barnabas_info, "read")
+    with py.test.raises(ForbiddenError):
+        policy.allows(barnabas_info, "write")
     assert policy.allows(barnabas_info, 'create')
-    py.test.raises(ForbiddenError, 'policy.allows(barnabas_info, "manage")')
+    with py.test.raises(ForbiddenError):
+        policy.allows(barnabas_info, "manage")
 
 
 def test_policy_any():
     policy = Policy(read=['ANY'], write=['ANY'])
     assert policy.allows(randomer_info, 'read')
     assert policy.allows(boom_info, 'write')
-    py.test.raises(UserRequiredError, 'policy.allows(guest_info, "read")')
+    with py.test.raises(UserRequiredError):
+        policy.allows(guest_info, "read")
 
 
 def test_bag_policy():
@@ -85,7 +92,8 @@ def test_bag_policy():
     bag.policy = Policy(read=['chris', 'jeremy'])
 
     assert bag.policy.allows(chris_info, 'read')
-    py.test.raises(UserRequiredError, 'bag.policy.allows(guest_info, "read")')
+    with py.test.raises(UserRequiredError):
+        bag.policy.allows(guest_info, "read")
 
 
 def test_user_perms():
@@ -107,19 +115,19 @@ def test_create_policy_check():
     admin_environ = {'tiddlyweb.config': {'recipe_create_policy': 'ADMIN'}}
     weird_environ = {'tiddlyweb.config': {'recipe_create_policy': 'WEIRD'}}
 
-    py.test.raises(ForbiddenError,
-            'create_policy_check(no_environ, "recipe", chris_info)')
+    with py.test.raises(ForbiddenError):
+        create_policy_check(no_environ, "recipe", chris_info)
     assert create_policy_check(all_environ, "recipe", chris_info)
     assert create_policy_check(any_environ, "recipe", chris_info)
-    py.test.raises(UserRequiredError,
-            'create_policy_check(any_environ, "recipe", {"name":"GUEST"})')
+    with py.test.raises(UserRequiredError):
+        create_policy_check(any_environ, "recipe", {"name":"GUEST"})
     assert create_policy_check(admin_environ, "recipe", chris_info)
-    py.test.raises(ForbiddenError,
-            'create_policy_check(admin_environ, "recipe", jeremy_info)')
-    py.test.raises(ForbiddenError,
-            'create_policy_check(admin_environ, "recipe", roller_info)')
-    py.test.raises(ForbiddenError,
-            'create_policy_check(weird_environ, "recipe", jeremy_info)')
+    with py.test.raises(ForbiddenError):
+        create_policy_check(admin_environ, "recipe", jeremy_info)
+    with py.test.raises(ForbiddenError):
+        create_policy_check(admin_environ, "recipe", roller_info)
+    with py.test.raises(ForbiddenError):
+        create_policy_check(weird_environ, "recipe", jeremy_info)
 
 
 def test_malformed_policy():

@@ -101,7 +101,7 @@ def handle(args):
             LOGGER.debug('running command %s with %s',
                     candidate_command, args)
             COMMANDS[candidate_command](args)
-        except IndexError as exc:
+        except IndexError:
             usage('Incorect number of arguments')
         except Exception as exc:
             if config.get('twanager.tracebacks', False):

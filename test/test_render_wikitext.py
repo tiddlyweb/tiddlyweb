@@ -32,8 +32,8 @@ def test_render_no_config():
 def test_renderer_not_found():
     renderer = config['wikitext.default_renderer']
     config['wikitext.default_renderer'] = 'monkey'
-    py.test.raises(ImportError,
-            'render_wikitext(tiddler, {"tiddlyweb.config":config})')
+    with py.test.raises(ImportError):
+        render_wikitext(tiddler, {"tiddlyweb.config":config})
     config['wikitext.default_renderer'] = renderer
 
 
@@ -46,5 +46,5 @@ def test_renderer_type_not_found_does_raw():
 def test_renderer_type_found_no_import():
     tiddler.type = 'image/gif'
     config['wikitext.type_render_map'][tiddler.type] = 'monkey'
-    py.test.raises(ImportError,
-            'render_wikitext(tiddler, {"tiddlyweb.config":config})')
+    with py.test.raises(ImportError):
+        render_wikitext(tiddler, {"tiddlyweb.config":config})

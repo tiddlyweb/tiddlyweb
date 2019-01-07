@@ -223,7 +223,7 @@ def select_relative_attribute(attribute, value, entities,
     elif lesser:
         comparator = lt
     else:
-        comparator = lambda x, y: True
+        comparator = lambda x, y: True  # noqa
 
     def _select(entity):
         """

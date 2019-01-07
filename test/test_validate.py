@@ -31,7 +31,8 @@ def test_validate_tiddler():
     tiddler.text = 'I am a dinosaur'
     tiddler.tags = ['tag1', 'tag2']
 
-    py.test.raises(InvalidTiddlerError, 'validate_tiddler(tiddler)')
+    with py.test.raises(InvalidTiddlerError):
+        validate_tiddler(tiddler)
 
     tiddler.text = 'I am a dinosaur who likes to foobar'
 

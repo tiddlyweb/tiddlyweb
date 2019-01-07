@@ -149,7 +149,7 @@ def recursive_filter(filters, entities, indexable=False):
             environ = {}
         try:
             entities = active_filter(entities, indexable, environ)
-        except FilterIndexRefused as exc:
+        except FilterIndexRefused:
             entities = active_filter(entities, False, environ)
         except (ValueError, AttributeError) as exc:
             raise FilterError('malformed filter: %s' % exc)

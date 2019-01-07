@@ -20,7 +20,7 @@ cleanagain:
 	rm -r tiddlyweb.egg-info || true
 
 test:
-	py.test -x --tb=short test
+	tox
 
 dist: test
 	python setup.py sdist

@@ -70,13 +70,15 @@ def test_with_header_and_css():
 
 def test_missing_system_plugin():
     config['system_plugins'] = ['missingplugin']
-    py.test.raises(ImportError, 'serve.load_app()')
+    with py.test.raises(ImportError):
+        serve.load_app()
     config['system_plugins'] = []
 
 
 def test_existing_system_plugin():
     config['system_plugins'] = ['test.simpleplugin']
-    py.test.raises(PluginHere, 'serve.load_app()')
+    with py.test.raises(PluginHere):
+        serve.load_app()
     config['system_plugins'] = []
 
 
@@ -123,8 +125,8 @@ def test_http_date_from_timestamp_invalid():
     if sys.version_info[0] > 2:
         py.test.skip('skipping invalid date on python3')
     timestamp = '108502281010'
-    py.test.raises(ValueError,
-        'tiddlyweb.web.util.http_date_from_timestamp(timestamp)')
+    with py.test.raises(ValueError):
+        tiddlyweb.web.util.http_date_from_timestamp(timestamp)
 
 
 def test_datetime_from_http_date():
