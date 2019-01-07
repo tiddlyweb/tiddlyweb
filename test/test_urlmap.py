@@ -5,7 +5,7 @@ import string
 import simplejson
 
 # test_the_TESTS required to make tests go
-from .http_runner import http_test, test_the_TESTS
+from .http_runner import generate_tests, test_generic, http_test
 
 
 def fixup(pattern):
@@ -97,8 +97,15 @@ def figure_tests(app):
 
 
 def setup_module(module):
+    http_test()
+
+
+def pytest_generate_tests(metafunc):
     tests = do_run()
-    http_test(tests, 'http://our_test_domain:8001')
+    if metafunc.function == test_generic:
+        base_url = 'http://our_test_domain:8001'
+        data_list, ids = generate_tests(tests, base_url)
+        metafunc.parametrize("test, full_url", argvalues=data_list, ids=ids)
 
 
 def do_run():

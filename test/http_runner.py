@@ -15,10 +15,20 @@ http = get_http()
 __all__ = ('http_test', 'test_assert_response', 'test_the_TESTS')
 
 
-def http_test(test_data, base):
-    global tests, store, base_url
-    base_url = base
-    tests = test_data
+EMPTY_TEST = {
+        'name': '',
+        'desc': '',
+        'method': 'GET',
+        'url': '',
+        'status': '200',
+        'request_headers': {},
+        'response_headers': {},
+        'expected': [],
+        'data': '',
+        }
+
+
+def http_test():
     initialize_app()
     reset_textstore()
     store = _teststore()
@@ -29,6 +39,18 @@ def http_test(test_data, base):
     user = User('cdent')
     user.set_password('cowpig')
     store.put(user)
+
+
+def generate_tests(tests, base_url):
+    data_list = []
+    ids = []
+    for test_data in tests:
+        test = dict(EMPTY_TEST)
+        test.update(test_data)
+        full_url = base_url + test['url']
+        data_list.append((test, full_url))
+        ids.append(test['name'])
+    return data_list, ids
 
 
 def test_assert_response():
@@ -49,31 +71,7 @@ def test_assert_response():
     assert_response(response, content, status, headers, expected)
 
 
-EMPTY_TEST = {
-        'name': '',
-        'desc': '',
-        'method': 'GET',
-        'url': '',
-        'status': '200',
-        'request_headers': {},
-        'response_headers': {},
-        'expected': [],
-        'data': '',
-        }
-
-
-def test_the_TESTS():
-    """
-    Run the entire TEST.
-    """
-    for test_data in tests:
-        test = dict(EMPTY_TEST)
-        test.update(test_data)
-        yield test['name'], _run_test, test
-
-
-def _run_test(test):
-    full_url = base_url + test['url']
+def test_generic(test, full_url):
     if test['method'] == 'GET' or test['method'] == 'DELETE':
         response, content = http.requestU(full_url,
                 method=test['method'],
