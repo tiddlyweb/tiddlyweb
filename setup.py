@@ -40,7 +40,7 @@ META = {
         'python-mimeparse>0.1.3'
     ],
     'extras_require': {
-        'testing': ['pytest<4.0.0', 'httplib2', 'PyYAML', 'wsgi-intercept>=0.6.0'],
+        'testing': ['pytest', 'httplib2', 'PyYAML', 'wsgi-intercept>=0.6.0'],
         'docs': ['sphinx'],
     },
     'include_package_data': True,
