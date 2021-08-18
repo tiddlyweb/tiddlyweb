@@ -21,7 +21,7 @@ def test_parsing():
     filters, leftovers = parse_for_filters(string)
 
     assert len(filters) == 5
-    assert leftovers == 'slag=absolute;foo=;fat=1'
+    assert leftovers == 'slag=absolute&foo=&fat=1'
 
     text_filters = []
     for filter, text, environ in filters:

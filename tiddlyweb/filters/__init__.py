@@ -127,7 +127,7 @@ def parse_for_filters(query_string, environ=None):
         except(KeyError, IndexError, ValueError):
             leftovers.append(string)
 
-    leftovers = ';'.join(leftovers)
+    leftovers = '&'.join(leftovers)
     return filters, leftovers
 
 
